@@ -1,0 +1,52 @@
+- [ ] Import a local CS2 demo and display match metadata
+- [ ] Reject unsupported files with actionable errors
+- [ ] Display the imported match’s player roster
+- [ ] Display starting player positions for one real competitive round
+- [ ] Play and pause player movement on a calibrated tactical map
+- [ ] Scrub player positions forwards and backwards
+- [ ] Measure first-round load, playback smoothness and seek latency
+- [ ] Play the first completed round while remaining rounds parse
+- [ ] Display pending rounds from available metadata
+- [ ] Discover rounds progressively when metadata is missing
+- [ ] Select any completed round without restarting parsing
+- [ ] Exclude warmup, knife rounds and abandoned restarts
+- [ ] Include overtime, freeze time and post-round playback
+- [ ] Inspect player names, teams, facing and health at the current time
+- [ ] Show deaths and kills in sync with playback and scrubbing
+- [ ] Inspect current weapons and ammunition
+- [ ] Inspect armour and carried grenades
+- [ ] Inspect player money throughout a round
+- [ ] Track dropped, carried and planted bomb positions
+- [ ] Replay bomb plants, defuses and explosions
+- [ ] Replay grenade trajectories and detonations
+- [ ] Display approximate smoke areas over time
+- [ ] Display approximate fire areas over time
+- [ ] Display flashed-player indicators
+- [ ] Filter visible players and teams
+- [ ] Toggle utility overlays
+- [ ] Switch Nuke floors while preserving playback position
+- [ ] Replay Ancient and Anubis fixtures on calibrated maps
+- [ ] Replay Dust II and Mirage fixtures on calibrated maps
+- [ ] Replay Inferno and Overpass fixtures on calibrated maps
+- [ ] Replay Cache and Train fixtures on calibrated maps
+- [ ] Replay Vertigo fixtures on a calibrated map
+- [ ] Explain unsupported maps and unavailable replay data
+- [ ] Cancel an import and immediately open another demo
+- [ ] Retry recoverable file reads up to three total attempts
+- [ ] Retain completed rounds after parsing fails
+- [ ] Recover gracefully from insufficient browser memory
+- [ ] Verify playback against older and recent tournament demos
+- [ ] Control playback and inspect players on a phone
+- [ ] Scrub the timeline accurately with touch
+- [ ] Complete import and replay controls using only a keyboard
+- [ ] Expose meaningful replay information to screen readers
+- [ ] Keep replay controls usable with zoom and narrow layouts
+- [ ] Meet contrast, non-colour cues and flashing requirements
+- [ ] Offer an example match without requiring a local demo
+- [ ] Benchmark pre-parsed versus live-parsed example loading
+- [ ] Benchmark optional cached replay loading with Dexie
+- [ ] Prevent performance regressions with Playwright benchmarks
+- [ ] Verify sustained playback and memory usage on laptop and phone
+- [ ] Verify repeated imports release previous replay resources
+- [ ] Audit the complete replay flow against WCAG 2.1 AA
+- [ ] Open and refresh replay routes on static hosting
