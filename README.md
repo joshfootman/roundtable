@@ -1,4 +1,12 @@
-Welcome to your new TanStack Start app!
+# Roundtable
+
+Choose a local CS2 `.dem` file and select **Import demo** to inspect its map, server, recording duration,
+playback counts and version information. Effect manages parsing, typed failures
+and worker resources. Parsing happens on your device with bounded reads.
+
+The first slice displays recording metadata. It does not parse players, scores
+or replay rounds yet. See [the task list](docs/TASKS.md) for subsequent slices and
+[fixture verification](fixtures/README.md) for the Dust2 reference demo.
 
 # Getting Started
 

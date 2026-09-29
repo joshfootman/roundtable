@@ -1,6 +1,6 @@
 # CS2 replay viewer
 
-Status: planning; no app code, fixtures supplied or benchmarks yet.
+Status: local metadata import implemented with Effect and verified against the supplied Dust2 demo; round parsing and playback benchmarks remain.
 Requirements below settled unless marked **proposed**, **optional** or **open**.
 
 ## Product
@@ -16,6 +16,7 @@ Requirements below settled unless marked **proposed**, **optional** or **open**.
 ## Release scope
 
 - User-provided example match + local import.
+- Current example: FaZe vs Vitality, Dust2 (map 2), from the supplied BLAST Premier Spring Final 2024 archive. Local file: `fixtures/faze-vs-vitality-m2-dust2.dem`; provenance in [fixtures/README.md](../fixtures/README.md).
 - Example: prefer pre-parsed static data; confirm after download-size/load-time versus live-parse benchmarks. Same replay contract/viewer; custom parser benchmarked separately.
 - Flat tactical map; one active round; every parsed round selectable.
 - Selectable rounds: competitive + overtime; freeze time + post-round activity included.
@@ -48,18 +49,18 @@ Excluded: CS:GO, 3D, heatmaps, annotations, advanced economy/pattern analysis, l
 
 ## Stack
 
-| Area         | Choice                                                     |
-| ------------ | ---------------------------------------------------------- |
-| App/routing  | React + TanStack Router; static SPA                        |
-| Build        | Vite integration; versions pinned at scaffold              |
-| Coordination | Effect: import lifecycle, errors, resources, result stream |
-| Map          | PixiJS; direct frame-loop integration                      |
-| UI           | shadcn/ui; custom visual design                            |
-| Styling      | Tailwind + CSS variables proposed; one primitive family    |
-| Protobuf     | Protobuf-ES; validate schema generation                    |
-| Compression  | snappyjs initial choice; verify block compatibility/perf   |
-| Tests        | Vitest + Playwright; real-phone checks                     |
-| Persistence  | Dexie/IndexedDB optional; measurement-dependent            |
+| Area         | Choice                                                                    |
+| ------------ | ------------------------------------------------------------------------- |
+| App/routing  | React + TanStack Router; static SPA                                       |
+| Build        | Vite integration; versions pinned at scaffold                             |
+| Coordination | Effect: parser API, file reads, typed errors, import lifecycle, resources |
+| Map          | PixiJS; direct frame-loop integration                                     |
+| UI           | shadcn/ui; custom visual design                                           |
+| Styling      | Tailwind + CSS variables proposed; one primitive family                   |
+| Protobuf     | Protobuf-ES; validate schema generation                                   |
+| Compression  | snappyjs initial choice; verify block compatibility/perf                  |
+| Tests        | Vitest + Playwright; real-phone checks                                    |
+| Persistence  | Dexie/IndexedDB optional; measurement-dependent                           |
 
 No framework versions selected. WASM only if profiling justifies specific work.
 
@@ -83,7 +84,7 @@ packages/demo-parser/  byte decoding, CS2 state, round extraction
 packages/replay/       output contract, indexes, playback
 ```
 
-- Parser core: no React/Pixi/DOM dependencies; usable in CLI benchmarks.
+- Parser core: Effect API with typed failures and effectful file reads; no React/Pixi/DOM dependencies; usable in CLI benchmarks.
 - Decode: framing → Snappy → protobuf → tables/serializers/baselines → field paths/entities → CS2 state → rounds.
 - Retain required decoder state; discard unwanted values after consuming encoding.
 - Protobuf `entity_data` = opaque bytes; custom inner decoder still required.
@@ -163,7 +164,7 @@ Dexie conditional:
 
 ## Verification + first milestone
 
-- Fixtures: older demo + recent matches; user to supply.
+- Fixtures: the 2024 Dust2 example is available locally; recent match fixtures still needed for compatibility checks.
 - Differential checks: identities, rounds, positions, events; investigate disagreements.
 - Test binary readers, malformed/truncated inputs, backward seeks.
 - Test money/equipment, bomb/utility lifetimes, overtime, reconnects, Nuke floors.

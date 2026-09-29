@@ -1,4 +1,4 @@
-- [ ] Import a local CS2 demo and display match metadata
+- [x] Import a local CS2 demo and display match metadata
 - [ ] Reject unsupported files with actionable errors
 - [ ] Display the imported match’s player roster
 - [ ] Display starting player positions for one real competitive round

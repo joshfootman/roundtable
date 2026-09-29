@@ -14,3 +14,4 @@ todos.json
 coverage/
 playwright-report/
 test-results/
+fixtures/*.dem
