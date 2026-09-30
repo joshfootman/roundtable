@@ -1,3 +1,9 @@
+export interface FireArea {
+  entity: number
+  serial: number
+  positions: number[]
+}
+
 export interface ReplaySmoke {
   entity: number
   startTick: number
@@ -76,6 +82,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  fires: { tick: number; fires: FireArea[] }[]
   smokes: ReplaySmoke[]
   projectiles: ReplayProjectile[]
   detonations: GrenadeDetonation[]

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	demo "github.com/markus-wa/demoinfocs-golang/v4/pkg/demoinfocs"
@@ -8,6 +9,7 @@ import (
 	"github.com/markus-wa/demoinfocs-golang/v4/pkg/demoinfocs/events"
 	"os"
 	"sort"
+	"strings"
 )
 
 func id(p *common.Player) string {
@@ -22,6 +24,17 @@ func weapon(w *common.Equipment) any {
 	}
 	return map[string]any{"type": int(w.Type), "name": w.String(), "magazine": w.AmmoInMagazine(), "reserve": w.AmmoReserve()}
 }
+
+type fireSnapshot struct {
+	Entity    int       `json:"entity"`
+	Serial    int       `json:"serial"`
+	Positions []float64 `json:"positions"`
+}
+type fireFrame struct {
+	Tick  int            `json:"tick"`
+	Fires []fireSnapshot `json:"fires"`
+}
+
 func main() {
 	path := "../../fixtures/faze-vs-vitality-m2-dust2.dem"
 	if len(os.Args) > 1 {
@@ -35,6 +48,8 @@ func main() {
 	defer p.Close()
 	ticks := map[int]bool{537: true, 5732: true, 5796: true, 6400: true, 7443: true, 7444: true, 7445: true, 7834: true, 8281: true, 6362: true, 6466: true, 6500: true, 13170: true, 30555: true, 31965: true, 69941: true}
 	var projectileFrames []any
+	var fireFrames []fireFrame
+	var infernoFields []string
 	var frames []any
 	var records []any
 	census := map[string]int{}
@@ -92,6 +107,13 @@ func main() {
 		case events.PlayerFlashed:
 			d = map[string]any{"player": id(v.Player), "attacker": id(v.Attacker), "durationSeconds": v.FlashDuration().Seconds()}
 		case events.InfernoStart:
+			if infernoFields == nil {
+				for _, field := range v.Inferno.Entity.ServerClass().PropertyEntries() {
+					if strings.HasPrefix(field, "m_fire") || strings.HasPrefix(field, "m_bFire") {
+						infernoFields = append(infernoFields, field)
+					}
+				}
+			}
 			d = map[string]any{"thrower": id(v.Inferno.Thrower()), "fires": v.Inferno.Fires().List()}
 		case events.InfernoExpired:
 			d = map[string]any{"thrower": id(v.Inferno.Thrower()), "fires": v.Inferno.Fires().List()}
@@ -102,6 +124,33 @@ func main() {
 	})
 	p.RegisterEventHandler(func(e events.FrameDone) {
 		tick := p.GameState().IngameTick()
+		if round <= 4 {
+			current := make([]fireSnapshot, 0)
+			for entity, inferno := range p.GameState().Infernos() {
+				positions := make([]float64, 0)
+				for _, cell := range inferno.Fires().Active().List() {
+					positions = append(positions, float64(float32(cell.X)), float64(float32(cell.Y)), float64(float32(cell.Z)))
+				}
+				if len(positions) > 0 {
+					current = append(current, fireSnapshot{entity, inferno.Entity.SerialNum(), positions})
+				}
+			}
+			sort.Slice(current, func(i, j int) bool { return current[i].Entity < current[j].Entity })
+			if len(fireFrames) > 0 && fireFrames[len(fireFrames)-1].Tick == tick {
+				fireFrames = fireFrames[:len(fireFrames)-1]
+			}
+			var previous []fireSnapshot
+			if len(fireFrames) > 0 {
+				previous = fireFrames[len(fireFrames)-1].Fires
+			} else {
+				previous = make([]fireSnapshot, 0)
+			}
+			now, _ := json.Marshal(current)
+			before, _ := json.Marshal(previous)
+			if !bytes.Equal(now, before) {
+				fireFrames = append(fireFrames, fireFrame{tick, current})
+			}
+		}
 		if tick >= 6362 && tick <= 6466 {
 			for entity, g := range p.GameState().GrenadeProjectiles() {
 				projectileFrames = append(projectileFrames, map[string]any{"tick": tick, "entity": entity, "position": g.Position(), "thrower": id(g.Thrower)})
@@ -131,6 +180,6 @@ func main() {
 	if e = p.ParseToEnd(); e != nil {
 		panic(e)
 	}
-	json.NewEncoder(os.Stdout).Encode(map[string]any{"parser": "demoinfocs 4.5.1", "frames": frames, "projectileFrames": projectileFrames, "events": records, "census": census})
+	json.NewEncoder(os.Stdout).Encode(map[string]any{"parser": "demoinfocs 4.5.1", "frames": frames, "projectileFrames": projectileFrames, "fireFrames": fireFrames, "infernoFields": infernoFields, "events": records, "census": census})
 	fmt.Fprintf(os.Stderr, "frames=%d events=%d census=%v\n", len(frames), len(records), census)
 }

@@ -15,3 +15,5 @@ export const utilityAppearance: Record<
 export const DETONATION_DISPLAY_SECONDS = 1
 
 export const APPROXIMATE_SMOKE_RADIUS = 144
+
+export const APPROXIMATE_FIRE_CELL_RADIUS = 60

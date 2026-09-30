@@ -1,5 +1,11 @@
 import { firearms, equipmentName } from '../../replay/equipment.ts'
-import type { ReplayWeapon, PlayerInspection, BombState, GrenadeKind } from '../../replay/types.ts'
+import type {
+  ReplayWeapon,
+  PlayerInspection,
+  BombState,
+  GrenadeKind,
+  FireArea,
+} from '../../replay/types.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
 import { uncompress } from 'snappyjs'
@@ -61,6 +67,7 @@ export interface PlayerSnapshot {
   weapon: ReplayWeapon
 }
 const replayFields = new Set([
+  'm_fireCount',
   'm_steamID',
   'm_hOwnerEntity',
   'm_hThrower',
@@ -120,7 +127,11 @@ export function createEntityDecoder() {
     for (const path of readFieldPaths(reader)) {
       const field = resolveField(serializer, path, polymorphic)
       const value = field.decode(reader)
-      if (replayFields.has(field.name) || field.name.startsWith('m_pWeaponServices.m_hMyWeapons.'))
+      if (
+        replayFields.has(field.name) ||
+        field.name.startsWith('m_pWeaponServices.m_hMyWeapons.') ||
+        /^(m_bFireIsBurning|m_firePositions)\./.test(field.name)
+      )
         values.set(field.name, value)
     }
   }
@@ -473,6 +484,27 @@ export function createEntityDecoder() {
     snapshots,
     bomb,
     projectiles,
+    fires(): FireArea[] {
+      const fires: FireArea[] = []
+      for (const [id, entity] of entities) {
+        if (!entity.active || entity.className !== 'CInferno') continue
+        const count = entity.values.get('m_fireCount')
+        if (typeof count !== 'number' || !Number.isInteger(count) || count < 0)
+          throw new Error('Missing recorded fire cell count.')
+        const positions: number[] = []
+        for (let cell = 0; cell < count; cell++) {
+          const burning = entity.values.get(`m_bFireIsBurning.${cell}`)
+          if (typeof burning !== 'boolean') throw new Error('Missing recorded burning cell state.')
+          if (!burning) continue
+          const point = entity.values.get(`m_firePositions.${cell}`)
+          if (!Array.isArray(point) || point.length !== 3 || !point.every(Number.isFinite))
+            throw new Error('Missing recorded fire cell position.')
+          positions.push(...point)
+        }
+        if (positions.length) fires.push({ entity: id, serial: entity.serial, positions })
+      }
+      return fires.sort((a, b) => a.entity - b.entity)
+    },
     smokeEntities() {
       return new Set(
         [...entities.entries()]

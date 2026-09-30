@@ -29,6 +29,9 @@ const expectedProjectiles = JSON.parse(
   await readFile(new URL('../fixtures/replay/projectile-lifetimes.json', import.meta.url), 'utf8'),
 )
 
+const expectedFires = JSON.parse(
+  await readFile(new URL('../fixtures/replay/fires.json', import.meta.url), 'utf8'),
+)
 const expectedSmokes = JSON.parse(
   await readFile(new URL('../fixtures/replay/smokes.json', import.meta.url), 'utf8'),
 )
@@ -62,6 +65,7 @@ await Effect.runPromise(
       let bufferBytes = 0
       let inspectionRecords = 0
       const bombEvents: (BombEvent & { round: number })[] = []
+      const fires: unknown[] = []
       const smokes: unknown[] = []
       const detonations: unknown[] = []
       const projectiles: unknown[] = []
@@ -76,6 +80,7 @@ await Effect.runPromise(
             bufferBytes = 0
             inspectionRecords = 0
             bombEvents.length = 0
+            fires.length = 0
             smokes.length = 0
             detonations.length = 0
             projectiles.length = 0
@@ -85,6 +90,10 @@ await Effect.runPromise(
               (bytes, buffer) => bytes + buffer.byteLength,
               0,
             )
+            if (number <= 4)
+              fires.push(
+                ...event.round.fires.filter((frame) => frame.tick !== event.round.startTick),
+              )
             smokes.push(...event.round.smokes.map((smoke) => ({ ...smoke, round: number })))
             detonations.push(
               ...event.round.detonations.map((event) => ({ ...event, round: number })),
@@ -110,6 +119,7 @@ await Effect.runPromise(
       )
       assert.deepEqual(completed, expected)
       assert.deepEqual(bombEvents, expectedBombEvents)
+      assert.deepEqual(fires, expectedFires)
       assert.deepEqual(smokes, expectedSmokes)
       assert.deepEqual(detonations, expectedDetonations)
       assert.deepEqual(projectiles, expectedProjectiles)

@@ -194,8 +194,9 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   const replay = page.getByRole('region', { name: 'Dust II · Round 1' })
   const play = replay.getByRole('button', { name: 'Play', exact: true })
   await expect(play).toBeEnabled()
-  await page.clock.install()
-  await page.clock.pauseAt(new Date())
+  const clockStart = new Date()
+  await page.clock.install({ time: clockStart })
+  await page.clock.pauseAt(new Date(clockStart.getTime() + 1_000))
   const broky = replay
     .getByLabel('Player inspection')
     .getByRole('listitem')
@@ -349,7 +350,8 @@ test('selects completed rounds without restarting import or changing selection o
             alive: new Uint8Array([1, 1]),
             inspection: [[{tick: number * 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: []}]],
             bomb: [{tick: number * 100, state: {type: 'inactive'}}],
-            smokes: [],
+            fires: [{tick: 0, fires: []}],
+      smokes: [],
       projectiles: [],
             detonations: [],
             bombEvents: [],
@@ -463,6 +465,19 @@ test('replays bomb interactions and restores their state when scrubbing backward
   await expect(smokeAreas).toHaveCount(0)
   await seekReplay(smokeSlider, 10331)
   await expect(smokeAreas).toHaveCount(1)
+  await page.getByRole('button', { name: 'Round 3 · Ready', exact: true }).click()
+  const fireReplay = page.getByRole('region', { name: 'Dust II · Round 3', exact: true })
+  await expect(fireReplay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  const fireSlider = fireReplay.getByRole('slider', { name: 'Replay position' })
+  const fireAreas = fireReplay.getByLabel('Approximate fire areas').getByRole('listitem')
+  await seekReplay(fireSlider, 19201)
+  await expect(fireAreas).toHaveText(['Approximate fire area · 1 burning cell'])
+  await seekReplay(fireSlider, 19400)
+  await expect(fireAreas).toHaveText(['Approximate fire area · 16 burning cells'])
+  await seekReplay(fireSlider, 19554)
+  await expect(fireAreas).toHaveCount(0)
+  await seekReplay(fireSlider, 19201)
+  await expect(fireAreas).toHaveCount(1)
   await page.getByRole('button', { name: 'Round 4 · Ready', exact: true }).click()
   const replay = page.getByRole('region', { name: 'Dust II · Round 4', exact: true })
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()

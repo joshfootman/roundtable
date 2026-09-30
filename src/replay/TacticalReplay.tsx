@@ -2,6 +2,7 @@ import {
   utilityAppearance,
   DETONATION_DISPLAY_SECONDS,
   APPROXIMATE_SMOKE_RADIUS,
+  APPROXIMATE_FIRE_CELL_RADIUS,
 } from './utility.ts'
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
@@ -128,6 +129,14 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       function draw() {
         const sample = sampleAtTick(round.ticks, tick)
         utility.clear()
+        for (const fire of recordAtTick(round.fires, tick).fires) {
+          for (let cell = 0; cell < fire.positions.length; cell += 3) {
+            const point = worldToMap(map, fire.positions[cell]!, fire.positions[cell + 1]!)
+            utility
+              .circle(point.x, point.y, APPROXIMATE_FIRE_CELL_RADIUS / map.scale)
+              .fill({ color: utilityAppearance.fire.color, alpha: 0.25 })
+          }
+        }
         for (const smoke of round.smokes) {
           if (tick < smoke.startTick || tick >= smoke.endTick) continue
           const point = worldToMap(map, smoke.x, smoke.y)
@@ -356,6 +365,14 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
         />
       </label>
+      <ul aria-label="Approximate fire areas" className="mt-4 list-none space-y-2 p-0 text-sm">
+        {recordAtTick(round.fires, recordedTick).fires.map((fire) => (
+          <li key={`${fire.entity}:${fire.serial}`}>
+            Approximate fire area · {fire.positions.length / 3} burning{' '}
+            {fire.positions.length === 3 ? 'cell' : 'cells'}
+          </li>
+        ))}
+      </ul>
       <ul aria-label="Approximate smoke areas" className="mt-4 list-none space-y-2 p-0 text-sm">
         {round.smokes
           .filter((smoke) => smoke.startTick <= recordedTick && recordedTick < smoke.endTick)

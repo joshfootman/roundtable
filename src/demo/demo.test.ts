@@ -281,6 +281,11 @@ test('replays bomb interactions and completion in a contiguous recorded segment'
       })),
     ),
   ).toEqual(expectedProjectiles.filter((event) => event.round <= 4))
+  expect(
+    Array.from(rounds).flatMap((round) =>
+      round.fires.filter((frame) => frame.tick !== round.startTick),
+    ),
+  ).toEqual(JSON.parse(readFileSync('fixtures/replay/fires.json', 'utf8')))
   const expectedSmokes = JSON.parse(readFileSync('fixtures/replay/smokes.json', 'utf8')) as {
     round: number
   }[]

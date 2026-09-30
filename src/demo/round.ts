@@ -121,6 +121,7 @@ export function readReplay(
         tracker.sample(tick, entities.snapshots())
         tracker.bomb(tick, entities.bomb())
         tracker.projectiles(tick, entities.projectiles())
+        tracker.fires(tick, entities.fires())
       }
       for (const { event, descriptor } of recorded) {
         function key(name: string, type: number) {

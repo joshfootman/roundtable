@@ -115,3 +115,10 @@ round coverage. Recorded expiry or projectile destruction ends each interval.
 Five smokes are removed without an expiry event. The viewer uses a 144 world-unit
 radius as an approximate tactical symbol, without wall clipping or visibility
 claims. Areas disappear at their exclusive end tick and restore on reverse seek.
+
+`fires.json` contains 107 independently sampled geometry changes through round
+four. Only currently burning cells appear, including empty extinction frames.
+Absolute recorded XYZ values and entity serials are preserved. The viewer draws
+60 world-unit circles as approximate patches. It does not fill a convex hull or
+claim exact damage coverage. First fire extinction at 19554 precedes entity
+deletion at 20490. The oracle generator emits this data as `fireFrames`.

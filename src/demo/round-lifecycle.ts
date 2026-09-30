@@ -8,6 +8,7 @@ import type {
   BombEvent,
   GrenadeDetonation,
   ReplaySmoke,
+  FireArea,
 } from '../replay/types.ts'
 
 export interface RoundRules {
@@ -36,6 +37,7 @@ type Capture = {
   yaw: number[]
   teams: number[]
   projectiles: ReturnType<typeof createProjectileCapture>
+  fires: ReplayRound['fires']
   smokes: ReplaySmoke[]
   detonations: GrenadeDetonation[]
   bombEvents: BombEvent[]
@@ -99,6 +101,7 @@ export function createRoundTracker() {
       bombEvents: round.bombEvents,
       projectiles: round.projectiles.finish(endTick),
       detonations: round.detonations,
+      fires: round.fires,
       smokes: round.smokes
         .filter((smoke) => smoke.endTick > round.startTick)
         .map((smoke) => ({
@@ -196,6 +199,7 @@ export function createRoundTracker() {
           yaw: [],
           teams: [],
           projectiles: createProjectileCapture(),
+          fires: [{ tick, fires: [] }],
           smokes: [...activeSmokes.values()],
           detonations: [],
           bombEvents: [],
@@ -211,6 +215,26 @@ export function createRoundTracker() {
       if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
         capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
+    },
+    fires(tick: number, fires: FireArea[]) {
+      if (!capture) return
+      const track = capture.fires
+      if (track.at(-1)?.tick === tick) track.pop()
+      const previous = track.at(-1)?.fires
+      if (
+        !previous ||
+        previous.length !== fires.length ||
+        fires.some((fire, index) => {
+          const old = previous[index]!
+          return (
+            fire.entity !== old.entity ||
+            fire.serial !== old.serial ||
+            fire.positions.length !== old.positions.length ||
+            fire.positions.some((value, cell) => value !== old.positions[cell])
+          )
+        })
+      )
+        track.push({ tick, fires })
     },
     projectiles(tick: number, snapshots: ProjectileSnapshot[]) {
       if (!capture) return
