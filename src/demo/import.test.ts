@@ -53,7 +53,6 @@ class ControlledWorker {
 
 afterEach(() => {
   vi.unstubAllGlobals()
-  vi.restoreAllMocks()
 })
 
 function start() {
@@ -72,7 +71,7 @@ test('returns the completed replay and terminates its worker', async () => {
       const { fiber, worker } = yield* start()
       worker.reply({
         type: 'ready',
-        demo: { metadata, firstRound, players: [{ name: 'broky', steamId: '76561198201620490' }] },
+        demo: { metadata, firstRound },
       })
       const result = yield* Fiber.join(fiber)
       expect(worker.terminated).toBe(true)
@@ -82,7 +81,6 @@ test('returns the completed replay and terminates its worker', async () => {
   expect(result).toEqual({
     metadata,
     firstRound,
-    players: [{ name: 'broky', steamId: '76561198201620490' }],
   })
 })
 

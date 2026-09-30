@@ -155,10 +155,10 @@ function Home() {
             Player roster
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[#a7b5aa]">
-            {state.players.length} players recorded in this demo.
+            {state.firstRound.players.length} players recorded in this demo.
           </p>
           <ul className="mt-6 grid list-none gap-3 p-0 sm:grid-cols-2">
-            {state.players.map((player) => (
+            {state.firstRound.players.map((player) => (
               <li
                 key={player.steamId}
                 className="min-w-0 rounded-lg border border-[#303c34] bg-[#1b251e] px-4 py-3"

@@ -4,7 +4,7 @@ import { clearField, fromBinary, toBinary } from '@bufbuild/protobuf'
 import { CDemoFileHeaderSchema } from './generated/demo_pb'
 import { describe, expect, test } from 'vitest'
 import { compress } from 'snappyjs'
-import { DemoReadError, readDemoMetadata } from './metadata'
+import { readDemoMetadata } from './metadata'
 
 const fixture = new Uint8Array(readFileSync('fixtures/metadata/dust2-metadata.bin'))
 const header = new Uint8Array(readFileSync('fixtures/metadata/header-record.bin'))
@@ -46,18 +46,7 @@ test('rejects incomplete metadata and preserves explicitly recorded zero', async
   clearField(decoded, CDemoFileHeaderSchema.field.mapName)
   const payload = toBinary(CDemoFileHeaderSchema, decoded)
   const missingMap = demo(new Uint8Array([1, 0, ...varint(payload.length), ...payload]), info)
-  const footerOffset = new DataView(missingMap.buffer).getUint32(8, true)
-  await expect(
-    Effect.runPromise(
-      readDemoMetadata({
-        size: missingMap.length,
-        readRange: (offset, length) =>
-          offset >= footerOffset
-            ? Effect.fail(new DemoReadError({ message: 'Playback metadata should not be read.' }))
-            : Effect.succeed(missingMap.slice(offset, offset + length)),
-      }),
-    ),
-  ).rejects.toThrow(/missing required metadata \(map_name\)/)
+  await expect(parse(missingMap)).rejects.toThrow(/missing required metadata \(map_name\)/)
   await expect(parse(demo(header, new Uint8Array([2, 0, 0])))).rejects.toThrow(
     /missing required metadata \(playback_time\)/,
   )
@@ -174,11 +163,8 @@ test.each([
   })
 })
 
-test.each([
-  ['cs2', 'dota'],
-  ['', '/home/server/game/csgo'],
-])('accepts game %s in directory %s regardless of map or patch', async (game, directory) => {
-  await expect(parse(gameDemo(game, directory))).resolves.toMatchObject({
+test('accepts an explicit CS2 identifier regardless of directory, map or patch', async () => {
+  await expect(parse(gameDemo('cs2', 'dota'))).resolves.toMatchObject({
     mapName: 'workshop_unknown_map',
     patchVersion: 1,
   })

@@ -24,18 +24,6 @@ const oracle = JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) a
     }[]
   }[]
 }
-const players = [
-  { name: 'apEX', steamId: '76561197989744167' },
-  { name: 'broky', steamId: '76561198201620490' },
-  { name: 'flameZ', steamId: '76561197978835160' },
-  { name: 'frozen', steamId: '76561198068422762' },
-  { name: 'karrigan', steamId: '76561197989430253' },
-  { name: 'mezii', steamId: '76561197973140692' },
-  { name: 'rain', steamId: '76561197997351207' },
-  { name: 'ropz', steamId: '76561197991272318' },
-  { name: 'Spinx', steamId: '76561198063336407' },
-  { name: 'ZywOo', steamId: '76561198113666193' },
-]
 
 function source(bytes: Uint8Array) {
   return {
@@ -69,8 +57,10 @@ test('decodes a real competitive round against independent identities and positi
     playbackTicks: 197008,
     playbackFrames: 197003,
   })
-  expect([...demo.players].sort((a, b) => a.name.localeCompare(b.name, 'en'))).toEqual(players)
   const round = demo.firstRound
+  expect(round.players).toEqual(
+    oracle.samples[0]!.players.map(({ steamId, name, team }) => ({ steamId, name, team })),
+  )
   expect(round.number).toBe(1)
   expect(round.startTick).toBe(oracle.startTick)
   expect(round.liveStartTick).toBe(5732)
@@ -82,11 +72,6 @@ test('decodes a real competitive round against independent identities and positi
     expect(sample, `missing recorded tick ${expected.tick}`).not.toBe(-1)
     for (const player of expected.players) {
       const index = round.players.findIndex((entry) => entry.steamId === player.steamId)
-      expect(round.players[index]).toEqual({
-        steamId: player.steamId,
-        name: player.name,
-        team: player.team,
-      })
       const offset = (sample * round.players.length + index) * 3
       expect(round.positions[offset]).toBeCloseTo(player.X, 2)
       expect(round.positions[offset + 1]).toBeCloseTo(player.Y, 2)

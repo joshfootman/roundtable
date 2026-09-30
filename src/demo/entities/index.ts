@@ -181,8 +181,6 @@ export function createEntityDecoder() {
     serverInfo(message: CSVCMsg_ServerInfo) {
       if (!Number.isFinite(message.tickInterval) || message.tickInterval <= 0)
         throw new Error('The demo is missing a valid recorded tick interval.')
-      if (!Number.isFinite(message.tickInterval) || message.tickInterval <= 0)
-        throw new Error('Missing or invalid recorded tick interval.')
       if (message.maxClasses <= 0) throw new Error('Missing entity class count.')
       classBits = Math.floor(Math.log2(message.maxClasses)) + 1
     },

@@ -62,7 +62,9 @@ const job = Effect.scoped(
     if (verifyRoster) {
       const demo = yield* readDemo(source)
       assert.deepEqual(demo.metadata, metadata)
-      players = [...demo.players].sort((a, b) => a.name.localeCompare(b.name, 'en'))
+      players = demo.firstRound.players
+        .map(({ name, steamId }) => ({ name, steamId }))
+        .sort((a, b) => a.name.localeCompare(b.name, 'en'))
       assert.deepEqual(players, [
         { name: 'apEX', steamId: '76561197989744167' },
         { name: 'broky', steamId: '76561198201620490' },

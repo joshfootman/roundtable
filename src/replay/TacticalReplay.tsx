@@ -104,21 +104,21 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         }
         return sample
       }
-      function publish() {
-        setScene({ status: 'ready', playing, tick: Math.floor(tick), sample: draw() })
+      function publish(sample: number) {
+        setScene({ status: 'ready', playing, tick: Math.floor(tick), sample })
         lastPublished = performance.now()
       }
-      function pause() {
+      function pause(sample = draw()) {
         playing = false
         app.ticker.stop()
-        publish()
+        publish(sample)
         app.render()
       }
       playback.current = {
         play() {
           if (tick < round.liveStartTick || tick >= round.endTick) tick = round.liveStartTick
           playing = true
-          publish()
+          publish(draw())
           app.ticker.start()
         },
         pause,
@@ -126,16 +126,16 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           tick = Math.max(round.liveStartTick, Math.min(round.endTick, nextTick))
           if (tick === round.endTick) pause()
           else {
-            publish()
+            publish(draw())
             app.render()
           }
         },
       }
       app.ticker.add((clock) => {
         tick = Math.min(round.endTick, tick + clock.elapsedMS / (round.tickInterval * 1000))
-        draw()
-        if (tick >= round.endTick) pause()
-        else if (performance.now() - lastPublished >= 250) publish()
+        const sample = draw()
+        if (tick >= round.endTick) pause(sample)
+        else if (performance.now() - lastPublished >= 250) publish(sample)
       })
       observer = new ResizeObserver(() => {
         const width = element.clientWidth
@@ -145,7 +145,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         app.render()
       })
       observer.observe(element)
-      publish()
+      publish(draw())
       app.render()
     }
     void mount().catch(() => {

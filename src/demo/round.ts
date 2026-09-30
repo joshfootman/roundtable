@@ -32,6 +32,16 @@ import {
 import { BitReader } from './entities/bit-reader.ts'
 import { createEntityDecoder, type PlayerSnapshot } from './entities/index.ts'
 import { type ReplayRound } from '../replay/types.ts'
+type RoundCapture = {
+  startTick: number
+  number: number
+  players: ReplayRound['players']
+  ticks: number[]
+  positions: number[]
+  alive: number[]
+  lastPositions: Map<string, PlayerSnapshot>
+} & ({ phase: 'freeze' } | { phase: 'live' | 'postround'; liveStartTick: number })
+
 const LIMIT = 32 * 1024 * 1024
 export function readFirstRound(input: DemoSource) {
   return Effect.gen(function* () {
@@ -39,36 +49,34 @@ export function readFirstRound(input: DemoSource) {
     const entities = createEntityDecoder()
     const descriptors = new Map<number, CMsgSource1LegacyGameEventList_descriptor_t>()
     let tickInterval = 0
-    let startTick = -1
-    let liveStartTick = -1
-    let roundNumber = 0
-    let phase: 'searching' | 'freeze' | 'live' | 'postround' = 'searching'
+    let capture: RoundCapture | undefined
     let previousRules: ReturnType<typeof entities.gameRules>
-    let players: ReplayRound['players'] = []
-    const ticks: number[] = []
-    const positions: number[] = []
-    const alive: number[] = []
-    const lastPositions = new Map<string, PlayerSnapshot>()
-    function reset(tick: number, totalRoundsPlayed: number) {
-      startTick = tick
-      liveStartTick = -1
-      roundNumber = totalRoundsPlayed + 1
-      phase = 'freeze'
-      players = []
-      ticks.length = 0
-      positions.length = 0
-      alive.length = 0
-      lastPositions.clear()
+    function start(tick: number, rules: ReturnType<typeof entities.gameRules>): boolean {
+      if (capture?.phase === 'postround') return true
+      if (!rules || rules.warmup) return false
+      capture = {
+        phase: 'freeze',
+        startTick: tick,
+        number: rules.totalRoundsPlayed + 1,
+        players: [],
+        ticks: [],
+        positions: [],
+        alive: [],
+        lastPositions: new Map(),
+      }
+      return false
     }
-    function sample(tick: number) {
+    function sample(round: RoundCapture, tick: number) {
+      const { ticks, positions, alive, lastPositions } = round
       if (ticks.length && tick < ticks[ticks.length - 1]!)
         throw new Error('The demo contains out-of-order replay ticks.')
       const snapshots = entities.snapshots()
-      if (!players.length) {
+      if (!round.players.length) {
         if (!snapshots.length)
           throw new Error('The competitive round has no recorded player positions.')
-        players = snapshots.map(({ steamId, name, team }) => ({ steamId, name, team }))
+        round.players = snapshots.map(({ steamId, name, team }) => ({ steamId, name, team }))
       }
+      const { players } = round
       const byId = new Map(snapshots.map((player) => [player.steamId, player]))
       const replacement = ticks.at(-1) === tick
       if (replacement) {
@@ -127,14 +135,11 @@ export function readFirstRound(input: DemoSource) {
         entities.packet(fromBinary(CSVCMsg_PacketEntitiesSchema, message.bytes))
       const rules = entities.gameRules()
       if (rules && previousRules) {
-        const start =
+        const startsRound =
           rules.reason === 0 &&
           ((rules.started === true && previousRules.started !== true) || previousRules.reason !== 0)
-        if (start && !rules.warmup) {
-          if (startTick >= 0 && phase === 'postround') completed = true
-          else reset(tick, rules.totalRoundsPlayed)
-        }
-        if (startTick >= 0 && phase === 'live' && rules.reason !== 0) phase = 'postround'
+        if (startsRound && !rules.warmup) completed = start(tick, rules)
+        if (capture?.phase === 'live' && rules.reason !== 0) capture.phase = 'postround'
       }
       previousRules = rules
       for (const message of messages)
@@ -142,22 +147,15 @@ export function readFirstRound(input: DemoSource) {
           const event = fromBinary(CMsgSource1LegacyGameEventSchema, message.bytes)
           const descriptor = descriptors.get(event.eventid)
           if (!descriptor) throw new Error('Missing replay event descriptors.')
-          if (descriptor.name === 'round_start') {
-            if (startTick >= 0 && phase === 'postround') completed = true
-            else if (rules && !rules.warmup) reset(tick, rules.totalRoundsPlayed)
-          } else if (
-            descriptor.name === 'round_freeze_end' &&
-            startTick >= 0 &&
-            phase === 'freeze'
-          ) {
-            liveStartTick = tick
-            phase = 'live'
-          } else if (descriptor.name === 'round_end' && startTick >= 0 && phase === 'live')
-            phase = 'postround'
-          else if (descriptor.name === 'round_officially_ended' && phase === 'postround')
+          if (descriptor.name === 'round_start') completed = start(tick, rules)
+          else if (descriptor.name === 'round_freeze_end' && capture?.phase === 'freeze') {
+            capture = { ...capture, phase: 'live', liveStartTick: tick }
+          } else if (descriptor.name === 'round_end' && capture?.phase === 'live')
+            capture.phase = 'postround'
+          else if (descriptor.name === 'round_officially_ended' && capture?.phase === 'postround')
             completed = true
         }
-      if (startTick >= 0 && !completed) sample(tick)
+      if (capture && !completed) sample(capture, tick)
       return completed
     }
     let offset = 16
@@ -198,7 +196,7 @@ export function readFirstRound(input: DemoSource) {
           return packet(fromBinary(CDemoPacketSchema, bytes).data, framing.tick)
         })
         if (complete) {
-          if (!tickInterval || !ticks.length || liveStartTick < startTick)
+          if (!capture || capture.phase !== 'postround' || !capture.ticks.length || !tickInterval)
             return yield* Effect.fail(
               new DemoParseError({
                 message:
@@ -206,15 +204,15 @@ export function readFirstRound(input: DemoSource) {
               }),
             )
           return {
-            number: roundNumber,
-            startTick,
-            liveStartTick,
+            number: capture.number,
+            startTick: capture.startTick,
+            liveStartTick: capture.liveStartTick,
             endTick: framing.tick,
             tickInterval,
-            players,
-            ticks: Uint32Array.from(ticks),
-            positions: Float32Array.from(positions),
-            alive: Uint8Array.from(alive),
+            players: capture.players,
+            ticks: Uint32Array.from(capture.ticks),
+            positions: Float32Array.from(capture.positions),
+            alive: Uint8Array.from(capture.alive),
           } satisfies ReplayRound
         }
       }
