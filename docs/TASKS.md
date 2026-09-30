@@ -8,7 +8,7 @@
 - [x] Play the first completed round while remaining rounds parse
 - [x] Display pending rounds from available metadata
 - [x] Discover round boundaries during sequential parsing
-- [ ] Select any completed round without restarting parsing
+- [x] Select any completed round without restarting parsing
 - [ ] Exclude warmup, knife rounds and abandoned restarts
 - [ ] Include overtime, freeze time and post-round playback
 - [ ] Inspect player names, teams, facing and health at the current time

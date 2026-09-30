@@ -150,7 +150,7 @@ test('can submit another demo while an earlier import is pending', async ({ page
   await expect(page.getByRole('heading', { name: 'Dust II', exact: true })).toBeVisible()
   await expect(page.getByText('BLAST Premier 2024', { exact: true })).toBeVisible()
   await expect(page.getByRole('alert')).toContainText('Completed rounds remain playable')
-  await expect(rounds.getByRole('button')).toHaveCount(0)
+  await expect(rounds.getByRole('button', { name: /Pending/ })).toHaveCount(0)
 })
 
 test('rounds recording duration across a minute boundary', async ({ page }) => {
@@ -232,4 +232,77 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeVisible()
   await expect(broky).toContainText('Dead')
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
+})
+
+test('selects completed rounds without restarting import or changing selection on arrival', async ({
+  page,
+}) => {
+  let workerRequests = 0
+  await page.route(/\/demo\.worker-[^/]+\.js(?:\?.*)?$/, async (route) => {
+    workerRequests++
+    await route.fulfill({
+      contentType: 'text/javascript',
+      body: `
+        const channel = new BroadcastChannel('round-navigation');
+        const round = (number) => ({
+          type: 'round',
+          round: {
+            number, startTick: number * 100, liveStartTick: number * 100 + 1,
+            endTick: number * 100 + 2, tickInterval: 1 / 64,
+            players: [{ name: 'Recorded player', steamId: '76561198201620490', team: number === 1 ? 2 : 3 }],
+            ticks: new Uint32Array([number * 100, number * 100 + 1]),
+            positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
+            alive: new Uint8Array([1, 1])
+          }
+        });
+        channel.onmessage = ({ data }) => postMessage(round(data));
+        self.onmessage = () => {
+          postMessage({ type: 'metadata', roundStartTicks: [], metadata: {
+            mapName: 'de_dust2', serverName: 'Reference server', clientName: 'SourceTV',
+            gameDirectory: 'csgo', demoVersion: 'valve_demo_2', patchVersion: 1,
+            buildNumber: 1, serverStartTick: 0, durationSeconds: 100,
+            playbackTicks: 6400, playbackFrames: 6400
+          }});
+          postMessage(round(1));
+          postMessage(round(2));
+        };
+      `,
+    })
+  })
+  await page.goto('/')
+  await page.getByLabel('Choose a .dem file').setInputFiles({
+    name: 'navigation.dem',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from('Controlled round stream'),
+  })
+  await page.getByRole('button', { name: 'Import demo' }).click()
+  const replay = page.getByRole('region', { name: 'Dust II · Round 1', exact: true })
+  await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  const rounds = page.getByRole('region', { name: 'Rounds', exact: true })
+  const second = rounds.getByRole('button', { name: 'Round 2 · Ready', exact: true })
+  await second.focus()
+  await page.keyboard.press('Enter')
+  const selected = page.getByRole('region', { name: 'Dust II · Round 2', exact: true })
+  await expect(selected.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  await expect(
+    selected.getByText('X 200.0 · Y 200.0 · Z 30.0 · Alive', { exact: true }),
+  ).toBeVisible()
+  await expect(second).toHaveAttribute('aria-pressed', 'true')
+  await selected.getByRole('slider', { name: 'Replay position' }).focus()
+  await page.keyboard.press('End')
+  await expect(selected.getByTestId('replay-tick')).toHaveAttribute('data-tick', '202')
+  await page.evaluate(() => {
+    const channel = new BroadcastChannel('round-navigation')
+    channel.postMessage(3)
+    channel.close()
+  })
+  await expect(rounds.getByRole('button', { name: 'Round 3 · Ready', exact: true })).toBeVisible()
+  await expect(second).toHaveAttribute('aria-pressed', 'true')
+  await expect(selected.getByTestId('replay-tick')).toHaveAttribute('data-tick', '202')
+  await rounds.getByRole('button', { name: 'Round 1 · Ready', exact: true }).click()
+  await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  await expect(
+    replay.getByText('X 100.0 · Y 200.0 · Z 30.0 · Alive', { exact: true }),
+  ).toBeVisible()
+  expect(workerRequests).toBe(1)
 })

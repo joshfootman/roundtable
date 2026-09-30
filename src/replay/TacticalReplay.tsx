@@ -32,7 +32,7 @@ export function TacticalReplay({ round, mapName }: { round: ReplayRound; mapName
         </p>
       </section>
     )
-  return <RoundReplay key={mapName} round={round} map={map} />
+  return <RoundReplay key={`${mapName}:${round.startTick}`} round={round} map={map} />
 }
 
 function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition }) {

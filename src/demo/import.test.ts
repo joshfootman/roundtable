@@ -30,6 +30,15 @@ const firstRound = {
   alive: new Uint8Array([1, 1]),
 }
 
+const secondRound = {
+  ...firstRound,
+  number: 2,
+  startTick: 539,
+  liveStartTick: 540,
+  endTick: 540,
+  ticks: new Uint32Array([539, 540]),
+}
+
 class ControlledWorker {
   static current: ControlledWorker
   static started: Deferred.Deferred<void>
@@ -99,7 +108,7 @@ test('delivers a playable round before completion and releases the finished work
         rounds: [firstRound],
       })
       expect(worker.terminated).toBe(false)
-      worker.reply({ type: 'round', round: { ...firstRound, number: 2 } })
+      worker.reply({ type: 'round', round: secondRound })
       worker.reply({ type: 'complete' })
       yield* Fiber.join(fiber)
       expect(worker.terminated).toBe(true)
@@ -111,7 +120,7 @@ test('delivers a playable round before completion and releases the finished work
     { type: 'round-start', number: 1, startTick: 449 },
     { type: 'round-start', number: 1, startTick: 537 },
     { type: 'round', round: firstRound },
-    { type: 'round', round: { ...firstRound, number: 2 } },
+    { type: 'round', round: secondRound },
     { type: 'complete' },
   ])
 })
@@ -144,6 +153,7 @@ test('retains a completed round after failure and releases the worker', async ()
         roundStartTicks: [],
         discoveredRound: undefined,
         rounds: [firstRound],
+        selectedStartTick: 537,
         parsing: { status: 'failed', message: 'The demo is truncated. Download it again.' },
       })
     }),

@@ -15,6 +15,7 @@ export type ImportState =
       roundStartTicks: number[]
       discoveredRound: Extract<ReplayEvent, { type: 'round-start' }> | undefined
       rounds: ReplayRound[]
+      selectedStartTick: number | undefined
       parsing: Parsing
     }
   | { status: 'error'; filename: string; message: string }
@@ -23,6 +24,7 @@ export type ImportAction =
   | ImportEvent
   | { type: 'start'; filename: string }
   | { type: 'failed'; message: string }
+  | { type: 'select-round'; startTick: number }
 
 export function updateImport(state: ImportState, action: ImportAction): ImportState {
   switch (action.type) {
@@ -36,14 +38,25 @@ export function updateImport(state: ImportState, action: ImportAction): ImportSt
         metadata: action.metadata,
         roundStartTicks: action.roundStartTicks,
         rounds: [],
+        selectedStartTick: undefined,
         discoveredRound: undefined,
         parsing: { status: 'active' },
       }
+    case 'select-round':
+      return state.status === 'ready' &&
+        state.rounds.some((round) => round.startTick === action.startTick)
+        ? { ...state, selectedStartTick: action.startTick }
+        : state
     case 'round-start':
       return state.status === 'ready' ? { ...state, discoveredRound: action } : state
     case 'round':
       return state.status === 'ready'
-        ? { ...state, rounds: [...state.rounds, action.round], discoveredRound: undefined }
+        ? {
+            ...state,
+            rounds: [...state.rounds, action.round],
+            discoveredRound: undefined,
+            selectedStartTick: state.selectedStartTick ?? action.round.startTick,
+          }
         : state
     case 'complete':
       return state.status === 'ready'

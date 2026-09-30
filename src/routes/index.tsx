@@ -54,6 +54,10 @@ function Home() {
   }
 
   const firstRound = state.status === 'ready' ? state.rounds[0] : undefined
+  const selectedRound =
+    state.status === 'ready'
+      ? state.rounds.find((round) => round.startTick === state.selectedStartTick)
+      : undefined
   const pendingRounds =
     state.status === 'ready' && state.parsing.status === 'active'
       ? [
@@ -79,8 +83,7 @@ function Home() {
         <p className="eyebrow">START WITH A DEMO</p>
         <h1 id="import-title">Every match has a story.</h1>
         <p className="lede">
-          Open a Counter-Strike 2 demo to inspect its players and replay the first competitive
-          round.
+          Open a Counter-Strike 2 demo to inspect its players and replay its competitive rounds.
         </p>
         <form className="import-panel" onSubmit={handleSubmit}>
           <div>
@@ -159,8 +162,19 @@ function Home() {
           </h2>
           <ul className="mt-4 flex list-none flex-wrap gap-2 p-0">
             {state.rounds.map((round) => (
-              <li key={round.startTick} className="rounded-lg border border-[#303c34] px-4 py-3">
-                Round {round.number} · Ready
+              <li key={round.startTick}>
+                <button
+                  type="button"
+                  aria-pressed={round.startTick === state.selectedStartTick}
+                  onClick={() =>
+                    setState((state) =>
+                      updateImport(state, { type: 'select-round', startTick: round.startTick }),
+                    )
+                  }
+                  className="min-h-11 rounded-lg border border-[#303c34] px-4 py-3 outline-offset-4 focus-visible:outline-2 focus-visible:outline-[#bedb8a] aria-pressed:bg-[#bedb8a] aria-pressed:text-[#17201a]"
+                >
+                  Round {round.number} · Ready
+                </button>
               </li>
             ))}
             {pendingRounds.map((round) => (
@@ -211,8 +225,8 @@ function Home() {
           </ul>
         </section>
       )}
-      {state.status === 'ready' && firstRound && (
-        <TacticalReplay round={firstRound} mapName={state.metadata.mapName} />
+      {state.status === 'ready' && selectedRound && (
+        <TacticalReplay round={selectedRound} mapName={state.metadata.mapName} />
       )}
       {state.status === 'ready' && state.parsing.status === 'failed' && (
         <p role="alert" className="mt-6 rounded-xl bg-[#38231f] p-6 text-[#ffdbcc]">
