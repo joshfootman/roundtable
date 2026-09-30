@@ -72,17 +72,18 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       if (cancelled) return
       const sceneMap = new Container()
       sceneMap.addChild(new Sprite(texture))
-      const markers = round.players.map((player, index) => {
+      const markers = round.players.map((_, index) => {
         const marker = new Container()
-        marker.addChild(
-          new Graphics()
-            .circle(0, 0, 10)
-            .fill(player.team === 3 ? '#8dc5ff' : '#ffd08a')
-            .stroke({
-              color: '#101713',
-              width: 2,
-            }),
-        )
+        const body = new Graphics().circle(0, 0, 10).fill('#ffffff').stroke({
+          color: '#101713',
+          width: 2,
+        })
+        marker.addChild(body)
+        const direction = new Graphics()
+          .poly([10, -5, 23, 0, 10, 5])
+          .fill('#ffffff')
+          .stroke({ color: '#101713', width: 2 })
+        marker.addChild(direction)
         const label = new Text({
           text: String(index + 1),
           style: {
@@ -95,7 +96,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         label.anchor.set(0.5)
         marker.addChild(label)
         sceneMap.addChild(marker)
-        return marker
+        return { container: marker, body, direction }
       })
       app.stage.addChild(sceneMap)
       app.canvas.setAttribute('aria-hidden', 'true')
@@ -106,9 +107,14 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         for (let player = 0; player < markers.length; player++) {
           const position = (sample * markers.length + player) * 3
           const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
-          const marker = markers[player]!
-          marker.position.set(point.x, point.y)
-          marker.alpha = round.alive[sample * markers.length + player] ? 1 : 0.35
+          const { container, body, direction } = markers[player]!
+          const state = sample * markers.length + player
+          const color = round.teams[state] === 3 ? '#8dc5ff' : '#ffd08a'
+          body.tint = color
+          direction.tint = color
+          direction.rotation = (-round.yaw[state]! * Math.PI) / 180
+          container.position.set(point.x, point.y)
+          container.alpha = round.alive[sample * markers.length + player] ? 1 : 0.35
         }
         return sample
       }
@@ -155,7 +161,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         const width = element.clientWidth
         app.renderer.resize(width, width)
         sceneMap.scale.set(width / map.imageSize)
-        for (const marker of markers) marker.scale.set((map.imageSize * 0.8) / width)
+        for (const { container } of markers) container.scale.set((map.imageSize * 0.8) / width)
         app.render()
       })
       observer.observe(element)
@@ -279,20 +285,24 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         </p>
         <ul className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
           {round.players.map((player, index) => {
-            const offset = (sample * round.players.length + index) * 3
+            const state = sample * round.players.length + index
+            const offset = state * 3
             return (
               <li key={player.steamId} className="rounded-lg bg-[#1b251e] p-3">
                 <p className="m-0 text-sm font-semibold">
                   {index + 1}. {player.name}{' '}
                   <span className="font-normal text-[#a7b5aa]">
-                    · {player.team === 3 ? 'Counter-Terrorists' : 'Terrorists'}
+                    · {round.teams[state] === 3 ? 'Counter-Terrorists' : 'Terrorists'}
                   </span>
                 </p>
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
                   X {round.positions[offset]!.toFixed(1)} · Y{' '}
                   {round.positions[offset + 1]!.toFixed(1)} · Z{' '}
                   {round.positions[offset + 2]!.toFixed(1)} ·{' '}
-                  {round.alive[sample * round.players.length + index] ? 'Alive' : 'Dead'}
+                  {round.alive[state] ? 'Alive' : 'Dead'}
+                </p>
+                <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
+                  Health {round.health[state]} · Facing {round.yaw[state]!.toFixed(1)}°
                 </p>
               </li>
             )

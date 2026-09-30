@@ -42,15 +42,38 @@ await Effect.runPromise(
             catch: (error) => new DemoReadError({ message: String(error) }),
           }),
       }
+      let bufferBytes = 0
       const completed: typeof expected = []
       const discovered: { number: number; startTick: number }[] = []
       yield* Stream.runForEach(readReplay(source), (event) =>
         Effect.sync(() => {
           if (event.type === 'round-start') {
             discovered.push({ number: event.number, startTick: event.startTick })
-          } else if (event.type === 'reset') completed.length = 0
-          else {
-            const { number, startTick, liveStartTick, resultTick, endTick, overtime } = event.round
+          } else if (event.type === 'reset') {
+            completed.length = 0
+            bufferBytes = 0
+          } else {
+            const {
+              number,
+              startTick,
+              liveStartTick,
+              resultTick,
+              endTick,
+              overtime,
+              ticks,
+              positions,
+              alive,
+              health,
+              yaw,
+              teams,
+            } = event.round
+            bufferBytes +=
+              ticks.byteLength +
+              positions.byteLength +
+              alive.byteLength +
+              health.byteLength +
+              yaw.byteLength +
+              teams.byteLength
             completed.push({ number, startTick, liveStartTick, resultTick, endTick, overtime })
           }
         }),
@@ -61,7 +84,7 @@ await Effect.runPromise(
         ...expected.map(({ number, startTick }) => ({ number, startTick })),
       ])
       console.log(
-        `Verified ${completed.length} completed rounds against the independent boundary oracle.`,
+        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes.`,
       )
     }),
   ),

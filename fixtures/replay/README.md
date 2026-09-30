@@ -50,3 +50,23 @@ The generated lifecycle tests additionally cover overtime rounds 25 and 31,
 including freeze, recorded result, and final postmatch samples. These are explicit
 state inputs, not a captured overtime demo. The supplied full-match oracle has
 no overtime and cannot establish historical overtime compatibility.
+
+## Player inspection reference
+
+The six first-round samples also contain independently decoded health and yaw.
+Yaw is the recorded eye-angle Y component in degrees. Health remains the recorded
+signed integer. Current teams are sampled beside health and facing, independently
+of the player identity catalogue.
+
+Regenerate the independent inspection and event reference from the full local demo
+with Go and the pinned demoinfocs v4.5.1 module:
+
+```sh
+cd scripts/replay-reference
+go run . ../../fixtures/faze-vs-vitality-m2-dust2.dem > /tmp/roundtable-reference.json
+```
+
+The production parser reads no reference data. `npm run verify:round` compares
+all six samples through the custom parser. `npm run verify:rounds` reports total
+completed typed-buffer bytes. With health, yaw and current teams, all 23 rounds
+publish 44,008,608 bytes. This excludes browser and structured-object overhead.

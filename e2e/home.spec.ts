@@ -188,6 +188,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await page.clock.pauseAt(new Date())
   const broky = replay.getByRole('listitem').filter({ hasText: 'broky' })
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
+  await expect(broky).toContainText('Health 100 · Facing 128.5°')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '537')
   const canvas = replay.locator('canvas')
   const startingMap = await canvas.screenshot()
@@ -203,9 +204,12 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await page.clock.runFor(1_008)
   await replay.getByRole('button', { name: 'Pause', exact: true }).click()
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
+  await expect(broky).toContainText('Health 100 · Facing 128.5°')
   await freezeTime.uncheck()
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '5732')
   await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Live')
+  const liveMap = await canvas.screenshot()
+  expect(liveMap).not.toEqual(startingMap)
   await scrubber.evaluate((element: HTMLInputElement) => {
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(element, '7834')
     element.dispatchEvent(new Event('input', { bubbles: true }))
@@ -235,12 +239,14 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await scrubber.press('End')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '8282')
   await expect(broky).toContainText('X -2000.4 · Y 1383.1 · Z 29.7 · Dead')
+  await expect(broky).toContainText('Health 0 · Facing 77.3°')
   await expect(scrubber).toHaveAttribute('aria-valuetext', '0:39 of 0:39')
   expect(await canvas.screenshot()).not.toEqual(startingMap)
   await scrubber.press('Home')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '5732')
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
-  expect(await canvas.screenshot()).toEqual(startingMap)
+  await expect(broky).toContainText('Health 100 · Facing 156.4°')
+  expect(await canvas.screenshot()).toEqual(liveMap)
   await page.clock.fastForward(1_000)
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '5732')
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeVisible()
@@ -279,10 +285,13 @@ test('selects completed rounds without restarting import or changing selection o
             number, startTick: number * 100, liveStartTick: number * 100 + 1,
             resultTick: number * 100 + 1, endTick: number * 100 + 2,
             overtime: number === 25 ? 1 : 0, tickInterval: 1 / 64,
-            players: [{ name: 'Recorded player', steamId: '76561198201620490', team: number === 1 ? 2 : 3 }],
+            players: [{ name: 'Recorded player', steamId: '76561198201620490' }],
             ticks: new Uint32Array([number * 100, number * 100 + 1]),
             positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
-            alive: new Uint8Array([1, 1])
+            alive: new Uint8Array([1, 1]),
+            health: new Int32Array([100, 100]),
+            yaw: new Float32Array([90, 90]),
+            teams: new Uint8Array([number === 1 ? 2 : 3, number === 1 ? 2 : 3])
           }
         });
         channel.onmessage = ({ data }) => {

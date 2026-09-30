@@ -6,8 +6,11 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
-  players: { steamId: string; name: string; team: 2 | 3 }[]
+  players: { steamId: string; name: string }[]
   ticks: Uint32Array<ArrayBuffer>
   positions: Float32Array<ArrayBuffer>
   alive: Uint8Array<ArrayBuffer>
+  health: Int32Array<ArrayBuffer>
+  yaw: Float32Array<ArrayBuffer>
+  teams: Uint8Array<ArrayBuffer>
 }

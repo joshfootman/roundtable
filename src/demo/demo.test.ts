@@ -21,6 +21,8 @@ const oracle = JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) a
       Y: number
       Z: number
       alive: boolean
+      health: number
+      yaw: number
     }[]
   }[]
 }
@@ -82,7 +84,7 @@ test('decodes a real competitive round against independent identities and positi
   ])
   const round = demo.firstRound
   expect(round.players).toEqual(
-    oracle.samples[0]!.players.map(({ steamId, name, team }) => ({ steamId, name, team })),
+    oracle.samples[0]!.players.map(({ steamId, name }) => ({ steamId, name })),
   )
   expect(round.number).toBe(1)
   expect(round.startTick).toBe(oracle.startTick)
@@ -101,7 +103,11 @@ test('decodes a real competitive round against independent identities and positi
       expect(round.positions[offset]).toBeCloseTo(player.X, 2)
       expect(round.positions[offset + 1]).toBeCloseTo(player.Y, 2)
       expect(round.positions[offset + 2]).toBeCloseTo(player.Z, 2)
-      expect(round.alive[sample * round.players.length + index]).toBe(Number(player.alive))
+      const state = sample * round.players.length + index
+      expect(round.alive[state]).toBe(Number(player.alive))
+      expect(round.health[state]).toBe(player.health)
+      expect(round.yaw[state]).toBeCloseTo(player.yaw, 3)
+      expect(round.teams[state]).toBe(player.team)
     }
   }
 })

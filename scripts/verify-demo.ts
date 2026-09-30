@@ -88,7 +88,16 @@ const job = Effect.scoped(
           tickInterval: number
           samples: {
             tick: number
-            players: { steamId: string; X: number; Y: number; Z: number; alive: boolean }[]
+            players: {
+              steamId: string
+              X: number
+              Y: number
+              Z: number
+              alive: boolean
+              health: number
+              yaw: number
+              team: number
+            }[]
           }[]
         }
         const round = demo.firstRound
@@ -110,7 +119,11 @@ const job = Effect.scoped(
                 Math.abs(round.positions[offset + axis]! - coordinate) < 0.005,
                 `Position mismatch at tick ${frame.tick}, player ${player.steamId}, axis ${axis}`,
               )
-            assert.equal(round.alive[sample * round.players.length + index], Number(player.alive))
+            const state = sample * round.players.length + index
+            assert.equal(round.alive[state], Number(player.alive))
+            assert.equal(round.health[state], player.health)
+            assert.ok(Math.abs(round.yaw[state]! - player.yaw) < 0.001)
+            assert.equal(round.teams[state], player.team)
           }
         }
         roundSummary = {
@@ -120,7 +133,13 @@ const job = Effect.scoped(
           endTick: round.endTick,
           samples: round.ticks.length,
           oracleSamples: expected.samples.length,
-          bytes: round.ticks.byteLength + round.positions.byteLength + round.alive.byteLength,
+          bytes:
+            round.ticks.byteLength +
+            round.positions.byteLength +
+            round.alive.byteLength +
+            round.health.byteLength +
+            round.yaw.byteLength +
+            round.teams.byteLength,
         }
       }
     }

@@ -26,10 +26,13 @@ const firstRound = {
   liveStartTick: 538,
   endTick: 538,
   tickInterval: 0.015625,
-  players: [{ name: 'broky', steamId: '76561198201620490', team: 2 as const }],
+  players: [{ name: 'broky', steamId: '76561198201620490' }],
   ticks: new Uint32Array([537, 538]),
   positions: new Float32Array([-760.663, -836.174, 117.072, -761, -836, 117]),
   alive: new Uint8Array([1, 1]),
+  health: new Int32Array([100, 100]),
+  yaw: new Float32Array([90, 90]),
+  teams: new Uint8Array([2, 2]),
 }
 
 const secondRound = {

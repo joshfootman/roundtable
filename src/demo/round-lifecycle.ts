@@ -23,7 +23,10 @@ type Capture = {
   ticks: number[]
   positions: number[]
   alive: number[]
-  lastPositions: Map<string, PlayerSnapshot>
+  health: number[]
+  yaw: number[]
+  teams: number[]
+  lastSnapshots: Map<string, PlayerSnapshot>
 } & (
   | { phase: 'freeze' }
   | { phase: 'live'; liveStartTick: number }
@@ -57,6 +60,9 @@ export function createRoundTracker() {
       ticks: Uint32Array.from(round.ticks),
       positions: Float32Array.from(round.positions),
       alive: Uint8Array.from(round.alive),
+      health: Int32Array.from(round.health),
+      yaw: Float32Array.from(round.yaw),
+      teams: Uint8Array.from(round.teams),
     }
   }
 
@@ -107,7 +113,10 @@ export function createRoundTracker() {
           ticks: [],
           positions: [],
           alive: [],
-          lastPositions: new Map(),
+          health: [],
+          yaw: [],
+          teams: [],
+          lastSnapshots: new Map(),
         }
         output.push({ type: 'round-start', number: capture.number, startTick: tick })
       }
@@ -119,27 +128,33 @@ export function createRoundTracker() {
     },
     sample(tick: number, snapshots: PlayerSnapshot[]) {
       if (!capture) return
-      const { ticks, positions, alive, lastPositions } = capture
+      const { ticks, positions, alive, health, yaw, teams, lastSnapshots } = capture
       if (ticks.length && tick < ticks[ticks.length - 1]!)
         throw new Error('The demo contains out-of-order replay ticks.')
       if (!capture.players.length) {
         if (!snapshots.length)
           throw new Error('The competitive round has no recorded player positions.')
-        capture.players = snapshots.map(({ steamId, name, team }) => ({ steamId, name, team }))
+        capture.players = snapshots.map(({ steamId, name }) => ({ steamId, name }))
       }
       const { players } = capture
       const byId = new Map(snapshots.map((player) => [player.steamId, player]))
       if (ticks.at(-1) === tick) {
         positions.length -= players.length * 3
         alive.length -= players.length
+        health.length -= players.length
+        yaw.length -= players.length
+        teams.length -= players.length
       } else ticks.push(tick)
       for (const player of players) {
         const current = byId.get(player.steamId)
-        if (current) lastPositions.set(player.steamId, current)
-        const recorded = current ?? lastPositions.get(player.steamId)
+        if (current) lastSnapshots.set(player.steamId, current)
+        const recorded = current ?? lastSnapshots.get(player.steamId)
         if (!recorded) throw new Error('A competitive player has no recorded position.')
         positions.push(recorded.x, recorded.y, recorded.z)
         alive.push(Number(recorded.alive))
+        health.push(recorded.health)
+        yaw.push(recorded.yaw)
+        teams.push(recorded.team)
       }
     },
     end(tick: number): ReplayEvent[] {

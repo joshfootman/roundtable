@@ -11,7 +11,7 @@
 - [x] Select any completed round without restarting parsing
 - [x] Exclude warmup, knife rounds and abandoned restarts
 - [x] Include overtime, freeze time and post-round playback
-- [ ] Inspect player names, teams, facing and health at the current time
+- [x] Inspect player names, teams, facing and health at the current time
 - [ ] Show deaths and kills in sync with playback and scrubbing
 - [ ] Inspect current weapons and ammunition
 - [ ] Inspect armour and carried grenades

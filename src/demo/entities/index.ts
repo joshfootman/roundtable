@@ -30,6 +30,8 @@ export interface PlayerSnapshot {
   y: number
   z: number
   alive: boolean
+  health: number
+  yaw: number
 }
 const replayFields = new Set([
   'm_steamID',
@@ -38,6 +40,7 @@ const replayFields = new Set([
   'm_iTeamNum',
   'm_iHealth',
   'm_lifeState',
+  'm_angEyeAngles',
   ...['X', 'Y', 'Z'].flatMap((axis) => [
     `CBodyComponent.m_cell${axis}`,
     `CBodyComponent.m_vec${axis}`,
@@ -156,6 +159,9 @@ export function createEntityDecoder() {
       }
       const health = pawn.values.get('m_iHealth')
       const life = pawn.values.get('m_lifeState')
+      const angles = pawn.values.get('m_angEyeAngles')
+      if (!Array.isArray(angles) || !Number.isFinite(angles[1]))
+        throw new Error('A replay player is missing their recorded facing direction.')
       if (typeof health !== 'number' || typeof life !== 'number')
         throw new Error('A replay player is missing their recorded life state.')
       players.push({
@@ -166,6 +172,8 @@ export function createEntityDecoder() {
         y: axis('Y'),
         z: axis('Z'),
         alive: health > 0 && life === 0,
+        health,
+        yaw: angles[1]!,
       })
     }
     if (new Set(players.map((player) => player.steamId)).size !== players.length)
