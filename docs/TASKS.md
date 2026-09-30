@@ -23,7 +23,7 @@
 - [x] Display approximate fire areas over time
 - [x] Display bullet traces
 - [x] Display flashed-player indicators
-- [ ] Filter visible players and teams
+- [x] Filter visible players and teams
 - [ ] Toggle utility overlays
 - [ ] Switch Nuke floors while preserving playback position
 - [ ] Replay Ancient and Anubis fixtures on calibrated maps

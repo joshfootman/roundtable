@@ -22,10 +22,24 @@ const bombEventLabels = {
   defused: 'defused the bomb',
 }
 
+interface PlayerFilters {
+  hiddenPlayers: ReadonlySet<string>
+  hiddenTeams: ReadonlySet<number>
+}
+
+function initialPlayerFilters(): PlayerFilters {
+  return { hiddenPlayers: new Set(), hiddenTeams: new Set() }
+}
+
+function playerVisible(steamId: string, team: number, filters: PlayerFilters): boolean {
+  return !filters.hiddenPlayers.has(steamId) && !filters.hiddenTeams.has(team)
+}
+
 interface Playback {
   play(): void
   pause(): void
   seek(tick: number): void
+  setFilters(filters: PlayerFilters): void
   setMinimum(tick: number): void
 }
 
@@ -57,6 +71,7 @@ export function TacticalReplay({ round, mapName }: { round: ReplayRound; mapName
 function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition }) {
   const host = useRef<HTMLDivElement>(null)
   const playback = useRef<Playback | null>(null)
+  const [filters, setFilters] = useState(initialPlayerFilters)
   const [includeFreezeTime, setIncludeFreezeTime] = useState(false)
   const [scene, setScene] = useState<SceneState>({ status: 'loading' })
 
@@ -70,6 +85,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
     let minimum = round.liveStartTick
     let playing = false
     let lastPublished = 0
+    let currentFilters = initialPlayerFilters()
 
     async function mount() {
       await app.init({
@@ -214,6 +230,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
               tick,
               round.tickInterval,
             ) > 0
+          container.visible = playerVisible(
+            round.players[player]!.steamId,
+            round.teams[state]!,
+            currentFilters,
+          )
           body.tint = color
           direction.tint = color
           direction.rotation = (-round.yaw[state]! * Math.PI) / 180
@@ -241,6 +262,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         app.render()
       }
       playback.current = {
+        setFilters(next) {
+          currentFilters = next
+          draw()
+          app.render()
+        },
         setMinimum(nextMinimum) {
           minimum = nextMinimum
           tick = Math.max(minimum, tick)
@@ -367,6 +393,69 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         />
         Include freeze time
       </label>
+      <details className="mt-4">
+        <summary className="min-h-11 cursor-pointer py-3 font-semibold">Player filters</summary>
+        <fieldset className="mt-2 flex flex-wrap gap-x-5">
+          <legend className="text-sm font-semibold">Visible teams</legend>
+          {[
+            { team: 2, name: 'Terrorists' },
+            { team: 3, name: 'Counter-Terrorists' },
+          ].map(({ team, name }) => (
+            <label key={team} className="flex min-h-11 items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="size-4 accent-[#bedb8a]"
+                disabled={scene.status !== 'ready'}
+                checked={!filters.hiddenTeams.has(team)}
+                onChange={(event) => {
+                  const hiddenTeams = new Set(filters.hiddenTeams)
+                  if (event.currentTarget.checked) hiddenTeams.delete(team)
+                  else hiddenTeams.add(team)
+                  const next = { ...filters, hiddenTeams }
+                  setFilters(next)
+                  playback.current?.setFilters(next)
+                }}
+              />
+              {name}
+            </label>
+          ))}
+        </fieldset>
+        <fieldset className="mt-2 grid gap-x-5 sm:grid-cols-2">
+          <legend className="text-sm font-semibold">Visible players</legend>
+          {round.players.map((player) => (
+            <label key={player.steamId} className="flex min-h-11 items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="size-4 accent-[#bedb8a]"
+                disabled={scene.status !== 'ready'}
+                checked={!filters.hiddenPlayers.has(player.steamId)}
+                onChange={(event) => {
+                  const hiddenPlayers = new Set(filters.hiddenPlayers)
+                  if (event.currentTarget.checked) hiddenPlayers.delete(player.steamId)
+                  else hiddenPlayers.add(player.steamId)
+                  const next = { ...filters, hiddenPlayers }
+                  setFilters(next)
+                  playback.current?.setFilters(next)
+                }}
+              />
+              {player.name}
+            </label>
+          ))}
+        </fieldset>
+      </details>
+      <p aria-label="Visible player count" className="mt-2 text-sm text-[#a7b5aa]">
+        Showing{' '}
+        {
+          round.players.filter((player, index) =>
+            playerVisible(
+              player.steamId,
+              round.teams[sample * round.players.length + index]!,
+              filters,
+            ),
+          ).length
+        }{' '}
+        of {round.players.length} players
+      </p>
       <p aria-label="Round phase" className="mt-2 text-sm text-[#a7b5aa]">
         {phase}
       </p>
@@ -508,6 +597,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         <ul aria-label="Player inspection" className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
           {round.players.map((player, index) => {
             const state = sample * round.players.length + index
+            if (!playerVisible(player.steamId, round.teams[state]!, filters)) return null
             const offset = state * 3
             const { weapon, armour, helmet, grenades, money, flash } = recordAtTick(
               round.inspection[index]!,
