@@ -12,7 +12,7 @@
 - [x] Exclude warmup, knife rounds and abandoned restarts
 - [x] Include overtime, freeze time and post-round playback
 - [x] Inspect player names, teams, facing and health at the current time
-- [ ] Show deaths and kills in sync with playback and scrubbing
+- [x] Show deaths and kills in sync with playback and scrubbing
 - [ ] Inspect current weapons and ammunition
 - [ ] Inspect armour and carried grenades
 - [ ] Inspect player money throughout a round

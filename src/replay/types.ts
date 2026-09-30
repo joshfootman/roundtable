@@ -1,3 +1,10 @@
+export interface ReplayDeath {
+  tick: number
+  victim: string
+  killer: { type: 'player'; steamId: string } | { type: 'world' }
+  headshot: boolean
+}
+
 export interface ReplayRound {
   number: number
   overtime: number
@@ -6,6 +13,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  deaths: ReplayDeath[]
   players: { steamId: string; name: string }[]
   ticks: Uint32Array<ArrayBuffer>
   positions: Float32Array<ArrayBuffer>

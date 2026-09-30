@@ -1,3 +1,5 @@
+import { fromBinary } from '@bufbuild/protobuf'
+import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
 import { uncompress } from 'snappyjs'
 import { type CDemoClassInfo, type CDemoStringTables } from '../generated/demo_pb.ts'
 import {
@@ -63,6 +65,7 @@ export function createEntityDecoder() {
     number,
     { values: Map<string, EntityValue>; polymorphic: Map<string, Serializer> }
   >()
+  const users = new Map<number, string>()
   const stringTables: StringTable[] = []
   let classBits = 0
   function fields(
@@ -83,6 +86,13 @@ export function createEntityDecoder() {
     if (!Number.isInteger(id) || id < 0) throw new Error('Invalid entity baseline class.')
     baselines.set(id, value)
     baselineValues.delete(id)
+  }
+  function userInfo(value: Uint8Array) {
+    if (!value.length) return
+    const info = fromBinary(CMsgPlayerInfoSchema, value)
+    const id = info.userid & 0xff
+    if (info.fakeplayer || info.ishltv || info.xuid <= 0n) users.delete(id)
+    else users.set(id, info.xuid.toString())
   }
   function updates(table: StringTable, bytes: Uint8Array, count: number) {
     if (!bytes.length) return
@@ -122,6 +132,7 @@ export function createEntityDecoder() {
       }
       table.entries.set(index, { key, value })
       if (d.name === 'instancebaseline' && value.length) baseline(key, value)
+      if (d.name === 'userinfo') userInfo(value)
     }
   }
   function snapshots(): PlayerSnapshot[] {
@@ -198,14 +209,18 @@ export function createEntityDecoder() {
       classBits = Math.floor(Math.log2(message.maxClasses)) + 1
     },
     tables(message: CDemoStringTables) {
-      for (const table of message.tables)
-        if (table.tableName === 'instancebaseline')
+      for (const table of message.tables) {
+        if (table.tableName === 'instancebaseline') {
           for (const item of table.items) if (item.data.length) baseline(item.str, item.data)
+        } else if (table.tableName === 'userinfo') {
+          for (const item of table.items) userInfo(item.data)
+        }
+      }
     },
     createTable(message: CSVCMsg_CreateStringTable) {
       const table = { definition: message, entries: new Map() }
       stringTables.push(table)
-      if (message.name === 'instancebaseline')
+      if (message.name === 'instancebaseline' || message.name === 'userinfo')
         updates(
           table,
           message.dataCompressed
@@ -216,13 +231,14 @@ export function createEntityDecoder() {
     },
     clearTables() {
       stringTables.length = 0
+      users.clear()
       baselines.clear()
       baselineValues.clear()
     },
     updateTable(message: CSVCMsg_UpdateStringTable) {
       const table = stringTables[message.tableId]
       if (!table) throw new Error('Missing network string table.')
-      if (table.definition.name === 'instancebaseline')
+      if (table.definition.name === 'instancebaseline' || table.definition.name === 'userinfo')
         updates(table, message.stringData, message.numChangedEntries)
     },
     packet(message: CSVCMsg_PacketEntities) {
@@ -276,6 +292,11 @@ export function createEntityDecoder() {
         }
         fields(reader, entity.serializer, entity.values, entity.polymorphic)
       }
+    },
+    playerByUserId(id: number) {
+      const steamId = users.get(id & 0xff)
+      if (!steamId) throw new Error('A replay event refers to an unknown player.')
+      return steamId
     },
     snapshots,
     gameRules() {

@@ -28,6 +28,7 @@ import {
   CMsgSource1LegacyGameEventListSchema,
   CMsgSource1LegacyGameEventSchema,
   type CMsgSource1LegacyGameEventList_descriptor_t,
+  type CMsgSource1LegacyGameEvent,
 } from './generated/roster_pb.ts'
 import { BitReader } from './entities/bit-reader.ts'
 import { createEntityDecoder } from './entities/index.ts'
@@ -69,6 +70,10 @@ export function readReplay(
         (message) => message.id === SVC_Messages.svc_PacketEntities,
       )
       const names: string[] = []
+      const deaths: {
+        event: CMsgSource1LegacyGameEvent
+        descriptor: CMsgSource1LegacyGameEventList_descriptor_t
+      }[] = []
       for (const message of messages) {
         if (message.id === SVC_Messages.svc_ServerInfo) {
           const info = fromBinary(CSVCMsg_ServerInfoSchema, message.bytes)
@@ -94,9 +99,31 @@ export function readReplay(
           const descriptor = descriptors.get(event.eventid)
           if (!descriptor) throw new Error('Missing replay event descriptors.')
           names.push(descriptor.name)
+          if (descriptor.name === 'player_death') deaths.push({ event, descriptor })
         }
       const events = tracker.update(tick, entities.gameRules(), names, tickInterval)
-      if (tracker.recording) tracker.sample(tick, entities.snapshots())
+      if (tracker.recording) {
+        tracker.sample(tick, entities.snapshots())
+        for (const { event, descriptor } of deaths) {
+          function key(name: string, type: number) {
+            const index = descriptor.keys.findIndex((key) => key.name === name)
+            const value = event.keys[index]
+            if (!value || descriptor.keys[index]!.type !== type || value.type !== type)
+              throw new Error(`A death event has an invalid ${name}.`)
+            return value
+          }
+          const attacker = key('attacker', 9).valShort
+          tracker.death({
+            tick,
+            victim: entities.playerByUserId(key('userid', 9).valShort),
+            killer:
+              attacker === 0
+                ? { type: 'world' }
+                : { type: 'player', steamId: entities.playerByUserId(attacker) },
+            headshot: key('headshot', 6).valBool,
+          })
+        }
+      }
       return events
     }
     let lastTick = 0

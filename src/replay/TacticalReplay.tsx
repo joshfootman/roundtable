@@ -277,13 +277,34 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
         />
       </label>
+      <div className="mt-5">
+        <h3 className="text-sm font-semibold">Kills and deaths</h3>
+        <ol aria-label="Kill feed" className="mt-2 list-none space-y-2 p-0 text-sm">
+          {round.deaths
+            .filter((death) => death.tick <= recordedTick)
+            .map((death, index) => {
+              const victim = round.players.find((player) => player.steamId === death.victim)!
+              const killer = death.killer
+              const source =
+                killer.type === 'player'
+                  ? round.players.find((player) => player.steamId === killer.steamId)!.name
+                  : 'World'
+              return (
+                <li key={index}>
+                  {source} → {victim.name}
+                  {death.headshot ? ' · Headshot' : ''}
+                </li>
+              )
+            })}
+        </ol>
+      </div>
       <details className="mt-5" open>
         <summary className="cursor-pointer py-2 font-semibold">Recorded player positions</summary>
         <p className="mt-2 text-xs leading-relaxed text-[#a7b5aa]">
           World coordinates at the current recorded sample. Starting positions are shown first.
           Enable freeze time to play from the round’s recorded start.
         </p>
-        <ul className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
+        <ul aria-label="Player inspection" className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
           {round.players.map((player, index) => {
             const state = sample * round.players.length + index
             const offset = state * 3

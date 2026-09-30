@@ -186,7 +186,10 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(play).toBeEnabled()
   await page.clock.install()
   await page.clock.pauseAt(new Date())
-  const broky = replay.getByRole('listitem').filter({ hasText: 'broky' })
+  const broky = replay
+    .getByLabel('Player inspection')
+    .getByRole('listitem')
+    .filter({ hasText: 'broky' })
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
   await expect(broky).toContainText('Health 100 · Facing 128.5°')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '537')
@@ -215,6 +218,10 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
     element.dispatchEvent(new Event('input', { bubbles: true }))
   })
   await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Post-round')
+  await expect(replay.getByLabel('Kill feed').getByRole('listitem')).toHaveCount(6)
+  await expect(replay.getByLabel('Kill feed').getByRole('listitem').last()).toHaveText(
+    'Spinx → rain · Headshot',
+  )
   await scrubber.press('Home')
   await play.focus()
   await page.keyboard.press('Space')
@@ -247,6 +254,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
   await expect(broky).toContainText('Health 100 · Facing 156.4°')
   expect(await canvas.screenshot()).toEqual(liveMap)
+  await expect(replay.getByLabel('Kill feed').getByRole('listitem')).toHaveCount(0)
   await page.clock.fastForward(1_000)
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '5732')
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeVisible()
@@ -289,7 +297,8 @@ test('selects completed rounds without restarting import or changing selection o
             ticks: new Uint32Array([number * 100, number * 100 + 1]),
             positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
             alive: new Uint8Array([1, 1]),
-            health: new Int32Array([100, 100]),
+            deaths: [],
+      health: new Int32Array([100, 100]),
             yaw: new Float32Array([90, 90]),
             teams: new Uint8Array([number === 1 ? 2 : 3, number === 1 ? 2 : 3])
           }

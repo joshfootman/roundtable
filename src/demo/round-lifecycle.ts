@@ -1,5 +1,5 @@
 import type { PlayerSnapshot } from './entities/index.ts'
-import type { ReplayRound } from '../replay/types.ts'
+import type { ReplayDeath, ReplayRound } from '../replay/types.ts'
 
 export interface RoundRules {
   warmup: boolean
@@ -26,6 +26,7 @@ type Capture = {
   health: number[]
   yaw: number[]
   teams: number[]
+  deaths: ReplayDeath[]
   lastSnapshots: Map<string, PlayerSnapshot>
 } & (
   | { phase: 'freeze' }
@@ -57,6 +58,7 @@ export function createRoundTracker() {
       endTick,
       tickInterval,
       players: round.players,
+      deaths: round.deaths,
       ticks: Uint32Array.from(round.ticks),
       positions: Float32Array.from(round.positions),
       alive: Uint8Array.from(round.alive),
@@ -116,6 +118,7 @@ export function createRoundTracker() {
           health: [],
           yaw: [],
           teams: [],
+          deaths: [],
           lastSnapshots: new Map(),
         }
         output.push({ type: 'round-start', number: capture.number, startTick: tick })
@@ -125,6 +128,17 @@ export function createRoundTracker() {
       if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
         capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
+    },
+    death(event: ReplayDeath) {
+      if (!capture) return
+      const killer = event.killer
+      if (
+        !capture.players.some((player) => player.steamId === event.victim) ||
+        (killer.type === 'player' &&
+          !capture.players.some((player) => player.steamId === killer.steamId))
+      )
+        throw new Error('A death event refers to a player outside the recorded round roster.')
+      capture.deaths.push(event)
     },
     sample(tick: number, snapshots: PlayerSnapshot[]) {
       if (!capture) return

@@ -86,6 +86,44 @@ test('decodes a real competitive round against independent identities and positi
   expect(round.players).toEqual(
     oracle.samples[0]!.players.map(({ steamId, name }) => ({ steamId, name })),
   )
+  expect(round.deaths).toEqual([
+    {
+      tick: 7325,
+      victim: '76561197989430253',
+      killer: { type: 'player', steamId: '76561197978835160' },
+      headshot: true,
+    },
+    {
+      tick: 7695,
+      victim: '76561197991272318',
+      killer: { type: 'player', steamId: '76561198063336407' },
+      headshot: true,
+    },
+    {
+      tick: 7749,
+      victim: '76561198201620490',
+      killer: { type: 'player', steamId: '76561197973140692' },
+      headshot: true,
+    },
+    {
+      tick: 7764,
+      victim: '76561197973140692',
+      killer: { type: 'player', steamId: '76561197997351207' },
+      headshot: true,
+    },
+    {
+      tick: 7782,
+      victim: '76561198068422762',
+      killer: { type: 'player', steamId: '76561198063336407' },
+      headshot: true,
+    },
+    {
+      tick: 7834,
+      victim: '76561197997351207',
+      killer: { type: 'player', steamId: '76561198063336407' },
+      headshot: true,
+    },
+  ])
   expect(round.number).toBe(1)
   expect(round.startTick).toBe(oracle.startTick)
   expect(round.liveStartTick).toBe(5732)
