@@ -9,7 +9,7 @@
 - [x] Display pending rounds from available metadata
 - [x] Discover round boundaries during sequential parsing
 - [x] Select any completed round without restarting parsing
-- [ ] Exclude warmup, knife rounds and abandoned restarts
+- [x] Exclude warmup, knife rounds and abandoned restarts
 - [ ] Include overtime, freeze time and post-round playback
 - [ ] Inspect player names, teams, facing and health at the current time
 - [ ] Show deaths and kills in sync with playback and scrubbing

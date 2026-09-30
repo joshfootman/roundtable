@@ -42,9 +42,13 @@ const replayFields = new Set([
     `CBodyComponent.m_cell${axis}`,
     `CBodyComponent.m_vec${axis}`,
   ]),
-  ...['m_bWarmupPeriod', 'm_totalRoundsPlayed', 'm_bHasMatchStarted', 'm_eRoundWinReason'].map(
-    (name) => `m_pGameRules.${name}`,
-  ),
+  ...[
+    'm_bWarmupPeriod',
+    'm_totalRoundsPlayed',
+    'm_bHasMatchStarted',
+    'm_eRoundWinReason',
+    'm_gamePhase',
+  ].map((name) => `m_pGameRules.${name}`),
 ])
 export function createEntityDecoder() {
   let serializers = new Map<string, Serializer>()
@@ -274,11 +278,13 @@ export function createEntityDecoder() {
       const rounds = entity.values.get('m_pGameRules.m_totalRoundsPlayed')
       const started = entity.values.get('m_pGameRules.m_bHasMatchStarted')
       const reason = entity.values.get('m_pGameRules.m_eRoundWinReason')
+      const phase = entity.values.get('m_pGameRules.m_gamePhase')
       if (
         typeof warmup !== 'boolean' ||
         typeof rounds !== 'number' ||
         typeof started !== 'boolean' ||
-        typeof reason !== 'number'
+        typeof reason !== 'number' ||
+        typeof phase !== 'number'
       )
         throw new Error('Missing recorded competitive round rules.')
       return {
@@ -286,6 +292,7 @@ export function createEntityDecoder() {
         totalRoundsPlayed: rounds,
         started,
         reason,
+        phase,
       }
     },
   }

@@ -35,28 +35,35 @@ await Effect.runPromise(
             catch: (error) => new DemoReadError({ message: String(error) }),
           }),
       }
-      let count = 0
-      const starts: { number: number; startTick: number }[] = []
+      const completed: typeof expected = []
+      const discovered: { number: number; startTick: number }[] = []
       yield* Stream.runForEach(readReplay(source), (event) =>
         Effect.sync(() => {
           if (event.type === 'round-start') {
-            starts.push({ number: event.number, startTick: event.startTick })
-            return
+            discovered.push({ number: event.number, startTick: event.startTick })
+          } else if (event.type === 'reset') completed.length = 0
+          else {
+            const { number, startTick, liveStartTick, endTick } = event.round
+            completed.push({ number, startTick, liveStartTick, endTick })
           }
-          const round = event.round
-          const reference = expected[count]
-          assert.ok(reference, `Unexpected round ${round.number}`)
-          for (const field of ['number', 'startTick', 'liveStartTick', 'endTick'] as const)
-            assert.equal(round[field], reference[field], `Round ${round.number} ${field}`)
-          count++
         }),
       )
-      assert.equal(count, expected.length)
-      assert.deepEqual(starts, [
+      assert.deepEqual(
+        completed,
+        expected.map(({ number, startTick, liveStartTick, endTick }) => ({
+          number,
+          startTick,
+          liveStartTick,
+          endTick,
+        })),
+      )
+      assert.deepEqual(discovered, [
         { number: 1, startTick: 449 },
         ...expected.map(({ number, startTick }) => ({ number, startTick })),
       ])
-      console.log(`Verified ${count} completed rounds against the independent boundary oracle.`)
+      console.log(
+        `Verified ${completed.length} completed rounds against the independent boundary oracle.`,
+      )
     }),
   ),
 )

@@ -42,6 +42,16 @@ export function updateImport(state: ImportState, action: ImportAction): ImportSt
         discoveredRound: undefined,
         parsing: { status: 'active' },
       }
+    case 'reset':
+      return state.status === 'ready'
+        ? {
+            ...state,
+            rounds: [],
+            selectedStartTick: undefined,
+            discoveredRound: undefined,
+            roundStartTicks: [],
+          }
+        : state
     case 'select-round':
       return state.status === 'ready' &&
         state.rounds.some((round) => round.startTick === action.startTick)

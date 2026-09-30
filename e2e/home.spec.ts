@@ -255,7 +255,10 @@ test('selects completed rounds without restarting import or changing selection o
             alive: new Uint8Array([1, 1])
           }
         });
-        channel.onmessage = ({ data }) => postMessage(round(data));
+        channel.onmessage = ({ data }) => {
+          if (data === 'reset') { postMessage({ type: 'reset' }); postMessage(round(1)); }
+          else postMessage(round(data));
+        };
         self.onmessage = () => {
           postMessage({ type: 'metadata', roundStartTicks: [], metadata: {
             mapName: 'de_dust2', serverName: 'Reference server', clientName: 'SourceTV',
@@ -304,5 +307,19 @@ test('selects completed rounds without restarting import or changing selection o
   await expect(
     replay.getByText('X 100.0 · Y 200.0 · Z 30.0 · Alive', { exact: true }),
   ).toBeVisible()
+  await rounds.getByRole('button', { name: 'Round 3 · Ready', exact: true }).click()
+  await expect(
+    page
+      .getByRole('region', { name: 'Dust II · Round 3', exact: true })
+      .getByRole('button', { name: 'Play', exact: true }),
+  ).toBeEnabled()
+  await page.evaluate(() => {
+    const channel = new BroadcastChannel('round-navigation')
+    channel.postMessage('reset')
+    channel.close()
+  })
+  await expect(rounds.getByRole('button')).toHaveCount(1)
+  await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '100')
   expect(workerRequests).toBe(1)
 })

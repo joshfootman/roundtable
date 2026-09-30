@@ -59,7 +59,7 @@ test('decodes a real competitive round against independent identities and positi
   })
   const boundaries = await Effect.runPromise(
     readReplay(source(fixture)).pipe(
-      Stream.take(4),
+      Stream.take(5),
       Stream.map((event) =>
         event.type === 'round'
           ? {
@@ -75,6 +75,7 @@ test('decodes a real competitive round against independent identities and positi
   )
   expect(Array.from(boundaries)).toEqual([
     { type: 'round-start', number: 1, startTick: 449 },
+    { type: 'reset' },
     { type: 'round-start', number: 1, startTick: 537 },
     { type: 'round', number: 1, startTick: 537, endTick: 8282 },
     { type: 'round-start', number: 2, startTick: 8282 },
