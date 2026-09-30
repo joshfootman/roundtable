@@ -2,3 +2,4 @@ ts	phase	decision	why	evidence	result
 2026-09-30T15:16:40+00:00	start	Run seven tasks in order through overtime playback	User requested audited commits after each task	docs/TASKS.md	in progress
 2026-09-30T15:16:40+00:00	cleanup	Commit previously audited simplification	Keep the baseline clear before new tasks	0471fb1	24 unit and 5 browser tests passed
 2026-09-30T15:24:05+00:00	measurements	Record production-browser baseline	Measure before progressive changes	docs/playback-benchmark.md	6 full-demo runs and independent audit passed
+2026-09-30T15:38:20+00:00	progressive	Use one scoped stream for completed rounds	Keep first-round playback independent of continuing decode	src/demo/round.ts	23 oracle rounds, 24 unit tests, 5 browser tests and 6 concurrent benchmark runs passed; audit fixed terminal gating

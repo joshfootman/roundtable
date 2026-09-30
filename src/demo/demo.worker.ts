@@ -1,13 +1,21 @@
-import { Cause, Effect, Option } from 'effect'
+import { Cause, Effect, Option, Stream } from 'effect'
 import { DemoReadError } from './errors'
-import { readDemo } from './demo'
+import { readDemoMetadata } from './metadata'
+import { readRounds } from './round'
 import type { ImportResult } from './import'
+
+function send(result: ImportResult) {
+  if (result.type === 'round') {
+    const { ticks, positions, alive } = result.round
+    self.postMessage(result, { transfer: [ticks.buffer, positions.buffer, alive.buffer] })
+  } else self.postMessage(result)
+}
 
 self.onmessage = (event: MessageEvent<File>) => {
   const file = event.data
-  const job = readDemo({
+  const source = {
     size: file.size,
-    readRange: (offset, length) =>
+    readRange: (offset: number, length: number) =>
       Effect.tryPromise({
         try: () =>
           file
@@ -17,27 +25,27 @@ self.onmessage = (event: MessageEvent<File>) => {
         catch: () =>
           new DemoReadError({ message: 'The demo file could not be read. Select it again.' }),
       }),
-  }).pipe(
-    Effect.matchCause({
-      onFailure: (cause): ImportResult => ({
-        type: 'error',
-        message: Option.match(Cause.failureOption(cause), {
-          onSome: (error) => error.message,
-          onNone: () => 'The demo reader encountered an unexpected error. Try another demo.',
-        }),
-      }),
-      onSuccess: (demo): ImportResult => ({ type: 'ready', demo }),
-    }),
-    Effect.tap((result) =>
-      Effect.sync(() => {
-        if (result.type === 'error') {
-          self.postMessage(result)
-          return
-        }
-        const { ticks, positions, alive } = result.demo.firstRound
-        self.postMessage(result, { transfer: [ticks.buffer, positions.buffer, alive.buffer] })
-      }),
+  }
+  Effect.runFork(
+    Effect.gen(function* () {
+      const metadata = yield* readDemoMetadata(source)
+      send({ type: 'metadata', metadata })
+      yield* Stream.runForEach(readRounds(source), (round) =>
+        Effect.sync(() => send({ type: 'round', round })),
+      )
+      send({ type: 'complete' })
+    }).pipe(
+      Effect.catchAllCause((cause) =>
+        Effect.sync(() =>
+          send({
+            type: 'error',
+            message: Option.match(Cause.failureOption(cause), {
+              onSome: (error) => error.message,
+              onNone: () => 'The demo reader encountered an unexpected error. Try another demo.',
+            }),
+          }),
+        ),
+      ),
     ),
   )
-  Effect.runFork(job)
 }

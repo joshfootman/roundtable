@@ -28,7 +28,7 @@ test('records import, playback and seek timings', async ({ page, browser }, test
             const button = document
               .querySelector<HTMLCanvasElement>('canvas')
               ?.closest('section')
-              ?.querySelector<HTMLButtonElement>('button')
+              ?.querySelector<HTMLButtonElement>('button[aria-pressed]')
             if (!button || button.disabled) {
               requestAnimationFrame(ready)
               return
@@ -56,6 +56,9 @@ test('records import, playback and seek timings', async ({ page, browser }, test
     await replay.locator('canvas').scrollIntoViewIfNeeded()
     const players = replay.getByRole('list')
     const startingPosition = await players.textContent()
+    const parsingDuringPlayback = (await page.getByRole('status').textContent())!.includes(
+      'Parsing continues',
+    )
     await replay.getByRole('button', { name: 'Play', exact: true }).click()
     const gaps = await page.evaluate(
       () =>
@@ -106,6 +109,7 @@ test('records import, playback and seek timings', async ({ page, browser }, test
     expect(seekTicks[0]).toBeGreaterThan(seekTicks[1])
     runs.push({
       firstRoundMs,
+      parsingDuringPlayback,
       frameGapP50Ms: percentile(gaps, 0.5),
       frameGapP95Ms: percentile(gaps, 0.95),
       frameGapMaxMs: Math.max(...gaps),

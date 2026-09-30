@@ -30,3 +30,7 @@ The original FaZe versus Vitality Dust2 demo is 598,102,502 bytes. Its SHA-256 i
 Desktop uses 1440 × 900 pixels. Mobile viewport uses 375 × 812 pixels with touch and mobile browser emulation on the same laptop. It is not a physical-phone measurement.
 
 The first import in each project starts a fresh browser context. Later imports reuse that context and its browser caches. Every import starts a new parser worker. These measurements cover first-round playback after parsing has stopped. Concurrent parsing and playback need a new baseline after progressive import exists.
+
+## Progressive playback check
+
+After progressive import, all six full-demo benchmark runs began playback while parsing was still active. First-round availability was 839.0–1034.3 ms. Frame-gap p95 remained 16.7–16.8 ms on this laptop. The JSON records `parsingDuringPlayback` for each run. These remain browser scheduling measurements.

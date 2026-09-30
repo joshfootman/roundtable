@@ -1,19 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Effect, Exit } from 'effect'
+import { Cause, Effect, Exit, Option, Stream } from 'effect'
 import { importDemo } from '../demo/import'
-import type { ImportedDemo } from '../demo/demo'
+import { updateImport, type ImportState } from '../demo/session'
 import { TacticalReplay } from '../replay/TacticalReplay'
 import { mapDefinition } from '../replay/maps'
 
 export const Route = createFileRoute('/')({ component: Home })
-
-type ImportState =
-  | { status: 'empty' }
-  | { status: 'reading'; filename: string }
-  | ({ status: 'ready'; filename: string } & ImportedDemo)
-  | { status: 'error'; filename: string; message: string }
 
 function duration(seconds: number) {
   const centiseconds = Math.round(seconds * 100)
@@ -35,34 +29,31 @@ function Home() {
     const controller = new AbortController()
     activeImport.current = controller
     const filename = file.name
-    setState({ status: 'reading', filename })
+    setState((state) => updateImport(state, { type: 'start', filename }))
 
     const result = await Effect.runPromiseExit(
-      importDemo(file).pipe(
-        Effect.match({
-          onFailure: (error): ImportState => ({
-            status: 'error',
-            filename,
-            message: error.message,
-          }),
-          onSuccess: (demo): ImportState => ({ status: 'ready', filename, ...demo }),
+      Stream.runForEach(importDemo(file), (event) =>
+        Effect.sync(() => {
+          if (!controller.signal.aborted) setState((state) => updateImport(state, event))
         }),
       ),
       { signal: controller.signal },
     )
     if (controller.signal.aborted) return
     activeImport.current = null
-    setState(
-      Exit.isSuccess(result)
-        ? result.value
-        : {
-            status: 'error',
-            filename,
-            message: 'The demo reader stopped unexpectedly. Try importing the file again.',
-          },
-    )
+    if (Exit.isFailure(result)) {
+      const message = result.cause.pipe(
+        Cause.failureOption,
+        Option.match({
+          onSome: (error) => error.message,
+          onNone: () => 'The demo reader stopped unexpectedly. Try importing the file again.',
+        }),
+      )
+      setState((state) => updateImport(state, { type: 'failed', message }))
+    }
   }
 
+  const firstRound = state.status === 'ready' ? state.rounds[0] : undefined
   return (
     <main className="workspace">
       <header className="masthead">
@@ -97,7 +88,9 @@ function Home() {
         {state.status === 'reading'
           ? `Reading ${state.filename}…`
           : state.status === 'ready'
-            ? 'Demo ready. First round loaded.'
+            ? state.rounds.length
+              ? `First round loaded. ${state.rounds.length} rounds available. ${state.parsing.status === 'active' ? 'Parsing continues…' : state.parsing.status === 'complete' ? 'Parsing complete.' : 'Parsing stopped.'}`
+              : 'Reading the first competitive round…'
             : ''}
       </output>
       {state.status === 'error' && (
@@ -143,7 +136,7 @@ function Home() {
           </p>
         </section>
       )}
-      {state.status === 'ready' && (
+      {firstRound && (
         <section
           aria-labelledby="roster-title"
           className="mt-6 rounded-2xl border border-white/5 bg-[#17201a] p-[22px] text-[#e7ece8] sm:p-[30px]"
@@ -155,10 +148,10 @@ function Home() {
             Player roster
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[#a7b5aa]">
-            {state.firstRound.players.length} players recorded in this demo.
+            {firstRound.players.length} players recorded in this demo.
           </p>
           <ul className="mt-6 grid list-none gap-3 p-0 sm:grid-cols-2">
-            {state.firstRound.players.map((player) => (
+            {firstRound.players.map((player) => (
               <li
                 key={player.steamId}
                 className="min-w-0 rounded-lg border border-[#303c34] bg-[#1b251e] px-4 py-3"
@@ -172,8 +165,13 @@ function Home() {
           </ul>
         </section>
       )}
-      {state.status === 'ready' && (
-        <TacticalReplay round={state.firstRound} mapName={state.metadata.mapName} />
+      {state.status === 'ready' && firstRound && (
+        <TacticalReplay round={firstRound} mapName={state.metadata.mapName} />
+      )}
+      {state.status === 'ready' && state.parsing.status === 'failed' && (
+        <p role="alert" className="mt-6 rounded-xl bg-[#38231f] p-6 text-[#ffdbcc]">
+          Parsing stopped. Completed rounds remain playable. {state.parsing.message}
+        </p>
       )}
       <footer>Built for a closer look at Counter-Strike.</footer>
     </main>

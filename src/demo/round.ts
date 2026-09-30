@@ -1,6 +1,6 @@
 import { fromBinary } from '@bufbuild/protobuf'
-import { Effect } from 'effect'
-import { DemoParseError } from './errors.ts'
+import { Effect, Option, Stream } from 'effect'
+import { DemoParseError, type DemoReadError } from './errors.ts'
 import {
   bufferedSource,
   readRecordFraming,
@@ -43,17 +43,39 @@ type RoundCapture = {
 } & ({ phase: 'freeze' } | { phase: 'live' | 'postround'; liveStartTick: number })
 
 const LIMIT = 32 * 1024 * 1024
-export function readFirstRound(input: DemoSource) {
-  return Effect.gen(function* () {
+export function readRounds(
+  input: DemoSource,
+): Stream.Stream<ReplayRound, DemoReadError | DemoParseError> {
+  return Stream.suspend(() => {
     const source = bufferedSource(input)
     const entities = createEntityDecoder()
     const descriptors = new Map<number, CMsgSource1LegacyGameEventList_descriptor_t>()
     let tickInterval = 0
     let capture: RoundCapture | undefined
     let previousRules: ReturnType<typeof entities.gameRules>
-    function start(tick: number, rules: ReturnType<typeof entities.gameRules>): boolean {
-      if (capture?.phase === 'postround') return true
-      if (!rules || rules.warmup) return false
+    function finish(round: RoundCapture, endTick: number): ReplayRound {
+      if (round.phase !== 'postround' || !round.ticks.length || !tickInterval)
+        throw new Error(
+          'The competitive round is missing its recorded tick interval, freeze end or positions.',
+        )
+      return {
+        number: round.number,
+        startTick: round.startTick,
+        liveStartTick: round.liveStartTick,
+        endTick,
+        tickInterval,
+        players: round.players,
+        ticks: Uint32Array.from(round.ticks),
+        positions: Float32Array.from(round.positions),
+        alive: Uint8Array.from(round.alive),
+      }
+    }
+    function start(
+      tick: number,
+      rules: ReturnType<typeof entities.gameRules>,
+    ): ReplayRound | undefined {
+      if (!rules || rules.warmup || capture?.startTick === tick) return undefined
+      const completed = capture?.phase === 'postround' ? finish(capture, tick) : undefined
       capture = {
         phase: 'freeze',
         startTick: tick,
@@ -64,7 +86,7 @@ export function readFirstRound(input: DemoSource) {
         alive: [],
         lastPositions: new Map(),
       }
-      return false
+      return completed
     }
     function sample(round: RoundCapture, tick: number) {
       const { ticks, positions, alive, lastPositions } = round
@@ -92,7 +114,8 @@ export function readFirstRound(input: DemoSource) {
         alive.push(Number(recorded.alive))
       }
     }
-    function packet(bytes: Uint8Array, tick: number): boolean {
+    function packet(bytes: Uint8Array, tick: number): ReplayRound | undefined {
+      lastTick = tick
       const reader = new BitReader(bytes)
       const messages: { id: number; bytes: Uint8Array }[] = []
       while (reader.remaining >= 8) {
@@ -115,7 +138,7 @@ export function readFirstRound(input: DemoSource) {
       const entityMessages = messages.filter(
         (message) => message.id === SVC_Messages.svc_PacketEntities,
       )
-      let completed = false
+      let completed: ReplayRound | undefined
       for (const message of messages) {
         if (message.id === SVC_Messages.svc_ServerInfo) {
           const info = fromBinary(CSVCMsg_ServerInfoSchema, message.bytes)
@@ -147,81 +170,106 @@ export function readFirstRound(input: DemoSource) {
           const event = fromBinary(CMsgSource1LegacyGameEventSchema, message.bytes)
           const descriptor = descriptors.get(event.eventid)
           if (!descriptor) throw new Error('Missing replay event descriptors.')
-          if (descriptor.name === 'round_start') completed = start(tick, rules)
+          if (descriptor.name === 'round_start') completed = start(tick, rules) ?? completed
           else if (descriptor.name === 'round_freeze_end' && capture?.phase === 'freeze') {
             capture = { ...capture, phase: 'live', liveStartTick: tick }
           } else if (descriptor.name === 'round_end' && capture?.phase === 'live')
             capture.phase = 'postround'
-          else if (descriptor.name === 'round_officially_ended' && capture?.phase === 'postround')
-            completed = true
+          else if (descriptor.name === 'round_officially_ended' && capture?.phase === 'postround') {
+            completed = finish(capture, tick)
+            capture = undefined
+          }
         }
-      if (capture && !completed) sample(capture, tick)
+      if (capture) sample(capture, tick)
       return completed
     }
-    let offset = 16
-    while (offset < source.size) {
-      const framing = yield* readRecordFraming(source, offset)
-      const command = framing.command
-      if (command === EDemoCommands.DEM_Stop || command === EDemoCommands.DEM_FileInfo) break
-      if (
-        [
-          EDemoCommands.DEM_SendTables,
-          EDemoCommands.DEM_ClassInfo,
-          EDemoCommands.DEM_StringTables,
-          EDemoCommands.DEM_Packet,
-          EDemoCommands.DEM_SignonPacket,
-          EDemoCommands.DEM_FullPacket,
-        ].includes(command)
-      ) {
-        const bytes = yield* readRecordPayload(source, framing, LIMIT)
-        const complete = yield* parse(() => {
-          if (command === EDemoCommands.DEM_SendTables) {
-            entities.sendTables(fromBinary(CDemoSendTablesSchema, bytes).data)
-            return false
+    let lastTick = 0
+    let ended = false
+    return Stream.unfoldEffect(16, (initialOffset) =>
+      Effect.gen(function* () {
+        if (ended) return Option.none()
+        let offset = initialOffset
+        let terminalRecord = false
+        while (offset < source.size) {
+          const framing = yield* readRecordFraming(source, offset)
+          const command = framing.command
+          if (command === EDemoCommands.DEM_Stop || command === EDemoCommands.DEM_FileInfo) {
+            terminalRecord = true
+            break
           }
-          if (command === EDemoCommands.DEM_ClassInfo) {
-            entities.classes(fromBinary(CDemoClassInfoSchema, bytes))
-            return false
+          if (
+            [
+              EDemoCommands.DEM_SendTables,
+              EDemoCommands.DEM_ClassInfo,
+              EDemoCommands.DEM_StringTables,
+              EDemoCommands.DEM_Packet,
+              EDemoCommands.DEM_SignonPacket,
+              EDemoCommands.DEM_FullPacket,
+            ].includes(command)
+          ) {
+            const bytes = yield* readRecordPayload(source, framing, LIMIT)
+            const complete = yield* parse(() => {
+              if (command === EDemoCommands.DEM_SendTables) {
+                entities.sendTables(fromBinary(CDemoSendTablesSchema, bytes).data)
+                return undefined
+              }
+              if (command === EDemoCommands.DEM_ClassInfo) {
+                entities.classes(fromBinary(CDemoClassInfoSchema, bytes))
+                return undefined
+              }
+              if (command === EDemoCommands.DEM_StringTables) {
+                entities.tables(fromBinary(CDemoStringTablesSchema, bytes))
+                return undefined
+              }
+              if (command === EDemoCommands.DEM_FullPacket) {
+                const full = fromBinary(CDemoFullPacketSchema, bytes)
+                if (full.stringTable) entities.tables(full.stringTable)
+                if (!full.packet) throw new Error('Missing full replay packet.')
+                return packet(full.packet.data, framing.tick)
+              }
+              return packet(fromBinary(CDemoPacketSchema, bytes).data, framing.tick)
+            })
+            if (complete) return Option.some([complete, framing.end] as const)
           }
-          if (command === EDemoCommands.DEM_StringTables) {
-            entities.tables(fromBinary(CDemoStringTablesSchema, bytes))
-            return false
-          }
-          if (command === EDemoCommands.DEM_FullPacket) {
-            const full = fromBinary(CDemoFullPacketSchema, bytes)
-            if (full.stringTable) entities.tables(full.stringTable)
-            if (!full.packet) throw new Error('Missing full replay packet.')
-            return packet(full.packet.data, framing.tick)
-          }
-          return packet(fromBinary(CDemoPacketSchema, bytes).data, framing.tick)
-        })
-        if (complete) {
-          if (!capture || capture.phase !== 'postround' || !capture.ticks.length || !tickInterval)
-            return yield* Effect.fail(
-              new DemoParseError({
-                message:
-                  'The competitive round is missing its recorded tick interval, freeze end or positions.',
-              }),
-            )
-          return {
-            number: capture.number,
-            startTick: capture.startTick,
-            liveStartTick: capture.liveStartTick,
-            endTick: framing.tick,
-            tickInterval,
-            players: capture.players,
-            ticks: Uint32Array.from(capture.ticks),
-            positions: Float32Array.from(capture.positions),
-            alive: Uint8Array.from(capture.alive),
-          } satisfies ReplayRound
+          offset = framing.end
         }
-      }
-      offset = framing.end
-    }
-    return yield* Effect.fail(
-      new DemoParseError({
-        message: 'The demo ends before a complete competitive round is recorded.',
+        ended = true
+        if (!terminalRecord)
+          return yield* Effect.fail(
+            new DemoParseError({
+              message: 'The demo ends before its terminal record is recorded.',
+            }),
+          )
+        const finalCapture = capture
+        if (finalCapture?.phase === 'postround') {
+          const complete = yield* parse(() => finish(finalCapture, lastTick))
+          capture = undefined
+          return Option.some([complete, offset] as const)
+        }
+        if (capture)
+          return yield* Effect.fail(
+            new DemoParseError({
+              message: 'The demo ends before a complete competitive round is recorded.',
+            }),
+          )
+        return Option.none()
       }),
     )
   })
+}
+
+export function readFirstRound(input: DemoSource) {
+  return Stream.runHead(readRounds(input)).pipe(
+    Effect.flatMap(
+      Option.match({
+        onNone: () =>
+          Effect.fail(
+            new DemoParseError({
+              message: 'The demo ends before a complete competitive round is recorded.',
+            }),
+          ),
+        onSome: Effect.succeed,
+      }),
+    ),
+  )
 }

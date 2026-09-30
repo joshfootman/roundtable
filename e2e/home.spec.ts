@@ -178,6 +178,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await page.clock.fastForward(5_000)
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', tick!)
   await expect(broky).toHaveText(position!)
+  await expect(page.getByRole('alert')).toContainText('Completed rounds remain playable')
   const scrubber = replay.getByRole('slider', { name: 'Replay position' })
   await scrubber.press('End')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '8282')

@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
-import { Effect } from 'effect'
+import { Effect, Stream } from 'effect'
 import { expect, test } from 'vitest'
 import { readDemo } from './demo'
-import { readFirstRound } from './round'
+import { readFirstRound, readRounds } from './round'
 import { readRecordFraming } from './source'
 
 const fixture = gunzipSync(readFileSync('fixtures/replay/dust2-first-round.dem.gz'))
@@ -91,4 +91,13 @@ test('rejects an incomplete round instead of publishing partial movement', async
   await expect(Effect.runPromise(readFirstRound(source(bytes)))).rejects.toThrow(
     'The demo ends before a complete competitive round is recorded.',
   )
+  offset = 16
+  while (true) {
+    const framing = await Effect.runPromise(readRecordFraming(source(fixture), offset))
+    offset = framing.end
+    if (framing.tick >= 7834 && framing.tick < 8282) break
+  }
+  await expect(
+    Effect.runPromise(Stream.runDrain(readRounds(source(fixture.subarray(0, offset))))),
+  ).rejects.toThrow('terminal record')
 })

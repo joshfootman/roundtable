@@ -1,8 +1,8 @@
-import { Deferred, Effect, Fiber } from 'effect'
+import { Deferred, Effect, Fiber, Stream } from 'effect'
 import { afterEach, expect, test, vi } from 'vitest'
-import { importDemo } from './import'
-import type { ImportResult } from './import'
+import { importDemo, type ImportEvent, type ImportResult } from './import'
 import type { DemoMetadata } from './metadata'
+import { updateImport, type ImportState } from './session'
 
 const metadata: DemoMetadata = {
   mapName: 'de_dust2',
@@ -59,45 +59,78 @@ function start() {
   vi.stubGlobal('Worker', ControlledWorker)
   return Effect.gen(function* () {
     ControlledWorker.started = yield* Deferred.make<void>()
-    const fiber = yield* Effect.fork(importDemo(new File(['demo'], 'match.dem')))
+    const events: ImportEvent[] = []
+    const receivedRound = yield* Deferred.make<void>()
+    const fiber = yield* Effect.fork(
+      Stream.runForEach(importDemo(new File(['demo'], 'match.dem')), (event) =>
+        Effect.gen(function* () {
+          events.push(event)
+          if (event.type === 'round') yield* Deferred.succeed(receivedRound, undefined)
+        }),
+      ),
+    )
     yield* Deferred.await(ControlledWorker.started)
-    return { fiber, worker: ControlledWorker.current }
+    return { fiber, worker: ControlledWorker.current, events, receivedRound }
   })
 }
 
-test('returns the completed replay and terminates its worker', async () => {
-  const result = await Effect.runPromise(
+test('delivers a playable round before completion and releases the finished worker', async () => {
+  const events = await Effect.runPromise(
     Effect.gen(function* () {
-      const { fiber, worker } = yield* start()
-      worker.reply({
-        type: 'ready',
-        demo: { metadata, firstRound },
-      })
-      const result = yield* Fiber.join(fiber)
+      const { fiber, worker, events, receivedRound } = yield* start()
+      worker.reply({ type: 'metadata', metadata })
+      worker.reply({ type: 'round', round: firstRound })
+      yield* Deferred.await(receivedRound)
+      expect(events).toEqual([
+        { type: 'metadata', metadata },
+        { type: 'round', round: firstRound },
+      ])
+      expect(worker.terminated).toBe(false)
+      worker.reply({ type: 'round', round: { ...firstRound, number: 2 } })
+      worker.reply({ type: 'complete' })
+      yield* Fiber.join(fiber)
       expect(worker.terminated).toBe(true)
-      return result
+      return events
     }),
   )
-  expect(result).toEqual({
-    metadata,
-    firstRound,
-  })
+  expect(events).toEqual([
+    { type: 'metadata', metadata },
+    { type: 'round', round: firstRound },
+    { type: 'round', round: { ...firstRound, number: 2 } },
+    { type: 'complete' },
+  ])
 })
 
-test('returns an actionable worker failure and releases resources', async () => {
-  const result = await Effect.runPromise(
+test('retains a completed round after failure and releases the worker', async () => {
+  await Effect.runPromise(
     Effect.gen(function* () {
-      const { fiber, worker } = yield* start()
+      const { fiber, worker, events, receivedRound } = yield* start()
+      worker.reply({ type: 'metadata', metadata })
+      worker.reply({ type: 'round', round: firstRound })
+      yield* Deferred.await(receivedRound)
       worker.reply({ type: 'error', message: 'The demo is truncated. Download it again.' })
       const result = yield* Effect.either(Fiber.join(fiber))
       expect(worker.terminated).toBe(true)
-      return result
+      expect(result).toMatchObject({
+        _tag: 'Left',
+        left: { _tag: 'DemoImportError', message: 'The demo is truncated. Download it again.' },
+      })
+      const initial: ImportState = { status: 'reading', filename: 'match.dem' }
+      const state = events.reduce<ImportState>(updateImport, initial)
+      expect(
+        updateImport(state, {
+          type: 'failed',
+          message: 'The demo is truncated. Download it again.',
+        }),
+      ).toEqual({
+        status: 'ready',
+        filename: 'match.dem',
+        metadata,
+        rounds: [firstRound],
+        parsing: { status: 'failed', message: 'The demo is truncated. Download it again.' },
+      })
     }),
   )
-  expect(result).toMatchObject({
-    _tag: 'Left',
-    left: { _tag: 'DemoImportError', message: 'The demo is truncated. Download it again.' },
-  })
 })
 
 test('interruption releases an unfinished import', async () => {

@@ -1,14 +1,18 @@
-import { Data, Effect } from 'effect'
-import type { ImportedDemo } from './demo'
+import { Data, Effect, Stream } from 'effect'
+import type { DemoMetadata } from './metadata'
+import type { ReplayRound } from '../replay/types'
 
 export class DemoImportError extends Data.TaggedError('DemoImportError')<{ message: string }> {}
 
-export type ImportResult =
-  | { type: 'ready'; demo: ImportedDemo }
-  | { type: 'error'; message: string }
+export type ImportEvent =
+  | { type: 'metadata'; metadata: DemoMetadata }
+  | { type: 'round'; round: ReplayRound }
+  | { type: 'complete' }
 
-export function importDemo(file: File): Effect.Effect<ImportedDemo, DemoImportError> {
-  return Effect.scoped(
+export type ImportResult = ImportEvent | { type: 'error'; message: string }
+
+export function importDemo(file: File): Stream.Stream<ImportEvent, DemoImportError> {
+  return Stream.asyncPush<ImportEvent, DemoImportError>((emit) =>
     Effect.gen(function* () {
       const worker = yield* Effect.acquireRelease(
         Effect.try({
@@ -26,35 +30,26 @@ export function importDemo(file: File): Effect.Effect<ImportedDemo, DemoImportEr
             worker.terminate()
           }),
       )
-      return yield* Effect.async<ImportedDemo, DemoImportError>((resume) => {
-        worker.onmessage = (event: MessageEvent<ImportResult>) => {
-          const result = event.data
-          resume(
-            result.type === 'ready'
-              ? Effect.succeed(result.demo)
-              : Effect.fail(new DemoImportError({ message: result.message })),
-          )
+      worker.onmessage = (event: MessageEvent<ImportResult>) => {
+        const result = event.data
+        if (result.type === 'error') emit.fail(new DemoImportError({ message: result.message }))
+        else {
+          emit.single(result)
+          if (result.type === 'complete') emit.end()
         }
-        worker.onerror = worker.onmessageerror = () => {
-          resume(
-            Effect.fail(
-              new DemoImportError({
-                message: 'The demo reader stopped unexpectedly. Try importing the file again.',
-              }),
-            ),
-          )
-        }
-        try {
-          worker.postMessage(file)
-        } catch {
-          resume(
-            Effect.fail(
-              new DemoImportError({
-                message: 'The demo could not be sent to the local reader. Try importing it again.',
-              }),
-            ),
-          )
-        }
+      }
+      worker.onerror = worker.onmessageerror = () =>
+        emit.fail(
+          new DemoImportError({
+            message: 'The demo reader stopped unexpectedly. Try importing the file again.',
+          }),
+        )
+      yield* Effect.try({
+        try: () => worker.postMessage(file),
+        catch: () =>
+          new DemoImportError({
+            message: 'The demo could not be sent to the local reader. Try importing it again.',
+          }),
       })
     }),
   )

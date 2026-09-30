@@ -5,7 +5,7 @@
 - [x] Play and pause player movement on a calibrated tactical map
 - [x] Scrub player positions forwards and backwards
 - [x] Measure first-round load, playback smoothness and seek latency
-- [ ] Play the first completed round while remaining rounds parse
+- [x] Play the first completed round while remaining rounds parse
 - [ ] Display pending rounds from available metadata
 - [ ] Discover round boundaries during sequential parsing
 - [ ] Select any completed round without restarting parsing
