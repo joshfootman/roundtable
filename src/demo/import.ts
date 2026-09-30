@@ -1,19 +1,18 @@
 import { Data, Effect } from 'effect'
-import type { DemoMetadata } from './metadata'
+import type { ImportedDemo } from './demo'
 
 export class DemoImportError extends Data.TaggedError('DemoImportError')<{ message: string }> {}
 
 export type ImportResult =
-  | { type: 'ready'; metadata: DemoMetadata }
+  | { type: 'ready'; demo: ImportedDemo }
   | { type: 'error'; message: string }
 
-export function importDemo(file: File): Effect.Effect<DemoMetadata, DemoImportError> {
+export function importDemo(file: File): Effect.Effect<ImportedDemo, DemoImportError> {
   return Effect.scoped(
     Effect.gen(function* () {
       const worker = yield* Effect.acquireRelease(
         Effect.try({
-          try: () =>
-            new Worker(new URL('./metadata.worker.ts', import.meta.url), { type: 'module' }),
+          try: () => new Worker(new URL('./demo.worker.ts', import.meta.url), { type: 'module' }),
           catch: () =>
             new DemoImportError({
               message: 'The demo reader could not start. Reload the page and try again.',
@@ -27,12 +26,12 @@ export function importDemo(file: File): Effect.Effect<DemoMetadata, DemoImportEr
             worker.terminate()
           }),
       )
-      return yield* Effect.async<DemoMetadata, DemoImportError>((resume) => {
+      return yield* Effect.async<ImportedDemo, DemoImportError>((resume) => {
         worker.onmessage = (event: MessageEvent<ImportResult>) => {
           const result = event.data
           resume(
             result.type === 'ready'
-              ? Effect.succeed(result.metadata)
+              ? Effect.succeed(result.demo)
               : Effect.fail(new DemoImportError({ message: result.message })),
           )
         }

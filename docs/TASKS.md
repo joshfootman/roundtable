@@ -1,13 +1,13 @@
 - [x] Import a local CS2 demo and display match metadata
-- [ ] Reject unsupported files with actionable errors
-- [ ] Display the imported match’s player roster
+- [x] Reject unsupported files with actionable errors
+- [x] Display the imported match’s player roster
 - [ ] Display starting player positions for one real competitive round
 - [ ] Play and pause player movement on a calibrated tactical map
 - [ ] Scrub player positions forwards and backwards
 - [ ] Measure first-round load, playback smoothness and seek latency
 - [ ] Play the first completed round while remaining rounds parse
 - [ ] Display pending rounds from available metadata
-- [ ] Discover rounds progressively when metadata is missing
+- [ ] Discover round boundaries during sequential parsing
 - [ ] Select any completed round without restarting parsing
 - [ ] Exclude warmup, knife rounds and abandoned restarts
 - [ ] Include overtime, freeze time and post-round playback

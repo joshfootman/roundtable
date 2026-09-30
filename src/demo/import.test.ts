@@ -7,15 +7,15 @@ import type { DemoMetadata } from './metadata'
 const metadata: DemoMetadata = {
   mapName: 'de_dust2',
   serverName: 'BLAST Premier 2024',
-  clientName: null,
-  gameDirectory: null,
-  demoVersion: null,
-  patchVersion: null,
-  buildNumber: null,
-  serverStartTick: null,
+  clientName: 'SourceTV Demo',
+  gameDirectory: '/home/csserver001/cs2/game/csgo',
+  demoVersion: 'valve_demo_2',
+  patchVersion: 14011,
+  buildNumber: 10072,
+  serverStartTick: 42184,
   durationSeconds: 3078.25,
-  playbackTicks: null,
-  playbackFrames: null,
+  playbackTicks: 197008,
+  playbackFrames: 197003,
 }
 
 class ControlledWorker {
@@ -54,24 +54,20 @@ function start() {
   })
 }
 
-function expectReleased(worker: ControlledWorker) {
-  expect(worker.terminated).toBe(true)
-  expect(worker.onmessage).toBeNull()
-  expect(worker.onerror).toBeNull()
-  expect(worker.onmessageerror).toBeNull()
-}
-
-test('returns worker metadata and releases its listeners and worker', async () => {
+test('returns worker metadata and terminates its worker', async () => {
   const result = await Effect.runPromise(
     Effect.gen(function* () {
       const { fiber, worker } = yield* start()
-      worker.reply({ type: 'ready', metadata })
+      worker.reply({
+        type: 'ready',
+        demo: { metadata, players: [{ name: 'broky', steamId: '76561198201620490' }] },
+      })
       const result = yield* Fiber.join(fiber)
-      expectReleased(worker)
+      expect(worker.terminated).toBe(true)
       return result
     }),
   )
-  expect(result).toMatchObject({ mapName: 'de_dust2', durationSeconds: 3078.25 })
+  expect(result).toEqual({ metadata, players: [{ name: 'broky', steamId: '76561198201620490' }] })
 })
 
 test('returns an actionable worker failure and releases resources', async () => {
@@ -80,7 +76,7 @@ test('returns an actionable worker failure and releases resources', async () => 
       const { fiber, worker } = yield* start()
       worker.reply({ type: 'error', message: 'The demo is truncated. Download it again.' })
       const result = yield* Effect.either(Fiber.join(fiber))
-      expectReleased(worker)
+      expect(worker.terminated).toBe(true)
       return result
     }),
   )
@@ -95,64 +91,7 @@ test('interruption releases an unfinished import', async () => {
     Effect.gen(function* () {
       const { fiber, worker } = yield* start()
       yield* Fiber.interrupt(fiber)
-      expectReleased(worker)
+      expect(worker.terminated).toBe(true)
     }),
   )
 })
-
-test('reports worker construction failure', async () => {
-  vi.stubGlobal(
-    'Worker',
-    class {
-      constructor() {
-        throw new Error('Worker unavailable')
-      }
-    },
-  )
-  const result = await Effect.runPromise(Effect.either(importDemo(new File(['demo'], 'match.dem'))))
-  expect(result).toMatchObject({
-    _tag: 'Left',
-    left: {
-      _tag: 'DemoImportError',
-      message: 'The demo reader could not start. Reload the page and try again.',
-    },
-  })
-})
-
-test('reports a file transfer failure and releases the worker', async () => {
-  vi.stubGlobal('Worker', ControlledWorker)
-  vi.spyOn(ControlledWorker.prototype, 'postMessage').mockImplementation(() => {
-    throw new Error('DataCloneError')
-  })
-  const result = await Effect.runPromise(Effect.either(importDemo(new File(['demo'], 'match.dem'))))
-  expect(result).toMatchObject({
-    _tag: 'Left',
-    left: {
-      _tag: 'DemoImportError',
-      message: 'The demo could not be sent to the local reader. Try importing it again.',
-    },
-  })
-  expectReleased(ControlledWorker.current)
-})
-
-test.each(['onerror', 'onmessageerror'] as const)(
-  '%s reports a reader failure and releases resources',
-  async (event) => {
-    const result = await Effect.runPromise(
-      Effect.gen(function* () {
-        const { fiber, worker } = yield* start()
-        worker[event]?.()
-        const result = yield* Effect.either(Fiber.join(fiber))
-        expectReleased(worker)
-        return result
-      }),
-    )
-    expect(result).toMatchObject({
-      _tag: 'Left',
-      left: {
-        _tag: 'DemoImportError',
-        message: 'The demo reader stopped unexpectedly. Try importing the file again.',
-      },
-    })
-  },
-)

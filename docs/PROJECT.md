@@ -1,6 +1,6 @@
 # CS2 replay viewer
 
-Status: local metadata import implemented with Effect and verified against the supplied Dust2 demo; round parsing and playback benchmarks remain.
+Status: local metadata and player roster import implemented with Effect and verified against the supplied Dust2 demo; round parsing and playback benchmarks remain.
 Requirements below settled unless marked **proposed**, **optional** or **open**.
 
 ## Product
@@ -24,6 +24,7 @@ Requirements below settled unless marked **proposed**, **optional** or **open**.
 - Play/pause, bidirectional scrubbing, player inspection.
 - Playback speed/event jumps: proposed controls.
 - Players: identity, name, team, XYZ, facing, health, alive/dead.
+- Initial roster: identities observed in player spawn events before the first recorded freeze-end. Exclude TV clients, fake players and clients who only spectate. Preserve Steam IDs as exact decimal strings; do not infer team names from the download source.
 - Equipment: weapon, ammo, armour, carried grenades, **money**.
 - Combat: kills, deaths, kill feed.
 - Bomb: position, carrier, plant/defuse state.
@@ -107,7 +108,8 @@ packages/replay/       output contract, indexes, playback
 - `CDemoFileHeader`: no round count.
 - `CDemoFileInfo.game_info.cs.round_start_ticks`: optional round-start list.
 - Validate outer-header file-info offset; reconcile metadata with actual events.
-- Missing metadata → discover rounds progressively.
+- Metadata import requires every field in `DemoMetadata`. Missing fields, blank strings, or invalid numeric values fail with a parsing error; successful metadata contains no nullable values.
+- Discover and stream completed rounds during sequential decoding. An optional round-start index does not replace round parsing.
 - Publish completed rounds: initial state + tracks + events + referenced metadata.
 - Continue sequential decoding; maintain current entity state after publishing.
 - New round arrival never resets playback/selection.

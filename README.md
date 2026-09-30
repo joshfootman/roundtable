@@ -1,11 +1,12 @@
 # Roundtable
 
 Choose a local CS2 `.dem` file and select **Import demo** to inspect its map, server, recording duration,
-playback counts and version information. Effect manages parsing, typed failures
+playback counts, version information and player roster. Effect manages parsing, typed failures
 and worker resources. Parsing happens on your device with bounded reads.
 
-The first slice displays recording metadata. It does not parse players, scores
-or replay rounds yet. See [the task list](docs/TASKS.md) for subsequent slices and
+The importer displays recording metadata and the initial player roster with exact
+Steam IDs. Participants come from recorded spawn events; spectators and TV clients
+are excluded. Team labels, scores and replay rounds remain subsequent slices. See [the task list](docs/TASKS.md) for subsequent slices and
 [fixture verification](fixtures/README.md) for the Dust2 reference demo.
 
 # Getting Started
@@ -45,6 +46,17 @@ Configuration lives in `.oxlintrc.json` and `.oxfmtrc.json`. Both tools respect
 skips npm's generated lockfile. Formatting uses single quotes and no semicolons.
 Tailwind classes are sorted using `src/styles.css`, including classes in
 `className` attributes and calls to `cn`, `clsx`, and `cva`.
+
+## Unsupported imports
+
+The importer recognizes ZIP, RAR, 7z, gzip and bzip2 signatures and asks you to
+extract the `.dem` first. It gives separate guidance for empty files, Source 1
+including CS:GO, unknown formats, and Source 2 headers that identify another
+game. Damaged CS2 metadata remains a parsing error.
+
+Detection uses file contents. Renaming an archive to `.dem` does not make it
+supported. Missing optional game identifiers are tolerated for older recordings;
+metadata import does not prove that every later gameplay record is supported.
 
 ## Tests and CI
 

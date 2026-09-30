@@ -3,18 +3,17 @@ import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Effect, Exit } from 'effect'
 import { importDemo } from '../demo/import'
-import type { DemoMetadata } from '../demo/metadata'
+import type { ImportedDemo } from '../demo/demo'
 
 export const Route = createFileRoute('/')({ component: Home })
 
 type ImportState =
   | { status: 'empty' }
   | { status: 'reading'; filename: string }
-  | { status: 'ready'; filename: string; metadata: DemoMetadata }
+  | ({ status: 'ready'; filename: string } & ImportedDemo)
   | { status: 'error'; filename: string; message: string }
 
-function duration(seconds: number | null) {
-  if (seconds === null) return 'Not recorded'
+function duration(seconds: number) {
   const centiseconds = Math.round(seconds * 100)
   return `${Math.floor(centiseconds / 6000)}m ${((centiseconds % 6000) / 100).toFixed(2)}s`
 }
@@ -44,7 +43,7 @@ function Home() {
             filename,
             message: error.message,
           }),
-          onSuccess: (metadata): ImportState => ({ status: 'ready', filename, metadata }),
+          onSuccess: (demo): ImportState => ({ status: 'ready', filename, ...demo }),
         }),
       ),
       { signal: controller.signal },
@@ -73,7 +72,9 @@ function Home() {
       <section className="intro" aria-labelledby="import-title">
         <p className="eyebrow">START WITH A DEMO</p>
         <h1 id="import-title">Every match has a story.</h1>
-        <p className="lede">Open a Counter-Strike 2 demo to inspect its recorded metadata.</p>
+        <p className="lede">
+          Open a Counter-Strike 2 demo to inspect its recorded metadata and player roster.
+        </p>
         <form className="import-panel" onSubmit={handleSubmit}>
           <div>
             <h2>Import your demo</h2>
@@ -97,9 +98,10 @@ function Home() {
             : ''}
       </output>
       {state.status === 'error' && (
-        <section className="error-panel" role="alert">
-          <h2>Unable to open this demo</h2>
-          <p>{state.message}</p>
+        <section className="rounded-xl bg-[#38231f] p-6 text-[#ffdbcc]" role="alert">
+          <h2 className="m-0 text-lg font-[550]">Unable to open this demo</h2>
+          <p className="mt-2 text-sm [overflow-wrap:anywhere]">{state.filename}</p>
+          <p className="mt-3 mb-0 text-sm leading-relaxed">{state.message}</p>
         </section>
       )}
       {state.status === 'ready' && (
@@ -108,9 +110,7 @@ function Home() {
             <div>
               <p className="eyebrow">DEMO METADATA</p>
               <h2 id="metadata-title">
-                {state.metadata.mapName === 'de_dust2'
-                  ? 'Dust II'
-                  : (state.metadata.mapName ?? 'Map not recorded')}
+                {state.metadata.mapName === 'de_dust2' ? 'Dust II' : state.metadata.mapName}
               </h2>
             </div>
             <span className="recorded-badge">Imported</span>
@@ -122,15 +122,15 @@ function Home() {
               ['Server', state.metadata.serverName],
               ['Recorded by', state.metadata.clientName],
               ['Recording duration', duration(state.metadata.durationSeconds)],
-              ['Playback ticks', state.metadata.playbackTicks?.toLocaleString('en-GB')],
-              ['Playback frames', state.metadata.playbackFrames?.toLocaleString('en-GB')],
+              ['Playback ticks', state.metadata.playbackTicks.toLocaleString('en-GB')],
+              ['Playback frames', state.metadata.playbackFrames.toLocaleString('en-GB')],
               ['Patch version', state.metadata.patchVersion],
               ['Build number', state.metadata.buildNumber],
               ['Demo format', state.metadata.demoVersion],
             ].map(([label, value]) => (
               <div key={label}>
                 <dt>{label}</dt>
-                <dd>{value ?? 'Not recorded'}</dd>
+                <dd>{value}</dd>
               </div>
             ))}
           </dl>
@@ -138,6 +138,35 @@ function Home() {
             These values describe the recording. Teams, score and match date are not available in
             this metadata.
           </p>
+        </section>
+      )}
+      {state.status === 'ready' && (
+        <section
+          aria-labelledby="roster-title"
+          className="mt-6 rounded-2xl border border-white/5 bg-[#17201a] p-[22px] text-[#e7ece8] sm:p-[30px]"
+        >
+          <p className="mb-3 text-[11px] font-semibold tracking-[0.16em] text-[#bedb8a]">
+            RECORDED PLAYERS
+          </p>
+          <h2 id="roster-title" className="m-0 text-2xl font-[550]">
+            Player roster
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-[#a7b5aa]">
+            {state.players.length} players recorded in this demo.
+          </p>
+          <ul className="mt-6 grid list-none gap-3 p-0 sm:grid-cols-2">
+            {state.players.map((player) => (
+              <li
+                key={player.steamId}
+                className="min-w-0 rounded-lg border border-[#303c34] bg-[#1b251e] px-4 py-3"
+              >
+                <p className="m-0 font-[550] [overflow-wrap:anywhere]">{player.name}</p>
+                <p className="mt-2 mb-0 font-mono text-xs [overflow-wrap:anywhere] text-[#a7b5aa]">
+                  Steam ID: {player.steamId}
+                </p>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
       <footer>Built for a closer look at Counter-Strike.</footer>

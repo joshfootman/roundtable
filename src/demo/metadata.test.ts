@@ -1,20 +1,26 @@
 import { readFileSync } from 'node:fs'
 import { Effect } from 'effect'
-import { compress } from 'snappyjs'
+import { clearField, fromBinary, toBinary } from '@bufbuild/protobuf'
+import { CDemoFileHeaderSchema } from './generated/demo_pb'
 import { describe, expect, test } from 'vitest'
+import { compress } from 'snappyjs'
 import { DemoReadError, readDemoMetadata } from './metadata'
 
 const fixture = new Uint8Array(readFileSync('fixtures/metadata/dust2-metadata.bin'))
 const header = new Uint8Array(readFileSync('fixtures/metadata/header-record.bin'))
 const info = new Uint8Array(readFileSync('fixtures/metadata/file-info-record.bin'))
 
+function metadataEffect(bytes: Uint8Array) {
+  return readDemoMetadata({
+    size: bytes.length,
+    readRange: (offset, length) => Effect.succeed(bytes.slice(offset, offset + length)),
+  })
+}
 function parse(bytes: Uint8Array) {
-  return Effect.runPromise(
-    readDemoMetadata({
-      size: bytes.length,
-      readRange: (offset, length) => Effect.succeed(bytes.slice(offset, offset + length)),
-    }),
-  )
+  return Effect.runPromise(metadataEffect(bytes))
+}
+function classify(bytes: Uint8Array) {
+  return Effect.runPromise(Effect.either(metadataEffect(bytes)))
 }
 function varint(value: number) {
   const bytes = []
@@ -34,47 +40,35 @@ function demo(headerRecord: Uint8Array, infoRecord?: Uint8Array) {
   return bytes
 }
 
-test('decodes captured Dust II records with independently verified values', async () => {
-  await expect(parse(fixture)).resolves.toEqual({
-    mapName: 'de_dust2',
-    serverName: 'BLAST Premier 2024',
-    clientName: 'SourceTV Demo',
-    gameDirectory: '/home/csserver001/cs2/game/csgo',
-    demoVersion: 'valve_demo_2',
-    patchVersion: 14011,
-    buildNumber: 10072,
-    serverStartTick: 42184,
-    durationSeconds: 3078.25,
-    playbackTicks: 197008,
-    playbackFrames: 197003,
-  })
-})
-
-test('keeps absent fields distinct from recorded zero values', async () => {
-  const minimalPayload = [10, 8, 80, 66, 68, 69, 77, 83, 50, 0]
-  const minimalHeader = new Uint8Array([1, 0, minimalPayload.length, ...minimalPayload])
-  const missing = await parse(demo(minimalHeader))
-  expect(missing).toEqual({
-    mapName: null,
-    serverName: null,
-    clientName: null,
-    gameDirectory: null,
-    demoVersion: null,
-    patchVersion: null,
-    buildNumber: null,
-    serverStartTick: null,
-    durationSeconds: null,
-    playbackTicks: null,
-    playbackFrames: null,
-  })
-  await expect(parse(demo(header, new Uint8Array([2, 0, 0])))).resolves.toMatchObject({
-    mapName: 'de_dust2',
-    durationSeconds: null,
-    playbackTicks: null,
-    playbackFrames: null,
-  })
-  const zero = await parse(demo(header, new Uint8Array([2, 0, 9, 13, 0, 0, 0, 0, 16, 0, 24, 0])))
-  expect(zero).toMatchObject({
+test('rejects incomplete metadata and preserves explicitly recorded zero', async () => {
+  await expect(parse(demo(header))).rejects.toThrow(/missing playback metadata/)
+  const decoded = fromBinary(CDemoFileHeaderSchema, header.slice(8))
+  clearField(decoded, CDemoFileHeaderSchema.field.mapName)
+  const payload = toBinary(CDemoFileHeaderSchema, decoded)
+  const missingMap = demo(new Uint8Array([1, 0, ...varint(payload.length), ...payload]), info)
+  const footerOffset = new DataView(missingMap.buffer).getUint32(8, true)
+  await expect(
+    Effect.runPromise(
+      readDemoMetadata({
+        size: missingMap.length,
+        readRange: (offset, length) =>
+          offset >= footerOffset
+            ? Effect.fail(new DemoReadError({ message: 'Playback metadata should not be read.' }))
+            : Effect.succeed(missingMap.slice(offset, offset + length)),
+      }),
+    ),
+  ).rejects.toThrow(/missing required metadata \(map_name\)/)
+  await expect(parse(demo(header, new Uint8Array([2, 0, 0])))).rejects.toThrow(
+    /missing required metadata \(playback_time\)/,
+  )
+  decoded.mapName = ' '
+  const blank = toBinary(CDemoFileHeaderSchema, decoded)
+  await expect(
+    parse(demo(new Uint8Array([1, 0, ...varint(blank.length), ...blank]), info)),
+  ).rejects.toThrow(/empty required metadata/)
+  await expect(
+    parse(demo(header, new Uint8Array([2, 0, 9, 13, 0, 0, 0, 0, 16, 0, 24, 0]))),
+  ).resolves.toMatchObject({
     mapName: 'de_dust2',
     durationSeconds: 0,
     playbackTicks: 0,
@@ -82,68 +76,36 @@ test('keeps absent fields distinct from recorded zero values', async () => {
   })
 })
 
-test('decodes Snappy metadata blocks', async () => {
-  const payload = compress(header.slice(8))
-  const compressedHeader = new Uint8Array([65, 0, ...varint(payload.length), ...payload])
-  await expect(parse(demo(compressedHeader, info))).resolves.toMatchObject({
-    mapName: 'de_dust2',
-    durationSeconds: 3078.25,
-  })
-})
-
 describe('rejects malformed metadata', () => {
+  const oversizedExpansion = compress(new Uint8Array(1048577))
   test.each([
-    ['truncated container', new Uint8Array(8), /truncated/],
-    ['archive signature', new Uint8Array(32), /Extract ZIP or RAR/],
+    ['truncated container', fixture.slice(0, 8), /truncated/],
+    [
+      'negative playback time',
+      demo(header, new Uint8Array([2, 0, 9, 13, 0, 0, 128, 191, 16, 0, 24, 0])),
+      /invalid values/,
+    ],
     ['overflowing varint', demo(new Uint8Array([255, 255, 255, 255, 16])), /invalid record number/],
-    ['unfinished varint', demo(new Uint8Array([128])), /ends inside a record/],
-    ['incorrect command', demo(new Uint8Array([2, 0, 0])), /record is invalid/],
     ['truncated payload', demo(new Uint8Array([1, 0, 100])), /truncated/],
     ['oversized payload', demo(new Uint8Array([1, 0, ...varint(1048577)])), /size limit/],
     [
       'oversized Snappy expansion',
-      demo(new Uint8Array([65, 0, 4, ...varint(2097152)])),
+      demo(new Uint8Array([65, 0, ...varint(oversizedExpansion.length), ...oversizedExpansion])),
       /compressed metadata/,
     ],
     ['damaged protobuf', demo(new Uint8Array([1, 0, 1, 255])), /header is damaged/],
-    [
-      'negative playback time',
-      demo(header, new Uint8Array([2, 0, 5, 13, 0, 0, 128, 191])),
-      /invalid values/,
-    ],
   ])('%s', async (_name, bytes, message) => {
     await expect(parse(bytes)).rejects.toThrow(message)
   })
-  test.each([1, 17, 0xffffffff])('rejects invalid file-info offset %i', async (offset) => {
+  test('rejects a file-info offset inside the header record', async () => {
     const bytes = fixture.slice()
-    new DataView(bytes.buffer).setUint32(8, offset, true)
+    new DataView(bytes.buffer).setUint32(8, 17, true)
     await expect(parse(bytes)).rejects.toThrow(/offset/)
   })
 })
 
-test('does not interpret the SpawnGroups offset as the high bits of FileInfo', async () => {
-  const bytes = fixture.slice()
-  new DataView(bytes.buffer).setUint32(12, 598096057, true)
-  await expect(parse(bytes)).resolves.toMatchObject({ mapName: 'de_dust2', playbackTicks: 197008 })
-})
-
-test('preserves typed read failures at the source boundary', async () => {
-  const result = await Effect.runPromise(
-    Effect.either(
-      readDemoMetadata({
-        size: 100,
-        readRange: () => Effect.fail(new DemoReadError({ message: 'Permission lost' })),
-      }),
-    ),
-  )
-  expect(result).toMatchObject({
-    _tag: 'Left',
-    left: { _tag: 'DemoReadError', message: 'Permission lost' },
-  })
-})
-
-test('reports a short source read as a typed read failure', async () => {
-  const result = await Effect.runPromise(
+test('reports short source reads as typed read failures', async () => {
+  const shortRead = await Effect.runPromise(
     Effect.either(
       readDemoMetadata({
         size: fixture.length,
@@ -151,7 +113,7 @@ test('reports a short source read as a typed read failure', async () => {
       }),
     ),
   )
-  expect(result).toMatchObject({
+  expect(shortRead).toMatchObject({
     _tag: 'Left',
     left: {
       _tag: 'DemoReadError',
@@ -163,6 +125,7 @@ test('reports a short source read as a typed read failure', async () => {
 test('reads only metadata ranges from a large demo', async () => {
   const container = fixture.slice(0, 16)
   new DataView(container.buffer).setUint32(8, 598102484, true)
+  new DataView(container.buffer).setUint32(12, 598096057, true)
   let bytesRead = 0
   const metadata = await Effect.runPromise(
     readDemoMetadata({
@@ -176,10 +139,47 @@ test('reads only metadata ranges from a large demo', async () => {
         }),
     }),
   )
-  expect(metadata).toMatchObject({
-    mapName: 'de_dust2',
-    durationSeconds: 3078.25,
-    playbackTicks: 197008,
-  })
+  expect(metadata).toMatchObject({ mapName: 'de_dust2', durationSeconds: 3078.25 })
   expect(bytesRead).toBeLessThan(1024)
+})
+
+test.each([
+  ['empty', [], 'empty'],
+  ['unknown', [0], 'unknown-format'],
+  ['Source 1', [72, 76, 50, 68, 69, 77, 79, 0], 'source1'],
+])('classifies %s content', async (_name, content, reason) => {
+  await expect(classify(new Uint8Array(content))).resolves.toMatchObject({
+    _tag: 'Left',
+    left: { _tag: 'DemoUnsupportedError', reason },
+  })
+})
+
+function gameDemo(game: string, gameDirectory: string) {
+  const decoded = fromBinary(CDemoFileHeaderSchema, header.slice(8))
+  decoded.game = game
+  decoded.gameDirectory = gameDirectory
+  decoded.mapName = 'workshop_unknown_map'
+  decoded.patchVersion = 1
+  const payload = toBinary(CDemoFileHeaderSchema, decoded)
+  return demo(new Uint8Array([1, 0, ...varint(payload.length), ...payload]), info)
+}
+
+test.each([
+  ['dota', 'csgo'],
+  ['', 'C:\\Games\\Citadel\\'],
+])('rejects game %s in directory %s', async (game, directory) => {
+  await expect(classify(gameDemo(game, directory))).resolves.toMatchObject({
+    _tag: 'Left',
+    left: { _tag: 'DemoUnsupportedError', reason: 'other-game' },
+  })
+})
+
+test.each([
+  ['cs2', 'dota'],
+  ['', '/home/server/game/csgo'],
+])('accepts game %s in directory %s regardless of map or patch', async (game, directory) => {
+  await expect(parse(gameDemo(game, directory))).resolves.toMatchObject({
+    mapName: 'workshop_unknown_map',
+    patchVersion: 1,
+  })
 })

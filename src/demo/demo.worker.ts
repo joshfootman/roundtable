@@ -1,10 +1,11 @@
 import { Cause, Effect, Option } from 'effect'
-import { DemoReadError, readDemoMetadata } from './metadata'
+import { DemoReadError } from './errors'
+import { readDemo } from './demo'
 import type { ImportResult } from './import'
 
 self.onmessage = (event: MessageEvent<File>) => {
   const file = event.data
-  const job = readDemoMetadata({
+  const job = readDemo({
     size: file.size,
     readRange: (offset, length) =>
       Effect.tryPromise({
@@ -25,7 +26,7 @@ self.onmessage = (event: MessageEvent<File>) => {
           onNone: () => 'The demo reader encountered an unexpected error. Try another demo.',
         }),
       }),
-      onSuccess: (metadata): ImportResult => ({ type: 'ready', metadata }),
+      onSuccess: (demo): ImportResult => ({ type: 'ready', demo }),
     }),
     Effect.tap((result) => Effect.sync(() => self.postMessage(result))),
   )

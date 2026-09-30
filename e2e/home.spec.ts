@@ -8,13 +8,14 @@ async function demoFile() {
   return {
     name: 'dust2.dem',
     mimeType: 'application/octet-stream',
-    buffer: await readFile(new URL('../fixtures/metadata/dust2-metadata.bin', import.meta.url)),
+    buffer: await readFile(new URL('../fixtures/roster/import.dem', import.meta.url)),
   }
 }
 
 test('imports recording metadata through the keyboard-accessible file chooser', async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 375, height: 812 })
   await page.goto('/')
   await page.getByRole('link', { name: 'ROUNDTABLE CS2 DEMO VIEWER' }).focus()
   await page.keyboard.press('Tab')
@@ -44,36 +45,48 @@ test('imports recording metadata through the keyboard-accessible file chooser', 
   ]) {
     await expect(metadata.getByRole('definition').filter({ hasText: value })).toHaveText(value)
   }
+  const roster = page.getByRole('region', { name: 'Player roster' })
+  await expect(roster.getByRole('listitem')).toHaveCount(10)
+  for (const name of [
+    'broky',
+    'ropz',
+    'frozen',
+    'mezii',
+    'rain',
+    'flameZ',
+    'apEX',
+    'ZywOo',
+    'Spinx',
+    'karrigan',
+  ]) {
+    await expect(roster.getByText(name, { exact: true })).toBeVisible()
+  }
+  await expect(roster.getByRole('listitem').filter({ hasText: 'ZywOo' })).toContainText(
+    '76561198113666193',
+  )
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
 })
 
-test('recovers from an invalid file with a fresh import', async ({ page }) => {
+test('explains archive extraction and recovers with a raw demo', async ({ page }) => {
   await page.goto('/')
   const input = page.getByLabel('Choose a .dem file')
   await input.setInputFiles({
-    name: 'not-a-demo.dem',
+    name: 'archive-renamed.dem',
     mimeType: 'application/octet-stream',
-    buffer: Buffer.from('This is not a CS2 demo file.'),
+    buffer: Buffer.from([0x50, 0x4b, 0x03, 0x04]),
   })
   await page.getByRole('button', { name: 'Import demo' }).click()
-  await expect(page.getByRole('alert')).toContainText('Select a raw CS2 .dem file')
-  await input.setInputFiles(await demoFile())
+  await expect(page.getByRole('alert')).toContainText(/ZIP.*Extract.*\.dem/i)
+  await expect(page.getByRole('alert')).toContainText('archive-renamed.dem')
+  await input.setInputFiles({
+    name: 'renamed.zip',
+    mimeType: 'application/zip',
+    buffer: await readFile(new URL('../fixtures/roster/import.dem', import.meta.url)),
+  })
   await page.getByRole('button', { name: 'Import demo' }).click()
   await expect(page.getByRole('heading', { name: 'Dust II', exact: true })).toBeVisible()
   await expect(page.getByRole('alert')).toHaveCount(0)
-})
-
-test('keeps imported metadata readable on a narrow screen', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 })
-  await page.goto('/')
-  await page.getByLabel('Choose a .dem file').setInputFiles(await demoFile())
-  await page.getByRole('button', { name: 'Import demo' }).click()
-  await expect(page.getByRole('heading', { name: 'Dust II', exact: true })).toBeVisible()
-  await expect(page.getByText('BLAST Premier 2024', { exact: true })).toBeVisible()
-  const widths = await page.evaluate(() => ({
-    content: document.documentElement.scrollWidth,
-    viewport: innerWidth,
-  }))
-  expect(widths.content).toBeLessThanOrEqual(widths.viewport)
+  await expect(page.getByText('renamed.zip', { exact: true })).toBeVisible()
 })
 
 test('can submit another demo while an earlier import is pending', async ({ page }) => {
@@ -82,7 +95,7 @@ test('can submit another demo while an earlier import is pending', async ({ page
     capture = resolve
   })
   let first = true
-  await page.route(/\/metadata\.worker-[^/]+\.js(?:\?.*)?$/, (route) => {
+  await page.route(/\/demo\.worker-[^/]+\.js(?:\?.*)?$/, (route) => {
     if (first) {
       first = false
       capture(route)
@@ -113,7 +126,7 @@ test('can submit another demo while an earlier import is pending', async ({ page
 })
 
 test('rounds recording duration across a minute boundary', async ({ page }) => {
-  const bytes = await readFile(new URL('../fixtures/metadata/dust2-metadata.bin', import.meta.url))
+  const bytes = await readFile(new URL('../fixtures/roster/import.dem', import.meta.url))
   const infoOffset = bytes.readUInt32LE(8)
   // This captured record has five framing bytes before the one-byte float field tag.
   bytes.writeFloatLE(59.999, infoOffset + 6)

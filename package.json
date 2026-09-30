@@ -20,7 +20,8 @@
     "test:e2e": "playwright test",
     "preview": "vite preview",
     "generate:proto": "cd schemas && buf generate && cd .. && oxfmt --write src/demo/generated",
-    "verify:demo": "node --experimental-transform-types scripts/verify-demo.ts"
+    "verify:demo": "node --experimental-transform-types scripts/verify-demo.ts",
+    "verify:roster": "node --experimental-transform-types scripts/verify-demo.ts --roster"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.15.0",
