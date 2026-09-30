@@ -3,6 +3,8 @@ import {
   DETONATION_DISPLAY_SECONDS,
   APPROXIMATE_SMOKE_RADIUS,
   APPROXIMATE_FIRE_CELL_RADIUS,
+  SHOT_DISPLAY_SECONDS,
+  SHOT_TRACE_LENGTH,
 } from './utility.ts'
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
@@ -129,6 +131,22 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       function draw() {
         const sample = sampleAtTick(round.ticks, tick)
         utility.clear()
+        for (const shot of round.shots) {
+          if (tick < shot.tick || (tick - shot.tick) * round.tickInterval >= SHOT_DISPLAY_SECONDS)
+            continue
+          const point = worldToMap(map, shot.x, shot.y)
+          const angle = (shot.yaw * Math.PI) / 180
+          const length = SHOT_TRACE_LENGTH * Math.cos((shot.pitch * Math.PI) / 180)
+          const end = worldToMap(
+            map,
+            shot.x + Math.cos(angle) * length,
+            shot.y + Math.sin(angle) * length,
+          )
+          utility
+            .moveTo(point.x, point.y)
+            .lineTo(end.x, end.y)
+            .stroke({ color: '#f5eccb', width: symbolScale, alpha: 0.8 })
+        }
         for (const fire of recordAtTick(round.fires, tick).fires) {
           for (let cell = 0; cell < fire.positions.length; cell += 3) {
             const point = worldToMap(map, fire.positions[cell]!, fire.positions[cell + 1]!)
@@ -365,6 +383,24 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
         />
       </label>
+      <p className="mt-4 text-sm text-[#a7b5aa]">
+        Bullet traces show recorded shot direction. Their length does not represent an impact.
+      </p>
+      <ul aria-label="Bullet traces" className="mt-3 list-none space-y-2 p-0 text-sm">
+        {round.shots
+          .filter(
+            (shot) =>
+              shot.tick <= recordedTick &&
+              (recordedTick - shot.tick) * round.tickInterval < SHOT_DISPLAY_SECONDS,
+          )
+          .map((shot, index) => (
+            <li key={index}>
+              {round.players.find((player) => player.steamId === shot.player)!.name} ·{' '}
+              {equipmentName(shot.weapon)} shot
+              {` · X ${shot.x.toFixed(1)} · Y ${shot.y.toFixed(1)} · Z ${shot.z.toFixed(1)} · Pitch ${shot.pitch.toFixed(1)}° · Facing ${shot.yaw.toFixed(1)}°`}
+            </li>
+          ))}
+      </ul>
       <ul aria-label="Approximate fire areas" className="mt-4 list-none space-y-2 p-0 text-sm">
         {recordAtTick(round.fires, recordedTick).fires.map((fire) => (
           <li key={`${fire.entity}:${fire.serial}`}>

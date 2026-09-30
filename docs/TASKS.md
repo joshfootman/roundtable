@@ -21,7 +21,7 @@
 - [x] Replay grenade trajectories and detonations
 - [x] Display approximate smoke areas over time
 - [x] Display approximate fire areas over time
-- [ ] Display bullet traces
+- [x] Display bullet traces
 - [ ] Display flashed-player indicators
 - [ ] Filter visible players and teams
 - [ ] Toggle utility overlays

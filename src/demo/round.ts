@@ -1,3 +1,4 @@
+import { firearms } from '../replay/equipment.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { Chunk, Effect, Option, Stream } from 'effect'
 import { DemoParseError, type DemoReadError } from './errors.ts'
@@ -18,6 +19,7 @@ import {
 } from './generated/demo_pb.ts'
 import {
   SVC_Messages,
+  CMsgTEFireBulletsSchema,
   CSVCMsg_ServerInfoSchema,
   CSVCMsg_PacketEntitiesSchema,
   CSVCMsg_CreateStringTableSchema,
@@ -43,6 +45,7 @@ const detonationKinds: Record<string, GrenadeDetonation['kind']> = {
   inferno_startburn: 'fire',
   decoy_started: 'decoy',
 }
+const FIRE_BULLETS = 452
 const LIMIT = 32 * 1024 * 1024
 export function readReplay(
   input: DemoSource,
@@ -62,6 +65,7 @@ export function readReplay(
         const length = reader.varUint()
         if (
           [
+            FIRE_BULLETS,
             SVC_Messages.svc_ServerInfo,
             SVC_Messages.svc_CreateStringTable,
             SVC_Messages.svc_UpdateStringTable,
@@ -122,6 +126,30 @@ export function readReplay(
         tracker.bomb(tick, entities.bomb())
         tracker.projectiles(tick, entities.projectiles())
         tracker.fires(tick, entities.fires())
+        for (const message of messages)
+          if (message.id === FIRE_BULLETS) {
+            const shot = fromBinary(CMsgTEFireBulletsSchema, message.bytes)
+            const origin = shot.origin
+            const angles = shot.angles
+            if (
+              !origin ||
+              !angles ||
+              ![origin.x, origin.y, origin.z, angles.x, angles.y].every(Number.isFinite)
+            )
+              throw new Error('A recorded shot is missing its origin or direction.')
+            if (!(shot.itemDefIndex in firearms))
+              throw new Error('A recorded shot has an unsupported firearm.')
+            tracker.shot({
+              tick,
+              player: entities.playerByPawnHandle(shot.player),
+              weapon: shot.itemDefIndex,
+              x: origin.x,
+              y: origin.y,
+              z: origin.z,
+              pitch: angles.x,
+              yaw: angles.y,
+            })
+          }
       }
       for (const { event, descriptor } of recorded) {
         function key(name: string, type: number) {

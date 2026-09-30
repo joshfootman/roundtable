@@ -10,3 +10,8 @@ Run `npm run generate:proto` to regenerate the TypeScript descriptors. The impor
 serializer messages from the schemas bundled with demoinfocs-golang v4.5.1. Field
 numbers and types are preserved; custom size options and unrelated imports are omitted.
 The custom inner bit decoder and its attribution live in `src/demo/entities`.
+
+The replay subset also preserves origin, angles, pawn handle and item definition
+from `CMsgTEFireBullets` in the same pinned reference. Its network ID is 452.
+Unrelated sound, spread and rendering fields are consumed by protobuf decoding
+and omitted from this projection.

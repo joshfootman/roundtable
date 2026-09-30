@@ -12,8 +12,8 @@ Other network messages are removed, packet envelopes are re-encoded uncompressed
 and the footer offset is relocated. The runtime importer still accepts raw demos;
 tests decompress this fixture before importing it.
 
-The compressed fixture is 2,354,411 bytes and expands to 3,696,761 bytes. SHA-256 is
-`28f722f2c30e659d147eda9a52f00acfeb092f44d62eaf5268ba9e33c85633c7`.
+The compressed fixture is 2,360,114 bytes and expands to 3,703,496 bytes. SHA-256 is
+`32927b83ed3fa5f22f41bf1d74534ea5ae935dd52faf6a680aa6d182cdfa4983`.
 
 Regenerate from the full source with Node 24:
 
@@ -85,8 +85,8 @@ one at 7444. The existing parser regression checks that recorded transition.
 recording start through tick 32413. It completes four rounds and retains the
 original metadata footer. Regenerate with `node --experimental-transform-types
 scripts/extract-replay-fixture.ts fixtures/faze-vs-vitality-m2-dust2.dem 32413
-fixtures/replay/dust2-through-round-4.dem.gz`. It is 14,383,755 bytes compressed.
-SHA-256 is `f9c7082e47e26dc6ddf79771ac204ae9b53b3406418e6434074febca4dfe59d4`.
+fixtures/replay/dust2-through-round-4.dem.gz`. It is 14,411,094 bytes compressed.
+SHA-256 is `e8bc614d7039d65d4c47243ff4baf0cbad76b32dbc8a10a73dea16da2e7efbf9`.
 The independent parser matches the original recording at all 20 selected player
 and bomb samples and all 337 event counts through this boundary. Sparse full
 packet segments lacked equipment history and are not used as fixtures.
@@ -122,3 +122,9 @@ Absolute recorded XYZ values and entity serials are preserved. The viewer draws
 60 world-unit circles as approximate patches. It does not fill a convex hull or
 claim exact damage coverage. First fire extinction at 19554 precedes entity
 deletion at 20490. The oracle generator emits this data as `fireFrames`.
+
+`shots.json` contains all 2,568 independent competitive `CMsgTEFireBullets`
+messages. Both compact fixtures retain network ID 452. Shot origin, pitch, yaw,
+weapon and shooter handle are recorded. The tactical trace has a 300 world-unit
+display length and lasts 0.15 seconds; neither represents a collision endpoint
+or bullet travel time. No impact endpoints exist in this source.

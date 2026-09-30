@@ -1,3 +1,14 @@
+export interface ReplayShot {
+  tick: number
+  player: string
+  weapon: number
+  x: number
+  y: number
+  z: number
+  pitch: number
+  yaw: number
+}
+
 export interface FireArea {
   entity: number
   serial: number
@@ -82,6 +93,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  shots: ReplayShot[]
   fires: { tick: number; fires: FireArea[] }[]
   smokes: ReplaySmoke[]
   projectiles: ReplayProjectile[]

@@ -483,6 +483,7 @@ export function createEntityDecoder() {
     },
     snapshots,
     bomb,
+    playerByPawnHandle,
     projectiles,
     fires(): FireArea[] {
       const fires: FireArea[] = []

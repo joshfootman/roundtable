@@ -9,6 +9,7 @@ import type {
   GrenadeDetonation,
   ReplaySmoke,
   FireArea,
+  ReplayShot,
 } from '../replay/types.ts'
 
 export interface RoundRules {
@@ -37,6 +38,7 @@ type Capture = {
   yaw: number[]
   teams: number[]
   projectiles: ReturnType<typeof createProjectileCapture>
+  shots: ReplayShot[]
   fires: ReplayRound['fires']
   smokes: ReplaySmoke[]
   detonations: GrenadeDetonation[]
@@ -101,6 +103,7 @@ export function createRoundTracker() {
       bombEvents: round.bombEvents,
       projectiles: round.projectiles.finish(endTick),
       detonations: round.detonations,
+      shots: round.shots,
       fires: round.fires,
       smokes: round.smokes
         .filter((smoke) => smoke.endTick > round.startTick)
@@ -199,6 +202,7 @@ export function createRoundTracker() {
           yaw: [],
           teams: [],
           projectiles: createProjectileCapture(),
+          shots: [],
           fires: [{ tick, fires: [] }],
           smokes: [...activeSmokes.values()],
           detonations: [],
@@ -215,6 +219,12 @@ export function createRoundTracker() {
       if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
         capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
+    },
+    shot(shot: ReplayShot) {
+      if (!capture) return
+      if (!capture.players.some((player) => player.steamId === shot.player))
+        throw new Error('A recorded shooter is outside the round roster.')
+      capture.shots.push(shot)
     },
     fires(tick: number, fires: FireArea[]) {
       if (!capture) return

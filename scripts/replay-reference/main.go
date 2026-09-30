@@ -7,6 +7,7 @@ import (
 	demo "github.com/markus-wa/demoinfocs-golang/v4/pkg/demoinfocs"
 	"github.com/markus-wa/demoinfocs-golang/v4/pkg/demoinfocs/common"
 	"github.com/markus-wa/demoinfocs-golang/v4/pkg/demoinfocs/events"
+	msgs2 "github.com/markus-wa/demoinfocs-golang/v4/pkg/demoinfocs/msgs2"
 	"os"
 	"sort"
 	"strings"
@@ -48,6 +49,7 @@ func main() {
 	defer p.Close()
 	ticks := map[int]bool{537: true, 5732: true, 5796: true, 6400: true, 7443: true, 7444: true, 7445: true, 7834: true, 8281: true, 6362: true, 6466: true, 6500: true, 13170: true, 30555: true, 31965: true, 69941: true}
 	var projectileFrames []any
+	var shots []any
 	var fireFrames []fireFrame
 	var infernoFields []string
 	var frames []any
@@ -61,6 +63,18 @@ func main() {
 		d["round"] = round
 		records = append(records, d)
 	}
+	p.RegisterNetMessageHandler(func(m *msgs2.CMsgTEFireBullets) {
+		origin := m.GetOrigin()
+		angles := m.GetAngles()
+		if origin == nil || angles == nil {
+			panic("Missing recorded bullet origin or angles")
+		}
+		shooter := p.GameState().Participants().FindByPawnHandle(uint64(m.GetPlayer()))
+		if shooter == nil {
+			panic("Unknown recorded bullet shooter")
+		}
+		shots = append(shots, map[string]any{"tick": p.GameState().IngameTick(), "player": id(shooter), "weapon": m.GetItemDefIndex(), "x": float64(origin.GetX()), "y": float64(origin.GetY()), "z": float64(origin.GetZ()), "pitch": float64(angles.GetX()), "yaw": float64(angles.GetY()), "round": round})
+	})
 	p.RegisterEventHandler(func(e any) {
 		kind := fmt.Sprintf("%T", e)
 		d := map[string]any{}
@@ -180,6 +194,6 @@ func main() {
 	if e = p.ParseToEnd(); e != nil {
 		panic(e)
 	}
-	json.NewEncoder(os.Stdout).Encode(map[string]any{"parser": "demoinfocs 4.5.1", "frames": frames, "projectileFrames": projectileFrames, "fireFrames": fireFrames, "infernoFields": infernoFields, "events": records, "census": census})
+	json.NewEncoder(os.Stdout).Encode(map[string]any{"parser": "demoinfocs 4.5.1", "frames": frames, "projectileFrames": projectileFrames, "shots": shots, "fireFrames": fireFrames, "infernoFields": infernoFields, "events": records, "census": census})
 	fmt.Fprintf(os.Stderr, "frames=%d events=%d census=%v\n", len(frames), len(records), census)
 }

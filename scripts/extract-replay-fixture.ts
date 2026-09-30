@@ -55,7 +55,7 @@ class Writer {
     }
   }
 }
-const keep = new Set([4, 40, 44, 45, 51, 55, 205, 207])
+const keep = new Set([4, 40, 44, 45, 51, 55, 205, 207, 452])
 function compact(data: Uint8Array) {
   const read = new BitReader(data)
   const write = new Writer()

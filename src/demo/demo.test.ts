@@ -258,6 +258,14 @@ test('replays bomb interactions and completion in a contiguous recorded segment'
     readRounds(source(bytes)).pipe(Stream.take(4), Stream.runCollect),
   )
   expect(Array.from(rounds).map((round) => round.number)).toEqual([1, 2, 3, 4])
+  const expectedShots = JSON.parse(readFileSync('fixtures/replay/shots.json', 'utf8')) as {
+    round: number
+  }[]
+  expect(
+    Array.from(rounds).flatMap((round) =>
+      round.shots.map((shot) => ({ ...shot, round: round.number })),
+    ),
+  ).toEqual(expectedShots.filter((shot) => shot.round <= 4))
   const expectedDetonations = JSON.parse(
     readFileSync('fixtures/replay/detonations.json', 'utf8'),
   ) as { round: number }[]

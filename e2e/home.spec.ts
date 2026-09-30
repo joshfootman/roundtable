@@ -238,6 +238,16 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   expect(liveMap).not.toEqual(startingMap)
   const flying = replay.getByLabel('Flying grenades').getByRole('listitem')
   const detonations = replay.getByLabel('Grenade detonations').getByRole('listitem')
+  await seekReplay(scrubber, 6492)
+  const traces = replay.getByLabel('Bullet traces').getByRole('listitem')
+  await expect(traces).toHaveText([
+    'flameZ · USP-S shot · X 1392.6 · Y 961.8 · Z 55.2 · Pitch -0.7° · Facing -165.6°',
+  ])
+  await seekReplay(scrubber, 6491)
+  await expect(traces).toHaveCount(0)
+  await seekReplay(scrubber, 6502)
+  await expect(traces).toHaveCount(1)
+  await expect(traces).not.toContainText(['X 1392.6 · Y 961.8 · Z 55.2'])
   await seekReplay(scrubber, 6363)
   await expect(flying).toHaveText(['Flashbang · frozen · X 385.2 · Y -355.4 · Z 110.3'])
   await seekReplay(scrubber, 6466)
@@ -351,6 +361,7 @@ test('selects completed rounds without restarting import or changing selection o
             inspection: [[{tick: number * 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: []}]],
             bomb: [{tick: number * 100, state: {type: 'inactive'}}],
             fires: [{tick: 0, fires: []}],
+      shots: [],
       smokes: [],
       projectiles: [],
             detonations: [],

@@ -132,3 +132,21 @@ message CNETMsg_Tick {
 	optional uint32 host_frame_dropped_pct_x10 = 12;
 	optional uint32 host_frame_irregular_arrival_pct_x10 = 13;
 }
+
+message CMsgVector {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+  optional float w = 4;
+}
+message CMsgQAngle {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+}
+message CMsgTEFireBullets {
+  optional CMsgVector origin = 1;
+  optional CMsgQAngle angles = 2;
+  optional fixed32 player = 6 [default = 16777215];
+  optional uint32 item_def_index = 11;
+}
