@@ -70,7 +70,7 @@ export function readReplay(
         (message) => message.id === SVC_Messages.svc_PacketEntities,
       )
       const names: string[] = []
-      const deaths: {
+      const recorded: {
         event: CMsgSource1LegacyGameEvent
         descriptor: CMsgSource1LegacyGameEventList_descriptor_t
       }[] = []
@@ -99,30 +99,44 @@ export function readReplay(
           const descriptor = descriptors.get(event.eventid)
           if (!descriptor) throw new Error('Missing replay event descriptors.')
           names.push(descriptor.name)
-          if (descriptor.name === 'player_death') deaths.push({ event, descriptor })
+          if (
+            ['player_death', 'bomb_planted', 'bomb_defused', 'bomb_exploded'].includes(
+              descriptor.name,
+            )
+          )
+            recorded.push({ event, descriptor })
         }
       const events = tracker.update(tick, entities.gameRules(), names, tickInterval)
       if (tracker.recording) {
         tracker.sample(tick, entities.snapshots())
         tracker.bomb(tick, entities.bomb())
-        for (const { event, descriptor } of deaths) {
+        for (const { event, descriptor } of recorded) {
           function key(name: string, type: number) {
             const index = descriptor.keys.findIndex((key) => key.name === name)
             const value = event.keys[index]
             if (!value || descriptor.keys[index]!.type !== type || value.type !== type)
-              throw new Error(`A death event has an invalid ${name}.`)
+              throw new Error(`A ${descriptor.name} event has an invalid ${name}.`)
             return value
           }
-          const attacker = key('attacker', 9).valShort
-          tracker.death({
-            tick,
-            victim: entities.playerByUserId(key('userid', 9).valShort),
-            killer:
-              attacker === 0
-                ? { type: 'world' }
-                : { type: 'player', steamId: entities.playerByUserId(attacker) },
-            headshot: key('headshot', 6).valBool,
-          })
+          if (descriptor.name === 'player_death') {
+            const attacker = key('attacker', 9).valShort
+            tracker.death({
+              tick,
+              victim: entities.playerByUserId(key('userid', 9).valShort),
+              killer:
+                attacker === 0
+                  ? { type: 'world' }
+                  : { type: 'player', steamId: entities.playerByUserId(attacker) },
+              headshot: key('headshot', 6).valBool,
+            })
+          } else if (descriptor.name === 'bomb_exploded')
+            tracker.bombEvent({ tick, type: 'exploded' })
+          else
+            tracker.bombEvent({
+              tick,
+              type: descriptor.name === 'bomb_planted' ? 'planted' : 'defused',
+              player: entities.playerByUserId(key('userid', 9).valShort),
+            })
         }
       }
       return events

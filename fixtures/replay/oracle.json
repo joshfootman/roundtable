@@ -217,7 +217,8 @@
       ],
       "bomb": {
         "type": "carried",
-        "carrier": "76561198068422762"
+        "carrier": "76561198068422762",
+        "planting": false
       }
     },
     {
@@ -450,7 +451,8 @@
       ],
       "bomb": {
         "type": "carried",
-        "carrier": "76561198201620490"
+        "carrier": "76561198201620490",
+        "planting": false
       }
     },
     {
@@ -683,7 +685,8 @@
       ],
       "bomb": {
         "type": "carried",
-        "carrier": "76561198201620490"
+        "carrier": "76561198201620490",
+        "planting": false
       }
     },
     {

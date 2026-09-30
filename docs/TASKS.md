@@ -17,7 +17,7 @@
 - [x] Inspect armour and carried grenades
 - [x] Inspect player money throughout a round
 - [x] Track dropped, carried and planted bomb positions
-- [ ] Replay bomb plants, defuses and explosions
+- [x] Replay bomb plants, defuses and explosions
 - [ ] Replay grenade trajectories and detonations
 - [ ] Display approximate smoke areas over time
 - [ ] Display approximate fire areas over time

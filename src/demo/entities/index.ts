@@ -47,6 +47,8 @@ const replayFields = new Set([
   'm_hOwnerEntity',
   'm_bBombTicking',
   'm_bBombDefused',
+  'm_bStartedArming',
+  'm_hBombDefuser',
   'm_hPlayerPawn',
   'm_iszPlayerName',
   'm_iTeamNum',
@@ -211,6 +213,18 @@ export function createEntityDecoder() {
     }
     return { x: axis('X'), y: axis('Y'), z: axis('Z') }
   }
+  function playerByPawnHandle(handle: number): string {
+    entityForHandle(handle)
+    const controller = [...entities.values()].find(
+      (entity) =>
+        entity.active &&
+        entity.className === 'CCSPlayerController' &&
+        entity.values.get('m_hPlayerPawn') === handle,
+    )
+    const steam = controller?.values.get('m_steamID')
+    if (typeof steam !== 'bigint' || steam <= 0n) throw new Error('Missing recorded pawn identity.')
+    return steam.toString()
+  }
   function bomb(): BombState {
     const active = [...entities.values()].filter((entity) => entity.active)
     for (const planted of active.filter((entity) => entity.className === 'CPlantedC4')) {
@@ -218,22 +232,27 @@ export function createEntityDecoder() {
       const defused = planted.values.get('m_bBombDefused')
       if (typeof ticking !== 'boolean' || typeof defused !== 'boolean')
         throw new Error('Missing recorded planted bomb state.')
-      if (ticking && !defused) return { type: 'planted', ...position(planted) }
+      if (ticking && !defused) {
+        const handle = planted.values.get('m_hBombDefuser')
+        if (typeof handle !== 'number') throw new Error('Missing recorded bomb defuser.')
+        return {
+          type: 'planted',
+          ...position(planted),
+          defuser:
+            handle === 0xffffff || handle === 0xffffffff
+              ? { type: 'none' }
+              : { type: 'player', steamId: playerByPawnHandle(handle) },
+        }
+      }
     }
     const c4 = active.find((entity) => entity.className === 'CC4')
     if (!c4) return { type: 'inactive' }
     const owner = c4.values.get('m_hOwnerEntity')
     if (typeof owner !== 'number') throw new Error('Missing recorded bomb owner.')
     if (owner === 0xffffff || owner === 0xffffffff) return { type: 'dropped', ...position(c4) }
-    entityForHandle(owner)
-    const controller = active.find(
-      (entity) =>
-        entity.className === 'CCSPlayerController' && entity.values.get('m_hPlayerPawn') === owner,
-    )
-    const steam = controller?.values.get('m_steamID')
-    if (typeof steam !== 'bigint' || steam <= 0n)
-      throw new Error('Missing recorded bomb carrier identity.')
-    return { type: 'carried', carrier: steam.toString() }
+    const planting = c4.values.get('m_bStartedArming')
+    if (typeof planting !== 'boolean') throw new Error('Missing recorded bomb arming state.')
+    return { type: 'carried', carrier: playerByPawnHandle(owner), planting }
   }
   function snapshots(): PlayerSnapshot[] {
     const players: PlayerSnapshot[] = []

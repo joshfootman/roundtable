@@ -1,0 +1,213 @@
+[
+  {
+    "round": 2,
+    "tick": 13170,
+    "type": "plant-start",
+    "player": "76561197997351207"
+  },
+  {
+    "round": 2,
+    "tick": 13337,
+    "type": "plant-abort",
+    "player": "76561197997351207"
+  },
+  {
+    "round": 4,
+    "tick": 30355,
+    "type": "plant-start",
+    "player": "76561198068422762"
+  },
+  {
+    "round": 4,
+    "tick": 30555,
+    "type": "planted",
+    "player": "76561198068422762"
+  },
+  {
+    "round": 4,
+    "tick": 31328,
+    "type": "defuse-start",
+    "player": "76561197978835160"
+  },
+  {
+    "round": 4,
+    "tick": 31528,
+    "type": "defuse-abort",
+    "player": "76561197978835160"
+  },
+  {
+    "round": 4,
+    "tick": 31645,
+    "type": "defuse-start",
+    "player": "76561197978835160"
+  },
+  {
+    "round": 4,
+    "tick": 31965,
+    "type": "defused",
+    "player": "76561197978835160"
+  },
+  {
+    "round": 5,
+    "tick": 38050,
+    "type": "plant-start",
+    "player": "76561198068422762"
+  },
+  {
+    "round": 5,
+    "tick": 38057,
+    "type": "plant-abort",
+    "player": "76561198068422762"
+  },
+  {
+    "round": 5,
+    "tick": 38399,
+    "type": "plant-start",
+    "player": "76561198068422762"
+  },
+  {
+    "round": 5,
+    "tick": 38565,
+    "type": "plant-abort",
+    "player": "76561198068422762"
+  },
+  {
+    "round": 8,
+    "tick": 58708,
+    "type": "plant-start",
+    "player": "76561197989430253"
+  },
+  {
+    "round": 8,
+    "tick": 58721,
+    "type": "plant-abort",
+    "player": "76561197989430253"
+  },
+  {
+    "round": 8,
+    "tick": 59047,
+    "type": "plant-start",
+    "player": "76561197989430253"
+  },
+  {
+    "round": 8,
+    "tick": 59247,
+    "type": "planted",
+    "player": "76561197989430253"
+  },
+  {
+    "round": 10,
+    "tick": 67117,
+    "type": "plant-start",
+    "player": "76561197997351207"
+  },
+  {
+    "round": 10,
+    "tick": 67317,
+    "type": "planted",
+    "player": "76561197997351207"
+  },
+  {
+    "round": 10,
+    "tick": 69941,
+    "type": "exploded"
+  },
+  {
+    "round": 11,
+    "tick": 78358,
+    "type": "plant-start",
+    "player": "76561197991272318"
+  },
+  {
+    "round": 11,
+    "tick": 78558,
+    "type": "planted",
+    "player": "76561197991272318"
+  },
+  {
+    "round": 13,
+    "tick": 105687,
+    "type": "plant-start",
+    "player": "76561198113666193"
+  },
+  {
+    "round": 13,
+    "tick": 105887,
+    "type": "planted",
+    "player": "76561198113666193"
+  },
+  {
+    "round": 14,
+    "tick": 111674,
+    "type": "plant-start",
+    "player": "76561198113666193"
+  },
+  {
+    "round": 14,
+    "tick": 111874,
+    "type": "planted",
+    "player": "76561198113666193"
+  },
+  {
+    "round": 14,
+    "tick": 114498,
+    "type": "exploded"
+  },
+  {
+    "round": 16,
+    "tick": 131099,
+    "type": "plant-start",
+    "player": "76561198113666193"
+  },
+  {
+    "round": 16,
+    "tick": 131299,
+    "type": "planted",
+    "player": "76561198113666193"
+  },
+  {
+    "round": 16,
+    "tick": 133923,
+    "type": "exploded"
+  },
+  {
+    "round": 20,
+    "tick": 158926,
+    "type": "plant-start",
+    "player": "76561197973140692"
+  },
+  {
+    "round": 20,
+    "tick": 159126,
+    "type": "planted",
+    "player": "76561197973140692"
+  },
+  {
+    "round": 20,
+    "tick": 161750,
+    "type": "exploded"
+  },
+  {
+    "round": 22,
+    "tick": 181540,
+    "type": "plant-start",
+    "player": "76561197973140692"
+  },
+  {
+    "round": 22,
+    "tick": 181740,
+    "type": "planted",
+    "player": "76561197973140692"
+  },
+  {
+    "round": 22,
+    "tick": 184364,
+    "type": "exploded"
+  },
+  {
+    "round": 23,
+    "tick": 194667,
+    "type": "plant-start",
+    "player": "76561198113666193"
+  }
+]

@@ -224,23 +224,44 @@ test('rejects an incomplete round instead of publishing partial movement', async
   ).rejects.toThrow('terminal record')
 })
 
-test('preserves bomb planting and completion in a contiguous recorded segment', async () => {
+test('replays bomb interactions and completion in a contiguous recorded segment', async () => {
   const bytes = gunzipSync(readFileSync('fixtures/replay/dust2-through-round-4.dem.gz'))
   const rounds = await Effect.runPromise(
     readRounds(source(bytes)).pipe(Stream.take(4), Stream.runCollect),
   )
   expect(Array.from(rounds).map((round) => round.number)).toEqual([1, 2, 3, 4])
   const round = Array.from(rounds)[3]!
+  expect(Array.from(rounds)[1]!.bombEvents).toEqual([
+    { tick: 13170, type: 'plant-start', player: '76561197997351207' },
+    { tick: 13337, type: 'plant-abort', player: '76561197997351207' },
+  ])
+  expect(round.bombEvents).toEqual([
+    { tick: 30355, type: 'plant-start', player: '76561198068422762' },
+    { tick: 30555, type: 'planted', player: '76561198068422762' },
+    { tick: 31328, type: 'defuse-start', player: '76561197978835160' },
+    { tick: 31528, type: 'defuse-abort', player: '76561197978835160' },
+    { tick: 31645, type: 'defuse-start', player: '76561197978835160' },
+    { tick: 31965, type: 'defused', player: '76561197978835160' },
+  ])
+  expect(recordAtTick(round.bomb, 31328).state).toEqual({
+    type: 'planted',
+    x: 987.96875,
+    y: 2486.71875,
+    z: 96.46875,
+    defuser: { type: 'player', steamId: '76561197978835160' },
+  })
   expect(recordAtTick(round.bomb, 30555).state).toEqual({
     type: 'planted',
     x: 987.96875,
     y: 2486.71875,
     z: 96.46875,
+    defuser: { type: 'none' },
   })
   expect(recordAtTick(round.bomb, 31964).state.type).toBe('planted')
   expect(recordAtTick(round.bomb, 31965).state).toEqual({ type: 'inactive' })
   expect(recordAtTick(round.bomb, 30554).state).toEqual({
     type: 'carried',
     carrier: '76561198068422762',
+    planting: true,
   })
 })

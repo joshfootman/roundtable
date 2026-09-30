@@ -330,6 +330,7 @@ test('selects completed rounds without restarting import or changing selection o
             alive: new Uint8Array([1, 1]),
             inspection: [[{tick: number * 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: []}]],
             bomb: [{tick: number * 100, state: {type: 'inactive'}}],
+            bombEvents: [],
             deaths: [],
             health: new Int32Array([100, 100]),
             yaw: new Float32Array([90, 90]),
@@ -415,4 +416,51 @@ test('selects completed rounds without restarting import or changing selection o
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '100')
   expect(workerRequests).toBe(1)
+})
+
+test('replays bomb interactions and restores their state when scrubbing backwards', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.getByLabel('Choose a .dem file').setInputFiles({
+    name: 'dust2.dem',
+    mimeType: 'application/octet-stream',
+    buffer: gunzipSync(
+      await readFile(new URL('../fixtures/replay/dust2-through-round-4.dem.gz', import.meta.url)),
+    ),
+  })
+  await page.getByRole('button', { name: 'Import demo' }).click()
+  await page.getByRole('button', { name: 'Round 4 · Ready', exact: true }).click()
+  const replay = page.getByRole('region', { name: 'Dust II · Round 4', exact: true })
+  await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  const slider = replay.getByRole('slider', { name: 'Replay position' })
+  const state = replay.getByLabel('Bomb state', { exact: true })
+  const events = replay.getByLabel('Bomb events').getByRole('listitem')
+  async function seek(tick: number) {
+    await slider.evaluate((element: HTMLInputElement, value) => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(
+        element,
+        String(value),
+      )
+      element.dispatchEvent(new Event('input', { bubbles: true }))
+    }, tick)
+  }
+  await seek(30355)
+  await expect(state).toContainText('Bomb being planted by frozen')
+  await expect(events).toHaveText(['frozen started planting'])
+  await seek(30555)
+  await expect(state).toContainText('Bomb planted')
+  await expect(events).toHaveCount(2)
+  await seek(31328)
+  await expect(state).toContainText('Bomb being defused by flameZ')
+  await seek(31528)
+  await expect(state).toContainText('Bomb planted')
+  await expect(events.last()).toHaveText('flameZ stopped defusing')
+  await seek(31965)
+  await expect(state).toHaveText('Bomb inactive')
+  await expect(events).toHaveCount(6)
+  await expect(events.last()).toHaveText('flameZ defused the bomb')
+  await seek(30555)
+  await expect(state).toContainText('Bomb planted')
+  await expect(events).toHaveText(['frozen started planting', 'frozen planted the bomb'])
 })

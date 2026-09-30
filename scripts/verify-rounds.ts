@@ -3,6 +3,7 @@ import { open, readFile } from 'node:fs/promises'
 import { Effect, Stream } from 'effect'
 import { DemoReadError } from '../src/demo/errors.ts'
 import { readReplay } from '../src/demo/round.ts'
+import type { BombEvent } from '../src/replay/types.ts'
 
 const path = process.argv[2] ?? 'fixtures/faze-vs-vitality-m2-dust2.dem'
 const expected = JSON.parse(
@@ -15,6 +16,10 @@ const expected = JSON.parse(
   endTick: number
   overtime: number
 }[]
+
+const expectedBombEvents = JSON.parse(
+  await readFile(new URL('../fixtures/replay/bomb-events.json', import.meta.url), 'utf8'),
+)
 
 await Effect.runPromise(
   Effect.scoped(
@@ -44,6 +49,7 @@ await Effect.runPromise(
       }
       let bufferBytes = 0
       let inspectionRecords = 0
+      const bombEvents: (BombEvent & { round: number })[] = []
       const completed: typeof expected = []
       const discovered: { number: number; startTick: number }[] = []
       yield* Stream.runForEach(readReplay(source), (event) =>
@@ -54,6 +60,7 @@ await Effect.runPromise(
             completed.length = 0
             bufferBytes = 0
             inspectionRecords = 0
+            bombEvents.length = 0
           } else {
             const {
               number,
@@ -76,6 +83,7 @@ await Effect.runPromise(
               health.byteLength +
               yaw.byteLength +
               teams.byteLength
+            bombEvents.push(...event.round.bombEvents.map((event) => ({ ...event, round: number })))
             inspectionRecords += event.round.inspection.reduce(
               (count, track) => count + track.length,
               0,
@@ -85,12 +93,13 @@ await Effect.runPromise(
         }),
       )
       assert.deepEqual(completed, expected)
+      assert.deepEqual(bombEvents, expectedBombEvents)
       assert.deepEqual(discovered, [
         { number: 1, startTick: 449 },
         ...expected.map(({ number, startTick }) => ({ number, startTick })),
       ])
       console.log(
-        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes. Inspection uses ${inspectionRecords.toLocaleString('en-GB')} sparse records.`,
+        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes. All ${bombEvents.length} bomb interactions match. Inspection uses ${inspectionRecords.toLocaleString('en-GB')} sparse records.`,
       )
     }),
   ),

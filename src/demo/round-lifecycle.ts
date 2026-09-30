@@ -1,5 +1,11 @@
 import type { PlayerSnapshot } from './entities/index.ts'
-import type { ReplayDeath, ReplayRound, PlayerInspection, BombState } from '../replay/types.ts'
+import type {
+  ReplayDeath,
+  ReplayRound,
+  PlayerInspection,
+  BombState,
+  BombEvent,
+} from '../replay/types.ts'
 
 export interface RoundRules {
   warmup: boolean
@@ -26,6 +32,7 @@ type Capture = {
   health: number[]
   yaw: number[]
   teams: number[]
+  bombEvents: BombEvent[]
   bomb: ReplayRound['bomb']
   inspection: ReplayRound['inspection']
   deaths: ReplayDeath[]
@@ -82,6 +89,7 @@ export function createRoundTracker() {
       deaths: round.deaths,
       inspection: round.inspection,
       bomb: round.bomb,
+      bombEvents: round.bombEvents,
       ticks: Uint32Array.from(round.ticks),
       positions: Float32Array.from(round.positions),
       alive: Uint8Array.from(round.alive),
@@ -89,6 +97,16 @@ export function createRoundTracker() {
       yaw: Float32Array.from(round.yaw),
       teams: Uint8Array.from(round.teams),
     }
+  }
+
+  function bombEvent(event: BombEvent) {
+    if (!capture) return
+    if (
+      event.type !== 'exploded' &&
+      !capture.players.some((player) => player.steamId === event.player)
+    )
+      throw new Error('A bomb event actor is outside the recorded round roster.')
+    capture.bombEvents.push(event)
   }
 
   return {
@@ -141,6 +159,7 @@ export function createRoundTracker() {
           health: [],
           yaw: [],
           teams: [],
+          bombEvents: [],
           bomb: [],
           inspection: [],
           deaths: [],
@@ -154,6 +173,7 @@ export function createRoundTracker() {
         capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
     },
+    bombEvent,
     bomb(tick: number, state: BombState) {
       if (!capture) return
       if (
@@ -161,15 +181,48 @@ export function createRoundTracker() {
         !capture.players.some((player) => player.steamId === state.carrier)
       )
         throw new Error('The bomb carrier is outside the recorded round roster.')
+      if (state.type === 'planted' && state.defuser.type === 'player') {
+        const steamId = state.defuser.steamId
+        if (!capture.players.some((player) => player.steamId === steamId))
+          throw new Error('The bomb defuser is outside the recorded round roster.')
+      }
       const track = capture.bomb
+      const observed = track.at(-1)?.state
       if (track.at(-1)?.tick === tick) track.pop()
       const previous = track.at(-1)?.state
+      if (
+        state.type === 'carried' &&
+        state.planting &&
+        !(observed?.type === 'carried' && observed.planting)
+      )
+        bombEvent({ tick, type: 'plant-start', player: state.carrier })
+      if (
+        observed?.type === 'carried' &&
+        observed.planting &&
+        state.type !== 'planted' &&
+        !(state.type === 'carried' && state.planting)
+      )
+        bombEvent({ tick, type: 'plant-abort', player: observed.carrier })
+      if (state.type === 'planted') {
+        const current = state.defuser
+        const old = observed?.type === 'planted' ? observed.defuser : { type: 'none' as const }
+        if (current.type === 'player' && (old.type !== 'player' || old.steamId !== current.steamId))
+          bombEvent({ tick, type: 'defuse-start', player: current.steamId })
+        if (old.type === 'player' && current.type === 'none')
+          bombEvent({ tick, type: 'defuse-abort', player: old.steamId })
+      }
       if (
         !previous ||
         previous.type !== state.type ||
         (previous.type === 'carried' &&
           state.type === 'carried' &&
-          previous.carrier !== state.carrier) ||
+          (previous.carrier !== state.carrier || previous.planting !== state.planting)) ||
+        (previous.type === 'planted' &&
+          state.type === 'planted' &&
+          (previous.defuser.type !== state.defuser.type ||
+            (previous.defuser.type === 'player' &&
+              state.defuser.type === 'player' &&
+              previous.defuser.steamId !== state.defuser.steamId))) ||
         ((previous.type === 'dropped' || previous.type === 'planted') &&
           (state.type === 'dropped' || state.type === 'planted') &&
           (previous.x !== state.x || previous.y !== state.y || previous.z !== state.z))

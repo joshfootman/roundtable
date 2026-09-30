@@ -5,6 +5,15 @@ import { sampleAtTick, recordAtTick, bombPosition } from './frames'
 import { mapDefinition, worldToMap, type MapDefinition } from './maps'
 import type { ReplayRound } from './types'
 
+const bombEventLabels = {
+  'plant-start': 'started planting',
+  'plant-abort': 'stopped planting',
+  planted: 'planted the bomb',
+  'defuse-start': 'started defusing',
+  'defuse-abort': 'stopped defusing',
+  defused: 'defused the bomb',
+}
+
 interface Playback {
   play(): void
   pause(): void
@@ -298,11 +307,24 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       <p aria-label="Bomb state" className="mt-5 text-sm text-[#a7b5aa]">
         Bomb{' '}
         {bomb.type === 'carried'
-          ? `carried by ${round.players.find((player) => player.steamId === bomb.carrier)!.name}`
-          : bomb.type}
+          ? `${bomb.planting ? 'being planted by' : 'carried by'} ${round.players.find((player) => player.steamId === bomb.carrier)!.name}`
+          : bomb.type === 'planted' && bomb.defuser.type === 'player'
+            ? `being defused by ${round.players.find((player) => bomb.defuser.type === 'player' && player.steamId === bomb.defuser.steamId)!.name}`
+            : bomb.type}
         {bombPoint &&
           ` · X ${bombPoint.x.toFixed(1)} · Y ${bombPoint.y.toFixed(1)} · Z ${bombPoint.z.toFixed(1)}`}
       </p>
+      <ol aria-label="Bomb events" className="mt-3 list-none space-y-2 p-0 text-sm">
+        {round.bombEvents
+          .filter((event) => event.tick <= recordedTick)
+          .map((event, index) => {
+            const label =
+              event.type === 'exploded'
+                ? 'Bomb exploded'
+                : `${round.players.find((player) => player.steamId === event.player)!.name} ${bombEventLabels[event.type]}`
+            return <li key={index}>{label}</li>
+          })}
+      </ol>
       <div className="mt-5">
         <h3 className="text-sm font-semibold">Kills and deaths</h3>
         <ol aria-label="Kill feed" className="mt-2 list-none space-y-2 p-0 text-sm">

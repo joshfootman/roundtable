@@ -90,3 +90,8 @@ SHA-256 is `f9c7082e47e26dc6ddf79771ac204ae9b53b3406418e6434074febca4dfe59d4`.
 The independent parser matches the original recording at all 20 selected player
 and bomb samples and all 337 event counts through this boundary. Sparse full
 packet segments lacked equipment history and are not used as fixtures.
+
+`bomb-events.json` contains the independent full-match bomb interaction facts.
+Beginnings and cancellations come from the reference parser’s entity callbacks.
+Plant, defuse and explosion completions also exist as raw recorded legacy events.
+The full-round verifier checks all 36 facts, including five explosions.

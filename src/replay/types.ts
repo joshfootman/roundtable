@@ -1,7 +1,22 @@
+export type BombEvent =
+  | {
+      tick: number
+      type: 'plant-start' | 'plant-abort' | 'planted' | 'defuse-start' | 'defuse-abort' | 'defused'
+      player: string
+    }
+  | { tick: number; type: 'exploded' }
+
 export type BombState =
   | { type: 'inactive' }
-  | { type: 'carried'; carrier: string }
-  | { type: 'dropped' | 'planted'; x: number; y: number; z: number }
+  | { type: 'carried'; carrier: string; planting: boolean }
+  | { type: 'dropped'; x: number; y: number; z: number }
+  | {
+      type: 'planted'
+      x: number
+      y: number
+      z: number
+      defuser: { type: 'none' } | { type: 'player'; steamId: string }
+    }
 
 export type ReplayWeapon =
   | { type: 'none' }
@@ -32,6 +47,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  bombEvents: BombEvent[]
   bomb: { tick: number; state: BombState }[]
   inspection: PlayerInspection[][]
   deaths: ReplayDeath[]
