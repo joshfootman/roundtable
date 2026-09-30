@@ -128,3 +128,10 @@ messages. Both compact fixtures retain network ID 452. Shot origin, pitch, yaw,
 weapon and shooter handle are recorded. The tactical trace has a 300 world-unit
 display length and lasts 0.15 seconds; neither represents a collision endpoint
 or bullet travel time. No impact endpoints exist in this source.
+
+`flashes.json` contains 44 independent player flash-state frames through round
+four. Positive durations retain their recorded update tick; remaining time is
+computed from the replay tick. Baseline reads do not invent flash beginnings.
+Subsequent full entity checkpoints are skipped during sequential parsing, as in
+the reference decoder, so repeated snapshots cannot restart a flash timer.
+Indicators are steady markers with text; they never flash the page.

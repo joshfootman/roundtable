@@ -47,10 +47,11 @@ func main() {
 	}
 	p := demo.NewParser(f)
 	defer p.Close()
-	ticks := map[int]bool{537: true, 5732: true, 5796: true, 6400: true, 7443: true, 7444: true, 7445: true, 7834: true, 8281: true, 6362: true, 6466: true, 6500: true, 13170: true, 30555: true, 31965: true, 69941: true}
+	ticks := map[int]bool{6492: true, 537: true, 5732: true, 5796: true, 6400: true, 7443: true, 7444: true, 7445: true, 7834: true, 8281: true, 6362: true, 6466: true, 6500: true, 13170: true, 30555: true, 31965: true, 6724: true, 7886: true, 69941: true}
 	var projectileFrames []any
 	var shots []any
 	var fireFrames []fireFrame
+	var flashFrames []map[string]any
 	var infernoFields []string
 	var frames []any
 	var records []any
@@ -138,6 +139,32 @@ func main() {
 	})
 	p.RegisterEventHandler(func(e events.FrameDone) {
 		tick := p.GameState().IngameTick()
+		if tick >= 537 && round <= 4 {
+			players := make([]map[string]any, 0)
+			for _, player := range p.GameState().Participants().Playing() {
+				if player.SteamID64 == 0 || player.IsBot {
+					continue
+				}
+				flash := map[string]any{"type": "none"}
+				if player.FlashDuration > 0 {
+					flash = map[string]any{"type": "flashed", "startTick": player.FlashTick, "durationSeconds": float64(player.FlashDuration)}
+				}
+				players = append(players, map[string]any{"steamId": id(player), "flash": flash})
+			}
+			sort.Slice(players, func(i, j int) bool { return players[i]["steamId"].(string) < players[j]["steamId"].(string) })
+			if len(flashFrames) > 0 && flashFrames[len(flashFrames)-1]["tick"].(int) == tick {
+				flashFrames = flashFrames[:len(flashFrames)-1]
+			}
+			var previous any
+			if len(flashFrames) > 0 {
+				previous = flashFrames[len(flashFrames)-1]["players"]
+			}
+			now, _ := json.Marshal(players)
+			before, _ := json.Marshal(previous)
+			if !bytes.Equal(now, before) {
+				flashFrames = append(flashFrames, map[string]any{"tick": tick, "players": players})
+			}
+		}
 		if round <= 4 {
 			current := make([]fireSnapshot, 0)
 			for entity, inferno := range p.GameState().Infernos() {
@@ -186,7 +213,7 @@ func main() {
 			sort.Slice(inventory, func(i, j int) bool {
 				return inventory[i].(map[string]any)["type"].(int) < inventory[j].(map[string]any)["type"].(int)
 			})
-			players = append(players, map[string]any{"steamId": id(v), "name": v.Name, "team": int(v.Team), "position": v.Position(), "health": v.Health(), "alive": v.IsAlive(), "yaw": v.ViewDirectionX(), "pitch": v.ViewDirectionY(), "armour": v.Armor(), "helmet": v.HasHelmet(), "money": v.Money(), "activeWeapon": weapon(v.ActiveWeapon()), "inventory": inventory, "flashbangCount": v.FlashbangCount(), "flashRemainingSeconds": v.FlashDurationTimeRemaining().Seconds()})
+			players = append(players, map[string]any{"steamId": id(v), "name": v.Name, "team": int(v.Team), "position": v.Position(), "health": v.Health(), "alive": v.IsAlive(), "yaw": v.ViewDirectionX(), "pitch": v.ViewDirectionY(), "armour": v.Armor(), "helmet": v.HasHelmet(), "money": v.Money(), "activeWeapon": weapon(v.ActiveWeapon()), "inventory": inventory, "flashbangCount": v.FlashbangCount(), "flashRemainingSeconds": v.FlashDurationTimeRemaining().Seconds(), "flashStartTick": v.FlashTick, "flashDurationSeconds": float64(v.FlashDuration)})
 		}
 		sort.Slice(players, func(i, j int) bool { return players[i]["steamId"].(string) < players[j]["steamId"].(string) })
 		frames = append(frames, map[string]any{"tick": tick, "players": players, "bomb": map[string]any{"carrier": id(p.GameState().Bomb().Carrier), "position": p.GameState().Bomb().Position()}})
@@ -194,6 +221,6 @@ func main() {
 	if e = p.ParseToEnd(); e != nil {
 		panic(e)
 	}
-	json.NewEncoder(os.Stdout).Encode(map[string]any{"parser": "demoinfocs 4.5.1", "frames": frames, "projectileFrames": projectileFrames, "shots": shots, "fireFrames": fireFrames, "infernoFields": infernoFields, "events": records, "census": census})
+	json.NewEncoder(os.Stdout).Encode(map[string]any{"parser": "demoinfocs 4.5.1", "frames": frames, "projectileFrames": projectileFrames, "shots": shots, "fireFrames": fireFrames, "flashFrames": flashFrames, "infernoFields": infernoFields, "events": records, "census": census})
 	fmt.Fprintf(os.Stderr, "frames=%d events=%d census=%v\n", len(frames), len(records), census)
 }

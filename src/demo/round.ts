@@ -104,7 +104,7 @@ export function readReplay(
             descriptors.set(descriptor.eventid, descriptor)
       }
       for (const message of entityMessages)
-        entities.packet(fromBinary(CSVCMsg_PacketEntitiesSchema, message.bytes))
+        entities.packet(fromBinary(CSVCMsg_PacketEntitiesSchema, message.bytes), tick)
       for (const message of messages)
         if (message.id === ERosterNetworkMessages.GE_Source1LegacyGameEvent) {
           const event = fromBinary(CMsgSource1LegacyGameEventSchema, message.bytes)

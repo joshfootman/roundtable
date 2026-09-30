@@ -1,3 +1,4 @@
+import { recordAtTick } from '../src/replay/frames.ts'
 import { replayBuffers } from '../src/replay/buffers.ts'
 import assert from 'node:assert/strict'
 import { open, readFile } from 'node:fs/promises'
@@ -29,6 +30,9 @@ const expectedProjectiles = JSON.parse(
   await readFile(new URL('../fixtures/replay/projectile-lifetimes.json', import.meta.url), 'utf8'),
 )
 
+const expectedFlashes = JSON.parse(
+  await readFile(new URL('../fixtures/replay/flashes.json', import.meta.url), 'utf8'),
+) as { tick: number; players: unknown[] }[]
 const expectedShots = JSON.parse(
   await readFile(new URL('../fixtures/replay/shots.json', import.meta.url), 'utf8'),
 )
@@ -95,6 +99,17 @@ await Effect.runPromise(
               (bytes, buffer) => bytes + buffer.byteLength,
               0,
             )
+            for (const frame of expectedFlashes.filter(
+              (frame) => startTick <= frame.tick && frame.tick < endTick,
+            )) {
+              assert.deepEqual(
+                event.round.players.map((player, index) => ({
+                  steamId: player.steamId,
+                  flash: recordAtTick(event.round.inspection[index]!, frame.tick).flash,
+                })),
+                frame.players,
+              )
+            }
             shots.push(...event.round.shots.map((shot) => ({ ...shot, round: number })))
             if (number <= 4)
               fires.push(

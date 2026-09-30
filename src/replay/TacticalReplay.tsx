@@ -9,7 +9,7 @@ import {
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
 import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js'
-import { sampleAtTick, recordAtTick, bombPosition } from './frames'
+import { sampleAtTick, recordAtTick, bombPosition, flashRemaining } from './frames'
 import { mapDefinition, worldToMap, type MapDefinition } from './maps'
 import type { ReplayRound } from './types'
 
@@ -105,6 +105,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           .fill('#ffffff')
           .stroke({ color: '#101713', width: 2 })
         marker.addChild(direction)
+        const flash = new Graphics()
+          .circle(-13, -13, 5)
+          .fill('#ffffff')
+          .stroke({ color: '#101713', width: 2 })
+        marker.addChild(flash)
         const label = new Text({
           text: String(index + 1),
           style: {
@@ -117,7 +122,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         label.anchor.set(0.5)
         marker.addChild(label)
         sceneMap.addChild(marker)
-        return { container: marker, body, direction }
+        return { container: marker, body, direction, flash }
       })
       const bombMarker = new Graphics()
         .rect(-9, -9, 18, 18)
@@ -200,9 +205,15 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         for (let player = 0; player < markers.length; player++) {
           const position = (sample * markers.length + player) * 3
           const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
-          const { container, body, direction } = markers[player]!
+          const { container, body, direction, flash } = markers[player]!
           const state = sample * markers.length + player
           const color = round.teams[state] === 3 ? '#8dc5ff' : '#ffd08a'
+          flash.visible =
+            flashRemaining(
+              recordAtTick(round.inspection[player]!, tick).flash,
+              tick,
+              round.tickInterval,
+            ) > 0
           body.tint = color
           direction.tint = color
           direction.rotation = (-round.yaw[state]! * Math.PI) / 180
@@ -498,10 +509,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           {round.players.map((player, index) => {
             const state = sample * round.players.length + index
             const offset = state * 3
-            const { weapon, armour, helmet, grenades, money } = recordAtTick(
+            const { weapon, armour, helmet, grenades, money, flash } = recordAtTick(
               round.inspection[index]!,
               recordedTick,
             )
+            const remainingFlash = flashRemaining(flash, recordedTick, round.tickInterval)
             return (
               <li key={player.steamId} className="rounded-lg bg-[#1b251e] p-3">
                 <p className="m-0 text-sm font-semibold">
@@ -530,6 +542,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
                         .map((item) => `${equipmentName(item.definition)} × ${item.count}`)
                         .join(' · ')
                     : 'None'}
+                </p>
+                <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
+                  {remainingFlash > 0
+                    ? `Flashed · ${remainingFlash.toFixed(1)} s remaining`
+                    : 'Not flashed'}
                 </p>
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
                   Health {round.health[state]} · Facing {round.yaw[state]!.toFixed(1)}°

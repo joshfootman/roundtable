@@ -1,3 +1,7 @@
+export type FlashState =
+  | { type: 'none' }
+  | { type: 'flashed'; startTick: number; durationSeconds: number }
+
 export interface ReplayShot {
   tick: number
   player: string
@@ -73,6 +77,7 @@ export interface PlayerInspection {
   tick: number
   money: number
   armour: number
+  flash: FlashState
   helmet: boolean
   grenades: { definition: number; count: number }[]
   weapon: ReplayWeapon

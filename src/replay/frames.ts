@@ -1,4 +1,4 @@
-import type { ReplayRound, BombState } from './types.ts'
+import type { ReplayRound, BombState, FlashState } from './types.ts'
 
 export function sampleAtTick(ticks: Uint32Array, tick: number): number {
   let low = 0
@@ -32,4 +32,10 @@ export function bombPosition(round: ReplayRound, state: BombState, sample: numbe
     y: round.positions[offset + 1]!,
     z: round.positions[offset + 2]!,
   }
+}
+
+export function flashRemaining(flash: FlashState, tick: number, tickInterval: number): number {
+  return flash.type === 'none'
+    ? 0
+    : Math.max(0, flash.durationSeconds - (tick - flash.startTick) * tickInterval)
 }

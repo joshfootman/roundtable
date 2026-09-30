@@ -57,6 +57,11 @@ function sameInspection(a: PlayerInspection, b: PlayerInspection): boolean {
   const x = a.weapon
   const y = b.weapon
   return (
+    a.flash.type === b.flash.type &&
+    (a.flash.type !== 'flashed' ||
+      b.flash.type !== 'flashed' ||
+      (a.flash.startTick === b.flash.startTick &&
+        a.flash.durationSeconds === b.flash.durationSeconds)) &&
     a.money === b.money &&
     a.armour === b.armour &&
     a.helmet === b.helmet &&
@@ -360,6 +365,7 @@ export function createRoundTracker() {
         const previous = track.at(-1)
         const currentInspection = {
           tick,
+          flash: recorded.flash,
           weapon: recorded.weapon,
           money: recorded.money,
           armour: recorded.armour,

@@ -1,0 +1,3034 @@
+[
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 537
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.019168376922607,
+          "startTick": 6466,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.19446924328804016,
+          "startTick": 6466,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 6466
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.019168376922607,
+          "startTick": 6466,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 6484
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 6827
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "durationSeconds": 0.7456173300743103,
+          "startTick": 7886,
+          "type": "flashed"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.01418936252594,
+          "startTick": 7886,
+          "type": "flashed"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 5.180493354797363,
+          "startTick": 7886,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 7886
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.01418936252594,
+          "startTick": 7886,
+          "type": "flashed"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 5.180493354797363,
+          "startTick": 7886,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 7953
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 5.180493354797363,
+          "startTick": 7886,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 7977
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 8282
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.919029951095581,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.128728866577148,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12368
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "durationSeconds": 1.2840723991394043,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.919029951095581,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.78691828250885,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.986167311668396,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.128728866577148,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9278532862663269,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12643
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "durationSeconds": 3.3589117527008057,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.919029951095581,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.78691828250885,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.9580488204956055,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.128728866577148,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9278532862663269,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12692
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "durationSeconds": 3.3589117527008057,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.78691828250885,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.9580488204956055,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.128728866577148,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9278532862663269,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12720
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "durationSeconds": 3.3589117527008057,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.78691828250885,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.9580488204956055,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.128728866577148,
+          "startTick": 12368,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12727
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "durationSeconds": 3.3589117527008057,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.78691828250885,
+          "startTick": 12643,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.9580488204956055,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12738
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "durationSeconds": 3.3589117527008057,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.9580488204956055,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12804
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.9580488204956055,
+          "startTick": 12692,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12890
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 12946
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.1442425698041916,
+          "startTick": 19169,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9621918201446533,
+          "startTick": 19169,
+          "type": "flashed"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 19169
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.8616904616355896,
+          "startTick": 19176,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9075186252593994,
+          "startTick": 19176,
+          "type": "flashed"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 19176
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9075186252593994,
+          "startTick": 19176,
+          "type": "flashed"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 19254
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 19258
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.339496374130249,
+          "startTick": 20545,
+          "type": "flashed"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9371551871299744,
+          "startTick": 20545,
+          "type": "flashed"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 20545
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.339496374130249,
+          "startTick": 20545,
+          "type": "flashed"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 20629
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 20666
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9514251351356506,
+          "startTick": 22924,
+          "type": "flashed"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 22924
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 23010
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.12148702889680862,
+          "startTick": 23407,
+          "type": "flashed"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.518599033355713,
+          "startTick": 23407,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.927622318267822,
+          "startTick": 23407,
+          "type": "flashed"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 23407
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.518599033355713,
+          "startTick": 23407,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.927622318267822,
+          "startTick": 23407,
+          "type": "flashed"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 23418
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 4.518599033355713,
+          "startTick": 23407,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 23457
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 23812
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.9033610820770264,
+          "startTick": 27060,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9681567549705505,
+          "startTick": 27060,
+          "type": "flashed"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.6702764630317688,
+          "startTick": 27060,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 27060
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.9033610820770264,
+          "startTick": 27060,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.9681567549705505,
+          "startTick": 27060,
+          "type": "flashed"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 27121
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.9033610820770264,
+          "startTick": 27060,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 27147
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 27231
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7681097984313965,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.792598009109497,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.7165780067443848,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7759127616882324,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.3823680877685547,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.6127094030380249,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 29681
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7681097984313965,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.792598009109497,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.7165780067443848,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7759127616882324,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.3823680877685547,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 29736
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7681097984313965,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "durationSeconds": 1.7165780067443848,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7759127616882324,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.3823680877685547,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 29768
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7681097984313965,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7759127616882324,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.3823680877685547,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 29835
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.7759127616882324,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.3823680877685547,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 29919
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "durationSeconds": 3.3823680877685547,
+          "startTick": 29681,
+          "type": "flashed"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 29920
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 29985
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.5226728916168213,
+          "startTick": 30603,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "durationSeconds": 0.1324310153722763,
+          "startTick": 30603,
+          "type": "flashed"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.5148632526397705,
+          "startTick": 30603,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 30603
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.5226728916168213,
+          "startTick": 30603,
+          "type": "flashed"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.5148632526397705,
+          "startTick": 30603,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 30615
+  },
+  {
+    "players": [
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197973140692"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197978835160"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989430253"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197989744167"
+      },
+      {
+        "flash": {
+          "durationSeconds": 2.5148632526397705,
+          "startTick": 30603,
+          "type": "flashed"
+        },
+        "steamId": "76561197991272318"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561197997351207"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198063336407"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198068422762"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198113666193"
+      },
+      {
+        "flash": {
+          "type": "none"
+        },
+        "steamId": "76561198201620490"
+      }
+    ],
+    "tick": 30820
+  }
+]

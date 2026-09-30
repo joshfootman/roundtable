@@ -64,9 +64,11 @@ export interface PlayerSnapshot {
   armour: number
   helmet: boolean
   grenades: PlayerInspection['grenades']
+  flash: PlayerInspection['flash']
   weapon: ReplayWeapon
 }
 const replayFields = new Set([
+  'm_flFlashDuration',
   'm_fireCount',
   'm_steamID',
   'm_hOwnerEntity',
@@ -118,15 +120,19 @@ export function createEntityDecoder() {
   const users = new Map<number, string>()
   const stringTables: StringTable[] = []
   let classBits = 0
+  let receivedFullEntities = false
   function fields(
     reader: BitReader,
     serializer: Serializer,
     values: Map<string, EntityValue>,
     polymorphic: Map<string, Serializer>,
+    tick?: number,
   ) {
     for (const path of readFieldPaths(reader)) {
       const field = resolveField(serializer, path, polymorphic)
       const value = field.decode(reader)
+      if (field.name === 'm_flFlashDuration' && tick !== undefined)
+        values.set('flashStartTick', tick)
       if (
         replayFields.has(field.name) ||
         field.name.startsWith('m_pWeaponServices.m_hMyWeapons.') ||
@@ -355,6 +361,15 @@ export function createEntityDecoder() {
         typeof helmet !== 'boolean'
       )
         throw new Error('Missing recorded player armour.')
+      const duration = pawn.values.get('m_flFlashDuration')
+      if (typeof duration !== 'number' || !Number.isFinite(duration) || duration < 0)
+        throw new Error('Missing recorded flash duration.')
+      let flash: PlayerInspection['flash'] = { type: 'none' }
+      if (duration > 0) {
+        const startTick = pawn.values.get('flashStartTick')
+        if (typeof startTick !== 'number') throw new Error('Missing recorded flash beginning.')
+        flash = { type: 'flashed', startTick, durationSeconds: duration }
+      }
       players.push({
         steamId: steam.toString(),
         name,
@@ -366,6 +381,7 @@ export function createEntityDecoder() {
         money,
         armour,
         helmet,
+        flash,
         grenades: grenades(pawn),
         weapon: weapon(pawn.values.get('m_pWeaponServices.m_hActiveWeapon')),
       })
@@ -424,8 +440,11 @@ export function createEntityDecoder() {
       if (table.definition.name === 'instancebaseline' || table.definition.name === 'userinfo')
         updates(table, message.stringData, message.numChangedEntries)
     },
-    packet(message: CSVCMsg_PacketEntities) {
-      if (!message.legacyIsDelta) entities.clear()
+    packet(message: CSVCMsg_PacketEntities, tick: number) {
+      if (!message.legacyIsDelta) {
+        if (receivedFullEntities) return
+        receivedFullEntities = true
+      }
       if (!classBits) throw new Error('Missing entity server information.')
       const reader = new BitReader(message.entityData)
       let index = -1
@@ -473,7 +492,7 @@ export function createEntityDecoder() {
           if (!entity) throw new Error('Cannot update an unknown replay entity.')
           entity.active = true
         }
-        fields(reader, entity.serializer, entity.values, entity.polymorphic)
+        fields(reader, entity.serializer, entity.values, entity.polymorphic, tick)
       }
     },
     playerByUserId(id: number) {

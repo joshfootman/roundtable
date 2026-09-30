@@ -37,6 +37,7 @@ const firstRound = {
         money: 800,
         armour: 0,
         helmet: false,
+        flash: { type: 'none' as const },
         grenades: [],
         weapon: { type: 'none' as const },
       },

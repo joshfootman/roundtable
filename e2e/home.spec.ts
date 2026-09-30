@@ -253,6 +253,15 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await seekReplay(scrubber, 6466)
   await expect(flying).toHaveCount(0)
   await expect(detonations).toHaveText(['Flashbang detonated · X 999.5 · Y 475.7 · Z 416.2'])
+  const flameZ = replay
+    .getByLabel('Player inspection')
+    .getByRole('listitem')
+    .filter({ hasText: 'flameZ' })
+  await expect(flameZ).toContainText('Flashed · 4.0 s remaining')
+  await seekReplay(scrubber, 6724)
+  await expect(flameZ).toContainText('Not flashed')
+  await seekReplay(scrubber, 6466)
+  await expect(flameZ).toContainText('Flashed · 4.0 s remaining')
   await seekReplay(scrubber, 6361)
   await expect(flying).toHaveCount(0)
   await expect(detonations).toHaveCount(0)
@@ -358,7 +367,7 @@ test('selects completed rounds without restarting import or changing selection o
             ticks: new Uint32Array([number * 100, number * 100 + 1]),
             positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
             alive: new Uint8Array([1, 1]),
-            inspection: [[{tick: number * 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: []}]],
+            inspection: [[{tick: number * 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: [], flash: {type: 'none'}}]],
             bomb: [{tick: number * 100, state: {type: 'inactive'}}],
             fires: [{tick: 0, fires: []}],
       shots: [],

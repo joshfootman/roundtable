@@ -22,7 +22,7 @@
 - [x] Display approximate smoke areas over time
 - [x] Display approximate fire areas over time
 - [x] Display bullet traces
-- [ ] Display flashed-player indicators
+- [x] Display flashed-player indicators
 - [ ] Filter visible players and teams
 - [ ] Toggle utility overlays
 - [ ] Switch Nuke floors while preserving playback position
