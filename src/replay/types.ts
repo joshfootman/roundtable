@@ -1,7 +1,9 @@
 export interface ReplayRound {
   number: number
+  overtime: number
   startTick: number
   liveStartTick: number
+  resultTick: number
   endTick: number
   tickInterval: number
   players: { steamId: string; name: string; team: 2 | 3 }[]

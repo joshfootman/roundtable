@@ -7,7 +7,14 @@ import { readReplay } from '../src/demo/round.ts'
 const path = process.argv[2] ?? 'fixtures/faze-vs-vitality-m2-dust2.dem'
 const expected = JSON.parse(
   await readFile(new URL('../fixtures/replay/round-boundaries.json', import.meta.url), 'utf8'),
-) as { number: number; startTick: number; liveStartTick: number; endTick: number }[]
+) as {
+  number: number
+  startTick: number
+  liveStartTick: number
+  resultTick: number
+  endTick: number
+  overtime: number
+}[]
 
 await Effect.runPromise(
   Effect.scoped(
@@ -43,20 +50,12 @@ await Effect.runPromise(
             discovered.push({ number: event.number, startTick: event.startTick })
           } else if (event.type === 'reset') completed.length = 0
           else {
-            const { number, startTick, liveStartTick, endTick } = event.round
-            completed.push({ number, startTick, liveStartTick, endTick })
+            const { number, startTick, liveStartTick, resultTick, endTick, overtime } = event.round
+            completed.push({ number, startTick, liveStartTick, resultTick, endTick, overtime })
           }
         }),
       )
-      assert.deepEqual(
-        completed,
-        expected.map(({ number, startTick, liveStartTick, endTick }) => ({
-          number,
-          startTick,
-          liveStartTick,
-          endTick,
-        })),
-      )
+      assert.deepEqual(completed, expected)
       assert.deepEqual(discovered, [
         { number: 1, startTick: 449 },
         ...expected.map(({ number, startTick }) => ({ number, startTick })),

@@ -7,6 +7,7 @@ const rules: RoundRules = {
   totalRoundsPlayed: 0,
   reason: 0,
   phase: 2,
+  overtime: 0,
 }
 
 test('discards knife stages and completed match attempts when recorded rules restart', () => {
@@ -60,6 +61,8 @@ test('discards knife stages and completed match attempts when recorded rules res
     type: 'round',
     round: {
       number: 1,
+      overtime: 0,
+      resultTick: 32,
       startTick: 30,
       liveStartTick: 31,
       endTick: 33,
@@ -75,4 +78,59 @@ test('discards knife stages and completed match attempts when recorded rules res
     { type: 'round-start', number: 1, startTick: 34 },
   ])
   expect(retained).toEqual([])
+})
+
+test('captures overtime freeze time and postmatch activity without a regulation round cap', () => {
+  const completed = [
+    { totalRoundsPlayed: 24, overtime: 1 },
+    { totalRoundsPlayed: 30, overtime: 2 },
+  ].map((input) => {
+    const tracker = createRoundTracker()
+    const events: ReplayEvent[] = []
+    function packet(tick: number, changes: Partial<RoundRules>, names: string[] = []) {
+      events.push(...tracker.update(tick, { ...rules, ...input, ...changes }, names, 1 / 64))
+      if (tracker.recording)
+        tracker.sample(tick, [
+          {
+            steamId: '76561198201620490',
+            name: 'broky',
+            team: 3,
+            x: tick,
+            y: 20,
+            z: 30,
+            alive: tick < 105,
+          },
+        ])
+    }
+    packet(100, {}, ['round_start'])
+    packet(102, {}, ['round_freeze_end'])
+    const final = {
+      started: false,
+      phase: 5,
+      reason: 9,
+      totalRoundsPlayed: input.totalRoundsPlayed + 1,
+    }
+    packet(105, final)
+    packet(106, final, ['round_officially_ended'])
+    packet(109, final)
+    expect(events).toEqual([
+      { type: 'round-start', number: input.totalRoundsPlayed + 1, startTick: 100 },
+    ])
+    return tracker.end(110)
+  })
+  const expected = {
+    startTick: 100,
+    liveStartTick: 102,
+    resultTick: 105,
+    endTick: 110,
+    tickInterval: 1 / 64,
+    players: [{ steamId: '76561198201620490', name: 'broky', team: 3 }],
+    ticks: new Uint32Array([100, 102, 105, 106, 109]),
+    positions: new Float32Array([100, 20, 30, 102, 20, 30, 105, 20, 30, 106, 20, 30, 109, 20, 30]),
+    alive: new Uint8Array([1, 1, 0, 0, 0]),
+  }
+  expect(completed).toEqual([
+    [{ type: 'round', round: { ...expected, number: 25, overtime: 1 } }],
+    [{ type: 'round', round: { ...expected, number: 31, overtime: 2 } }],
+  ])
 })

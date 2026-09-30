@@ -34,3 +34,19 @@ The first import in each project starts a fresh browser context. Later imports r
 ## Progressive playback check
 
 After progressive import, all six full-demo benchmark runs began playback while parsing was still active. First-round availability was 839.0–1034.3 ms. Frame-gap p95 remained 16.7–16.8 ms on this laptop. The JSON records `parsingDuringPlayback` for each run. These remain browser scheduling measurements.
+
+## Final sequential-task check
+
+After round selection, eligibility and phase controls, six full-demo imports were
+measured again on 30 September 2026 with the same laptop and browser configuration.
+All six began playback while parsing remained active.
+
+| Viewport        | First round range, ms | Frame-gap p95 range, ms | Seek range, ms |
+| --------------- | --------------------- | ----------------------- | -------------- |
+| desktop         | 865.8–1034.7          | 16.7–16.8               | 19.6–33.2      |
+| mobile-viewport | 840.5–913.5           | 16.7–16.8               | 19.5–29.3      |
+
+One desktop run had a maximum frame gap of 33.3 ms. All other maximum gaps were
+16.8 ms. These are scheduling observations, not physical-phone or GPU frame-rate
+claims. Freeze time was disabled for this movement benchmark, matching the initial
+baseline. The regression suite separately verifies enabled freeze-time playback.

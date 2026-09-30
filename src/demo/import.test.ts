@@ -20,6 +20,8 @@ const metadata: DemoMetadata = {
 
 const firstRound = {
   number: 1,
+  overtime: 0,
+  resultTick: 538,
   startTick: 537,
   liveStartTick: 538,
   endTick: 538,
@@ -33,6 +35,7 @@ const firstRound = {
 const secondRound = {
   ...firstRound,
   number: 2,
+  resultTick: 540,
   startTick: 539,
   liveStartTick: 540,
   endTick: 540,

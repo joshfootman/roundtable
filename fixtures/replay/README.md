@@ -41,7 +41,12 @@ transitions. The final round completes at the last recorded packet, tick 197008,
 following its result at 194674. Every overtime value is zero in this fixture.
 
 Run `npm run verify:rounds` with the full local demo present to compare the custom
-stream's retained competitive round numbers and boundaries without retaining all buffers.
+stream's retained competitive round numbers, overtime counts and all four phase boundaries without retaining all buffers.
 The separate discovery assertion includes the abandoned start at 449; a reset
 clears completed summaries before final comparison.
 This complements the compact coordinate fixture and requires the original file.
+
+The generated lifecycle tests additionally cover overtime rounds 25 and 31,
+including freeze, recorded result, and final postmatch samples. These are explicit
+state inputs, not a captured overtime demo. The supplied full-match oracle has
+no overtime and cannot establish historical overtime compatibility.

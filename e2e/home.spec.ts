@@ -161,9 +161,11 @@ test('rounds recording duration across a minute boundary', async ({ page }) => {
   // This captured record has five framing bytes before the one-byte float field tag.
   bytes.writeFloatLE(59.999, infoOffset + 6)
   await page.goto('/')
-  await page
-    .getByLabel('Choose a .dem file')
-    .setInputFiles({ name: 'duration.dem', mimeType: 'application/octet-stream', buffer: bytes })
+  await page.getByLabel('Choose a .dem file').setInputFiles({
+    name: 'duration.dem',
+    mimeType: 'application/octet-stream',
+    buffer: bytes,
+  })
   await page.getByRole('button', { name: 'Import demo' }).click()
   await expect(page.getByRole('heading', { name: 'Dust II', exact: true })).toBeVisible()
   await expect(page.getByRole('definition').filter({ hasText: '1m 0.00s' })).toHaveText('1m 0.00s')
@@ -189,6 +191,27 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '537')
   const canvas = replay.locator('canvas')
   const startingMap = await canvas.screenshot()
+  const freezeTime = replay.getByRole('checkbox', {
+    name: 'Include freeze time',
+  })
+  const scrubber = replay.getByRole('slider', { name: 'Replay position' })
+  await freezeTime.check()
+  await scrubber.press('Home')
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '537')
+  await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Freeze time')
+  await play.click()
+  await page.clock.runFor(1_008)
+  await replay.getByRole('button', { name: 'Pause', exact: true }).click()
+  await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
+  await freezeTime.uncheck()
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '5732')
+  await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Live')
+  await scrubber.evaluate((element: HTMLInputElement) => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(element, '7834')
+    element.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Post-round')
+  await scrubber.press('Home')
   await play.focus()
   await page.keyboard.press('Space')
   await expect(replay.getByRole('button', { name: 'Pause', exact: true })).toBeVisible()
@@ -201,8 +224,14 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await page.clock.fastForward(5_000)
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', tick!)
   await expect(broky).toHaveText(position!)
+  await play.click()
+  await freezeTime.check()
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', tick!)
+  await expect(replay.getByRole('button', { name: 'Pause', exact: true })).toBeVisible()
+  await freezeTime.uncheck()
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', tick!)
+  await replay.getByRole('button', { name: 'Pause', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('Completed rounds remain playable')
-  const scrubber = replay.getByRole('slider', { name: 'Replay position' })
   await scrubber.press('End')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '8282')
   await expect(broky).toContainText('X -2000.4 · Y 1383.1 · Z 29.7 · Dead')
@@ -248,7 +277,8 @@ test('selects completed rounds without restarting import or changing selection o
           type: 'round',
           round: {
             number, startTick: number * 100, liveStartTick: number * 100 + 1,
-            endTick: number * 100 + 2, tickInterval: 1 / 64,
+            resultTick: number * 100 + 1, endTick: number * 100 + 2,
+            overtime: number === 25 ? 1 : 0, tickInterval: 1 / 64,
             players: [{ name: 'Recorded player', steamId: '76561198201620490', team: number === 1 ? 2 : 3 }],
             ticks: new Uint32Array([number * 100, number * 100 + 1]),
             positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
@@ -279,13 +309,22 @@ test('selects completed rounds without restarting import or changing selection o
     buffer: Buffer.from('Controlled round stream'),
   })
   await page.getByRole('button', { name: 'Import demo' }).click()
-  const replay = page.getByRole('region', { name: 'Dust II · Round 1', exact: true })
+  const replay = page.getByRole('region', {
+    name: 'Dust II · Round 1',
+    exact: true,
+  })
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
   const rounds = page.getByRole('region', { name: 'Rounds', exact: true })
-  const second = rounds.getByRole('button', { name: 'Round 2 · Ready', exact: true })
+  const second = rounds.getByRole('button', {
+    name: 'Round 2 · Ready',
+    exact: true,
+  })
   await second.focus()
   await page.keyboard.press('Enter')
-  const selected = page.getByRole('region', { name: 'Dust II · Round 2', exact: true })
+  const selected = page.getByRole('region', {
+    name: 'Dust II · Round 2',
+    exact: true,
+  })
   await expect(selected.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
   await expect(
     selected.getByText('X 200.0 · Y 200.0 · Z 30.0 · Alive', { exact: true }),
@@ -296,10 +335,10 @@ test('selects completed rounds without restarting import or changing selection o
   await expect(selected.getByTestId('replay-tick')).toHaveAttribute('data-tick', '202')
   await page.evaluate(() => {
     const channel = new BroadcastChannel('round-navigation')
-    channel.postMessage(3)
+    channel.postMessage(25)
     channel.close()
   })
-  await expect(rounds.getByRole('button', { name: 'Round 3 · Ready', exact: true })).toBeVisible()
+  await expect(rounds.getByRole('button', { name: 'Round 25 · Ready', exact: true })).toBeVisible()
   await expect(second).toHaveAttribute('aria-pressed', 'true')
   await expect(selected.getByTestId('replay-tick')).toHaveAttribute('data-tick', '202')
   await rounds.getByRole('button', { name: 'Round 1 · Ready', exact: true }).click()
@@ -307,10 +346,13 @@ test('selects completed rounds without restarting import or changing selection o
   await expect(
     replay.getByText('X 100.0 · Y 200.0 · Z 30.0 · Alive', { exact: true }),
   ).toBeVisible()
-  await rounds.getByRole('button', { name: 'Round 3 · Ready', exact: true }).click()
+  await rounds.getByRole('button', { name: 'Round 25 · Ready', exact: true }).click()
   await expect(
     page
-      .getByRole('region', { name: 'Dust II · Round 3', exact: true })
+      .getByRole('region', {
+        name: 'Dust II · Round 25 · Overtime 1',
+        exact: true,
+      })
       .getByRole('button', { name: 'Play', exact: true }),
   ).toBeEnabled()
   await page.evaluate(() => {

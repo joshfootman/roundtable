@@ -7,6 +7,7 @@ export interface RoundRules {
   started: boolean
   reason: number
   phase: number
+  overtime: number
 }
 
 export type ReplayEvent =
@@ -17,12 +18,17 @@ export type ReplayEvent =
 type Capture = {
   startTick: number
   number: number
+  overtime: number
   players: ReplayRound['players']
   ticks: number[]
   positions: number[]
   alive: number[]
   lastPositions: Map<string, PlayerSnapshot>
-} & ({ phase: 'freeze' } | { phase: 'live' | 'postround'; liveStartTick: number })
+} & (
+  | { phase: 'freeze' }
+  | { phase: 'live'; liveStartTick: number }
+  | { phase: 'postround'; liveStartTick: number; resultTick: number }
+)
 
 const GAME_COMMENCING = 16
 const POSTMATCH = 5
@@ -41,8 +47,10 @@ export function createRoundTracker() {
     publishedRounds = round.number
     return {
       number: round.number,
+      overtime: round.overtime,
       startTick: round.startTick,
       liveStartTick: round.liveStartTick,
+      resultTick: round.resultTick,
       endTick,
       tickInterval,
       players: round.players,
@@ -94,6 +102,7 @@ export function createRoundTracker() {
           phase: 'freeze',
           startTick: tick,
           number: rules.totalRoundsPlayed + 1,
+          overtime: rules.overtime,
           players: [],
           ticks: [],
           positions: [],
@@ -105,7 +114,7 @@ export function createRoundTracker() {
       if (capture?.phase === 'freeze' && events.includes('round_freeze_end'))
         capture = { ...capture, phase: 'live', liveStartTick: tick }
       if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
-        capture.phase = 'postround'
+        capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
     },
     sample(tick: number, snapshots: PlayerSnapshot[]) {

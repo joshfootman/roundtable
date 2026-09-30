@@ -1,6 +1,6 @@
 # CS2 replay viewer
 
-Status: local import, first competitive-round positions and tactical playback and scrubbing implemented with Effect and PixiJS, verified against the supplied Dust2 demo. Progressive parsing and playback benchmarks remain.
+Status: local import, progressive round discovery and selection, competitive eligibility, and tactical playback with freeze and post-round phases implemented with Effect and PixiJS. All 23 supplied Dust2 rounds match an independent boundary oracle. Initial playback benchmarks are recorded. Overtime is covered by generated lifecycle tests; real overtime and knife fixtures remain compatibility checks.
 Requirements below settled unless marked **proposed**, **optional** or **open**.
 
 ## Product

@@ -8,6 +8,7 @@ interface Playback {
   play(): void
   pause(): void
   seek(tick: number): void
+  setMinimum(tick: number): void
 }
 
 type SceneState =
@@ -38,6 +39,7 @@ export function TacticalReplay({ round, mapName }: { round: ReplayRound; mapName
 function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition }) {
   const host = useRef<HTMLDivElement>(null)
   const playback = useRef<Playback | null>(null)
+  const [includeFreezeTime, setIncludeFreezeTime] = useState(false)
   const [scene, setScene] = useState<SceneState>({ status: 'loading' })
 
   useEffect(() => {
@@ -47,6 +49,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
     let initialized = false
     let observer: ResizeObserver | undefined
     let tick = round.startTick
+    let minimum = round.liveStartTick
     let playing = false
     let lastPublished = 0
 
@@ -82,7 +85,12 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         )
         const label = new Text({
           text: String(index + 1),
-          style: { fontFamily: 'sans-serif', fontSize: 12, fontWeight: 'bold', fill: '#101713' },
+          style: {
+            fontFamily: 'sans-serif',
+            fontSize: 12,
+            fontWeight: 'bold',
+            fill: '#101713',
+          },
         })
         label.anchor.set(0.5)
         marker.addChild(label)
@@ -115,15 +123,21 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         app.render()
       }
       playback.current = {
+        setMinimum(nextMinimum) {
+          minimum = nextMinimum
+          tick = Math.max(minimum, tick)
+          publish(draw())
+          app.render()
+        },
         play() {
-          if (tick < round.liveStartTick || tick >= round.endTick) tick = round.liveStartTick
+          if (tick < minimum || tick >= round.endTick) tick = minimum
           playing = true
           publish(draw())
           app.ticker.start()
         },
         pause,
         seek(nextTick) {
-          tick = Math.max(round.liveStartTick, Math.min(round.endTick, nextTick))
+          tick = Math.max(minimum, Math.min(round.endTick, nextTick))
           if (tick === round.endTick) pause()
           else {
             publish(draw())
@@ -166,12 +180,17 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
   }, [round, map])
 
   const sample = scene.status === 'ready' ? scene.sample : 0
-  const tick = Math.max(
-    round.liveStartTick,
-    scene.status === 'ready' ? scene.tick : round.startTick,
-  )
-  const elapsed = playbackTime((tick - round.liveStartTick) * round.tickInterval)
-  const duration = playbackTime((round.endTick - round.liveStartTick) * round.tickInterval)
+  const minimum = includeFreezeTime ? round.startTick : round.liveStartTick
+  const recordedTick = scene.status === 'ready' ? scene.tick : round.startTick
+  const phase =
+    recordedTick < round.liveStartTick
+      ? 'Freeze time'
+      : recordedTick < round.resultTick
+        ? 'Live'
+        : 'Post-round'
+  const tick = Math.max(minimum, recordedTick)
+  const elapsed = playbackTime((tick - minimum) * round.tickInterval)
+  const duration = playbackTime((round.endTick - minimum) * round.tickInterval)
   return (
     <section
       className="mt-6 rounded-2xl bg-[#17201a] p-5 text-[#e7ece8] sm:p-8"
@@ -183,6 +202,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 id="replay-title" className="m-0 text-2xl font-semibold">
           {map.name} · Round {round.number}
+          {round.overtime > 0 && ` · Overtime ${round.overtime}`}
         </h2>
         <button
           type="button"
@@ -210,10 +230,27 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         ref={host}
         className="mt-5 aspect-square w-full overflow-hidden rounded-xl outline outline-white/10"
       />
+      <label className="mt-4 flex min-h-11 items-center gap-3 text-sm">
+        <input
+          type="checkbox"
+          checked={includeFreezeTime}
+          disabled={scene.status !== 'ready'}
+          className="size-4 accent-[#bedb8a]"
+          onChange={(event) => {
+            const include = event.currentTarget.checked
+            setIncludeFreezeTime(include)
+            playback.current?.setMinimum(include ? round.startTick : round.liveStartTick)
+          }}
+        />
+        Include freeze time
+      </label>
+      <p aria-label="Round phase" className="mt-2 text-sm text-[#a7b5aa]">
+        {phase}
+      </p>
       <p
         aria-label="Replay time"
         data-testid="replay-tick"
-        data-tick={scene.status === 'ready' ? scene.tick : round.startTick}
+        data-tick={recordedTick}
         className="mt-4 font-mono text-sm text-[#a7b5aa] tabular-nums"
       >
         {elapsed}
@@ -224,7 +261,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         Replay position
         <input
           type="range"
-          min={round.liveStartTick}
+          min={minimum}
           max={round.endTick}
           step={1}
           value={tick}
@@ -237,8 +274,8 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       <details className="mt-5" open>
         <summary className="cursor-pointer py-2 font-semibold">Recorded player positions</summary>
         <p className="mt-2 text-xs leading-relaxed text-[#a7b5aa]">
-          World coordinates at the current recorded sample. Starting positions are shown first; Play
-          begins when recorded freeze time ends.
+          World coordinates at the current recorded sample. Starting positions are shown first.
+          Enable freeze time to play from the round’s recorded start.
         </p>
         <ul className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
           {round.players.map((player, index) => {

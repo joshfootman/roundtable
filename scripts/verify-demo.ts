@@ -94,6 +94,8 @@ const job = Effect.scoped(
         const round = demo.firstRound
         assert.equal(round.startTick, expected.startTick)
         assert.equal(round.liveStartTick, 5732)
+        assert.equal(round.resultTick, 7834)
+        assert.equal(round.overtime, 0)
         assert.equal(round.endTick, expected.endTick)
         assert.equal(round.tickInterval, expected.tickInterval)
         for (const frame of expected.samples) {

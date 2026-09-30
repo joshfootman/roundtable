@@ -87,6 +87,8 @@ test('decodes a real competitive round against independent identities and positi
   expect(round.number).toBe(1)
   expect(round.startTick).toBe(oracle.startTick)
   expect(round.liveStartTick).toBe(5732)
+  expect(round.resultTick).toBe(7834)
+  expect(round.overtime).toBe(0)
   expect(round.endTick).toBe(oracle.endTick)
   expect(round.tickInterval).toBe(oracle.tickInterval)
   expect(largestRead).toBeLessThan(1024 * 1024)
