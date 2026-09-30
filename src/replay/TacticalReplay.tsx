@@ -1,6 +1,7 @@
+import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
 import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js'
-import { sampleAtTick } from './frames'
+import { sampleAtTick, inspectionAtTick } from './frames'
 import { mapDefinition, worldToMap, type MapDefinition } from './maps'
 import type { ReplayRound } from './types'
 
@@ -308,6 +309,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           {round.players.map((player, index) => {
             const state = sample * round.players.length + index
             const offset = state * 3
+            const { weapon } = inspectionAtTick(round.inspection[index]!, recordedTick)
             return (
               <li key={player.steamId} className="rounded-lg bg-[#1b251e] p-3">
                 <p className="m-0 text-sm font-semibold">
@@ -321,6 +323,10 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
                   {round.positions[offset + 1]!.toFixed(1)} · Z{' '}
                   {round.positions[offset + 2]!.toFixed(1)} ·{' '}
                   {round.alive[state] ? 'Alive' : 'Dead'}
+                </p>
+                <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
+                  Weapon {weapon.type === 'none' ? 'None' : equipmentName(weapon.definition)}
+                  {weapon.type === 'gun' && ` · Ammo ${weapon.magazine} / ${weapon.reserve}`}
                 </p>
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
                   Health {round.health[state]} · Facing {round.yaw[state]!.toFixed(1)}°

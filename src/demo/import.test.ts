@@ -30,6 +30,7 @@ const firstRound = {
   ticks: new Uint32Array([537, 538]),
   positions: new Float32Array([-760.663, -836.174, 117.072, -761, -836, 117]),
   alive: new Uint8Array([1, 1]),
+  inspection: [[{ tick: 0, weapon: { type: 'none' as const } }]],
   deaths: [],
   health: new Int32Array([100, 100]),
   yaw: new Float32Array([90, 90]),

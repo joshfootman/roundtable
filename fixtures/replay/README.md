@@ -70,3 +70,8 @@ The production parser reads no reference data. `npm run verify:round` compares
 all six samples through the custom parser. `npm run verify:rounds` reports total
 completed typed-buffer bytes. With health, yaw and current teams, all 23 rounds
 publish 44,008,608 bytes. This excludes browser and structured-object overhead.
+
+Weapon names and gun ammunition in `oracle.json` come from the independent
+reference parser. Knife, bomb and grenade convenience ammunition values are
+excluded. Unarmed is a recorded state. Item definition IDs use the local wire
+serializer field `m_iItemDefinitionIndex`.

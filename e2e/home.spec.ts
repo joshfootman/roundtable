@@ -192,6 +192,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
     .filter({ hasText: 'broky' })
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
   await expect(broky).toContainText('Health 100 · Facing 128.5°')
+  await expect(broky).toContainText('Weapon Glock-18 · Ammo 20 / 120')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '537')
   const canvas = replay.locator('canvas')
   const startingMap = await canvas.screenshot()
@@ -219,6 +220,12 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   })
   await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Post-round')
   await expect(replay.getByLabel('Kill feed').getByRole('listitem')).toHaveCount(6)
+  await expect(broky).toContainText('Weapon None')
+  const spinx = replay
+    .getByLabel('Player inspection')
+    .getByRole('listitem')
+    .filter({ hasText: 'Spinx' })
+  await expect(spinx).toContainText('Weapon USP-S · Ammo 9 / 24')
   await expect(replay.getByLabel('Kill feed').getByRole('listitem').last()).toHaveText(
     'Spinx → rain · Headshot',
   )
@@ -254,6 +261,9 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
   await expect(broky).toContainText('Health 100 · Facing 156.4°')
   expect(await canvas.screenshot()).toEqual(liveMap)
+  await expect(spinx).toContainText('Weapon Knife')
+  await expect(spinx).not.toContainText('Ammo')
+  await expect(broky).toContainText('Weapon Glock-18 · Ammo 20 / 120')
   await expect(replay.getByLabel('Kill feed').getByRole('listitem')).toHaveCount(0)
   await page.clock.fastForward(1_000)
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '5732')
@@ -297,7 +307,8 @@ test('selects completed rounds without restarting import or changing selection o
             ticks: new Uint32Array([number * 100, number * 100 + 1]),
             positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
             alive: new Uint8Array([1, 1]),
-            deaths: [],
+            inspection: [[{tick: 0, weapon: {type: 'none'}}]],
+      deaths: [],
       health: new Int32Array([100, 100]),
             yaw: new Float32Array([90, 90]),
             teams: new Uint8Array([number === 1 ? 2 : 3, number === 1 ? 2 : 3])

@@ -1,3 +1,5 @@
+import { equipmentName } from '../replay/equipment.ts'
+import { inspectionAtTick } from '../replay/frames.ts'
 import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { Effect, Stream } from 'effect'
@@ -23,6 +25,7 @@ const oracle = JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) a
       alive: boolean
       health: number
       yaw: number
+      weapon: { type: string; name?: string; magazine?: number; reserve?: number }
     }[]
   }[]
 }
@@ -146,6 +149,19 @@ test('decodes a real competitive round against independent identities and positi
       expect(round.health[state]).toBe(player.health)
       expect(round.yaw[state]).toBeCloseTo(player.yaw, 3)
       expect(round.teams[state]).toBe(player.team)
+      const { weapon } = inspectionAtTick(round.inspection[index]!, expected.tick)
+      expect(
+        weapon.type === 'none'
+          ? weapon
+          : weapon.type === 'item'
+            ? { type: weapon.type, name: equipmentName(weapon.definition) }
+            : {
+                type: weapon.type,
+                name: equipmentName(weapon.definition),
+                magazine: weapon.magazine,
+                reserve: weapon.reserve,
+              },
+      ).toEqual(player.weapon)
     }
   }
 })

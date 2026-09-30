@@ -1,3 +1,5 @@
+import { firearms, equipmentName } from '../../replay/equipment.ts'
+import type { ReplayWeapon } from '../../replay/types.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
 import { uncompress } from 'snappyjs'
@@ -34,6 +36,7 @@ export interface PlayerSnapshot {
   alive: boolean
   health: number
   yaw: number
+  weapon: ReplayWeapon
 }
 const replayFields = new Set([
   'm_steamID',
@@ -43,6 +46,10 @@ const replayFields = new Set([
   'm_iHealth',
   'm_lifeState',
   'm_angEyeAngles',
+  'm_pWeaponServices.m_hActiveWeapon',
+  'm_iItemDefinitionIndex',
+  'm_iClip1',
+  'm_pReserveAmmo.0',
   ...['X', 'Y', 'Z'].flatMap((axis) => [
     `CBodyComponent.m_cell${axis}`,
     `CBodyComponent.m_vec${axis}`,
@@ -135,6 +142,22 @@ export function createEntityDecoder() {
       if (d.name === 'userinfo') userInfo(value)
     }
   }
+  function weapon(handle: EntityValue | undefined): ReplayWeapon {
+    if (typeof handle !== 'number') throw new Error('Missing recorded active weapon handle.')
+    if (handle === 0xffffff || handle === 0xffffffff) return { type: 'none' }
+    const entity = entities.get(handle & 0x3fff)
+    if (!entity || entity.serial !== Math.floor(handle / 16384))
+      throw new Error('The recorded active weapon handle cannot be resolved.')
+    const definition = entity.values.get('m_iItemDefinitionIndex')
+    if (typeof definition !== 'number') throw new Error('Missing recorded weapon definition.')
+    equipmentName(definition)
+    if (!(definition in firearms)) return { type: 'item', definition }
+    const magazine = entity.values.get('m_iClip1')
+    const reserve = entity.values.get('m_pReserveAmmo.0')
+    if (typeof magazine !== 'number' || typeof reserve !== 'number' || magazine < 0 || reserve < 0)
+      throw new Error('Missing recorded weapon ammunition.')
+    return { type: 'gun', definition, magazine, reserve }
+  }
   function snapshots(): PlayerSnapshot[] {
     const players: PlayerSnapshot[] = []
     for (const controller of entities.values()) {
@@ -185,6 +208,7 @@ export function createEntityDecoder() {
         alive: health > 0 && life === 0,
         health,
         yaw: angles[1]!,
+        weapon: weapon(pawn.values.get('m_pWeaponServices.m_hActiveWeapon')),
       })
     }
     if (new Set(players.map((player) => player.steamId)).size !== players.length)

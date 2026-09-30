@@ -1,3 +1,13 @@
+export type ReplayWeapon =
+  | { type: 'none' }
+  | { type: 'item'; definition: number }
+  | { type: 'gun'; definition: number; magazine: number; reserve: number }
+
+export interface PlayerInspection {
+  tick: number
+  weapon: ReplayWeapon
+}
+
 export interface ReplayDeath {
   tick: number
   victim: string
@@ -13,6 +23,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  inspection: PlayerInspection[][]
   deaths: ReplayDeath[]
   players: { steamId: string; name: string }[]
   ticks: Uint32Array<ArrayBuffer>

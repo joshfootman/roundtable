@@ -43,6 +43,7 @@ await Effect.runPromise(
           }),
       }
       let bufferBytes = 0
+      let inspectionRecords = 0
       const completed: typeof expected = []
       const discovered: { number: number; startTick: number }[] = []
       yield* Stream.runForEach(readReplay(source), (event) =>
@@ -52,6 +53,7 @@ await Effect.runPromise(
           } else if (event.type === 'reset') {
             completed.length = 0
             bufferBytes = 0
+            inspectionRecords = 0
           } else {
             const {
               number,
@@ -74,6 +76,10 @@ await Effect.runPromise(
               health.byteLength +
               yaw.byteLength +
               teams.byteLength
+            inspectionRecords += event.round.inspection.reduce(
+              (count, track) => count + track.length,
+              0,
+            )
             completed.push({ number, startTick, liveStartTick, resultTick, endTick, overtime })
           }
         }),
@@ -84,7 +90,7 @@ await Effect.runPromise(
         ...expected.map(({ number, startTick }) => ({ number, startTick })),
       ])
       console.log(
-        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes.`,
+        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes. Inspection uses ${inspectionRecords.toLocaleString('en-GB')} sparse records.`,
       )
     }),
   ),

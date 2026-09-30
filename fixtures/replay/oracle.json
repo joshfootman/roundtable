@@ -15,7 +15,13 @@
           "Z": -120.96875,
           "alive": true,
           "health": 100,
-          "yaw": -4.000061
+          "yaw": -4.000061,
+          "weapon": {
+            "type": "gun",
+            "name": "P2000",
+            "magazine": 13,
+            "reserve": 52
+          }
         },
         {
           "steamId": "76561197978835160",
@@ -26,7 +32,13 @@
           "Z": -120.362548828125,
           "alive": true,
           "health": 100,
-          "yaw": -129.99985
+          "yaw": -129.99985,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561197989430253",
@@ -37,7 +49,13 @@
           "Z": 116.68599700927734,
           "alive": true,
           "health": 100,
-          "yaw": 112.00012
+          "yaw": 112.00012,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         },
         {
           "steamId": "76561197989744167",
@@ -48,7 +66,13 @@
           "Z": -120.47491455078125,
           "alive": true,
           "health": 100,
-          "yaw": -157.5
+          "yaw": -157.5,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561197991272318",
@@ -59,7 +83,13 @@
           "Z": 116.78947448730469,
           "alive": true,
           "health": 100,
-          "yaw": 133.50003
+          "yaw": 133.50003,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         },
         {
           "steamId": "76561197997351207",
@@ -70,7 +100,13 @@
           "Z": 78.87710571289062,
           "alive": true,
           "health": 100,
-          "yaw": -147.50003
+          "yaw": -147.50003,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         },
         {
           "steamId": "76561198063336407",
@@ -81,7 +117,13 @@
           "Z": -119.918701171875,
           "alive": true,
           "health": 100,
-          "yaw": 23.99997
+          "yaw": 23.99997,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561198068422762",
@@ -92,7 +134,11 @@
           "Z": 113.84898376464844,
           "alive": true,
           "health": 100,
-          "yaw": 42.000046
+          "yaw": 42.000046,
+          "weapon": {
+            "type": "item",
+            "name": "C4"
+          }
         },
         {
           "steamId": "76561198113666193",
@@ -103,7 +149,13 @@
           "Z": -121.07666015625,
           "alive": true,
           "health": 100,
-          "yaw": -67.5
+          "yaw": -67.5,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561198201620490",
@@ -114,7 +166,13 @@
           "Z": 117.07178497314453,
           "alive": true,
           "health": 100,
-          "yaw": 128.49988
+          "yaw": 128.49988,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         }
       ]
     },
@@ -130,7 +188,11 @@
           "Z": -120.96875,
           "alive": true,
           "health": 100,
-          "yaw": -103.52589
+          "yaw": -103.52589,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197978835160",
@@ -141,7 +203,11 @@
           "Z": -120.362548828125,
           "alive": true,
           "health": 100,
-          "yaw": -43.86978
+          "yaw": -43.86978,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197989430253",
@@ -152,7 +218,11 @@
           "Z": 116.68599700927734,
           "alive": true,
           "health": 100,
-          "yaw": 16.366196
+          "yaw": 16.366196,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197989744167",
@@ -163,7 +233,11 @@
           "Z": -120.47491455078125,
           "alive": true,
           "health": 100,
-          "yaw": -34.297256
+          "yaw": -34.297256,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197991272318",
@@ -174,7 +248,11 @@
           "Z": 116.78947448730469,
           "alive": true,
           "health": 100,
-          "yaw": 161.14746
+          "yaw": 161.14746,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197997351207",
@@ -185,7 +263,11 @@
           "Z": 78.87710571289062,
           "alive": true,
           "health": 100,
-          "yaw": -170.3492
+          "yaw": -170.3492,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198063336407",
@@ -196,7 +278,11 @@
           "Z": -119.918701171875,
           "alive": true,
           "health": 100,
-          "yaw": -108.2531
+          "yaw": -108.2531,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198068422762",
@@ -207,7 +293,11 @@
           "Z": 113.84898376464844,
           "alive": true,
           "health": 100,
-          "yaw": 2.4441223
+          "yaw": 2.4441223,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198113666193",
@@ -218,7 +308,11 @@
           "Z": -121.07666015625,
           "alive": true,
           "health": 100,
-          "yaw": -38.37216
+          "yaw": -38.37216,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198201620490",
@@ -229,7 +323,13 @@
           "Z": 117.07178497314453,
           "alive": true,
           "health": 100,
-          "yaw": 156.423
+          "yaw": 156.423,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         }
       ]
     },
@@ -245,7 +345,11 @@
           "Z": -125.1419677734375,
           "alive": true,
           "health": 100,
-          "yaw": -147.83374
+          "yaw": -147.83374,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197978835160",
@@ -256,7 +360,11 @@
           "Z": -121.10406494140625,
           "alive": true,
           "health": 100,
-          "yaw": -30.999634
+          "yaw": -30.999634,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197989430253",
@@ -267,7 +375,11 @@
           "Z": 116.07115936279297,
           "alive": true,
           "health": 100,
-          "yaw": 2.3081665
+          "yaw": 2.3081665,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197989744167",
@@ -278,7 +390,11 @@
           "Z": -113.4818115234375,
           "alive": true,
           "health": 100,
-          "yaw": -0.5973816
+          "yaw": -0.5973816,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197991272318",
@@ -289,7 +405,11 @@
           "Z": 123.03125,
           "alive": true,
           "health": 100,
-          "yaw": 105.65793
+          "yaw": 105.65793,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561197997351207",
@@ -300,7 +420,11 @@
           "Z": 113.91339874267578,
           "alive": true,
           "health": 100,
-          "yaw": 175.94946
+          "yaw": 175.94946,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198063336407",
@@ -311,7 +435,11 @@
           "Z": -128.2857666015625,
           "alive": true,
           "health": 100,
-          "yaw": -175.60168
+          "yaw": -175.60168,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198068422762",
@@ -322,7 +450,11 @@
           "Z": 90.30825805664062,
           "alive": true,
           "health": 100,
-          "yaw": 3.1039734
+          "yaw": 3.1039734,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198113666193",
@@ -333,7 +465,11 @@
           "Z": -119.48358154296875,
           "alive": true,
           "health": 100,
-          "yaw": -41.892242
+          "yaw": -41.892242,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198201620490",
@@ -344,7 +480,13 @@
           "Z": 118.86036682128906,
           "alive": true,
           "health": 100,
-          "yaw": 153.8316
+          "yaw": 153.8316,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         }
       ]
     },
@@ -360,7 +502,13 @@
           "Z": 0.008648872375488281,
           "alive": true,
           "health": 100,
-          "yaw": -120.28862
+          "yaw": -120.28862,
+          "weapon": {
+            "type": "gun",
+            "name": "P2000",
+            "magazine": 13,
+            "reserve": 52
+          }
         },
         {
           "steamId": "76561197978835160",
@@ -371,7 +519,13 @@
           "Z": -8.6300048828125,
           "alive": true,
           "health": 100,
-          "yaw": -151.51486
+          "yaw": -151.51486,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561197989430253",
@@ -382,7 +536,13 @@
           "Z": 1.0594549179077148,
           "alive": true,
           "health": 100,
-          "yaw": 81.26965
+          "yaw": 81.26965,
+          "weapon": {
+            "type": "gun",
+            "name": "P250",
+            "magazine": 13,
+            "reserve": 26
+          }
         },
         {
           "steamId": "76561197989744167",
@@ -393,7 +553,11 @@
           "Z": 39.899600982666016,
           "alive": true,
           "health": 100,
-          "yaw": -175.66795
+          "yaw": -175.66795,
+          "weapon": {
+            "type": "item",
+            "name": "HE Grenade"
+          }
         },
         {
           "steamId": "76561197991272318",
@@ -404,7 +568,13 @@
           "Z": 35.30033493041992,
           "alive": true,
           "health": 100,
-          "yaw": 15.35614
+          "yaw": 15.35614,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         },
         {
           "steamId": "76561197997351207",
@@ -415,7 +585,13 @@
           "Z": 35.470890045166016,
           "alive": true,
           "health": 100,
-          "yaw": 117.69861
+          "yaw": 117.69861,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         },
         {
           "steamId": "76561198063336407",
@@ -426,7 +602,13 @@
           "Z": 30.63996124267578,
           "alive": true,
           "health": 100,
-          "yaw": -89.27902
+          "yaw": -89.27902,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561198068422762",
@@ -437,7 +619,11 @@
           "Z": 2.155916213989258,
           "alive": true,
           "health": 100,
-          "yaw": 53.5278
+          "yaw": 53.5278,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198113666193",
@@ -448,7 +634,13 @@
           "Z": -125.850341796875,
           "alive": true,
           "health": 100,
-          "yaw": -90.064545
+          "yaw": -90.064545,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561198201620490",
@@ -459,7 +651,13 @@
           "Z": 32.15331268310547,
           "alive": true,
           "health": 100,
-          "yaw": 20.699615
+          "yaw": 20.699615,
+          "weapon": {
+            "type": "gun",
+            "name": "Glock-18",
+            "magazine": 20,
+            "reserve": 120
+          }
         }
       ]
     },
@@ -475,7 +673,10 @@
           "Z": 32.84041213989258,
           "alive": false,
           "health": 0,
-          "yaw": -95.33386
+          "yaw": -95.33386,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561197978835160",
@@ -486,7 +687,13 @@
           "Z": 5.974461078643799,
           "alive": true,
           "health": 100,
-          "yaw": 116.94638
+          "yaw": 116.94638,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 13
+          }
         },
         {
           "steamId": "76561197989430253",
@@ -497,7 +704,10 @@
           "Z": 0.7310585975646973,
           "alive": false,
           "health": 0,
-          "yaw": -130.70915
+          "yaw": -130.70915,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561197989744167",
@@ -508,7 +718,13 @@
           "Z": 0.7678618431091309,
           "alive": true,
           "health": 100,
-          "yaw": -174.74373
+          "yaw": -174.74373,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561197991272318",
@@ -519,7 +735,10 @@
           "Z": 35.72929382324219,
           "alive": false,
           "health": 0,
-          "yaw": 105.034454
+          "yaw": 105.034454,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561197997351207",
@@ -530,7 +749,10 @@
           "Z": 30.932985305786133,
           "alive": false,
           "health": 0,
-          "yaw": 96.27527
+          "yaw": 96.27527,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561198063336407",
@@ -541,7 +763,13 @@
           "Z": 0.8798975944519043,
           "alive": true,
           "health": 100,
-          "yaw": -80.20397
+          "yaw": -80.20397,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 9,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561198068422762",
@@ -552,7 +780,10 @@
           "Z": 36.16035461425781,
           "alive": false,
           "health": 0,
-          "yaw": 106.371704
+          "yaw": 106.371704,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561198113666193",
@@ -563,7 +794,13 @@
           "Z": -41.76446533203125,
           "alive": true,
           "health": 100,
-          "yaw": -150.34378
+          "yaw": -150.34378,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561198201620490",
@@ -574,7 +811,10 @@
           "Z": 29.733470916748047,
           "alive": false,
           "health": 0,
-          "yaw": 77.254486
+          "yaw": 77.254486,
+          "weapon": {
+            "type": "none"
+          }
         }
       ]
     },
@@ -590,7 +830,10 @@
           "Z": 32.84041213989258,
           "alive": false,
           "health": 0,
-          "yaw": -96.71333
+          "yaw": -96.71333,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561197978835160",
@@ -601,7 +844,13 @@
           "Z": -0.95159912109375,
           "alive": true,
           "health": 100,
-          "yaw": -79.24095
+          "yaw": -79.24095,
+          "weapon": {
+            "type": "gun",
+            "name": "P250",
+            "magazine": 11,
+            "reserve": 22
+          }
         },
         {
           "steamId": "76561197989430253",
@@ -612,7 +861,10 @@
           "Z": 0.7310585975646973,
           "alive": false,
           "health": 0,
-          "yaw": -130.70915
+          "yaw": -130.70915,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561197989744167",
@@ -623,7 +875,13 @@
           "Z": -111.86376953125,
           "alive": true,
           "health": 100,
-          "yaw": -128.98395
+          "yaw": -128.98395,
+          "weapon": {
+            "type": "gun",
+            "name": "USP-S",
+            "magazine": 12,
+            "reserve": 24
+          }
         },
         {
           "steamId": "76561197991272318",
@@ -634,7 +892,10 @@
           "Z": 35.72929382324219,
           "alive": false,
           "health": 0,
-          "yaw": 105.034454
+          "yaw": 105.034454,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561197997351207",
@@ -645,7 +906,10 @@
           "Z": 30.932985305786133,
           "alive": false,
           "health": 0,
-          "yaw": 144.9035
+          "yaw": 144.9035,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561198063336407",
@@ -656,7 +920,11 @@
           "Z": 32.08186340332031,
           "alive": true,
           "health": 100,
-          "yaw": -104.767
+          "yaw": -104.767,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198068422762",
@@ -667,7 +935,10 @@
           "Z": 36.16035461425781,
           "alive": false,
           "health": 0,
-          "yaw": 107.25162
+          "yaw": 107.25162,
+          "weapon": {
+            "type": "none"
+          }
         },
         {
           "steamId": "76561198113666193",
@@ -678,7 +949,11 @@
           "Z": 142.95909118652344,
           "alive": true,
           "health": 100,
-          "yaw": -155.27184
+          "yaw": -155.27184,
+          "weapon": {
+            "type": "item",
+            "name": "Knife"
+          }
         },
         {
           "steamId": "76561198201620490",
@@ -689,7 +964,10 @@
           "Z": 29.733470916748047,
           "alive": false,
           "health": 0,
-          "yaw": 77.254486
+          "yaw": 77.254486,
+          "weapon": {
+            "type": "none"
+          }
         }
       ]
     }

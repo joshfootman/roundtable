@@ -31,6 +31,7 @@ test('discards knife stages and completed match attempts when recorded rules res
           alive: true,
           health: 100,
           yaw: 90,
+          weapon: { type: 'none' },
         },
       ])
     return output
@@ -73,6 +74,7 @@ test('discards knife stages and completed match attempts when recorded rules res
       ticks: new Uint32Array([30, 31, 32]),
       positions: new Float32Array([30, 20, 30, 31, 20, 30, 32, 20, 30]),
       alive: new Uint8Array([1, 1, 1]),
+      inspection: [[{ tick: 30, weapon: { type: 'none' } }]],
       deaths: [],
       health: new Int32Array([100, 100, 100]),
       yaw: new Float32Array([90, 90, 90]),
@@ -107,6 +109,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
             alive: tick < 105,
             health: tick < 105 ? 100 : 0,
             yaw: 90,
+            weapon: { type: 'none' },
           },
         ])
     }
@@ -136,6 +139,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
     ticks: new Uint32Array([100, 102, 105, 106, 109]),
     positions: new Float32Array([100, 20, 30, 102, 20, 30, 105, 20, 30, 106, 20, 30, 109, 20, 30]),
     alive: new Uint8Array([1, 1, 0, 0, 0]),
+    inspection: [[{ tick: 100, weapon: { type: 'none' } }]],
     deaths: [],
     health: new Int32Array([100, 100, 0, 0, 0]),
     yaw: new Float32Array([90, 90, 90, 90, 90]),

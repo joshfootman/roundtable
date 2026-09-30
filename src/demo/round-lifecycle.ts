@@ -26,6 +26,7 @@ type Capture = {
   health: number[]
   yaw: number[]
   teams: number[]
+  inspection: ReplayRound['inspection']
   deaths: ReplayDeath[]
   lastSnapshots: Map<string, PlayerSnapshot>
 } & (
@@ -59,6 +60,7 @@ export function createRoundTracker() {
       tickInterval,
       players: round.players,
       deaths: round.deaths,
+      inspection: round.inspection,
       ticks: Uint32Array.from(round.ticks),
       positions: Float32Array.from(round.positions),
       alive: Uint8Array.from(round.alive),
@@ -118,6 +120,7 @@ export function createRoundTracker() {
           health: [],
           yaw: [],
           teams: [],
+          inspection: [],
           deaths: [],
           lastSnapshots: new Map(),
         }
@@ -149,6 +152,7 @@ export function createRoundTracker() {
         if (!snapshots.length)
           throw new Error('The competitive round has no recorded player positions.')
         capture.players = snapshots.map(({ steamId, name }) => ({ steamId, name }))
+        capture.inspection = snapshots.map(() => [])
       }
       const { players } = capture
       const byId = new Map(snapshots.map((player) => [player.steamId, player]))
@@ -159,7 +163,7 @@ export function createRoundTracker() {
         yaw.length -= players.length
         teams.length -= players.length
       } else ticks.push(tick)
-      for (const player of players) {
+      for (const [index, player] of players.entries()) {
         const current = byId.get(player.steamId)
         if (current) lastSnapshots.set(player.steamId, current)
         const recorded = current ?? lastSnapshots.get(player.steamId)
@@ -169,6 +173,22 @@ export function createRoundTracker() {
         health.push(recorded.health)
         yaw.push(recorded.yaw)
         teams.push(recorded.team)
+        const track = capture.inspection[index]!
+        if (track.at(-1)?.tick === tick) track.pop()
+        const previous = track.at(-1)?.weapon
+        const currentWeapon = recorded.weapon
+        if (
+          !previous ||
+          previous.type !== currentWeapon.type ||
+          (previous.type !== 'none' &&
+            currentWeapon.type !== 'none' &&
+            previous.definition !== currentWeapon.definition) ||
+          (previous.type === 'gun' &&
+            currentWeapon.type === 'gun' &&
+            (previous.magazine !== currentWeapon.magazine ||
+              previous.reserve !== currentWeapon.reserve))
+        )
+          track.push({ tick, weapon: currentWeapon })
       }
     },
     end(tick: number): ReplayEvent[] {
