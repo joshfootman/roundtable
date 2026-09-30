@@ -125,9 +125,9 @@ deletion at 20490. The oracle generator emits this data as `fireFrames`.
 
 `shots.json` contains all 2,568 independent competitive `CMsgTEFireBullets`
 messages. Both compact fixtures retain network ID 452. Shot origin, pitch, yaw,
-weapon and shooter handle are recorded. The tactical trace has a 300 world-unit
-display length and lasts 0.15 seconds; neither represents a collision endpoint
-or bullet travel time. No impact endpoints exist in this source.
+weapon and shooter handle are recorded. The tactical trace scales with the player markers
+to remain visible on narrow maps and lasts 0.15 seconds. Its presentation length
+and duration represent neither a collision endpoint nor bullet travel time. No impact endpoints exist in this source.
 
 `flashes.json` contains 44 independent player flash-state frames through round
 four. Positive durations retain their recorded update tick; remaining time is

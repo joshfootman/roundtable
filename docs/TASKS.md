@@ -24,7 +24,7 @@
 - [x] Display bullet traces
 - [x] Display flashed-player indicators
 - [x] Filter visible players and teams
-- [ ] Toggle utility overlays
+- [x] Toggle utility overlays
 - [ ] Switch Nuke floors while preserving playback position
 - [ ] Replay Ancient and Anubis fixtures on calibrated maps
 - [ ] Replay Dust II and Mirage fixtures on calibrated maps

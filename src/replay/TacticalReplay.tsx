@@ -1,10 +1,10 @@
+import { createUtilityRenderer } from './utility-renderer.ts'
 import {
   utilityAppearance,
-  DETONATION_DISPLAY_SECONDS,
-  APPROXIMATE_SMOKE_RADIUS,
-  APPROXIMATE_FIRE_CELL_RADIUS,
   SHOT_DISPLAY_SECONDS,
-  SHOT_TRACE_LENGTH,
+  utilityOverlays,
+  initialUtilityVisibility,
+  type UtilityVisibility,
 } from './utility.ts'
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
@@ -39,6 +39,7 @@ interface Playback {
   play(): void
   pause(): void
   seek(tick: number): void
+  setOverlays(overlays: UtilityVisibility): void
   setFilters(filters: PlayerFilters): void
   setMinimum(tick: number): void
 }
@@ -71,6 +72,7 @@ export function TacticalReplay({ round, mapName }: { round: ReplayRound; mapName
 function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition }) {
   const host = useRef<HTMLDivElement>(null)
   const playback = useRef<Playback | null>(null)
+  const [overlays, setOverlays] = useState(initialUtilityVisibility)
   const [filters, setFilters] = useState(initialPlayerFilters)
   const [includeFreezeTime, setIncludeFreezeTime] = useState(false)
   const [scene, setScene] = useState<SceneState>({ status: 'loading' })
@@ -86,6 +88,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
     let playing = false
     let lastPublished = 0
     let currentFilters = initialPlayerFilters()
+    let currentOverlays = initialUtilityVisibility()
 
     async function mount() {
       await app.init({
@@ -106,8 +109,8 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       if (cancelled) return
       const sceneMap = new Container()
       sceneMap.addChild(new Sprite(texture))
-      const utility = new Graphics()
-      sceneMap.addChild(utility)
+      const utilities = createUtilityRenderer(round, map)
+      sceneMap.addChild(utilities.container)
       let symbolScale = 1
       const markers = round.players.map((_, index) => {
         const marker = new Container()
@@ -151,73 +154,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
 
       function draw() {
         const sample = sampleAtTick(round.ticks, tick)
-        utility.clear()
-        for (const shot of round.shots) {
-          if (tick < shot.tick || (tick - shot.tick) * round.tickInterval >= SHOT_DISPLAY_SECONDS)
-            continue
-          const point = worldToMap(map, shot.x, shot.y)
-          const angle = (shot.yaw * Math.PI) / 180
-          const length = SHOT_TRACE_LENGTH * Math.cos((shot.pitch * Math.PI) / 180)
-          const end = worldToMap(
-            map,
-            shot.x + Math.cos(angle) * length,
-            shot.y + Math.sin(angle) * length,
-          )
-          utility
-            .moveTo(point.x, point.y)
-            .lineTo(end.x, end.y)
-            .stroke({ color: '#f5eccb', width: symbolScale, alpha: 0.8 })
-        }
-        for (const fire of recordAtTick(round.fires, tick).fires) {
-          for (let cell = 0; cell < fire.positions.length; cell += 3) {
-            const point = worldToMap(map, fire.positions[cell]!, fire.positions[cell + 1]!)
-            utility
-              .circle(point.x, point.y, APPROXIMATE_FIRE_CELL_RADIUS / map.scale)
-              .fill({ color: utilityAppearance.fire.color, alpha: 0.25 })
-          }
-        }
-        for (const smoke of round.smokes) {
-          if (tick < smoke.startTick || tick >= smoke.endTick) continue
-          const point = worldToMap(map, smoke.x, smoke.y)
-          utility
-            .circle(point.x, point.y, APPROXIMATE_SMOKE_RADIUS / map.scale)
-            .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 })
-            .stroke({ color: utilityAppearance.smoke.color, alpha: 0.7, width: symbolScale })
-        }
-        for (const projectile of round.projectiles) {
-          if (tick < projectile.startTick || tick >= projectile.endTick) continue
-          const last = sampleAtTick(projectile.ticks, tick)
-          const appearance = utilityAppearance[projectile.kind]
-          for (let index = 0; index <= last; index++) {
-            const offset = index * 3
-            const point = worldToMap(
-              map,
-              projectile.positions[offset]!,
-              projectile.positions[offset + 1]!,
-            )
-            if (index === 0) utility.moveTo(point.x, point.y)
-            else utility.lineTo(point.x, point.y)
-          }
-          utility.stroke({ color: appearance.color, width: 2 * symbolScale, alpha: 0.7 })
-          const offset = last * 3
-          const point = worldToMap(
-            map,
-            projectile.positions[offset]!,
-            projectile.positions[offset + 1]!,
-          )
-          utility.circle(point.x, point.y, 4 * symbolScale).fill(appearance.color)
-        }
-        for (const event of round.detonations) {
-          if (
-            tick < event.tick ||
-            (tick - event.tick) * round.tickInterval >= DETONATION_DISPLAY_SECONDS
-          )
-            continue
-          const point = worldToMap(map, event.x, event.y)
-          utility
-            .circle(point.x, point.y, 16 * symbolScale)
-            .stroke({ color: utilityAppearance[event.kind].color, width: 2 * symbolScale })
-        }
+        utilities.draw(tick, symbolScale, currentOverlays)
         for (let player = 0; player < markers.length; player++) {
           const position = (sample * markers.length + player) * 3
           const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
@@ -225,6 +162,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           const state = sample * markers.length + player
           const color = round.teams[state] === 3 ? '#8dc5ff' : '#ffd08a'
           flash.visible =
+            currentOverlays.flashes &&
             flashRemaining(
               recordAtTick(round.inspection[player]!, tick).flash,
               tick,
@@ -262,6 +200,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         app.render()
       }
       playback.current = {
+        setOverlays(next) {
+          currentOverlays = next
+          draw()
+          app.render()
+        },
         setFilters(next) {
           currentFilters = next
           draw()
@@ -394,6 +337,28 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         Include freeze time
       </label>
       <details className="mt-4">
+        <summary className="min-h-11 cursor-pointer py-3 font-semibold">Utility overlays</summary>
+        <fieldset className="mt-2 grid gap-x-5 sm:grid-cols-2">
+          <legend className="text-sm font-semibold">Visible overlays</legend>
+          {utilityOverlays.map(({ key, label }) => (
+            <label key={key} className="flex min-h-11 items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="size-4 accent-[#bedb8a]"
+                disabled={scene.status !== 'ready'}
+                checked={overlays[key]}
+                onChange={(event) => {
+                  const next = { ...overlays, [key]: event.currentTarget.checked }
+                  setOverlays(next)
+                  playback.current?.setOverlays(next)
+                }}
+              />
+              {label}
+            </label>
+          ))}
+        </fieldset>
+      </details>
+      <details className="mt-4">
         <summary className="min-h-11 cursor-pointer py-3 font-semibold">Player filters</summary>
         <fieldset className="mt-2 flex flex-wrap gap-x-5">
           <legend className="text-sm font-semibold">Visible teams</legend>
@@ -483,10 +448,14 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
         />
       </label>
-      <p className="mt-4 text-sm text-[#a7b5aa]">
+      <p hidden={!overlays.shots} className="mt-4 text-sm text-[#a7b5aa]">
         Bullet traces show recorded shot direction. Their length does not represent an impact.
       </p>
-      <ul aria-label="Bullet traces" className="mt-3 list-none space-y-2 p-0 text-sm">
+      <ul
+        hidden={!overlays.shots}
+        aria-label="Bullet traces"
+        className="mt-3 list-none space-y-2 p-0 text-sm"
+      >
         {round.shots
           .filter(
             (shot) =>
@@ -501,7 +470,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
             </li>
           ))}
       </ul>
-      <ul aria-label="Approximate fire areas" className="mt-4 list-none space-y-2 p-0 text-sm">
+      <ul
+        hidden={!overlays.fires}
+        aria-label="Approximate fire areas"
+        className="mt-4 list-none space-y-2 p-0 text-sm"
+      >
         {recordAtTick(round.fires, recordedTick).fires.map((fire) => (
           <li key={`${fire.entity}:${fire.serial}`}>
             Approximate fire area · {fire.positions.length / 3} burning{' '}
@@ -509,7 +482,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           </li>
         ))}
       </ul>
-      <ul aria-label="Approximate smoke areas" className="mt-4 list-none space-y-2 p-0 text-sm">
+      <ul
+        hidden={!overlays.smokes}
+        aria-label="Approximate smoke areas"
+        className="mt-4 list-none space-y-2 p-0 text-sm"
+      >
         {round.smokes
           .filter((smoke) => smoke.startTick <= recordedTick && recordedTick < smoke.endTick)
           .map((smoke) => (
@@ -519,7 +496,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
             </li>
           ))}
       </ul>
-      <ul aria-label="Flying grenades" className="mt-4 list-none space-y-2 p-0 text-sm">
+      <ul
+        hidden={!overlays.trajectories}
+        aria-label="Flying grenades"
+        className="mt-4 list-none space-y-2 p-0 text-sm"
+      >
         {round.projectiles
           .filter(
             (projectile) =>
@@ -536,7 +517,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
             )
           })}
       </ul>
-      <ol aria-label="Grenade detonations" className="mt-3 list-none space-y-2 p-0 text-sm">
+      <ol
+        hidden={!overlays.detonations}
+        aria-label="Grenade detonations"
+        className="mt-3 list-none space-y-2 p-0 text-sm"
+      >
         {round.detonations
           .filter((event) => event.tick <= recordedTick)
           .map((event, index) => (
@@ -633,7 +618,10 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
                         .join(' · ')
                     : 'None'}
                 </p>
-                <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
+                <p
+                  hidden={!overlays.flashes}
+                  className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums"
+                >
                   {remainingFlash > 0
                     ? `Flashed · ${remainingFlash.toFixed(1)} s remaining`
                     : 'Not flashed'}

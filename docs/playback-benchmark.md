@@ -50,3 +50,21 @@ One desktop run had a maximum frame gap of 33.3 ms. All other maximum gaps were
 16.8 ms. These are scheduling observations, not physical-phone or GPU frame-rate
 claims. Freeze time was disabled for this movement benchmark, matching the initial
 baseline. The regression suite separately verifies enabled freeze-time playback.
+
+## Player and utility slice
+
+After utility toggles, six original-demo imports were measured on the same Apple
+M2 laptop and Chromium 153 production build on 30 September 2026. Parsing remained
+active during every measured playback interval.
+
+| Viewport        | First round range, ms | Frame-gap p95 range, ms | Seek range, ms |
+| --------------- | --------------------- | ----------------------- | -------------- |
+| desktop         | 1036.8–1165.1         | 16.7–33.4               | 16.8–48.3      |
+| mobile-viewport | 1023.5–1063.8         | 16.7                    | 21.1–28.8      |
+
+One desktop run had a maximum frame gap of 83.3 ms. This outlier is retained;
+these measurements do not establish a sustained 60 fps guarantee. The benchmark
+plays the first two live seconds, before the first grenade flight. Recorded
+utility visibility is separately checked through canvas hide/restore assertions
+in the regression suite. Mobile emulation remains a viewport check on this
+laptop, not a physical-phone performance measurement.
