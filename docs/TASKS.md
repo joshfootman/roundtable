@@ -19,7 +19,7 @@
 - [x] Track dropped, carried and planted bomb positions
 - [x] Replay bomb plants, defuses and explosions
 - [x] Replay grenade trajectories and detonations
-- [ ] Display approximate smoke areas over time
+- [x] Display approximate smoke areas over time
 - [ ] Display approximate fire areas over time
 - [ ] Display bullet traces
 - [ ] Display flashed-player indicators

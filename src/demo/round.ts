@@ -111,7 +111,8 @@ export function readReplay(
             ['player_death', 'bomb_planted', 'bomb_defused', 'bomb_exploded'].includes(
               descriptor.name,
             ) ||
-            descriptor.name in detonationKinds
+            descriptor.name in detonationKinds ||
+            descriptor.name === 'smokegrenade_expired'
           )
             recorded.push({ event, descriptor })
         }
@@ -120,44 +121,49 @@ export function readReplay(
         tracker.sample(tick, entities.snapshots())
         tracker.bomb(tick, entities.bomb())
         tracker.projectiles(tick, entities.projectiles())
-        for (const { event, descriptor } of recorded) {
-          function key(name: string, type: number) {
-            const index = descriptor.keys.findIndex((key) => key.name === name)
-            const value = event.keys[index]
-            if (!value || descriptor.keys[index]!.type !== type || value.type !== type)
-              throw new Error(`A ${descriptor.name} event has an invalid ${name}.`)
-            return value
-          }
-          const kind = detonationKinds[descriptor.name]
-          if (kind) {
-            const x = key('x', 2).valFloat
-            const y = key('y', 2).valFloat
-            const z = key('z', 2).valFloat
-            const entity = key('entityid', 4).valShort
-            if (![x, y, z].every(Number.isFinite) || entity < 0)
-              throw new Error('Invalid recorded grenade detonation.')
-            tracker.detonation({ tick, kind, entity, x, y, z })
-          } else if (descriptor.name === 'player_death') {
-            const attacker = key('attacker', 9).valShort
-            tracker.death({
-              tick,
-              victim: entities.playerByUserId(key('userid', 9).valShort),
-              killer:
-                attacker === 0
-                  ? { type: 'world' }
-                  : { type: 'player', steamId: entities.playerByUserId(attacker) },
-              headshot: key('headshot', 6).valBool,
-            })
-          } else if (descriptor.name === 'bomb_exploded')
-            tracker.bombEvent({ tick, type: 'exploded' })
-          else
-            tracker.bombEvent({
-              tick,
-              type: descriptor.name === 'bomb_planted' ? 'planted' : 'defused',
-              player: entities.playerByUserId(key('userid', 9).valShort),
-            })
-        }
       }
+      for (const { event, descriptor } of recorded) {
+        function key(name: string, type: number) {
+          const index = descriptor.keys.findIndex((key) => key.name === name)
+          const value = event.keys[index]
+          if (!value || descriptor.keys[index]!.type !== type || value.type !== type)
+            throw new Error(`A ${descriptor.name} event has an invalid ${name}.`)
+          return value
+        }
+        const kind = detonationKinds[descriptor.name]
+        if (kind) {
+          const x = key('x', 2).valFloat
+          const y = key('y', 2).valFloat
+          const z = key('z', 2).valFloat
+          const entity = key('entityid', 4).valShort
+          if (![x, y, z].every(Number.isFinite) || entity < 0)
+            throw new Error('Invalid recorded grenade detonation.')
+          if (kind === 'smoke') tracker.smoke({ tick, entity, x, y, z })
+          if (tracker.recording) tracker.detonation({ tick, kind, entity, x, y, z })
+        } else if (descriptor.name === 'smokegrenade_expired') {
+          tracker.smokeExpired(key('entityid', 4).valShort, tick)
+        } else if (!tracker.recording) continue
+        else if (descriptor.name === 'player_death') {
+          const attacker = key('attacker', 9).valShort
+          tracker.death({
+            tick,
+            victim: entities.playerByUserId(key('userid', 9).valShort),
+            killer:
+              attacker === 0
+                ? { type: 'world' }
+                : { type: 'player', steamId: entities.playerByUserId(attacker) },
+            headshot: key('headshot', 6).valBool,
+          })
+        } else if (descriptor.name === 'bomb_exploded')
+          tracker.bombEvent({ tick, type: 'exploded' })
+        else
+          tracker.bombEvent({
+            tick,
+            type: descriptor.name === 'bomb_planted' ? 'planted' : 'defused',
+            player: entities.playerByUserId(key('userid', 9).valShort),
+          })
+      }
+      tracker.smokeEntities(tick, entities.smokeEntities())
       return events
     }
     let lastTick = 0

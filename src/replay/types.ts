@@ -1,3 +1,12 @@
+export interface ReplaySmoke {
+  entity: number
+  startTick: number
+  endTick: number
+  x: number
+  y: number
+  z: number
+}
+
 export type GrenadeKind = 'flash' | 'he' | 'smoke' | 'molotov' | 'incendiary' | 'decoy'
 export interface ReplayProjectile {
   entity: number
@@ -67,6 +76,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  smokes: ReplaySmoke[]
   projectiles: ReplayProjectile[]
   detonations: GrenadeDetonation[]
   bombEvents: BombEvent[]

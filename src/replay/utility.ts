@@ -13,3 +13,5 @@ export const utilityAppearance: Record<
   decoy: { name: 'Decoy', color: 0xaaa9dd },
 }
 export const DETONATION_DISPLAY_SECONDS = 1
+
+export const APPROXIMATE_SMOKE_RADIUS = 144

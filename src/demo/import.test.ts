@@ -43,6 +43,7 @@ const firstRound = {
     ],
   ],
   bomb: [{ tick: 0, state: { type: 'inactive' as const } }],
+  smokes: [],
   projectiles: [],
   detonations: [],
   bombEvents: [],

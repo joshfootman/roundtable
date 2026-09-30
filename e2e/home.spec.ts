@@ -349,7 +349,8 @@ test('selects completed rounds without restarting import or changing selection o
             alive: new Uint8Array([1, 1]),
             inspection: [[{tick: number * 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: []}]],
             bomb: [{tick: number * 100, state: {type: 'inactive'}}],
-            projectiles: [],
+            smokes: [],
+      projectiles: [],
             detonations: [],
             bombEvents: [],
             deaths: [],
@@ -451,6 +452,17 @@ test('replays bomb interactions and restores their state when scrubbing backward
     ),
   })
   await page.getByRole('button', { name: 'Import demo' }).click()
+  await page.getByRole('button', { name: 'Round 2 · Ready', exact: true }).click()
+  const smokeReplay = page.getByRole('region', { name: 'Dust II · Round 2', exact: true })
+  await expect(smokeReplay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  const smokeSlider = smokeReplay.getByRole('slider', { name: 'Replay position' })
+  const smokeAreas = smokeReplay.getByLabel('Approximate smoke areas').getByRole('listitem')
+  await seekReplay(smokeSlider, 10331)
+  await expect(smokeAreas).toContainText(['Approximate smoke area · X -2036.1 · Y 1579.7 · Z 34.6'])
+  await seekReplay(smokeSlider, 11758)
+  await expect(smokeAreas).toHaveCount(0)
+  await seekReplay(smokeSlider, 10331)
+  await expect(smokeAreas).toHaveCount(1)
   await page.getByRole('button', { name: 'Round 4 · Ready', exact: true }).click()
   const replay = page.getByRole('region', { name: 'Dust II · Round 4', exact: true })
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()

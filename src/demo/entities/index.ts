@@ -473,6 +473,13 @@ export function createEntityDecoder() {
     snapshots,
     bomb,
     projectiles,
+    smokeEntities() {
+      return new Set(
+        [...entities.entries()]
+          .filter(([, entity]) => entity.active && entity.className === 'CSmokeGrenadeProjectile')
+          .map(([id]) => id),
+      )
+    },
     gameRules() {
       const entity = [...entities.values()].find(
         (entity) => entity.className === 'CCSGameRulesProxy',

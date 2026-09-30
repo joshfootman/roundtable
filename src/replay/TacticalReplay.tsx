@@ -1,4 +1,8 @@
-import { utilityAppearance, DETONATION_DISPLAY_SECONDS } from './utility.ts'
+import {
+  utilityAppearance,
+  DETONATION_DISPLAY_SECONDS,
+  APPROXIMATE_SMOKE_RADIUS,
+} from './utility.ts'
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
 import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js'
@@ -124,6 +128,14 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       function draw() {
         const sample = sampleAtTick(round.ticks, tick)
         utility.clear()
+        for (const smoke of round.smokes) {
+          if (tick < smoke.startTick || tick >= smoke.endTick) continue
+          const point = worldToMap(map, smoke.x, smoke.y)
+          utility
+            .circle(point.x, point.y, APPROXIMATE_SMOKE_RADIUS / map.scale)
+            .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 })
+            .stroke({ color: utilityAppearance.smoke.color, alpha: 0.7, width: symbolScale })
+        }
         for (const projectile of round.projectiles) {
           if (tick < projectile.startTick || tick >= projectile.endTick) continue
           const last = sampleAtTick(projectile.ticks, tick)
@@ -344,6 +356,16 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
         />
       </label>
+      <ul aria-label="Approximate smoke areas" className="mt-4 list-none space-y-2 p-0 text-sm">
+        {round.smokes
+          .filter((smoke) => smoke.startTick <= recordedTick && recordedTick < smoke.endTick)
+          .map((smoke) => (
+            <li key={`${smoke.entity}:${smoke.startTick}`}>
+              Approximate smoke area
+              {` · X ${smoke.x.toFixed(1)} · Y ${smoke.y.toFixed(1)} · Z ${smoke.z.toFixed(1)}`}
+            </li>
+          ))}
+      </ul>
       <ul aria-label="Flying grenades" className="mt-4 list-none space-y-2 p-0 text-sm">
         {round.projectiles
           .filter(

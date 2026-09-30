@@ -7,6 +7,7 @@ import type {
   BombState,
   BombEvent,
   GrenadeDetonation,
+  ReplaySmoke,
 } from '../replay/types.ts'
 
 export interface RoundRules {
@@ -35,6 +36,7 @@ type Capture = {
   yaw: number[]
   teams: number[]
   projectiles: ReturnType<typeof createProjectileCapture>
+  smokes: ReplaySmoke[]
   detonations: GrenadeDetonation[]
   bombEvents: BombEvent[]
   bomb: ReplayRound['bomb']
@@ -70,6 +72,7 @@ const GAME_COMMENCING = 16
 const POSTMATCH = 5
 
 export function createRoundTracker() {
+  const activeSmokes = new Map<number, ReplaySmoke>()
   let capture: Capture | undefined
   let previousRules: RoundRules | undefined
   let tickInterval = 0
@@ -96,6 +99,12 @@ export function createRoundTracker() {
       bombEvents: round.bombEvents,
       projectiles: round.projectiles.finish(endTick),
       detonations: round.detonations,
+      smokes: round.smokes
+        .filter((smoke) => smoke.endTick > round.startTick)
+        .map((smoke) => ({
+          ...smoke,
+          endTick: Math.min(smoke.endTick, endTick),
+        })),
       ticks: Uint32Array.from(round.ticks),
       positions: Float32Array.from(round.positions),
       alive: Uint8Array.from(round.alive),
@@ -116,6 +125,27 @@ export function createRoundTracker() {
   }
 
   return {
+    smoke(event: Omit<ReplaySmoke, 'startTick' | 'endTick'> & { tick: number }) {
+      const { tick, ...position } = event
+      if (activeSmokes.has(event.entity))
+        throw new Error('A recorded smoke started twice without expiring.')
+      const smoke = { ...position, startTick: tick, endTick: Infinity }
+      activeSmokes.set(event.entity, smoke)
+      capture?.smokes.push(smoke)
+    },
+    smokeExpired(entity: number, tick: number) {
+      const smoke = activeSmokes.get(entity)
+      if (!smoke) throw new Error('A recorded smoke expired without a recorded beginning.')
+      smoke.endTick = tick
+      activeSmokes.delete(entity)
+    },
+    smokeEntities(tick: number, entities: Set<number>) {
+      for (const [id, smoke] of activeSmokes)
+        if (!entities.has(id)) {
+          smoke.endTick = tick
+          activeSmokes.delete(id)
+        }
+    },
     get recording() {
       return capture !== undefined
     },
@@ -166,6 +196,7 @@ export function createRoundTracker() {
           yaw: [],
           teams: [],
           projectiles: createProjectileCapture(),
+          smokes: [...activeSmokes.values()],
           detonations: [],
           bombEvents: [],
           bomb: [],

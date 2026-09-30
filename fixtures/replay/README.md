@@ -109,3 +109,9 @@ compares the complete first flight and the first four rounds' utility events.
 Detonation rings last one second as a presentation cue. They do not represent
 recorded effect duration. Projectile buffers bring full-match published typed
 arrays to 44,890,976 bytes, excluding object and browser overhead.
+
+`smokes.json` contains 119 independently recorded smoke intervals, clipped to
+round coverage. Recorded expiry or projectile destruction ends each interval.
+Five smokes are removed without an expiry event. The viewer uses a 144 world-unit
+radius as an approximate tactical symbol, without wall clipping or visibility
+claims. Areas disappear at their exclusive end tick and restore on reverse seek.
