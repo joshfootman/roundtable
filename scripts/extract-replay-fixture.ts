@@ -5,9 +5,13 @@ import { uncompress } from 'snappyjs'
 import { CDemoPacketSchema, CDemoFullPacketSchema } from '../src/demo/generated/demo_pb.ts'
 import { BitReader } from '../src/demo/entities/bit-reader.ts'
 const path = process.argv[2] ?? 'fixtures/faze-vs-vitality-m2-dust2.dem'
-const endTick = (
-  JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) as { endTick: number }
-).endTick
+const endTick =
+  process.argv[3] === undefined
+    ? (JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) as { endTick: number })
+        .endTick
+    : Number(process.argv[3])
+const output = process.argv[4] ?? 'fixtures/replay/dust2-first-round.dem.gz'
+if (!Number.isInteger(endTick) || endTick < 0) throw new Error('Invalid fixture end tick.')
 const file = openSync(path, 'r')
 function read(offset: number, length: number) {
   const bytes = Buffer.alloc(length)
@@ -102,17 +106,18 @@ try {
       )
     } else records.push(read(origin, prefixBytes + len))
   }
+  records.push(Uint8Array.from([...varint(0), ...varint(endTick), 0]))
   const footerReader = new BitReader(read(footer, 15))
   footerReader.varUint()
   footerReader.varUint()
   const footerLength = footerReader.varUint() + (120 - footerReader.remaining) / 8
   container.writeUInt32LE(16 + records.reduce((sum, record) => sum + record.length, 0), 8)
   const raw = Buffer.concat([container, ...records, read(footer, footerLength)])
-  writeFileSync('fixtures/replay/dust2-first-round.dem.gz', gzipSync(raw, { level: 9 }))
+  writeFileSync(output, gzipSync(raw, { level: 9 }))
   console.log({
     source: path,
     rawBytes: raw.length,
-    fixtureBytes: readFileSync('fixtures/replay/dust2-first-round.dem.gz').length,
+    fixtureBytes: readFileSync(output).length,
     records: records.length,
   })
 } finally {

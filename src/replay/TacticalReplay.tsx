@@ -1,7 +1,7 @@
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
 import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js'
-import { sampleAtTick, inspectionAtTick } from './frames'
+import { sampleAtTick, recordAtTick, bombPosition } from './frames'
 import { mapDefinition, worldToMap, type MapDefinition } from './maps'
 import type { ReplayRound } from './types'
 
@@ -99,6 +99,11 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         sceneMap.addChild(marker)
         return { container: marker, body, direction }
       })
+      const bombMarker = new Graphics()
+        .rect(-9, -9, 18, 18)
+        .fill('#bedb8a')
+        .stroke({ color: '#101713', width: 2 })
+      sceneMap.addChild(bombMarker)
       app.stage.addChild(sceneMap)
       app.canvas.setAttribute('aria-hidden', 'true')
       element.appendChild(app.canvas)
@@ -116,6 +121,14 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           direction.rotation = (-round.yaw[state]! * Math.PI) / 180
           container.position.set(point.x, point.y)
           container.alpha = round.alive[sample * markers.length + player] ? 1 : 0.35
+        }
+        const bomb = recordAtTick(round.bomb, tick).state
+        const position = bombPosition(round, bomb, sample)
+        bombMarker.visible = position !== undefined
+        if (position) {
+          const point = worldToMap(map, position.x, position.y)
+          const offset = bomb.type === 'carried' ? 15 * bombMarker.scale.x : 0
+          bombMarker.position.set(point.x + offset, point.y - offset)
         }
         return sample
       }
@@ -163,6 +176,8 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         app.renderer.resize(width, width)
         sceneMap.scale.set(width / map.imageSize)
         for (const { container } of markers) container.scale.set((map.imageSize * 0.8) / width)
+        bombMarker.scale.set((map.imageSize * 0.8) / width)
+        draw()
         app.render()
       })
       observer.observe(element)
@@ -196,6 +211,8 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         ? 'Live'
         : 'Post-round'
   const tick = Math.max(minimum, recordedTick)
+  const bomb = recordAtTick(round.bomb, recordedTick).state
+  const bombPoint = bombPosition(round, bomb, sample)
   const elapsed = playbackTime((tick - minimum) * round.tickInterval)
   const duration = playbackTime((round.endTick - minimum) * round.tickInterval)
   return (
@@ -278,6 +295,14 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
         />
       </label>
+      <p aria-label="Bomb state" className="mt-5 text-sm text-[#a7b5aa]">
+        Bomb{' '}
+        {bomb.type === 'carried'
+          ? `carried by ${round.players.find((player) => player.steamId === bomb.carrier)!.name}`
+          : bomb.type}
+        {bombPoint &&
+          ` · X ${bombPoint.x.toFixed(1)} · Y ${bombPoint.y.toFixed(1)} · Z ${bombPoint.z.toFixed(1)}`}
+      </p>
       <div className="mt-5">
         <h3 className="text-sm font-semibold">Kills and deaths</h3>
         <ol aria-label="Kill feed" className="mt-2 list-none space-y-2 p-0 text-sm">
@@ -309,7 +334,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           {round.players.map((player, index) => {
             const state = sample * round.players.length + index
             const offset = state * 3
-            const { weapon, armour, helmet, grenades, money } = inspectionAtTick(
+            const { weapon, armour, helmet, grenades, money } = recordAtTick(
               round.inspection[index]!,
               recordedTick,
             )

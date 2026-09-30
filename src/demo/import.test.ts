@@ -42,6 +42,7 @@ const firstRound = {
       },
     ],
   ],
+  bomb: [{ tick: 0, state: { type: 'inactive' as const } }],
   deaths: [],
   health: new Int32Array([100, 100]),
   yaw: new Float32Array([90, 90]),

@@ -80,3 +80,13 @@ Armour and carried grenades use independent player and inventory samples.
 Flash quantities use `FlashbangCount()` rather than inventory entity count or
 reserve ammunition. Broky carries two flashes at 5732, 5796, 6400 and 7443, then
 one at 7444. The existing parser regression checks that recorded transition.
+
+`dust2-through-round-4.dem.gz` preserves contiguous network history from the
+recording start through tick 32413. It completes four rounds and retains the
+original metadata footer. Regenerate with `node --experimental-transform-types
+scripts/extract-replay-fixture.ts fixtures/faze-vs-vitality-m2-dust2.dem 32413
+fixtures/replay/dust2-through-round-4.dem.gz`. It is 14,383,755 bytes compressed.
+SHA-256 is `f9c7082e47e26dc6ddf79771ac204ae9b53b3406418e6434074febca4dfe59d4`.
+The independent parser matches the original recording at all 20 selected player
+and bomb samples and all 337 event counts through this boundary. Sparse full
+packet segments lacked equipment history and are not used as fixtures.

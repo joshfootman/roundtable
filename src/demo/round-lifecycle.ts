@@ -1,5 +1,5 @@
 import type { PlayerSnapshot } from './entities/index.ts'
-import type { ReplayDeath, ReplayRound, PlayerInspection } from '../replay/types.ts'
+import type { ReplayDeath, ReplayRound, PlayerInspection, BombState } from '../replay/types.ts'
 
 export interface RoundRules {
   warmup: boolean
@@ -26,6 +26,7 @@ type Capture = {
   health: number[]
   yaw: number[]
   teams: number[]
+  bomb: ReplayRound['bomb']
   inspection: ReplayRound['inspection']
   deaths: ReplayDeath[]
   lastSnapshots: Map<string, PlayerSnapshot>
@@ -80,6 +81,7 @@ export function createRoundTracker() {
       players: round.players,
       deaths: round.deaths,
       inspection: round.inspection,
+      bomb: round.bomb,
       ticks: Uint32Array.from(round.ticks),
       positions: Float32Array.from(round.positions),
       alive: Uint8Array.from(round.alive),
@@ -139,6 +141,7 @@ export function createRoundTracker() {
           health: [],
           yaw: [],
           teams: [],
+          bomb: [],
           inspection: [],
           deaths: [],
           lastSnapshots: new Map(),
@@ -150,6 +153,28 @@ export function createRoundTracker() {
       if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
         capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
+    },
+    bomb(tick: number, state: BombState) {
+      if (!capture) return
+      if (
+        state.type === 'carried' &&
+        !capture.players.some((player) => player.steamId === state.carrier)
+      )
+        throw new Error('The bomb carrier is outside the recorded round roster.')
+      const track = capture.bomb
+      if (track.at(-1)?.tick === tick) track.pop()
+      const previous = track.at(-1)?.state
+      if (
+        !previous ||
+        previous.type !== state.type ||
+        (previous.type === 'carried' &&
+          state.type === 'carried' &&
+          previous.carrier !== state.carrier) ||
+        ((previous.type === 'dropped' || previous.type === 'planted') &&
+          (state.type === 'dropped' || state.type === 'planted') &&
+          (previous.x !== state.x || previous.y !== state.y || previous.z !== state.z))
+      )
+        track.push({ tick, state })
     },
     death(event: ReplayDeath) {
       if (!capture) return

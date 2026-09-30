@@ -104,6 +104,7 @@ export function readReplay(
       const events = tracker.update(tick, entities.gameRules(), names, tickInterval)
       if (tracker.recording) {
         tracker.sample(tick, entities.snapshots())
+        tracker.bomb(tick, entities.bomb())
         for (const { event, descriptor } of deaths) {
           function key(name: string, type: number) {
             const index = descriptor.keys.findIndex((key) => key.name === name)

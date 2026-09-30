@@ -1,5 +1,5 @@
 import { firearms, equipmentName } from '../../replay/equipment.ts'
-import type { ReplayWeapon, PlayerInspection } from '../../replay/types.ts'
+import type { ReplayWeapon, PlayerInspection, BombState } from '../../replay/types.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
 import { uncompress } from 'snappyjs'
@@ -44,6 +44,9 @@ export interface PlayerSnapshot {
 }
 const replayFields = new Set([
   'm_steamID',
+  'm_hOwnerEntity',
+  'm_bBombTicking',
+  'm_bBombDefused',
   'm_hPlayerPawn',
   'm_iszPlayerName',
   'm_iTeamNum',
@@ -152,10 +155,10 @@ export function createEntityDecoder() {
       if (d.name === 'userinfo') userInfo(value)
     }
   }
-  function equipmentEntity(handle: number): Entity {
+  function entityForHandle(handle: number): Entity {
     const entity = entities.get(handle & 0x3fff)
     if (!entity || entity.serial !== Math.floor(handle / 16384))
-      throw new Error('A recorded equipment handle cannot be resolved.')
+      throw new Error('A recorded entity handle cannot be resolved.')
     return entity
   }
   function grenades(pawn: Entity): PlayerInspection['grenades'] {
@@ -166,7 +169,7 @@ export function createEntityDecoder() {
       const handle = pawn.values.get(`m_pWeaponServices.m_hMyWeapons.${index}`)
       if (typeof handle !== 'number') throw new Error('Missing recorded inventory handle.')
       if (handle === 0xffffff || handle === 0xffffffff) continue
-      const item = equipmentEntity(handle)
+      const item = entityForHandle(handle)
       const definition = item.values.get('m_iItemDefinitionIndex')
       if (typeof definition !== 'number') throw new Error('Missing recorded inventory definition.')
       if (definition < 43 || definition > 48) continue
@@ -182,7 +185,7 @@ export function createEntityDecoder() {
   function weapon(handle: EntityValue | undefined): ReplayWeapon {
     if (typeof handle !== 'number') throw new Error('Missing recorded active weapon handle.')
     if (handle === 0xffffff || handle === 0xffffffff) return { type: 'none' }
-    const entity = equipmentEntity(handle)
+    const entity = entityForHandle(handle)
     const definition = entity.values.get('m_iItemDefinitionIndex')
     if (typeof definition !== 'number') throw new Error('Missing recorded weapon definition.')
     equipmentName(definition)
@@ -192,6 +195,45 @@ export function createEntityDecoder() {
     if (typeof magazine !== 'number' || typeof reserve !== 'number' || magazine < 0 || reserve < 0)
       throw new Error('Missing recorded weapon ammunition.')
     return { type: 'gun', definition, magazine, reserve }
+  }
+  function position(entity: Entity): { x: number; y: number; z: number } {
+    function axis(axis: string) {
+      const cell = entity.values.get(`CBodyComponent.m_cell${axis}`)
+      const offset = entity.values.get(`CBodyComponent.m_vec${axis}`)
+      if (
+        typeof cell !== 'number' ||
+        typeof offset !== 'number' ||
+        !Number.isFinite(cell) ||
+        !Number.isFinite(offset)
+      )
+        throw new Error('A replay entity is missing its recorded position.')
+      return cell * 512 - 16384 + offset
+    }
+    return { x: axis('X'), y: axis('Y'), z: axis('Z') }
+  }
+  function bomb(): BombState {
+    const active = [...entities.values()].filter((entity) => entity.active)
+    for (const planted of active.filter((entity) => entity.className === 'CPlantedC4')) {
+      const ticking = planted.values.get('m_bBombTicking')
+      const defused = planted.values.get('m_bBombDefused')
+      if (typeof ticking !== 'boolean' || typeof defused !== 'boolean')
+        throw new Error('Missing recorded planted bomb state.')
+      if (ticking && !defused) return { type: 'planted', ...position(planted) }
+    }
+    const c4 = active.find((entity) => entity.className === 'CC4')
+    if (!c4) return { type: 'inactive' }
+    const owner = c4.values.get('m_hOwnerEntity')
+    if (typeof owner !== 'number') throw new Error('Missing recorded bomb owner.')
+    if (owner === 0xffffff || owner === 0xffffffff) return { type: 'dropped', ...position(c4) }
+    entityForHandle(owner)
+    const controller = active.find(
+      (entity) =>
+        entity.className === 'CCSPlayerController' && entity.values.get('m_hPlayerPawn') === owner,
+    )
+    const steam = controller?.values.get('m_steamID')
+    if (typeof steam !== 'bigint' || steam <= 0n)
+      throw new Error('Missing recorded bomb carrier identity.')
+    return { type: 'carried', carrier: steam.toString() }
   }
   function snapshots(): PlayerSnapshot[] {
     const players: PlayerSnapshot[] = []
@@ -213,19 +255,6 @@ export function createEntityDecoder() {
       const name = controller.values.get('m_iszPlayerName')
       if (typeof name !== 'string' || !name.trim())
         throw new Error('A replay player is missing their name.')
-      const pawnValues = pawn.values
-      function axis(axis: string) {
-        const cell = pawnValues.get(`CBodyComponent.m_cell${axis}`)
-        const offset = pawnValues.get(`CBodyComponent.m_vec${axis}`)
-        if (
-          typeof cell !== 'number' ||
-          typeof offset !== 'number' ||
-          !Number.isFinite(cell) ||
-          !Number.isFinite(offset)
-        )
-          throw new Error('A replay player is missing their recorded position.')
-        return cell * 512 - 16384 + offset
-      }
       const health = pawn.values.get('m_iHealth')
       const life = pawn.values.get('m_lifeState')
       const angles = pawn.values.get('m_angEyeAngles')
@@ -249,9 +278,7 @@ export function createEntityDecoder() {
         steamId: steam.toString(),
         name,
         team,
-        x: axis('X'),
-        y: axis('Y'),
-        z: axis('Z'),
+        ...position(pawn),
         alive: health > 0 && life === 0,
         health,
         yaw: angles[1]!,
@@ -374,6 +401,7 @@ export function createEntityDecoder() {
       return steamId
     },
     snapshots,
+    bomb,
     gameRules() {
       const entity = [...entities.values()].find(
         (entity) => entity.className === 'CCSGameRulesProxy',

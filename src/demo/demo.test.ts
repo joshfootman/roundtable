@@ -1,5 +1,6 @@
+import type { BombState } from '../replay/types.ts'
 import { equipmentName } from '../replay/equipment.ts'
-import { inspectionAtTick } from '../replay/frames.ts'
+import { recordAtTick } from '../replay/frames.ts'
 import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { Effect, Stream } from 'effect'
@@ -15,6 +16,7 @@ const oracle = JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) a
   tickInterval: number
   samples: {
     tick: number
+    bomb: BombState
     players: {
       steamId: string
       name: string
@@ -132,11 +134,11 @@ test('decodes a real competitive round against independent identities and positi
     },
   ])
   const brokyTrack = round.inspection[round.players.findIndex((player) => player.name === 'broky')]!
-  expect(inspectionAtTick(brokyTrack, 7443).grenades).toEqual([
+  expect(recordAtTick(brokyTrack, 7443).grenades).toEqual([
     { definition: 43, count: 2 },
     { definition: 46, count: 1 },
   ])
-  expect(inspectionAtTick(brokyTrack, 7444).grenades).toEqual([
+  expect(recordAtTick(brokyTrack, 7444).grenades).toEqual([
     { definition: 43, count: 1 },
     { definition: 46, count: 1 },
   ])
@@ -149,6 +151,19 @@ test('decodes a real competitive round against independent identities and positi
   expect(round.tickInterval).toBe(oracle.tickInterval)
   expect(largestRead).toBeLessThan(1024 * 1024)
   for (const expected of oracle.samples) {
+    const bomb = recordAtTick(round.bomb, expected.tick).state
+    if (expected.bomb.type === 'carried') expect(bomb).toEqual(expected.bomb)
+    else {
+      expect(bomb.type).toBe(expected.bomb.type)
+      if (
+        (bomb.type === 'dropped' || bomb.type === 'planted') &&
+        (expected.bomb.type === 'dropped' || expected.bomb.type === 'planted')
+      ) {
+        expect(bomb.x).toBeCloseTo(expected.bomb.x, 2)
+        expect(bomb.y).toBeCloseTo(expected.bomb.y, 2)
+        expect(bomb.z).toBeCloseTo(expected.bomb.z, 2)
+      }
+    }
     const sample = round.ticks.indexOf(expected.tick)
     expect(sample, `missing recorded tick ${expected.tick}`).not.toBe(-1)
     for (const player of expected.players) {
@@ -162,7 +177,7 @@ test('decodes a real competitive round against independent identities and positi
       expect(round.health[state]).toBe(player.health)
       expect(round.yaw[state]).toBeCloseTo(player.yaw, 3)
       expect(round.teams[state]).toBe(player.team)
-      const { weapon, armour, helmet, grenades, money } = inspectionAtTick(
+      const { weapon, armour, helmet, grenades, money } = recordAtTick(
         round.inspection[index]!,
         expected.tick,
       )
@@ -207,4 +222,25 @@ test('rejects an incomplete round instead of publishing partial movement', async
   await expect(
     Effect.runPromise(Stream.runDrain(readRounds(source(fixture.subarray(0, offset))))),
   ).rejects.toThrow('terminal record')
+})
+
+test('preserves bomb planting and completion in a contiguous recorded segment', async () => {
+  const bytes = gunzipSync(readFileSync('fixtures/replay/dust2-through-round-4.dem.gz'))
+  const rounds = await Effect.runPromise(
+    readRounds(source(bytes)).pipe(Stream.take(4), Stream.runCollect),
+  )
+  expect(Array.from(rounds).map((round) => round.number)).toEqual([1, 2, 3, 4])
+  const round = Array.from(rounds)[3]!
+  expect(recordAtTick(round.bomb, 30555).state).toEqual({
+    type: 'planted',
+    x: 987.96875,
+    y: 2486.71875,
+    z: 96.46875,
+  })
+  expect(recordAtTick(round.bomb, 31964).state.type).toBe('planted')
+  expect(recordAtTick(round.bomb, 31965).state).toEqual({ type: 'inactive' })
+  expect(recordAtTick(round.bomb, 30554).state).toEqual({
+    type: 'carried',
+    carrier: '76561198068422762',
+  })
 })

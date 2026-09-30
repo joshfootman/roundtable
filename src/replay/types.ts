@@ -1,3 +1,8 @@
+export type BombState =
+  | { type: 'inactive' }
+  | { type: 'carried'; carrier: string }
+  | { type: 'dropped' | 'planted'; x: number; y: number; z: number }
+
 export type ReplayWeapon =
   | { type: 'none' }
   | { type: 'item'; definition: number }
@@ -27,6 +32,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  bomb: { tick: number; state: BombState }[]
   inspection: PlayerInspection[][]
   deaths: ReplayDeath[]
   players: { steamId: string; name: string }[]

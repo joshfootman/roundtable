@@ -38,6 +38,7 @@ test('discards knife stages and completed match attempts when recorded rules res
           weapon: { type: 'none' },
         },
       ])
+    tracker.bomb(tick, { type: 'inactive' })
     return output
   }
   packet(0, { warmup: true, started: false }, ['round_start'])
@@ -90,6 +91,7 @@ test('discards knife stages and completed match attempts when recorded rules res
           },
         ],
       ],
+      bomb: [{ tick: 30, state: { type: 'inactive' as const } }],
       deaths: [],
       health: new Int32Array([100, 100, 100]),
       yaw: new Float32Array([90, 90, 90]),
@@ -131,6 +133,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
             weapon: { type: 'none' },
           },
         ])
+      tracker.bomb(tick, { type: 'inactive' })
     }
     packet(100, {}, ['round_start'])
     packet(102, {}, ['round_freeze_end'])
@@ -161,6 +164,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
     inspection: [
       [{ tick: 100, money: 800, armour: 0, helmet: false, grenades: [], weapon: { type: 'none' } }],
     ],
+    bomb: [{ tick: 100, state: { type: 'inactive' as const } }],
     deaths: [],
     health: new Int32Array([100, 100, 0, 0, 0]),
     yaw: new Float32Array([90, 90, 90, 90, 90]),

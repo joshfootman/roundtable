@@ -194,6 +194,9 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(broky).toContainText('Health 100 · Facing 128.5°')
   await expect(broky).toContainText('Weapon Glock-18 · Ammo 20 / 120')
   await expect(broky).toContainText('Money $800 · Armour 0 · No helmet')
+  await expect(replay.getByLabel('Bomb state', { exact: true })).toContainText(
+    'Bomb carried by frozen',
+  )
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '537')
   const canvas = replay.locator('canvas')
   const startingMap = await canvas.screenshot()
@@ -230,6 +233,9 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(replay.getByLabel('Kill feed').getByRole('listitem')).toHaveCount(6)
   await expect(broky).toContainText('Weapon None')
   await expect(broky).toContainText('Money $1900')
+  await expect(replay.getByLabel('Bomb state', { exact: true })).toContainText(
+    'Bomb dropped · X -1938.0 · Y 1263.7 · Z 70.2',
+  )
   await expect(frozen).toContainText('Grenades None')
   const spinx = replay
     .getByLabel('Player inspection')
@@ -271,6 +277,9 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
   await expect(broky).toContainText('Health 100 · Facing 156.4°')
   expect(await canvas.screenshot()).toEqual(liveMap)
+  await expect(replay.getByLabel('Bomb state', { exact: true })).toContainText(
+    'Bomb carried by broky',
+  )
   await expect(frozen).toContainText('Grenades Flashbang × 1')
   await expect(broky).toContainText('Money $0')
   await expect(spinx).toContainText('Weapon Knife')
@@ -320,6 +329,7 @@ test('selects completed rounds without restarting import or changing selection o
             positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
             alive: new Uint8Array([1, 1]),
             inspection: [[{tick: number * 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: []}]],
+            bomb: [{tick: number * 100, state: {type: 'inactive'}}],
             deaths: [],
             health: new Int32Array([100, 100]),
             yaw: new Float32Array([90, 90]),
