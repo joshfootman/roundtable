@@ -309,7 +309,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           {round.players.map((player, index) => {
             const state = sample * round.players.length + index
             const offset = state * 3
-            const { weapon, armour, helmet, grenades } = inspectionAtTick(
+            const { weapon, armour, helmet, grenades, money } = inspectionAtTick(
               round.inspection[index]!,
               recordedTick,
             )
@@ -332,7 +332,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
                   {weapon.type === 'gun' && ` · Ammo ${weapon.magazine} / ${weapon.reserve}`}
                 </p>
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
-                  Armour {armour} · {helmet ? 'Helmet' : 'No helmet'}
+                  Money ${money} · Armour {armour} · {helmet ? 'Helmet' : 'No helmet'}
                 </p>
                 <p className="mt-2 mb-0 text-xs text-[#a7b5aa]">
                   Grenades{' '}

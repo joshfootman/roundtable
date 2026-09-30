@@ -39,6 +39,7 @@ function sameInspection(a: PlayerInspection, b: PlayerInspection): boolean {
   const x = a.weapon
   const y = b.weapon
   return (
+    a.money === b.money &&
     a.armour === b.armour &&
     a.helmet === b.helmet &&
     a.grenades.length === b.grenades.length &&
@@ -197,6 +198,7 @@ export function createRoundTracker() {
         const currentInspection = {
           tick,
           weapon: recorded.weapon,
+          money: recorded.money,
           armour: recorded.armour,
           helmet: recorded.helmet,
           grenades: recorded.grenades,

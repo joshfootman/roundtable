@@ -25,6 +25,7 @@ const oracle = JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) a
       alive: boolean
       health: number
       yaw: number
+      money: number
       armour: number
       helmet: boolean
       grenades: { definition: number; count: number }[]
@@ -161,11 +162,12 @@ test('decodes a real competitive round against independent identities and positi
       expect(round.health[state]).toBe(player.health)
       expect(round.yaw[state]).toBeCloseTo(player.yaw, 3)
       expect(round.teams[state]).toBe(player.team)
-      const { weapon, armour, helmet, grenades } = inspectionAtTick(
+      const { weapon, armour, helmet, grenades, money } = inspectionAtTick(
         round.inspection[index]!,
         expected.tick,
       )
-      expect({ armour, helmet, grenades }).toEqual({
+      expect({ armour, helmet, grenades, money }).toEqual({
+        money: player.money,
         armour: player.armour,
         helmet: player.helmet,
         grenades: player.grenades,

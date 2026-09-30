@@ -36,6 +36,7 @@ export interface PlayerSnapshot {
   alive: boolean
   health: number
   yaw: number
+  money: number
   armour: number
   helmet: boolean
   grenades: PlayerInspection['grenades']
@@ -50,6 +51,7 @@ const replayFields = new Set([
   'm_lifeState',
   'm_angEyeAngles',
   'm_ArmorValue',
+  'm_pInGameMoneyServices.m_iAccount',
   'm_pItemServices.m_bHasHelmet',
   'm_pWeaponServices.m_hMyWeapons',
   'm_pWeaponServices.m_iAmmo.14',
@@ -231,6 +233,9 @@ export function createEntityDecoder() {
         throw new Error('A replay player is missing their recorded facing direction.')
       if (typeof health !== 'number' || typeof life !== 'number')
         throw new Error('A replay player is missing their recorded life state.')
+      const money = controller.values.get('m_pInGameMoneyServices.m_iAccount')
+      if (typeof money !== 'number' || !Number.isInteger(money) || money < 0)
+        throw new Error('Missing recorded player money.')
       const armour = pawn.values.get('m_ArmorValue')
       const helmet = pawn.values.get('m_pItemServices.m_bHasHelmet')
       if (
@@ -250,6 +255,7 @@ export function createEntityDecoder() {
         alive: health > 0 && life === 0,
         health,
         yaw: angles[1]!,
+        money,
         armour,
         helmet,
         grenades: grenades(pawn),

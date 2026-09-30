@@ -31,7 +31,16 @@ const firstRound = {
   positions: new Float32Array([-760.663, -836.174, 117.072, -761, -836, 117]),
   alive: new Uint8Array([1, 1]),
   inspection: [
-    [{ tick: 0, armour: 0, helmet: false, grenades: [], weapon: { type: 'none' as const } }],
+    [
+      {
+        tick: 0,
+        money: 800,
+        armour: 0,
+        helmet: false,
+        grenades: [],
+        weapon: { type: 'none' as const },
+      },
+    ],
   ],
   deaths: [],
   health: new Int32Array([100, 100]),

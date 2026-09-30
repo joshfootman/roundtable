@@ -24,7 +24,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561197978835160",
@@ -44,7 +45,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561197989430253",
@@ -64,7 +66,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561197989744167",
@@ -84,7 +87,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561197991272318",
@@ -104,7 +108,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561197997351207",
@@ -124,7 +129,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561198063336407",
@@ -144,7 +150,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561198068422762",
@@ -162,7 +169,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561198113666193",
@@ -182,7 +190,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         },
         {
           "steamId": "76561198201620490",
@@ -202,7 +211,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 800
         }
       ]
     },
@@ -225,7 +235,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561197978835160",
@@ -243,7 +254,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561197989430253",
@@ -261,7 +273,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 0
         },
         {
           "steamId": "76561197989744167",
@@ -292,7 +305,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 0
         },
         {
           "steamId": "76561197991272318",
@@ -315,7 +329,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 150
         },
         {
           "steamId": "76561197997351207",
@@ -333,7 +348,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198063336407",
@@ -351,7 +367,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198068422762",
@@ -374,7 +391,8 @@
               "definition": 43,
               "count": 1
             }
-          ]
+          ],
+          "money": 150
         },
         {
           "steamId": "76561198113666193",
@@ -392,7 +410,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198201620490",
@@ -421,7 +440,8 @@
               "definition": 46,
               "count": 1
             }
-          ]
+          ],
+          "money": 0
         }
       ]
     },
@@ -444,7 +464,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561197978835160",
@@ -462,7 +483,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561197989430253",
@@ -480,7 +502,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 0
         },
         {
           "steamId": "76561197989744167",
@@ -511,7 +534,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 0
         },
         {
           "steamId": "76561197991272318",
@@ -534,7 +558,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 150
         },
         {
           "steamId": "76561197997351207",
@@ -552,7 +577,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198063336407",
@@ -570,7 +596,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198068422762",
@@ -593,7 +620,8 @@
               "definition": 43,
               "count": 1
             }
-          ]
+          ],
+          "money": 150
         },
         {
           "steamId": "76561198113666193",
@@ -611,7 +639,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198201620490",
@@ -640,7 +669,8 @@
               "definition": 46,
               "count": 1
             }
-          ]
+          ],
+          "money": 0
         }
       ]
     },
@@ -665,7 +695,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561197978835160",
@@ -685,7 +716,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561197989430253",
@@ -705,7 +737,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 0
         },
         {
           "steamId": "76561197989744167",
@@ -736,7 +769,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 0
         },
         {
           "steamId": "76561197991272318",
@@ -761,7 +795,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 150
         },
         {
           "steamId": "76561197997351207",
@@ -781,7 +816,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198063336407",
@@ -801,7 +837,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198068422762",
@@ -819,7 +856,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198113666193",
@@ -839,7 +877,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 150
         },
         {
           "steamId": "76561198201620490",
@@ -868,7 +907,8 @@
               "definition": 46,
               "count": 1
             }
-          ]
+          ],
+          "money": 0
         }
       ]
     },
@@ -890,7 +930,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 3700
         },
         {
           "steamId": "76561197978835160",
@@ -910,7 +951,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 3700
         },
         {
           "steamId": "76561197989430253",
@@ -927,7 +969,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 1900
         },
         {
           "steamId": "76561197989744167",
@@ -960,7 +1003,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 3250
         },
         {
           "steamId": "76561197991272318",
@@ -977,7 +1021,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 2050
         },
         {
           "steamId": "76561197997351207",
@@ -994,7 +1039,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 2350
         },
         {
           "steamId": "76561198063336407",
@@ -1014,7 +1060,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 4300
         },
         {
           "steamId": "76561198068422762",
@@ -1031,7 +1078,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 2050
         },
         {
           "steamId": "76561198113666193",
@@ -1051,7 +1099,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 3400
         },
         {
           "steamId": "76561198201620490",
@@ -1068,7 +1117,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 1900
         }
       ]
     },
@@ -1090,7 +1140,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 3700
         },
         {
           "steamId": "76561197978835160",
@@ -1110,7 +1161,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 3700
         },
         {
           "steamId": "76561197989430253",
@@ -1127,7 +1179,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 1900
         },
         {
           "steamId": "76561197989744167",
@@ -1160,7 +1213,8 @@
               "definition": 45,
               "count": 1
             }
-          ]
+          ],
+          "money": 3250
         },
         {
           "steamId": "76561197991272318",
@@ -1177,7 +1231,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 2050
         },
         {
           "steamId": "76561197997351207",
@@ -1194,7 +1249,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 2350
         },
         {
           "steamId": "76561198063336407",
@@ -1212,7 +1268,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 4300
         },
         {
           "steamId": "76561198068422762",
@@ -1229,7 +1286,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 2050
         },
         {
           "steamId": "76561198113666193",
@@ -1247,7 +1305,8 @@
           },
           "armour": 100,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 3400
         },
         {
           "steamId": "76561198201620490",
@@ -1264,7 +1323,8 @@
           },
           "armour": 0,
           "helmet": false,
-          "grenades": []
+          "grenades": [],
+          "money": 1900
         }
       ]
     }
