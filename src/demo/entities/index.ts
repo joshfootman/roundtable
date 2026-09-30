@@ -1,5 +1,5 @@
 import { firearms, equipmentName } from '../../replay/equipment.ts'
-import type { ReplayWeapon } from '../../replay/types.ts'
+import type { ReplayWeapon, PlayerInspection } from '../../replay/types.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
 import { uncompress } from 'snappyjs'
@@ -36,6 +36,9 @@ export interface PlayerSnapshot {
   alive: boolean
   health: number
   yaw: number
+  armour: number
+  helmet: boolean
+  grenades: PlayerInspection['grenades']
   weapon: ReplayWeapon
 }
 const replayFields = new Set([
@@ -46,6 +49,10 @@ const replayFields = new Set([
   'm_iHealth',
   'm_lifeState',
   'm_angEyeAngles',
+  'm_ArmorValue',
+  'm_pItemServices.m_bHasHelmet',
+  'm_pWeaponServices.m_hMyWeapons',
+  'm_pWeaponServices.m_iAmmo.14',
   'm_pWeaponServices.m_hActiveWeapon',
   'm_iItemDefinitionIndex',
   'm_iClip1',
@@ -84,7 +91,8 @@ export function createEntityDecoder() {
     for (const path of readFieldPaths(reader)) {
       const field = resolveField(serializer, path, polymorphic)
       const value = field.decode(reader)
-      if (replayFields.has(field.name)) values.set(field.name, value)
+      if (replayFields.has(field.name) || field.name.startsWith('m_pWeaponServices.m_hMyWeapons.'))
+        values.set(field.name, value)
     }
   }
   function baseline(key: string, value: Uint8Array) {
@@ -142,12 +150,37 @@ export function createEntityDecoder() {
       if (d.name === 'userinfo') userInfo(value)
     }
   }
+  function equipmentEntity(handle: number): Entity {
+    const entity = entities.get(handle & 0x3fff)
+    if (!entity || entity.serial !== Math.floor(handle / 16384))
+      throw new Error('A recorded equipment handle cannot be resolved.')
+    return entity
+  }
+  function grenades(pawn: Entity): PlayerInspection['grenades'] {
+    const length = pawn.values.get('m_pWeaponServices.m_hMyWeapons')
+    if (typeof length !== 'number') throw new Error('Missing recorded inventory length.')
+    const counts = new Map<number, number>()
+    for (let index = 0; index < length; index++) {
+      const handle = pawn.values.get(`m_pWeaponServices.m_hMyWeapons.${index}`)
+      if (typeof handle !== 'number') throw new Error('Missing recorded inventory handle.')
+      if (handle === 0xffffff || handle === 0xffffffff) continue
+      const item = equipmentEntity(handle)
+      const definition = item.values.get('m_iItemDefinitionIndex')
+      if (typeof definition !== 'number') throw new Error('Missing recorded inventory definition.')
+      if (definition < 43 || definition > 48) continue
+      const count = definition === 43 ? pawn.values.get('m_pWeaponServices.m_iAmmo.14') : 1
+      if (typeof count !== 'number' || !Number.isInteger(count) || count < 0)
+        throw new Error('Missing recorded grenade quantity.')
+      if (count > 0) counts.set(definition, count)
+    }
+    return [...counts]
+      .sort(([a], [b]) => a - b)
+      .map(([definition, count]) => ({ definition, count }))
+  }
   function weapon(handle: EntityValue | undefined): ReplayWeapon {
     if (typeof handle !== 'number') throw new Error('Missing recorded active weapon handle.')
     if (handle === 0xffffff || handle === 0xffffffff) return { type: 'none' }
-    const entity = entities.get(handle & 0x3fff)
-    if (!entity || entity.serial !== Math.floor(handle / 16384))
-      throw new Error('The recorded active weapon handle cannot be resolved.')
+    const entity = equipmentEntity(handle)
     const definition = entity.values.get('m_iItemDefinitionIndex')
     if (typeof definition !== 'number') throw new Error('Missing recorded weapon definition.')
     equipmentName(definition)
@@ -198,6 +231,15 @@ export function createEntityDecoder() {
         throw new Error('A replay player is missing their recorded facing direction.')
       if (typeof health !== 'number' || typeof life !== 'number')
         throw new Error('A replay player is missing their recorded life state.')
+      const armour = pawn.values.get('m_ArmorValue')
+      const helmet = pawn.values.get('m_pItemServices.m_bHasHelmet')
+      if (
+        typeof armour !== 'number' ||
+        !Number.isInteger(armour) ||
+        armour < 0 ||
+        typeof helmet !== 'boolean'
+      )
+        throw new Error('Missing recorded player armour.')
       players.push({
         steamId: steam.toString(),
         name,
@@ -208,6 +250,9 @@ export function createEntityDecoder() {
         alive: health > 0 && life === 0,
         health,
         yaw: angles[1]!,
+        armour,
+        helmet,
+        grenades: grenades(pawn),
         weapon: weapon(pawn.values.get('m_pWeaponServices.m_hActiveWeapon')),
       })
     }

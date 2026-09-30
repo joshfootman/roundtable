@@ -75,3 +75,8 @@ Weapon names and gun ammunition in `oracle.json` come from the independent
 reference parser. Knife, bomb and grenade convenience ammunition values are
 excluded. Unarmed is a recorded state. Item definition IDs use the local wire
 serializer field `m_iItemDefinitionIndex`.
+
+Armour and carried grenades use independent player and inventory samples.
+Flash quantities use `FlashbangCount()` rather than inventory entity count or
+reserve ammunition. Broky carries two flashes at 5732, 5796, 6400 and 7443, then
+one at 7444. The existing parser regression checks that recorded transition.

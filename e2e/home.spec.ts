@@ -193,6 +193,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
   await expect(broky).toContainText('Health 100 · Facing 128.5°')
   await expect(broky).toContainText('Weapon Glock-18 · Ammo 20 / 120')
+  await expect(broky).toContainText('Armour 0 · No helmet')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '537')
   const canvas = replay.locator('canvas')
   const startingMap = await canvas.screenshot()
@@ -212,6 +213,12 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await freezeTime.uncheck()
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '5732')
   await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Live')
+  const frozen = replay
+    .getByLabel('Player inspection')
+    .getByRole('listitem')
+    .filter({ hasText: 'frozen' })
+  await expect(frozen).toContainText('Armour 100 · No helmet')
+  await expect(frozen).toContainText('Grenades Flashbang × 1')
   const liveMap = await canvas.screenshot()
   expect(liveMap).not.toEqual(startingMap)
   await scrubber.evaluate((element: HTMLInputElement) => {
@@ -221,6 +228,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(replay.getByLabel('Round phase', { exact: true })).toHaveText('Post-round')
   await expect(replay.getByLabel('Kill feed').getByRole('listitem')).toHaveCount(6)
   await expect(broky).toContainText('Weapon None')
+  await expect(frozen).toContainText('Grenades None')
   const spinx = replay
     .getByLabel('Player inspection')
     .getByRole('listitem')
@@ -261,6 +269,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await expect(broky).toContainText('X -760.7 · Y -836.2 · Z 117.1 · Alive')
   await expect(broky).toContainText('Health 100 · Facing 156.4°')
   expect(await canvas.screenshot()).toEqual(liveMap)
+  await expect(frozen).toContainText('Grenades Flashbang × 1')
   await expect(spinx).toContainText('Weapon Knife')
   await expect(spinx).not.toContainText('Ammo')
   await expect(broky).toContainText('Weapon Glock-18 · Ammo 20 / 120')
@@ -307,9 +316,9 @@ test('selects completed rounds without restarting import or changing selection o
             ticks: new Uint32Array([number * 100, number * 100 + 1]),
             positions: new Float32Array([number * 100, 200, 30, number * 100 + 10, 210, 30]),
             alive: new Uint8Array([1, 1]),
-            inspection: [[{tick: 0, weapon: {type: 'none'}}]],
-      deaths: [],
-      health: new Int32Array([100, 100]),
+            inspection: [[{tick: number * 100, weapon: {type: 'none'}, armour: 0, helmet: false, grenades: []}]],
+            deaths: [],
+            health: new Int32Array([100, 100]),
             yaw: new Float32Array([90, 90]),
             teams: new Uint8Array([number === 1 ? 2 : 3, number === 1 ? 2 : 3])
           }

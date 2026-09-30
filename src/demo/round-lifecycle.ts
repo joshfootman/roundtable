@@ -1,5 +1,5 @@
 import type { PlayerSnapshot } from './entities/index.ts'
-import type { ReplayDeath, ReplayRound } from '../replay/types.ts'
+import type { ReplayDeath, ReplayRound, PlayerInspection } from '../replay/types.ts'
 
 export interface RoundRules {
   warmup: boolean
@@ -34,6 +34,24 @@ type Capture = {
   | { phase: 'live'; liveStartTick: number }
   | { phase: 'postround'; liveStartTick: number; resultTick: number }
 )
+
+function sameInspection(a: PlayerInspection, b: PlayerInspection): boolean {
+  const x = a.weapon
+  const y = b.weapon
+  return (
+    a.armour === b.armour &&
+    a.helmet === b.helmet &&
+    a.grenades.length === b.grenades.length &&
+    a.grenades.every(
+      (item, index) =>
+        item.definition === b.grenades[index]!.definition &&
+        item.count === b.grenades[index]!.count,
+    ) &&
+    x.type === y.type &&
+    (x.type === 'none' || y.type === 'none' || x.definition === y.definition) &&
+    (x.type !== 'gun' || y.type !== 'gun' || (x.magazine === y.magazine && x.reserve === y.reserve))
+  )
+}
 
 const GAME_COMMENCING = 16
 const POSTMATCH = 5
@@ -175,20 +193,15 @@ export function createRoundTracker() {
         teams.push(recorded.team)
         const track = capture.inspection[index]!
         if (track.at(-1)?.tick === tick) track.pop()
-        const previous = track.at(-1)?.weapon
-        const currentWeapon = recorded.weapon
-        if (
-          !previous ||
-          previous.type !== currentWeapon.type ||
-          (previous.type !== 'none' &&
-            currentWeapon.type !== 'none' &&
-            previous.definition !== currentWeapon.definition) ||
-          (previous.type === 'gun' &&
-            currentWeapon.type === 'gun' &&
-            (previous.magazine !== currentWeapon.magazine ||
-              previous.reserve !== currentWeapon.reserve))
-        )
-          track.push({ tick, weapon: currentWeapon })
+        const previous = track.at(-1)
+        const currentInspection = {
+          tick,
+          weapon: recorded.weapon,
+          armour: recorded.armour,
+          helmet: recorded.helmet,
+          grenades: recorded.grenades,
+        }
+        if (!previous || !sameInspection(previous, currentInspection)) track.push(currentInspection)
       }
     },
     end(tick: number): ReplayEvent[] {

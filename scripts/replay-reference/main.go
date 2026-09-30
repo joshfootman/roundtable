@@ -33,7 +33,7 @@ func main() {
 	}
 	p := demo.NewParser(f)
 	defer p.Close()
-	ticks := map[int]bool{537: true, 5732: true, 5796: true, 6400: true, 7834: true, 8281: true, 6362: true, 6466: true, 6500: true, 13170: true, 30555: true, 31965: true, 69941: true}
+	ticks := map[int]bool{537: true, 5732: true, 5796: true, 6400: true, 7443: true, 7444: true, 7445: true, 7834: true, 8281: true, 6362: true, 6466: true, 6500: true, 13170: true, 30555: true, 31965: true, 69941: true}
 	var projectileFrames []any
 	var frames []any
 	var records []any
@@ -116,7 +116,7 @@ func main() {
 			sort.Slice(inventory, func(i, j int) bool {
 				return inventory[i].(map[string]any)["type"].(int) < inventory[j].(map[string]any)["type"].(int)
 			})
-			players = append(players, map[string]any{"steamId": id(v), "name": v.Name, "team": int(v.Team), "position": v.Position(), "health": v.Health(), "alive": v.IsAlive(), "yaw": v.ViewDirectionX(), "pitch": v.ViewDirectionY(), "armour": v.Armor(), "helmet": v.HasHelmet(), "money": v.Money(), "activeWeapon": weapon(v.ActiveWeapon()), "inventory": inventory, "flashRemainingSeconds": v.FlashDurationTimeRemaining().Seconds()})
+			players = append(players, map[string]any{"steamId": id(v), "name": v.Name, "team": int(v.Team), "position": v.Position(), "health": v.Health(), "alive": v.IsAlive(), "yaw": v.ViewDirectionX(), "pitch": v.ViewDirectionY(), "armour": v.Armor(), "helmet": v.HasHelmet(), "money": v.Money(), "activeWeapon": weapon(v.ActiveWeapon()), "inventory": inventory, "flashbangCount": v.FlashbangCount(), "flashRemainingSeconds": v.FlashDurationTimeRemaining().Seconds()})
 		}
 		sort.Slice(players, func(i, j int) bool { return players[i]["steamId"].(string) < players[j]["steamId"].(string) })
 		frames = append(frames, map[string]any{"tick": tick, "players": players, "bomb": map[string]any{"carrier": id(p.GameState().Bomb().Carrier), "position": p.GameState().Bomb().Position()}})

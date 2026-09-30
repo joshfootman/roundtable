@@ -21,7 +21,10 @@
             "name": "P2000",
             "magazine": 13,
             "reserve": 52
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197978835160",
@@ -38,7 +41,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989430253",
@@ -55,7 +61,10 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989744167",
@@ -72,7 +81,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197991272318",
@@ -89,7 +101,10 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197997351207",
@@ -106,7 +121,10 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198063336407",
@@ -123,7 +141,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198068422762",
@@ -138,7 +159,10 @@
           "weapon": {
             "type": "item",
             "name": "C4"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198113666193",
@@ -155,7 +179,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198201620490",
@@ -172,7 +199,10 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         }
       ]
     },
@@ -192,7 +222,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197978835160",
@@ -207,7 +240,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989430253",
@@ -222,7 +258,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989744167",
@@ -237,7 +276,23 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 1
+            },
+            {
+              "definition": 44,
+              "count": 1
+            },
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197991272318",
@@ -252,7 +307,15 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197997351207",
@@ -267,7 +330,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198063336407",
@@ -282,7 +348,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198068422762",
@@ -297,7 +366,15 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561198113666193",
@@ -312,7 +389,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198201620490",
@@ -329,7 +409,19 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 2
+            },
+            {
+              "definition": 46,
+              "count": 1
+            }
+          ]
         }
       ]
     },
@@ -349,7 +441,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197978835160",
@@ -364,7 +459,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989430253",
@@ -379,7 +477,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989744167",
@@ -394,7 +495,23 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 1
+            },
+            {
+              "definition": 44,
+              "count": 1
+            },
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197991272318",
@@ -409,7 +526,15 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197997351207",
@@ -424,7 +549,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198063336407",
@@ -439,7 +567,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198068422762",
@@ -454,7 +585,15 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561198113666193",
@@ -469,7 +608,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198201620490",
@@ -486,7 +628,19 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 2
+            },
+            {
+              "definition": 46,
+              "count": 1
+            }
+          ]
         }
       ]
     },
@@ -508,7 +662,10 @@
             "name": "P2000",
             "magazine": 13,
             "reserve": 52
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197978835160",
@@ -525,7 +682,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989430253",
@@ -542,7 +702,10 @@
             "name": "P250",
             "magazine": 13,
             "reserve": 26
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989744167",
@@ -557,7 +720,23 @@
           "weapon": {
             "type": "item",
             "name": "HE Grenade"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 1
+            },
+            {
+              "definition": 44,
+              "count": 1
+            },
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197991272318",
@@ -574,7 +753,15 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197997351207",
@@ -591,7 +778,10 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198063336407",
@@ -608,7 +798,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198068422762",
@@ -623,7 +816,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198113666193",
@@ -640,7 +836,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198201620490",
@@ -657,7 +856,19 @@
             "name": "Glock-18",
             "magazine": 20,
             "reserve": 120
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 2
+            },
+            {
+              "definition": 46,
+              "count": 1
+            }
+          ]
         }
       ]
     },
@@ -676,7 +887,10 @@
           "yaw": -95.33386,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197978835160",
@@ -693,7 +907,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 13
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989430253",
@@ -707,7 +924,10 @@
           "yaw": -130.70915,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989744167",
@@ -724,7 +944,23 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 1
+            },
+            {
+              "definition": 44,
+              "count": 1
+            },
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197991272318",
@@ -738,7 +974,10 @@
           "yaw": 105.034454,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197997351207",
@@ -752,7 +991,10 @@
           "yaw": 96.27527,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198063336407",
@@ -769,7 +1011,10 @@
             "name": "USP-S",
             "magazine": 9,
             "reserve": 24
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198068422762",
@@ -783,7 +1028,10 @@
           "yaw": 106.371704,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198113666193",
@@ -800,7 +1048,10 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198201620490",
@@ -814,7 +1065,10 @@
           "yaw": 77.254486,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         }
       ]
     },
@@ -833,7 +1087,10 @@
           "yaw": -96.71333,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197978835160",
@@ -850,7 +1107,10 @@
             "name": "P250",
             "magazine": 11,
             "reserve": 22
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989430253",
@@ -864,7 +1124,10 @@
           "yaw": -130.70915,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197989744167",
@@ -881,7 +1144,23 @@
             "name": "USP-S",
             "magazine": 12,
             "reserve": 24
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": [
+            {
+              "definition": 43,
+              "count": 1
+            },
+            {
+              "definition": 44,
+              "count": 1
+            },
+            {
+              "definition": 45,
+              "count": 1
+            }
+          ]
         },
         {
           "steamId": "76561197991272318",
@@ -895,7 +1174,10 @@
           "yaw": 105.034454,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561197997351207",
@@ -909,7 +1191,10 @@
           "yaw": 144.9035,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198063336407",
@@ -924,7 +1209,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198068422762",
@@ -938,7 +1226,10 @@
           "yaw": 107.25162,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198113666193",
@@ -953,7 +1244,10 @@
           "weapon": {
             "type": "item",
             "name": "Knife"
-          }
+          },
+          "armour": 100,
+          "helmet": false,
+          "grenades": []
         },
         {
           "steamId": "76561198201620490",
@@ -967,7 +1261,10 @@
           "yaw": 77.254486,
           "weapon": {
             "type": "none"
-          }
+          },
+          "armour": 0,
+          "helmet": false,
+          "grenades": []
         }
       ]
     }

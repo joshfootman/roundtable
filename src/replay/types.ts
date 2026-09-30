@@ -5,6 +5,9 @@ export type ReplayWeapon =
 
 export interface PlayerInspection {
   tick: number
+  armour: number
+  helmet: boolean
+  grenades: { definition: number; count: number }[]
   weapon: ReplayWeapon
 }
 

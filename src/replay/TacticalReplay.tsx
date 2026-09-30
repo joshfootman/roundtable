@@ -309,7 +309,10 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           {round.players.map((player, index) => {
             const state = sample * round.players.length + index
             const offset = state * 3
-            const { weapon } = inspectionAtTick(round.inspection[index]!, recordedTick)
+            const { weapon, armour, helmet, grenades } = inspectionAtTick(
+              round.inspection[index]!,
+              recordedTick,
+            )
             return (
               <li key={player.steamId} className="rounded-lg bg-[#1b251e] p-3">
                 <p className="m-0 text-sm font-semibold">
@@ -327,6 +330,17 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
                   Weapon {weapon.type === 'none' ? 'None' : equipmentName(weapon.definition)}
                   {weapon.type === 'gun' && ` · Ammo ${weapon.magazine} / ${weapon.reserve}`}
+                </p>
+                <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
+                  Armour {armour} · {helmet ? 'Helmet' : 'No helmet'}
+                </p>
+                <p className="mt-2 mb-0 text-xs text-[#a7b5aa]">
+                  Grenades{' '}
+                  {grenades.length
+                    ? grenades
+                        .map((item) => `${equipmentName(item.definition)} × ${item.count}`)
+                        .join(' · ')
+                    : 'None'}
                 </p>
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
                   Health {round.health[state]} · Facing {round.yaw[state]!.toFixed(1)}°

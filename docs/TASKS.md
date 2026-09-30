@@ -14,7 +14,7 @@
 - [x] Inspect player names, teams, facing and health at the current time
 - [x] Show deaths and kills in sync with playback and scrubbing
 - [x] Inspect current weapons and ammunition
-- [ ] Inspect armour and carried grenades
+- [x] Inspect armour and carried grenades
 - [ ] Inspect player money throughout a round
 - [ ] Track dropped, carried and planted bomb positions
 - [ ] Replay bomb plants, defuses and explosions

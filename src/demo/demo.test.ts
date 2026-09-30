@@ -25,6 +25,9 @@ const oracle = JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) a
       alive: boolean
       health: number
       yaw: number
+      armour: number
+      helmet: boolean
+      grenades: { definition: number; count: number }[]
       weapon: { type: string; name?: string; magazine?: number; reserve?: number }
     }[]
   }[]
@@ -127,6 +130,15 @@ test('decodes a real competitive round against independent identities and positi
       headshot: true,
     },
   ])
+  const brokyTrack = round.inspection[round.players.findIndex((player) => player.name === 'broky')]!
+  expect(inspectionAtTick(brokyTrack, 7443).grenades).toEqual([
+    { definition: 43, count: 2 },
+    { definition: 46, count: 1 },
+  ])
+  expect(inspectionAtTick(brokyTrack, 7444).grenades).toEqual([
+    { definition: 43, count: 1 },
+    { definition: 46, count: 1 },
+  ])
   expect(round.number).toBe(1)
   expect(round.startTick).toBe(oracle.startTick)
   expect(round.liveStartTick).toBe(5732)
@@ -149,7 +161,15 @@ test('decodes a real competitive round against independent identities and positi
       expect(round.health[state]).toBe(player.health)
       expect(round.yaw[state]).toBeCloseTo(player.yaw, 3)
       expect(round.teams[state]).toBe(player.team)
-      const { weapon } = inspectionAtTick(round.inspection[index]!, expected.tick)
+      const { weapon, armour, helmet, grenades } = inspectionAtTick(
+        round.inspection[index]!,
+        expected.tick,
+      )
+      expect({ armour, helmet, grenades }).toEqual({
+        armour: player.armour,
+        helmet: player.helmet,
+        grenades: player.grenades,
+      })
       expect(
         weapon.type === 'none'
           ? weapon
