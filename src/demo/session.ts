@@ -11,6 +11,7 @@ export type ImportState =
       status: 'ready'
       filename: string
       metadata: DemoMetadata
+      roundStartTicks: number[]
       rounds: ReplayRound[]
       parsing: Parsing
     }
@@ -31,6 +32,7 @@ export function updateImport(state: ImportState, action: ImportAction): ImportSt
         status: 'ready',
         filename: state.filename,
         metadata: action.metadata,
+        roundStartTicks: action.roundStartTicks,
         rounds: [],
         parsing: { status: 'active' },
       }

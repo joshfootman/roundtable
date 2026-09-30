@@ -1,6 +1,6 @@
 import { Cause, Effect, Option, Stream } from 'effect'
 import { DemoReadError } from './errors'
-import { readDemoMetadata } from './metadata'
+import { readRecordingInfo } from './metadata'
 import { readRounds } from './round'
 import type { ImportResult } from './import'
 
@@ -28,8 +28,8 @@ self.onmessage = (event: MessageEvent<File>) => {
   }
   Effect.runFork(
     Effect.gen(function* () {
-      const metadata = yield* readDemoMetadata(source)
-      send({ type: 'metadata', metadata })
+      const recording = yield* readRecordingInfo(source)
+      send({ type: 'metadata', ...recording })
       yield* Stream.runForEach(readRounds(source), (round) =>
         Effect.sync(() => send({ type: 'round', round })),
       )

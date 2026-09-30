@@ -118,16 +118,39 @@ test('can submit another demo while an earlier import is pending', async ({ page
   })
   await submit.click()
   const held = await pending
-  try {
-    await expect(page.getByRole('status')).toHaveText('Reading pending.dem…')
-    await input.setInputFiles(await demoFile())
-    await submit.click()
-    await expect(page.getByRole('status')).toContainText('First round loaded.')
-    await expect(page.getByRole('heading', { name: 'Dust II', exact: true })).toBeVisible()
-    await expect(page.getByText('BLAST Premier 2024', { exact: true })).toBeVisible()
-  } finally {
-    await held.abort()
-  }
+  await expect(page.getByRole('status')).toHaveText('Reading pending.dem…')
+  await held.fulfill({
+    contentType: 'text/javascript',
+    body: `self.onmessage = () => self.postMessage(${JSON.stringify({
+      type: 'metadata',
+      metadata: {
+        mapName: 'de_dust2',
+        serverName: 'BLAST Premier 2024',
+        clientName: 'SourceTV Demo',
+        gameDirectory: 'csgo',
+        demoVersion: 'valve_demo_2',
+        patchVersion: 14011,
+        buildNumber: 10072,
+        serverStartTick: 42184,
+        durationSeconds: 3078.25,
+        playbackTicks: 197008,
+        playbackFrames: 197003,
+      },
+      roundStartTicks: [537, 8282, 17370],
+    })})`,
+  })
+  const rounds = page.getByRole('region', { name: 'Rounds', exact: true })
+  await expect(rounds.getByRole('button')).toHaveCount(3)
+  await expect(
+    rounds.getByRole('button', { name: 'Round 2 · Pending', exact: true }),
+  ).toBeDisabled()
+  await input.setInputFiles(await demoFile())
+  await submit.click()
+  await expect(page.getByRole('status')).toContainText('First round loaded.')
+  await expect(page.getByRole('heading', { name: 'Dust II', exact: true })).toBeVisible()
+  await expect(page.getByText('BLAST Premier 2024', { exact: true })).toBeVisible()
+  await expect(page.getByRole('alert')).toContainText('Completed rounds remain playable')
+  await expect(rounds.getByRole('button')).toHaveCount(0)
 })
 
 test('rounds recording duration across a minute boundary', async ({ page }) => {

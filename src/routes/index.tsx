@@ -54,6 +54,10 @@ function Home() {
   }
 
   const firstRound = state.status === 'ready' ? state.rounds[0] : undefined
+  const pendingStarts =
+    state.status === 'ready' && state.parsing.status === 'active'
+      ? state.roundStartTicks.filter((tick) => tick >= (state.rounds.at(-1)?.endTick ?? 0))
+      : []
   return (
     <main className="workspace">
       <header className="masthead">
@@ -134,6 +138,39 @@ function Home() {
             These values describe the recording. Teams, score and match date are not available in
             this metadata.
           </p>
+        </section>
+      )}
+      {state.status === 'ready' && (
+        <section
+          aria-labelledby="rounds-title"
+          className="mt-6 rounded-2xl border border-white/5 bg-[#17201a] p-[22px] text-[#e7ece8] sm:p-[30px]"
+        >
+          <h2 id="rounds-title" className="m-0 text-2xl font-[550]">
+            Rounds
+          </h2>
+          <ul className="mt-4 flex list-none flex-wrap gap-2 p-0">
+            {state.rounds.map((round) => (
+              <li key={round.startTick} className="rounded-lg border border-[#303c34] px-4 py-3">
+                Round {round.number} · Ready
+              </li>
+            ))}
+            {pendingStarts.map((tick, index) => (
+              <li key={tick}>
+                <button
+                  type="button"
+                  disabled
+                  className="rounded-lg border border-[#303c34] px-4 py-3 text-[#a7b5aa] disabled:cursor-wait"
+                >
+                  Round {state.rounds.length + index + 1} · Pending
+                </button>
+              </li>
+            ))}
+          </ul>
+          {state.parsing.status === 'active' && state.roundStartTicks.length === 0 && (
+            <p className="mt-3 text-sm text-[#a7b5aa]">
+              Round count is not recorded. More rounds will appear as parsing continues.
+            </p>
+          )}
         </section>
       )}
       {firstRound && (

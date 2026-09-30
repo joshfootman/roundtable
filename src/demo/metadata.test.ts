@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { Effect } from 'effect'
-import { clearField, fromBinary, toBinary } from '@bufbuild/protobuf'
-import { CDemoFileHeaderSchema } from './generated/demo_pb'
+import { clearField, create, fromBinary, toBinary } from '@bufbuild/protobuf'
+import { CDemoFileHeaderSchema, CDemoFileInfoSchema } from './generated/demo_pb'
 import { describe, expect, test } from 'vitest'
 import { compress } from 'snappyjs'
-import { readDemoMetadata } from './metadata'
+import { readDemoMetadata, readRecordingInfo } from './metadata'
 
 const fixture = new Uint8Array(readFileSync('fixtures/metadata/dust2-metadata.bin'))
 const header = new Uint8Array(readFileSync('fixtures/metadata/header-record.bin'))
@@ -168,4 +168,33 @@ test('accepts an explicit CS2 identifier regardless of directory, map or patch',
     mapName: 'workshop_unknown_map',
     patchVersion: 1,
   })
+})
+
+test('reads an optional round-start index and rejects contradictory hints', async () => {
+  const recording = async (roundStartTicks: number[]) => {
+    const payload = toBinary(
+      CDemoFileInfoSchema,
+      create(CDemoFileInfoSchema, {
+        playbackTime: 100,
+        playbackTicks: 20000,
+        playbackFrames: 20000,
+        gameInfo: { cs: { roundStartTicks } },
+      }),
+    )
+    const bytes = demo(header, new Uint8Array([2, 0, ...varint(payload.length), ...payload]))
+    return Effect.runPromise(
+      readRecordingInfo({
+        size: bytes.length,
+        readRange: (offset, length) => Effect.succeed(bytes.slice(offset, offset + length)),
+      }),
+    )
+  }
+  await expect(recording([537, 8282, 17370])).resolves.toMatchObject({
+    metadata: { mapName: 'de_dust2', playbackTicks: 20000 },
+    roundStartTicks: [537, 8282, 17370],
+  })
+  await expect(recording([])).resolves.toMatchObject({ roundStartTicks: [] })
+  for (const ticks of [[-1], [20001], [537, 537], [8282, 537]]) {
+    await expect(recording(ticks)).rejects.toThrow('round-start index is invalid')
+  }
 })

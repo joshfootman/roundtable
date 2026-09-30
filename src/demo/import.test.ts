@@ -78,11 +78,11 @@ test('delivers a playable round before completion and releases the finished work
   const events = await Effect.runPromise(
     Effect.gen(function* () {
       const { fiber, worker, events, receivedRound } = yield* start()
-      worker.reply({ type: 'metadata', metadata })
+      worker.reply({ type: 'metadata', metadata, roundStartTicks: [] })
       worker.reply({ type: 'round', round: firstRound })
       yield* Deferred.await(receivedRound)
       expect(events).toEqual([
-        { type: 'metadata', metadata },
+        { type: 'metadata', metadata, roundStartTicks: [] },
         { type: 'round', round: firstRound },
       ])
       expect(worker.terminated).toBe(false)
@@ -94,7 +94,7 @@ test('delivers a playable round before completion and releases the finished work
     }),
   )
   expect(events).toEqual([
-    { type: 'metadata', metadata },
+    { type: 'metadata', metadata, roundStartTicks: [] },
     { type: 'round', round: firstRound },
     { type: 'round', round: { ...firstRound, number: 2 } },
     { type: 'complete' },
@@ -105,7 +105,7 @@ test('retains a completed round after failure and releases the worker', async ()
   await Effect.runPromise(
     Effect.gen(function* () {
       const { fiber, worker, events, receivedRound } = yield* start()
-      worker.reply({ type: 'metadata', metadata })
+      worker.reply({ type: 'metadata', metadata, roundStartTicks: [] })
       worker.reply({ type: 'round', round: firstRound })
       yield* Deferred.await(receivedRound)
       worker.reply({ type: 'error', message: 'The demo is truncated. Download it again.' })
@@ -126,6 +126,7 @@ test('retains a completed round after failure and releases the worker', async ()
         status: 'ready',
         filename: 'match.dem',
         metadata,
+        roundStartTicks: [],
         rounds: [firstRound],
         parsing: { status: 'failed', message: 'The demo is truncated. Download it again.' },
       })

@@ -5,7 +5,7 @@ import type { ReplayRound } from '../replay/types'
 export class DemoImportError extends Data.TaggedError('DemoImportError')<{ message: string }> {}
 
 export type ImportEvent =
-  | { type: 'metadata'; metadata: DemoMetadata }
+  | { type: 'metadata'; metadata: DemoMetadata; roundStartTicks: number[] }
   | { type: 'round'; round: ReplayRound }
   | { type: 'complete' }
 

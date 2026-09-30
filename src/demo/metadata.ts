@@ -19,6 +19,11 @@ export interface DemoMetadata {
   playbackFrames: number
 }
 
+export interface RecordingInfo {
+  metadata: DemoMetadata
+  roundStartTicks: number[]
+}
+
 const CONTAINER_BYTES = 16
 const signature = [80, 66, 68, 69, 77, 83, 50, 0]
 const archiveSignatures = [
@@ -155,21 +160,36 @@ function decodeHeader(bytes: Uint8Array): Effect.Effect<HeaderMetadata, Metadata
   }, 'The demo header is damaged. Download the demo again.')
 }
 
-function decodeFileInfo(bytes: Uint8Array): Effect.Effect<PlaybackMetadata, MetadataDecodeError> {
+function decodeFileInfo(
+  bytes: Uint8Array,
+): Effect.Effect<{ playback: PlaybackMetadata; roundStartTicks: number[] }, MetadataDecodeError> {
   return decode(() => {
     const info = fromBinary(CDemoFileInfoSchema, bytes)
     const fields = CDemoFileInfoSchema.field
-    return {
+    const playback = {
       durationSeconds: requiredNumber(info, fields.playbackTime, info.playbackTime),
       playbackTicks: requiredNumber(info, fields.playbackTicks, info.playbackTicks),
       playbackFrames: requiredNumber(info, fields.playbackFrames, info.playbackFrames),
     }
+    const roundStartTicks = info.gameInfo?.cs?.roundStartTicks ?? []
+    if (
+      roundStartTicks.some(
+        (tick, index) =>
+          !Number.isInteger(tick) ||
+          tick < 0 ||
+          tick > playback.playbackTicks ||
+          (index > 0 && tick <= roundStartTicks[index - 1]),
+      )
+    ) {
+      throw new DemoParseError({ message: 'The demo round-start index is invalid.' })
+    }
+    return { playback, roundStartTicks }
   }, 'The demo playback metadata is damaged. Download the demo again.')
 }
 
-export function readDemoMetadata(
+export function readRecordingInfo(
   source: DemoSource,
-): Effect.Effect<DemoMetadata, DemoReadError | DemoParseError | DemoUnsupportedError> {
+): Effect.Effect<RecordingInfo, DemoReadError | DemoParseError | DemoUnsupportedError> {
   const read = boundedSource(source)
   function readMetadataRecord(offset: number, expectedCommand: number) {
     return Effect.gen(function* () {
@@ -211,6 +231,12 @@ export function readDemoMetadata(
     }
     const infoRecord = yield* readMetadataRecord(fileInfoOffset, EDemoCommands.DEM_FileInfo)
     const info = yield* decodeFileInfo(infoRecord.bytes)
-    return { ...header, ...info }
+    return { metadata: { ...header, ...info.playback }, roundStartTicks: info.roundStartTicks }
   })
+}
+
+export function readDemoMetadata(
+  source: DemoSource,
+): Effect.Effect<DemoMetadata, DemoReadError | DemoParseError | DemoUnsupportedError> {
+  return readRecordingInfo(source).pipe(Effect.map(({ metadata }) => metadata))
 }
