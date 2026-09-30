@@ -31,3 +31,15 @@ state at FrameDone; the last frame for each sampled tick was retained.
 The reference parser is only a verification oracle. All runtime positions come
 from the project's custom TypeScript entity decoder. `npm run verify:round` checks
 these samples against the full source demo, independently of fixture compaction.
+
+## Full-match boundary oracle
+
+`round-boundaries.json` records all 23 competitive rounds from the same source
+demo, independently decoded with demoinfocs-golang v4.5.1. Start, freeze-end,
+result and completion ticks come from recorded game events and game-rule
+transitions. The final round completes at the last recorded packet, tick 197008,
+following its result at 194674. Every overtime value is zero in this fixture.
+
+Run `npm run verify:rounds` with the full local demo present to compare the custom
+stream's completed round numbers and boundaries without retaining all buffers.
+This complements the compact coordinate fixture and requires the original file.

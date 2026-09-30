@@ -1,5 +1,5 @@
 import { fromBinary } from '@bufbuild/protobuf'
-import { Effect, Option, Stream } from 'effect'
+import { Chunk, Effect, Option, Stream } from 'effect'
 import { DemoParseError, type DemoReadError } from './errors.ts'
 import {
   bufferedSource,
@@ -43,9 +43,13 @@ type RoundCapture = {
 } & ({ phase: 'freeze' } | { phase: 'live' | 'postround'; liveStartTick: number })
 
 const LIMIT = 32 * 1024 * 1024
-export function readRounds(
+export type ReplayEvent =
+  | { type: 'round-start'; number: number; startTick: number }
+  | { type: 'round'; round: ReplayRound }
+
+export function readReplay(
   input: DemoSource,
-): Stream.Stream<ReplayRound, DemoReadError | DemoParseError> {
+): Stream.Stream<ReplayEvent, DemoReadError | DemoParseError> {
   return Stream.suspend(() => {
     const source = bufferedSource(input)
     const entities = createEntityDecoder()
@@ -70,11 +74,8 @@ export function readRounds(
         alive: Uint8Array.from(round.alive),
       }
     }
-    function start(
-      tick: number,
-      rules: ReturnType<typeof entities.gameRules>,
-    ): ReplayRound | undefined {
-      if (!rules || rules.warmup || capture?.startTick === tick) return undefined
+    function start(tick: number, rules: ReturnType<typeof entities.gameRules>): ReplayEvent[] {
+      if (!rules || rules.warmup || capture?.startTick === tick) return []
       const completed = capture?.phase === 'postround' ? finish(capture, tick) : undefined
       capture = {
         phase: 'freeze',
@@ -86,7 +87,10 @@ export function readRounds(
         alive: [],
         lastPositions: new Map(),
       }
-      return completed
+      return [
+        ...(completed ? [{ type: 'round' as const, round: completed }] : []),
+        { type: 'round-start', number: capture.number, startTick: tick },
+      ]
     }
     function sample(round: RoundCapture, tick: number) {
       const { ticks, positions, alive, lastPositions } = round
@@ -114,7 +118,7 @@ export function readRounds(
         alive.push(Number(recorded.alive))
       }
     }
-    function packet(bytes: Uint8Array, tick: number): ReplayRound | undefined {
+    function packet(bytes: Uint8Array, tick: number): ReplayEvent[] {
       lastTick = tick
       const reader = new BitReader(bytes)
       const messages: { id: number; bytes: Uint8Array }[] = []
@@ -138,7 +142,7 @@ export function readRounds(
       const entityMessages = messages.filter(
         (message) => message.id === SVC_Messages.svc_PacketEntities,
       )
-      let completed: ReplayRound | undefined
+      const events: ReplayEvent[] = []
       for (const message of messages) {
         if (message.id === SVC_Messages.svc_ServerInfo) {
           const info = fromBinary(CSVCMsg_ServerInfoSchema, message.bytes)
@@ -161,7 +165,7 @@ export function readRounds(
         const startsRound =
           rules.reason === 0 &&
           ((rules.started === true && previousRules.started !== true) || previousRules.reason !== 0)
-        if (startsRound && !rules.warmup) completed = start(tick, rules)
+        if (startsRound && !rules.warmup) events.push(...start(tick, rules))
         if (capture?.phase === 'live' && rules.reason !== 0) capture.phase = 'postround'
       }
       previousRules = rules
@@ -170,22 +174,22 @@ export function readRounds(
           const event = fromBinary(CMsgSource1LegacyGameEventSchema, message.bytes)
           const descriptor = descriptors.get(event.eventid)
           if (!descriptor) throw new Error('Missing replay event descriptors.')
-          if (descriptor.name === 'round_start') completed = start(tick, rules) ?? completed
+          if (descriptor.name === 'round_start') events.push(...start(tick, rules))
           else if (descriptor.name === 'round_freeze_end' && capture?.phase === 'freeze') {
             capture = { ...capture, phase: 'live', liveStartTick: tick }
           } else if (descriptor.name === 'round_end' && capture?.phase === 'live')
             capture.phase = 'postround'
           else if (descriptor.name === 'round_officially_ended' && capture?.phase === 'postround') {
-            completed = finish(capture, tick)
+            events.push({ type: 'round', round: finish(capture, tick) })
             capture = undefined
           }
         }
       if (capture) sample(capture, tick)
-      return completed
+      return events
     }
     let lastTick = 0
     let ended = false
-    return Stream.unfoldEffect(16, (initialOffset) =>
+    return Stream.unfoldChunkEffect(16, (initialOffset) =>
       Effect.gen(function* () {
         if (ended) return Option.none()
         let offset = initialOffset
@@ -208,18 +212,18 @@ export function readRounds(
             ].includes(command)
           ) {
             const bytes = yield* readRecordPayload(source, framing, LIMIT)
-            const complete = yield* parse(() => {
+            const events = yield* parse(() => {
               if (command === EDemoCommands.DEM_SendTables) {
                 entities.sendTables(fromBinary(CDemoSendTablesSchema, bytes).data)
-                return undefined
+                return []
               }
               if (command === EDemoCommands.DEM_ClassInfo) {
                 entities.classes(fromBinary(CDemoClassInfoSchema, bytes))
-                return undefined
+                return []
               }
               if (command === EDemoCommands.DEM_StringTables) {
                 entities.tables(fromBinary(CDemoStringTablesSchema, bytes))
-                return undefined
+                return []
               }
               if (command === EDemoCommands.DEM_FullPacket) {
                 const full = fromBinary(CDemoFullPacketSchema, bytes)
@@ -229,7 +233,8 @@ export function readRounds(
               }
               return packet(fromBinary(CDemoPacketSchema, bytes).data, framing.tick)
             })
-            if (complete) return Option.some([complete, framing.end] as const)
+            if (events.length)
+              return Option.some([Chunk.fromIterable(events), framing.end] as const)
           }
           offset = framing.end
         }
@@ -244,7 +249,10 @@ export function readRounds(
         if (finalCapture?.phase === 'postround') {
           const complete = yield* parse(() => finish(finalCapture, lastTick))
           capture = undefined
-          return Option.some([complete, offset] as const)
+          return Option.some([
+            Chunk.of({ type: 'round' as const, round: complete }),
+            offset,
+          ] as const)
         }
         if (capture)
           return yield* Effect.fail(
@@ -256,6 +264,14 @@ export function readRounds(
       }),
     )
   })
+}
+
+export function readRounds(input: DemoSource) {
+  return readReplay(input).pipe(
+    Stream.filterMap((event) =>
+      event.type === 'round' ? Option.some(event.round) : Option.none(),
+    ),
+  )
 }
 
 export function readFirstRound(input: DemoSource) {

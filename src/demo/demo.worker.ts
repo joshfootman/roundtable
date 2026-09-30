@@ -1,7 +1,7 @@
 import { Cause, Effect, Option, Stream } from 'effect'
 import { DemoReadError } from './errors'
 import { readRecordingInfo } from './metadata'
-import { readRounds } from './round'
+import { readReplay } from './round'
 import type { ImportResult } from './import'
 
 function send(result: ImportResult) {
@@ -30,9 +30,7 @@ self.onmessage = (event: MessageEvent<File>) => {
     Effect.gen(function* () {
       const recording = yield* readRecordingInfo(source)
       send({ type: 'metadata', ...recording })
-      yield* Stream.runForEach(readRounds(source), (round) =>
-        Effect.sync(() => send({ type: 'round', round })),
-      )
+      yield* Stream.runForEach(readReplay(source), (event) => Effect.sync(() => send(event)))
       send({ type: 'complete' })
     }).pipe(
       Effect.catchAllCause((cause) =>

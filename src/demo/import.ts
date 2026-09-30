@@ -1,12 +1,12 @@
 import { Data, Effect, Stream } from 'effect'
 import type { DemoMetadata } from './metadata'
-import type { ReplayRound } from '../replay/types'
+import type { ReplayEvent } from './round'
 
 export class DemoImportError extends Data.TaggedError('DemoImportError')<{ message: string }> {}
 
 export type ImportEvent =
   | { type: 'metadata'; metadata: DemoMetadata; roundStartTicks: number[] }
-  | { type: 'round'; round: ReplayRound }
+  | ReplayEvent
   | { type: 'complete' }
 
 export type ImportResult = ImportEvent | { type: 'error'; message: string }

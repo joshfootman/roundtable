@@ -1,0 +1,186 @@
+[
+  {
+    "number": 1,
+    "startTick": 537,
+    "overtime": 0,
+    "liveStartTick": 5732,
+    "resultTick": 7834,
+    "endTick": 8282
+  },
+  {
+    "number": 2,
+    "startTick": 8282,
+    "overtime": 0,
+    "liveStartTick": 9562,
+    "resultTick": 16922,
+    "endTick": 17370
+  },
+  {
+    "number": 3,
+    "startTick": 17370,
+    "overtime": 0,
+    "liveStartTick": 18650,
+    "resultTick": 24802,
+    "endTick": 25250
+  },
+  {
+    "number": 4,
+    "startTick": 25250,
+    "overtime": 0,
+    "liveStartTick": 26530,
+    "resultTick": 31965,
+    "endTick": 32413
+  },
+  {
+    "number": 5,
+    "startTick": 32413,
+    "overtime": 0,
+    "liveStartTick": 33693,
+    "resultTick": 38565,
+    "endTick": 39013
+  },
+  {
+    "number": 6,
+    "startTick": 39013,
+    "overtime": 0,
+    "liveStartTick": 42821,
+    "resultTick": 45084,
+    "endTick": 45532
+  },
+  {
+    "number": 7,
+    "startTick": 45532,
+    "overtime": 0,
+    "liveStartTick": 46812,
+    "resultTick": 52603,
+    "endTick": 53051
+  },
+  {
+    "number": 8,
+    "startTick": 53051,
+    "overtime": 0,
+    "liveStartTick": 54331,
+    "resultTick": 59928,
+    "endTick": 60376
+  },
+  {
+    "number": 9,
+    "startTick": 60376,
+    "overtime": 0,
+    "liveStartTick": 61656,
+    "resultTick": 63528,
+    "endTick": 63976
+  },
+  {
+    "number": 10,
+    "startTick": 63976,
+    "overtime": 0,
+    "liveStartTick": 65256,
+    "resultTick": 69941,
+    "endTick": 70389
+  },
+  {
+    "number": 11,
+    "startTick": 70389,
+    "overtime": 0,
+    "liveStartTick": 74001,
+    "resultTick": 79353,
+    "endTick": 79801
+  },
+  {
+    "number": 12,
+    "startTick": 79801,
+    "overtime": 0,
+    "liveStartTick": 81081,
+    "resultTick": 87453,
+    "endTick": 87997
+  },
+  {
+    "number": 13,
+    "startTick": 87997,
+    "overtime": 0,
+    "liveStartTick": 101701,
+    "resultTick": 106822,
+    "endTick": 107270
+  },
+  {
+    "number": 14,
+    "startTick": 107270,
+    "overtime": 0,
+    "liveStartTick": 108550,
+    "resultTick": 114498,
+    "endTick": 114946
+  },
+  {
+    "number": 15,
+    "startTick": 114946,
+    "overtime": 0,
+    "liveStartTick": 116226,
+    "resultTick": 123586,
+    "endTick": 124034
+  },
+  {
+    "number": 16,
+    "startTick": 124034,
+    "overtime": 0,
+    "liveStartTick": 125314,
+    "resultTick": 133923,
+    "endTick": 134371
+  },
+  {
+    "number": 17,
+    "startTick": 134371,
+    "overtime": 0,
+    "liveStartTick": 135651,
+    "resultTick": 141974,
+    "endTick": 142422
+  },
+  {
+    "number": 18,
+    "startTick": 142422,
+    "overtime": 0,
+    "liveStartTick": 143702,
+    "resultTick": 150731,
+    "endTick": 151179
+  },
+  {
+    "number": 19,
+    "startTick": 151179,
+    "overtime": 0,
+    "liveStartTick": 152459,
+    "resultTick": 153778,
+    "endTick": 154226
+  },
+  {
+    "number": 20,
+    "startTick": 154226,
+    "overtime": 0,
+    "liveStartTick": 155506,
+    "resultTick": 161750,
+    "endTick": 162198
+  },
+  {
+    "number": 21,
+    "startTick": 162198,
+    "overtime": 0,
+    "liveStartTick": 166015,
+    "resultTick": 173375,
+    "endTick": 173823
+  },
+  {
+    "number": 22,
+    "startTick": 173823,
+    "overtime": 0,
+    "liveStartTick": 175103,
+    "resultTick": 184364,
+    "endTick": 184812
+  },
+  {
+    "number": 23,
+    "startTick": 184812,
+    "overtime": 0,
+    "liveStartTick": 188777,
+    "resultTick": 194674,
+    "endTick": 197008
+  }
+]

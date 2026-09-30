@@ -121,7 +121,7 @@ test('can submit another demo while an earlier import is pending', async ({ page
   await expect(page.getByRole('status')).toHaveText('Reading pending.dem…')
   await held.fulfill({
     contentType: 'text/javascript',
-    body: `self.onmessage = () => self.postMessage(${JSON.stringify({
+    body: `self.onmessage = () => { self.postMessage(${JSON.stringify({
       type: 'metadata',
       metadata: {
         mapName: 'de_dust2',
@@ -137,7 +137,7 @@ test('can submit another demo while an earlier import is pending', async ({ page
         playbackFrames: 197003,
       },
       roundStartTicks: [537, 8282, 17370],
-    })})`,
+    })}); postMessage({ type: 'round-start', number: 1, startTick: 449 }); postMessage({ type: 'round-start', number: 1, startTick: 537 }); }`,
   })
   const rounds = page.getByRole('region', { name: 'Rounds', exact: true })
   await expect(rounds.getByRole('button')).toHaveCount(3)

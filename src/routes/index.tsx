@@ -54,9 +54,18 @@ function Home() {
   }
 
   const firstRound = state.status === 'ready' ? state.rounds[0] : undefined
-  const pendingStarts =
+  const pendingRounds =
     state.status === 'ready' && state.parsing.status === 'active'
-      ? state.roundStartTicks.filter((tick) => tick >= (state.rounds.at(-1)?.endTick ?? 0))
+      ? [
+          ...(state.discoveredRound ? [state.discoveredRound] : []),
+          ...state.roundStartTicks
+            .map((startTick, index) => ({ startTick, number: index + 1 }))
+            .filter(
+              (round) =>
+                round.startTick >= (state.rounds.at(-1)?.endTick ?? 0) &&
+                (!state.discoveredRound || round.number > state.discoveredRound.number),
+            ),
+        ]
       : []
   return (
     <main className="workspace">
@@ -154,14 +163,14 @@ function Home() {
                 Round {round.number} · Ready
               </li>
             ))}
-            {pendingStarts.map((tick, index) => (
-              <li key={tick}>
+            {pendingRounds.map((round) => (
+              <li key={round.startTick}>
                 <button
                   type="button"
                   disabled
                   className="rounded-lg border border-[#303c34] px-4 py-3 text-[#a7b5aa] disabled:cursor-wait"
                 >
-                  Round {state.rounds.length + index + 1} · Pending
+                  Round {round.number} · Pending
                 </button>
               </li>
             ))}

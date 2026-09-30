@@ -79,12 +79,25 @@ test('delivers a playable round before completion and releases the finished work
     Effect.gen(function* () {
       const { fiber, worker, events, receivedRound } = yield* start()
       worker.reply({ type: 'metadata', metadata, roundStartTicks: [] })
+      worker.reply({ type: 'round-start', number: 1, startTick: 449 })
+      worker.reply({ type: 'round-start', number: 1, startTick: 537 })
       worker.reply({ type: 'round', round: firstRound })
       yield* Deferred.await(receivedRound)
       expect(events).toEqual([
         { type: 'metadata', metadata, roundStartTicks: [] },
+        { type: 'round-start', number: 1, startTick: 449 },
+        { type: 'round-start', number: 1, startTick: 537 },
         { type: 'round', round: firstRound },
       ])
+      const initial: ImportState = { status: 'reading', filename: 'match.dem' }
+      expect(events.slice(0, 3).reduce<ImportState>(updateImport, initial)).toMatchObject({
+        discoveredRound: { number: 1, startTick: 537 },
+        rounds: [],
+      })
+      expect(events.reduce<ImportState>(updateImport, initial)).toMatchObject({
+        discoveredRound: undefined,
+        rounds: [firstRound],
+      })
       expect(worker.terminated).toBe(false)
       worker.reply({ type: 'round', round: { ...firstRound, number: 2 } })
       worker.reply({ type: 'complete' })
@@ -95,6 +108,8 @@ test('delivers a playable round before completion and releases the finished work
   )
   expect(events).toEqual([
     { type: 'metadata', metadata, roundStartTicks: [] },
+    { type: 'round-start', number: 1, startTick: 449 },
+    { type: 'round-start', number: 1, startTick: 537 },
     { type: 'round', round: firstRound },
     { type: 'round', round: { ...firstRound, number: 2 } },
     { type: 'complete' },
@@ -127,6 +142,7 @@ test('retains a completed round after failure and releases the worker', async ()
         filename: 'match.dem',
         metadata,
         roundStartTicks: [],
+        discoveredRound: undefined,
         rounds: [firstRound],
         parsing: { status: 'failed', message: 'The demo is truncated. Download it again.' },
       })

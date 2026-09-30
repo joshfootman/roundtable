@@ -1,0 +1,62 @@
+import assert from 'node:assert/strict'
+import { open, readFile } from 'node:fs/promises'
+import { Effect, Stream } from 'effect'
+import { DemoReadError } from '../src/demo/errors.ts'
+import { readReplay } from '../src/demo/round.ts'
+
+const path = process.argv[2] ?? 'fixtures/faze-vs-vitality-m2-dust2.dem'
+const expected = JSON.parse(
+  await readFile(new URL('../fixtures/replay/round-boundaries.json', import.meta.url), 'utf8'),
+) as { number: number; startTick: number; liveStartTick: number; endTick: number }[]
+
+await Effect.runPromise(
+  Effect.scoped(
+    Effect.gen(function* () {
+      const file = yield* Effect.acquireRelease(
+        Effect.tryPromise({
+          try: () => open(path, 'r'),
+          catch: (error) => new DemoReadError({ message: String(error) }),
+        }),
+        (file) => Effect.promise(() => file.close()),
+      )
+      const stat = yield* Effect.tryPromise({
+        try: () => file.stat(),
+        catch: (error) => new DemoReadError({ message: String(error) }),
+      })
+      const source = {
+        size: stat.size,
+        readRange: (offset: number, length: number) =>
+          Effect.tryPromise({
+            try: async () => {
+              const bytes = new Uint8Array(length)
+              const { bytesRead } = await file.read(bytes, 0, length, offset)
+              return bytes.subarray(0, bytesRead)
+            },
+            catch: (error) => new DemoReadError({ message: String(error) }),
+          }),
+      }
+      let count = 0
+      const starts: { number: number; startTick: number }[] = []
+      yield* Stream.runForEach(readReplay(source), (event) =>
+        Effect.sync(() => {
+          if (event.type === 'round-start') {
+            starts.push({ number: event.number, startTick: event.startTick })
+            return
+          }
+          const round = event.round
+          const reference = expected[count]
+          assert.ok(reference, `Unexpected round ${round.number}`)
+          for (const field of ['number', 'startTick', 'liveStartTick', 'endTick'] as const)
+            assert.equal(round[field], reference[field], `Round ${round.number} ${field}`)
+          count++
+        }),
+      )
+      assert.equal(count, expected.length)
+      assert.deepEqual(starts, [
+        { number: 1, startTick: 449 },
+        ...expected.map(({ number, startTick }) => ({ number, startTick })),
+      ])
+      console.log(`Verified ${count} completed rounds against the independent boundary oracle.`)
+    }),
+  ),
+)

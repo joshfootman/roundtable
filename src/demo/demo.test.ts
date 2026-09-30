@@ -3,7 +3,7 @@ import { gunzipSync } from 'node:zlib'
 import { Effect, Stream } from 'effect'
 import { expect, test } from 'vitest'
 import { readDemo } from './demo'
-import { readFirstRound, readRounds } from './round'
+import { readFirstRound, readReplay, readRounds } from './round'
 import { readRecordFraming } from './source'
 
 const fixture = gunzipSync(readFileSync('fixtures/replay/dust2-first-round.dem.gz'))
@@ -57,6 +57,28 @@ test('decodes a real competitive round against independent identities and positi
     playbackTicks: 197008,
     playbackFrames: 197003,
   })
+  const boundaries = await Effect.runPromise(
+    readReplay(source(fixture)).pipe(
+      Stream.take(4),
+      Stream.map((event) =>
+        event.type === 'round'
+          ? {
+              type: event.type,
+              number: event.round.number,
+              startTick: event.round.startTick,
+              endTick: event.round.endTick,
+            }
+          : event,
+      ),
+      Stream.runCollect,
+    ),
+  )
+  expect(Array.from(boundaries)).toEqual([
+    { type: 'round-start', number: 1, startTick: 449 },
+    { type: 'round-start', number: 1, startTick: 537 },
+    { type: 'round', number: 1, startTick: 537, endTick: 8282 },
+    { type: 'round-start', number: 2, startTick: 8282 },
+  ])
   const round = demo.firstRound
   expect(round.players).toEqual(
     oracle.samples[0]!.players.map(({ steamId, name, team }) => ({ steamId, name, team })),
