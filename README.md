@@ -12,9 +12,9 @@ TanStack Router, Vite and Tailwind CSS for the interface.
 ## Development
 
 ```bash
-npm run check                   # Lint, formatting, route generation and TypeScript checks
-npm test                        # Unit tests
-npx playwright install chromium # Install the test browser once
+npm run check                    # Lint, formatting, route generation and TypeScript checks
+npm test                         # Unit tests
+npx playwright install chromium  # Install the test browser once
 npm run test:e2e                 # Build and run Chromium browser tests
 ```
 

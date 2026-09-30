@@ -1,0 +1,4 @@
+- can we find weapon outlines?
+- can we find out number of rounds ahead of time?
+- bullet traces
+- vision cones?
