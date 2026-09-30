@@ -1,0 +1,267 @@
+import { useEffect, useRef, useState } from 'react'
+import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js'
+import { sampleAtTick } from './frames'
+import { mapDefinition, worldToMap, type MapDefinition } from './maps'
+import type { ReplayRound } from './types'
+
+interface Playback {
+  play(): void
+  pause(): void
+  seek(tick: number): void
+}
+
+type SceneState =
+  | { status: 'loading' }
+  | { status: 'ready'; playing: boolean; tick: number; sample: number }
+  | { status: 'error' }
+
+function playbackTime(seconds: number) {
+  const wholeSeconds = Math.floor(seconds)
+  return `${Math.floor(wholeSeconds / 60)}:${String(wholeSeconds % 60).padStart(2, '0')}`
+}
+
+export function TacticalReplay({ round, mapName }: { round: ReplayRound; mapName: string }) {
+  const map = mapDefinition(mapName)
+  if (!map)
+    return (
+      <section className="mt-6 rounded-2xl bg-[#17201a] p-6 text-[#e7ece8]">
+        <h2 className="text-xl font-semibold">Map imagery unavailable</h2>
+        <p className="mt-3 text-sm leading-relaxed text-[#a7b5aa]">
+          A calibrated radar is not registered for {mapName}. Metadata and the player roster remain
+          available.
+        </p>
+      </section>
+    )
+  return <RoundReplay key={mapName} round={round} map={map} />
+}
+
+function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition }) {
+  const host = useRef<HTMLDivElement>(null)
+  const playback = useRef<Playback | null>(null)
+  const [scene, setScene] = useState<SceneState>({ status: 'loading' })
+
+  useEffect(() => {
+    const element = host.current!
+    const app = new Application()
+    let cancelled = false
+    let initialized = false
+    let observer: ResizeObserver | undefined
+    let tick = round.startTick
+    let playing = false
+    let lastPublished = 0
+
+    async function mount() {
+      await app.init({
+        width: map.imageSize,
+        height: map.imageSize,
+        background: '#101713',
+        resolution: Math.min(window.devicePixelRatio, 2),
+        autoDensity: true,
+        autoStart: false,
+        preference: 'webgl',
+      })
+      initialized = true
+      if (cancelled) {
+        app.destroy(true, { children: true })
+        return
+      }
+      const texture = await Assets.load(map.image)
+      if (cancelled) return
+      const sceneMap = new Container()
+      sceneMap.addChild(new Sprite(texture))
+      const markers = round.players.map((player, index) => {
+        const marker = new Container()
+        marker.addChild(
+          new Graphics()
+            .circle(0, 0, 10)
+            .fill(player.team === 3 ? '#8dc5ff' : '#ffd08a')
+            .stroke({
+              color: '#101713',
+              width: 2,
+            }),
+        )
+        const label = new Text({
+          text: String(index + 1),
+          style: { fontFamily: 'sans-serif', fontSize: 12, fontWeight: 'bold', fill: '#101713' },
+        })
+        label.anchor.set(0.5)
+        marker.addChild(label)
+        sceneMap.addChild(marker)
+        return marker
+      })
+      app.stage.addChild(sceneMap)
+      app.canvas.setAttribute('aria-hidden', 'true')
+      element.appendChild(app.canvas)
+
+      function draw() {
+        const sample = sampleAtTick(round.ticks, tick)
+        for (let player = 0; player < markers.length; player++) {
+          const position = (sample * markers.length + player) * 3
+          const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
+          const marker = markers[player]!
+          marker.position.set(point.x, point.y)
+          marker.alpha = round.alive[sample * markers.length + player] ? 1 : 0.35
+        }
+        return sample
+      }
+      function publish() {
+        setScene({ status: 'ready', playing, tick: Math.floor(tick), sample: draw() })
+        lastPublished = performance.now()
+      }
+      function pause() {
+        playing = false
+        app.ticker.stop()
+        publish()
+        app.render()
+      }
+      playback.current = {
+        play() {
+          if (tick < round.liveStartTick || tick >= round.endTick) tick = round.liveStartTick
+          playing = true
+          publish()
+          app.ticker.start()
+        },
+        pause,
+        seek(nextTick) {
+          tick = Math.max(round.liveStartTick, Math.min(round.endTick, nextTick))
+          if (tick === round.endTick) pause()
+          else {
+            publish()
+            app.render()
+          }
+        },
+      }
+      app.ticker.add((clock) => {
+        tick = Math.min(round.endTick, tick + clock.elapsedMS / (round.tickInterval * 1000))
+        draw()
+        if (tick >= round.endTick) pause()
+        else if (performance.now() - lastPublished >= 250) publish()
+      })
+      observer = new ResizeObserver(() => {
+        const width = element.clientWidth
+        app.renderer.resize(width, width)
+        sceneMap.scale.set(width / map.imageSize)
+        for (const marker of markers) marker.scale.set((map.imageSize * 0.8) / width)
+        app.render()
+      })
+      observer.observe(element)
+      publish()
+      app.render()
+    }
+    void mount().catch(() => {
+      if (!cancelled) {
+        playback.current = null
+        observer?.disconnect()
+        if (initialized) app.destroy(true, { children: true })
+        initialized = false
+        setScene({ status: 'error' })
+      }
+    })
+    return () => {
+      cancelled = true
+      playback.current = null
+      observer?.disconnect()
+      if (initialized) app.destroy(true, { children: true })
+    }
+  }, [round, map])
+
+  const sample = scene.status === 'ready' ? scene.sample : 0
+  const tick = Math.max(
+    round.liveStartTick,
+    scene.status === 'ready' ? scene.tick : round.startTick,
+  )
+  const elapsed = playbackTime((tick - round.liveStartTick) * round.tickInterval)
+  const duration = playbackTime((round.endTick - round.liveStartTick) * round.tickInterval)
+  return (
+    <section
+      className="mt-6 rounded-2xl bg-[#17201a] p-5 text-[#e7ece8] sm:p-8"
+      aria-labelledby="replay-title"
+    >
+      <p className="mb-3 text-[11px] font-semibold tracking-[0.16em] text-[#bedb8a]">
+        RECORDED MOVEMENT
+      </p>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h2 id="replay-title" className="m-0 text-2xl font-semibold">
+          {map.name} · Round {round.number}
+        </h2>
+        <button
+          type="button"
+          disabled={scene.status !== 'ready'}
+          aria-pressed={scene.status === 'ready' && scene.playing}
+          className="min-h-11 min-w-24 rounded-lg bg-[#bedb8a] px-5 py-2 font-semibold text-[#17201a] outline-offset-4 focus-visible:outline-2 focus-visible:outline-[#bedb8a] disabled:opacity-50"
+          onClick={() =>
+            scene.status === 'ready' &&
+            (scene.playing ? playback.current?.pause() : playback.current?.play())
+          }
+        >
+          {scene.status === 'ready' && scene.playing ? 'Pause' : 'Play'}
+        </button>
+      </div>
+      <p className="mt-3 text-sm text-[#a7b5aa]">
+        Player numbers match the list below. Blue is Counter-Terrorists; gold is Terrorists.
+      </p>
+      {scene.status === 'error' && (
+        <p role="alert" className="mt-4 text-[#ffdbcc]">
+          The tactical map could not load. Reload the page and import the demo again.
+        </p>
+      )}
+      {scene.status === 'loading' && <p className="mt-4 text-sm">Loading tactical map…</p>}
+      <div
+        ref={host}
+        className="mt-5 aspect-square w-full overflow-hidden rounded-xl outline outline-white/10"
+      />
+      <p
+        aria-label="Replay time"
+        data-testid="replay-tick"
+        data-tick={scene.status === 'ready' ? scene.tick : round.startTick}
+        className="mt-4 font-mono text-sm text-[#a7b5aa] tabular-nums"
+      >
+        {elapsed}
+        {' / '}
+        {duration}
+      </p>
+      <label className="mt-3 block text-sm font-semibold">
+        Replay position
+        <input
+          type="range"
+          min={round.liveStartTick}
+          max={round.endTick}
+          step={1}
+          value={tick}
+          disabled={scene.status !== 'ready'}
+          aria-valuetext={`${elapsed} of ${duration}`}
+          className="block min-h-11 w-full cursor-pointer accent-[#bedb8a] outline-offset-4 focus-visible:outline-2 focus-visible:outline-[#bedb8a] disabled:cursor-default disabled:opacity-50"
+          onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
+        />
+      </label>
+      <details className="mt-5" open>
+        <summary className="cursor-pointer py-2 font-semibold">Recorded player positions</summary>
+        <p className="mt-2 text-xs leading-relaxed text-[#a7b5aa]">
+          World coordinates at the current recorded sample. Starting positions are shown first; Play
+          begins when recorded freeze time ends.
+        </p>
+        <ul className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
+          {round.players.map((player, index) => {
+            const offset = (sample * round.players.length + index) * 3
+            return (
+              <li key={player.steamId} className="rounded-lg bg-[#1b251e] p-3">
+                <p className="m-0 text-sm font-semibold">
+                  {index + 1}. {player.name}{' '}
+                  <span className="font-normal text-[#a7b5aa]">
+                    · {player.team === 3 ? 'Counter-Terrorists' : 'Terrorists'}
+                  </span>
+                </p>
+                <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
+                  X {round.positions[offset]!.toFixed(1)} · Y{' '}
+                  {round.positions[offset + 1]!.toFixed(1)} · Z{' '}
+                  {round.positions[offset + 2]!.toFixed(1)} ·{' '}
+                  {round.alive[sample * round.players.length + index] ? 'Alive' : 'Dead'}
+                </p>
+              </li>
+            )
+          })}
+        </ul>
+      </details>
+    </section>
+  )
+}

@@ -163,3 +163,5 @@ JavaScript numbers cannot represent them exactly.
 | ZywOo    | 76561198113666193 |            13 |
 | Spinx    | 76561198063336407 |            14 |
 | karrigan | 76561197989430253 |            15 |
+
+The compact first-round fixture and independent coordinate samples are documented in [replay/README.md](replay/README.md).

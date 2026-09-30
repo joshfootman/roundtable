@@ -18,6 +18,18 @@ const metadata: DemoMetadata = {
   playbackFrames: 197003,
 }
 
+const firstRound = {
+  number: 1,
+  startTick: 537,
+  liveStartTick: 538,
+  endTick: 538,
+  tickInterval: 0.015625,
+  players: [{ name: 'broky', steamId: '76561198201620490', team: 2 as const }],
+  ticks: new Uint32Array([537, 538]),
+  positions: new Float32Array([-760.663, -836.174, 117.072, -761, -836, 117]),
+  alive: new Uint8Array([1, 1]),
+}
+
 class ControlledWorker {
   static current: ControlledWorker
   static started: Deferred.Deferred<void>
@@ -54,20 +66,24 @@ function start() {
   })
 }
 
-test('returns worker metadata and terminates its worker', async () => {
+test('returns the completed replay and terminates its worker', async () => {
   const result = await Effect.runPromise(
     Effect.gen(function* () {
       const { fiber, worker } = yield* start()
       worker.reply({
         type: 'ready',
-        demo: { metadata, players: [{ name: 'broky', steamId: '76561198201620490' }] },
+        demo: { metadata, firstRound, players: [{ name: 'broky', steamId: '76561198201620490' }] },
       })
       const result = yield* Fiber.join(fiber)
       expect(worker.terminated).toBe(true)
       return result
     }),
   )
-  expect(result).toEqual({ metadata, players: [{ name: 'broky', steamId: '76561198201620490' }] })
+  expect(result).toEqual({
+    metadata,
+    firstRound,
+    players: [{ name: 'broky', steamId: '76561198201620490' }],
+  })
 })
 
 test('returns an actionable worker failure and releases resources', async () => {

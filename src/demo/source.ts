@@ -116,3 +116,31 @@ export function readRecordPayload(
       : bytes
   })
 }
+
+export function bufferedSource(source: DemoSource): DemoSource {
+  const windowBytes = 256 * 1024
+  let start = 0
+  let buffer: Uint8Array = new Uint8Array()
+  return {
+    size: source.size,
+    readRange: (offset, length) => {
+      if (offset >= start && offset + length <= start + buffer.length)
+        return Effect.succeed(buffer.subarray(offset - start, offset - start + length))
+      if (length > windowBytes) return source.readRange(offset, length)
+      const requested = Math.min(windowBytes, source.size - offset)
+      return source.readRange(offset, requested).pipe(
+        Effect.flatMap((bytes) => {
+          if (bytes.length !== requested)
+            return Effect.fail(
+              new DemoReadError({
+                message: 'The demo could not be read completely. Select it again.',
+              }),
+            )
+          start = offset
+          buffer = bytes
+          return Effect.succeed(bytes.subarray(0, length))
+        }),
+      )
+    },
+  }
+}

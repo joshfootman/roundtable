@@ -28,7 +28,16 @@ self.onmessage = (event: MessageEvent<File>) => {
       }),
       onSuccess: (demo): ImportResult => ({ type: 'ready', demo }),
     }),
-    Effect.tap((result) => Effect.sync(() => self.postMessage(result))),
+    Effect.tap((result) =>
+      Effect.sync(() => {
+        if (result.type === 'error') {
+          self.postMessage(result)
+          return
+        }
+        const { ticks, positions, alive } = result.demo.firstRound
+        self.postMessage(result, { transfer: [ticks.buffer, positions.buffer, alive.buffer] })
+      }),
+    ),
   )
   Effect.runFork(job)
 }

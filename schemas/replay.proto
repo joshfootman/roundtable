@@ -1,0 +1,134 @@
+enum SVC_Messages {
+  svc_ServerInfo = 40;
+  svc_CreateStringTable = 44;
+  svc_UpdateStringTable = 45;
+  svc_ClearAllStringTables = 51;
+  svc_PacketEntities = 55;
+}
+
+message CSVCMsg_ServerInfo {
+
+	optional int32 protocol = 1;
+	optional int32 server_count = 2;
+	optional bool is_dedicated = 3;
+	optional bool is_hltv = 4;
+	optional int32 c_os = 6;
+	optional int32 max_clients = 10;
+	optional int32 max_classes = 11;
+	optional int32 player_slot = 12;
+	optional float tick_interval = 13;
+	optional string game_dir = 14;
+	optional string map_name = 15;
+	optional string sky_name = 16;
+	optional string host_name = 17;
+	optional string addon_name = 18;
+	optional bytes game_session_manifest = 20;
+}
+
+message CSVCMsg_PacketEntities {
+
+	message alternate_baseline_t {
+		optional int32 entity_index = 1;
+		optional int32 baseline_index = 2;
+	}
+
+	message non_transmitted_entities_t {
+		optional int32 header_count = 1;
+		optional bytes data = 2;
+	}
+
+	message outofpvs_entity_updates_t {
+		optional int32 count = 1;
+		optional bytes data = 2;
+	}
+
+	optional int32 max_entries = 1;
+	optional int32 updated_entries = 2;
+	optional bool legacy_is_delta = 3;
+	optional bool update_baseline = 4;
+	optional int32 baseline = 5;
+	optional int32 delta_from = 6;
+	optional bytes entity_data = 7;
+	optional bool pending_full_frame = 8;
+	optional uint32 active_spawngroup_handle = 9;
+	optional uint32 max_spawngroup_creationsequence = 10;
+	optional uint32 last_cmd_number_executed = 11;
+	optional sint32 last_cmd_number_recv_delta = 17;
+	optional uint32 server_tick = 12;
+	optional bytes serialized_entities = 13;
+	repeated CSVCMsg_PacketEntities.alternate_baseline_t alternate_baselines = 15;
+	optional uint32 has_pvs_vis_bits_deprecated = 16;
+	repeated sint32 cmd_recv_status = 22;
+	optional CSVCMsg_PacketEntities.non_transmitted_entities_t non_transmitted_entities = 19;
+	optional uint32 cq_starved_command_ticks = 20;
+	optional uint32 cq_discarded_command_ticks = 21;
+	optional CSVCMsg_PacketEntities.outofpvs_entity_updates_t outofpvs_entity_updates = 23;
+	optional bytes dev_padding = 999;
+}
+
+message CSVCMsg_CreateStringTable {
+
+	optional string name = 1;
+	optional int32 num_entries = 2;
+	optional bool user_data_fixed_size = 3;
+	optional int32 user_data_size = 4;
+	optional int32 user_data_size_bits = 5;
+	optional int32 flags = 6;
+	optional bytes string_data = 7;
+	optional int32 uncompressed_size = 8;
+	optional bool data_compressed = 9;
+	optional bool using_varint_bitcounts = 10;
+}
+
+message CSVCMsg_UpdateStringTable {
+
+	optional int32 table_id = 1;
+	optional int32 num_changed_entries = 2;
+	optional bytes string_data = 3;
+}
+
+message ProtoFlattenedSerializerField_t {
+	message polymorphic_field_t {
+		optional int32 polymorphic_field_serializer_name_sym = 1;
+		optional int32 polymorphic_field_serializer_version = 2;
+	}
+
+	optional int32 var_type_sym = 1;
+	optional int32 var_name_sym = 2;
+	optional int32 bit_count = 3;
+	optional float low_value = 4;
+	optional float high_value = 5;
+	optional int32 encode_flags = 6;
+	optional int32 field_serializer_name_sym = 7;
+	optional int32 field_serializer_version = 8;
+	optional int32 send_node_sym = 9;
+	optional int32 var_encoder_sym = 10;
+	repeated ProtoFlattenedSerializerField_t.polymorphic_field_t polymorphic_types = 11;
+	optional int32 var_serializer_sym = 12;
+}
+
+message ProtoFlattenedSerializer_t {
+	optional int32 serializer_name_sym = 1;
+	optional int32 serializer_version = 2;
+	repeated int32 fields_index = 3;
+}
+
+message CSVCMsg_FlattenedSerializer {
+
+	repeated ProtoFlattenedSerializer_t serializers = 1;
+	repeated string symbols = 2;
+	repeated ProtoFlattenedSerializerField_t fields = 3;
+}
+
+message CNETMsg_Tick {
+	optional uint32 tick = 1;
+	optional uint32 host_computationtime = 4;
+	optional uint32 host_computationtime_std_deviation = 5;
+	optional uint32 legacy_host_loss = 7;
+	optional uint32 host_unfiltered_frametime = 8;
+	optional uint32 hltv_replay_flags = 9;
+	optional uint32 expected_long_tick = 10;
+	optional string expected_long_tick_reason = 11;
+	optional uint32 host_frame_dropped_pct_x10 = 12;
+	optional uint32 host_frame_irregular_arrival_pct_x10 = 13;
+}

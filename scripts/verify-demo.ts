@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict'
 import { open } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
 import { Effect } from 'effect'
 import { DemoReadError, readDemoMetadata } from '../src/demo/metadata.ts'
 import { readDemo } from '../src/demo/demo.ts'
 
-const verifyRoster = process.argv.includes('--roster')
+const verifyRound = process.argv.includes('--round')
+const verifyRoster = verifyRound || process.argv.includes('--roster')
 const path =
-  process.argv.slice(2).find((argument) => argument !== '--roster') ??
+  process.argv.slice(2).find((argument) => !['--roster', '--round'].includes(argument)) ??
   'fixtures/faze-vs-vitality-m2-dust2.dem'
 let bytesRead = 0
 let reads = 0
@@ -56,6 +58,7 @@ const job = Effect.scoped(
     })
     assert.ok(bytesRead < 1024, `Metadata read budget exceeded: ${bytesRead} bytes`)
     let players
+    let roundSummary
     if (verifyRoster) {
       const demo = yield* readDemo(source)
       assert.deepEqual(demo.metadata, metadata)
@@ -72,8 +75,50 @@ const job = Effect.scoped(
         { name: 'Spinx', steamId: '76561198063336407' },
         { name: 'ZywOo', steamId: '76561198113666193' },
       ])
-      assert.ok(bytesRead < 15_000_000, `Roster read budget exceeded: ${bytesRead} bytes`)
+      assert.ok(bytesRead < 30_000_000, `First-round read budget exceeded: ${bytesRead} bytes`)
       assert.ok(largestRead < 1_000_000, `Oversized range read: ${largestRead} bytes`)
+      if (verifyRound) {
+        const expected = JSON.parse(
+          readFileSync(new URL('../fixtures/replay/oracle.json', import.meta.url), 'utf8'),
+        ) as {
+          startTick: number
+          endTick: number
+          tickInterval: number
+          samples: {
+            tick: number
+            players: { steamId: string; X: number; Y: number; Z: number; alive: boolean }[]
+          }[]
+        }
+        const round = demo.firstRound
+        assert.equal(round.startTick, expected.startTick)
+        assert.equal(round.liveStartTick, 5732)
+        assert.equal(round.endTick, expected.endTick)
+        assert.equal(round.tickInterval, expected.tickInterval)
+        for (const frame of expected.samples) {
+          const sample = round.ticks.indexOf(frame.tick)
+          assert.ok(sample >= 0, `Missing oracle tick ${frame.tick}`)
+          for (const player of frame.players) {
+            const index = round.players.findIndex((entry) => entry.steamId === player.steamId)
+            assert.ok(index >= 0, `Missing player ${player.steamId}`)
+            const offset = (sample * round.players.length + index) * 3
+            for (const [axis, coordinate] of [player.X, player.Y, player.Z].entries())
+              assert.ok(
+                Math.abs(round.positions[offset + axis]! - coordinate) < 0.005,
+                `Position mismatch at tick ${frame.tick}, player ${player.steamId}, axis ${axis}`,
+              )
+            assert.equal(round.alive[sample * round.players.length + index], Number(player.alive))
+          }
+        }
+        roundSummary = {
+          number: round.number,
+          startTick: round.startTick,
+          liveStartTick: round.liveStartTick,
+          endTick: round.endTick,
+          samples: round.ticks.length,
+          oracleSamples: expected.samples.length,
+          bytes: round.ticks.byteLength + round.positions.byteLength + round.alive.byteLength,
+        }
+      }
     }
     console.log(
       JSON.stringify(
@@ -86,6 +131,7 @@ const job = Effect.scoped(
           elapsedMs: Math.round(performance.now() - started),
           metadata,
           players,
+          round: roundSummary,
         },
         null,
         2,

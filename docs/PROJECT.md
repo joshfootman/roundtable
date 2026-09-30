@@ -1,6 +1,6 @@
 # CS2 replay viewer
 
-Status: local metadata and player roster import implemented with Effect and verified against the supplied Dust2 demo; round parsing and playback benchmarks remain.
+Status: local import, first competitive-round positions and tactical playback and scrubbing implemented with Effect and PixiJS, verified against the supplied Dust2 demo. Progressive parsing and playback benchmarks remain.
 Requirements below settled unless marked **proposed**, **optional** or **open**.
 
 ## Product
@@ -24,7 +24,7 @@ Requirements below settled unless marked **proposed**, **optional** or **open**.
 - Play/pause, bidirectional scrubbing, player inspection.
 - Playback speed/event jumps: proposed controls.
 - Players: identity, name, team, XYZ, facing, health, alive/dead.
-- Initial roster: identities observed in player spawn events before the first recorded freeze-end. Exclude TV clients, fake players and clients who only spectate. Preserve Steam IDs as exact decimal strings; do not infer team names from the download source.
+- Initial roster: human identities with recorded pawn positions in the first completed competitive round. Exclude TV clients, fake players and clients who only spectate. Preserve Steam IDs as exact decimal strings; do not infer team names from the download source.
 - Equipment: weapon, ammo, armour, carried grenades, **money**.
 - Combat: kills, deaths, kill feed.
 - Bomb: position, carrier, plant/defuse state.

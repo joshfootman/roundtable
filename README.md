@@ -1,13 +1,19 @@
 # Roundtable
 
-Choose a local CS2 `.dem` file and select **Import demo** to inspect its map, server, recording duration,
-playback counts, version information and player roster. Effect manages parsing, typed failures
-and worker resources. Parsing happens on your device with bounded reads.
+Choose a local CS2 `.dem` file and select **Import demo** to inspect its recording
+metadata and player roster, then play, pause or scrub the first completed competitive round.
+Effect manages bounded file reads, typed failures and worker resources. The custom
+TypeScript decoder reads entity updates locally. No demo is uploaded.
 
-The importer displays recording metadata and the initial player roster with exact
-Steam IDs. Participants come from recorded spawn events; spectators and TV clients
-are excluded. Team labels, scores and replay rounds remain subsequent slices. See [the task list](docs/TASKS.md) for subsequent slices and
-[fixture verification](fixtures/README.md) for the Dust2 reference demo.
+PixiJS renders recorded player positions on a tactical map. Map images and calibration
+are separate from the parser and playback engine. Dust II is verified against the
+supplied match. Mirage, Ancient, Anubis, Inferno and Overpass have overview-based map
+definitions and still need demo verification. Floor selection remains a later task.
+
+See [the task list](docs/TASKS.md), [replay architecture](src/replay/README.md), and
+[fixture verification](fixtures/replay/README.md). With the full reference recording
+available locally, `npm run verify:round` compares real world-coordinate samples with
+an independent parser oracle.
 
 # Getting Started
 

@@ -21,7 +21,8 @@
     "preview": "vite preview",
     "generate:proto": "cd schemas && buf generate && cd .. && oxfmt --write src/demo/generated",
     "verify:demo": "node --experimental-transform-types scripts/verify-demo.ts",
-    "verify:roster": "node --experimental-transform-types scripts/verify-demo.ts --roster"
+    "verify:roster": "node --experimental-transform-types scripts/verify-demo.ts --roster",
+    "verify:round": "node --experimental-transform-types scripts/verify-demo.ts --round"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.15.0",

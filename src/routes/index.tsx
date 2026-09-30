@@ -4,6 +4,8 @@ import type { FormEvent } from 'react'
 import { Effect, Exit } from 'effect'
 import { importDemo } from '../demo/import'
 import type { ImportedDemo } from '../demo/demo'
+import { TacticalReplay } from '../replay/TacticalReplay'
+import { mapDefinition } from '../replay/maps'
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -73,7 +75,8 @@ function Home() {
         <p className="eyebrow">START WITH A DEMO</p>
         <h1 id="import-title">Every match has a story.</h1>
         <p className="lede">
-          Open a Counter-Strike 2 demo to inspect its recorded metadata and player roster.
+          Open a Counter-Strike 2 demo to inspect its players and replay the first competitive
+          round.
         </p>
         <form className="import-panel" onSubmit={handleSubmit}>
           <div>
@@ -94,7 +97,7 @@ function Home() {
         {state.status === 'reading'
           ? `Reading ${state.filename}…`
           : state.status === 'ready'
-            ? 'Demo metadata loaded.'
+            ? 'Demo ready. First round loaded.'
             : ''}
       </output>
       {state.status === 'error' && (
@@ -110,7 +113,7 @@ function Home() {
             <div>
               <p className="eyebrow">DEMO METADATA</p>
               <h2 id="metadata-title">
-                {state.metadata.mapName === 'de_dust2' ? 'Dust II' : state.metadata.mapName}
+                {mapDefinition(state.metadata.mapName)?.name ?? state.metadata.mapName}
               </h2>
             </div>
             <span className="recorded-badge">Imported</span>
@@ -168,6 +171,9 @@ function Home() {
             ))}
           </ul>
         </section>
+      )}
+      {state.status === 'ready' && (
+        <TacticalReplay round={state.firstRound} mapName={state.metadata.mapName} />
       )}
       <footer>Built for a closer look at Counter-Strike.</footer>
     </main>

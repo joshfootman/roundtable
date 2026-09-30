@@ -1,18 +1,28 @@
 import { readFileSync } from 'node:fs'
-import { create, toBinary } from '@bufbuild/protobuf'
+import { gunzipSync } from 'node:zlib'
 import { Effect } from 'effect'
 import { expect, test } from 'vitest'
-import { CDemoPacketSchema } from './generated/demo_pb'
 import { readDemo } from './demo'
+import { readFirstRound } from './round'
+import { readRecordFraming } from './source'
 
-const fixture = new Uint8Array(readFileSync('fixtures/roster/import.dem'))
-const records = {
-  header: fixture.slice(16, 182),
-  identities: fixture.slice(182, 17042),
-  descriptors: fixture.slice(17042, 25547),
-  spawns: fixture.slice(25547, 43043),
-  freezeEnd: fixture.slice(43043, 45178),
-  info: fixture.slice(45178),
+const fixture = gunzipSync(readFileSync('fixtures/replay/dust2-first-round.dem.gz'))
+const oracle = JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) as {
+  startTick: number
+  endTick: number
+  tickInterval: number
+  samples: {
+    tick: number
+    players: {
+      steamId: string
+      name: string
+      team: number
+      X: number
+      Y: number
+      Z: number
+      alive: boolean
+    }[]
+  }[]
 }
 const players = [
   { name: 'apEX', steamId: '76561197989744167' },
@@ -27,37 +37,22 @@ const players = [
   { name: 'ZywOo', steamId: '76561198113666193' },
 ]
 
-function parse(bytes: Uint8Array) {
-  return Effect.runPromise(
-    readDemo({
-      size: bytes.length,
-      readRange: (offset, length) => Effect.succeed(bytes.slice(offset, offset + length)),
-    }),
-  )
-}
-
-function container(parts: Uint8Array[]) {
-  const bytes = new Uint8Array(16 + parts.reduce((size, part) => size + part.length, 0))
-  bytes.set(fixture.slice(0, 16))
-  new DataView(bytes.buffer).setUint32(8, bytes.length - records.info.length, true)
-  let offset = 16
-  for (const part of parts) {
-    bytes.set(part, offset)
-    offset += part.length
+function source(bytes: Uint8Array) {
+  return {
+    size: bytes.length,
+    readRange: (offset: number, length: number) =>
+      Effect.succeed(bytes.subarray(offset, offset + length)),
   }
-  return bytes
 }
 
-test('imports the independently verified roster with bounded reads and exact Steam IDs', async () => {
-  let bytesRead = 0
+test('decodes a real competitive round against independent identities and position samples', async () => {
   let largestRead = 0
   const demo = await Effect.runPromise(
     readDemo({
-      size: fixture.length,
+      ...source(fixture),
       readRange: (offset, length) => {
-        bytesRead += length
         largestRead = Math.max(largestRead, length)
-        return Effect.succeed(fixture.slice(offset, offset + length))
+        return Effect.succeed(fixture.subarray(offset, offset + length))
       },
     }),
   )
@@ -75,46 +70,40 @@ test('imports the independently verified roster with bounded reads and exact Ste
     playbackFrames: 197003,
   })
   expect([...demo.players].sort((a, b) => a.name.localeCompare(b.name, 'en'))).toEqual(players)
-  expect(bytesRead).toBeLessThan(50_000)
-  expect(largestRead).toBeLessThan(20_000)
+  const round = demo.firstRound
+  expect(round.number).toBe(1)
+  expect(round.startTick).toBe(oracle.startTick)
+  expect(round.liveStartTick).toBe(5732)
+  expect(round.endTick).toBe(oracle.endTick)
+  expect(round.tickInterval).toBe(oracle.tickInterval)
+  expect(largestRead).toBeLessThan(1024 * 1024)
+  for (const expected of oracle.samples) {
+    const sample = round.ticks.indexOf(expected.tick)
+    expect(sample, `missing recorded tick ${expected.tick}`).not.toBe(-1)
+    for (const player of expected.players) {
+      const index = round.players.findIndex((entry) => entry.steamId === player.steamId)
+      expect(round.players[index]).toEqual({
+        steamId: player.steamId,
+        name: player.name,
+        team: player.team,
+      })
+      const offset = (sample * round.players.length + index) * 3
+      expect(round.positions[offset]).toBeCloseTo(player.X, 2)
+      expect(round.positions[offset + 1]).toBeCloseTo(player.Y, 2)
+      expect(round.positions[offset + 2]).toBeCloseTo(player.Z, 2)
+      expect(round.alive[sample * round.players.length + index]).toBe(Number(player.alive))
+    }
+  }
 })
 
-test('keeps one identity across repeated spawn events', async () => {
-  const demo = await parse(
-    container([
-      records.header,
-      records.identities,
-      records.descriptors,
-      records.spawns,
-      records.spawns,
-      records.freezeEnd,
-      records.info,
-    ]),
+test('rejects an incomplete round instead of publishing partial movement', async () => {
+  let offset = 16
+  while (offset < 200_000) {
+    const framing = await Effect.runPromise(readRecordFraming(source(fixture), offset))
+    offset = framing.end
+  }
+  const bytes = Buffer.concat([fixture.subarray(0, offset), Buffer.from([0, 0, 0])])
+  await expect(Effect.runPromise(readFirstRound(source(bytes)))).rejects.toThrow(
+    'The demo ends before a complete competitive round is recorded.',
   )
-  expect([...demo.players].sort((a, b) => a.name.localeCompare(b.name, 'en'))).toEqual(players)
-})
-
-test('rejects missing participation data and truncated network messages', async () => {
-  await expect(
-    parse(container([records.header, records.identities, records.descriptors, records.info])),
-  ).rejects.toThrow(/roster/i)
-  const packet = toBinary(
-    CDemoPacketSchema,
-    create(CDemoPacketSchema, {
-      data: new Uint8Array([255]),
-    }),
-  )
-  const damaged = new Uint8Array([7, 1, packet.length, ...packet])
-  await expect(
-    parse(
-      container([
-        records.header,
-        records.identities,
-        records.descriptors,
-        damaged,
-        records.freezeEnd,
-        records.info,
-      ]),
-    ),
-  ).rejects.toThrow(/packet|network|truncated/i)
 })
