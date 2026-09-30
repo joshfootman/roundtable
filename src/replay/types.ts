@@ -1,3 +1,23 @@
+export type GrenadeKind = 'flash' | 'he' | 'smoke' | 'molotov' | 'incendiary' | 'decoy'
+export interface ReplayProjectile {
+  entity: number
+  serial: number
+  kind: GrenadeKind
+  thrower: string
+  startTick: number
+  endTick: number
+  ticks: Uint32Array<ArrayBuffer>
+  positions: Float32Array<ArrayBuffer>
+}
+export interface GrenadeDetonation {
+  tick: number
+  kind: 'flash' | 'he' | 'smoke' | 'fire' | 'decoy'
+  entity: number
+  x: number
+  y: number
+  z: number
+}
+
 export type BombEvent =
   | {
       tick: number
@@ -47,6 +67,8 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  projectiles: ReplayProjectile[]
+  detonations: GrenadeDetonation[]
   bombEvents: BombEvent[]
   bomb: { tick: number; state: BombState }[]
   inspection: PlayerInspection[][]

@@ -1,5 +1,5 @@
 import { firearms, equipmentName } from '../../replay/equipment.ts'
-import type { ReplayWeapon, PlayerInspection, BombState } from '../../replay/types.ts'
+import type { ReplayWeapon, PlayerInspection, BombState, GrenadeKind } from '../../replay/types.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
 import { uncompress } from 'snappyjs'
@@ -14,6 +14,24 @@ import { BitReader } from './bit-reader.ts'
 import { readFieldPaths } from './field-path.ts'
 import { readSerializers, resolveField, type Serializer } from './serializers.ts'
 import { type EntityValue } from './field-decoder.ts'
+export interface ProjectileSnapshot {
+  entity: number
+  serial: number
+  kind: GrenadeKind
+  thrower: string
+  x: number
+  y: number
+  z: number
+}
+
+const projectileClasses: Record<string, GrenadeKind> = {
+  CFlashbangProjectile: 'flash',
+  CHEGrenadeProjectile: 'he',
+  CSmokeGrenadeProjectile: 'smoke',
+  CMolotovProjectile: 'molotov',
+  CDecoyProjectile: 'decoy',
+}
+
 interface Entity {
   serial: number
   className: string
@@ -45,6 +63,10 @@ export interface PlayerSnapshot {
 const replayFields = new Set([
   'm_steamID',
   'm_hOwnerEntity',
+  'm_hThrower',
+  'm_bIsIncGrenade',
+  'm_nExplodeEffectTickBegin',
+  'm_bDidSmokeEffect',
   'm_bBombTicking',
   'm_bBombDefused',
   'm_bStartedArming',
@@ -254,6 +276,35 @@ export function createEntityDecoder() {
     if (typeof planting !== 'boolean') throw new Error('Missing recorded bomb arming state.')
     return { type: 'carried', carrier: playerByPawnHandle(owner), planting }
   }
+  function projectiles(): ProjectileSnapshot[] {
+    const result: ProjectileSnapshot[] = []
+    for (const [index, entity] of entities) {
+      if (!entity.active || !entity.values.has('m_hThrower')) continue
+      let kind = projectileClasses[entity.className]
+      if (!kind) throw new Error(`Unsupported recorded grenade class ${entity.className}.`)
+      const effect = entity.values.get('m_nExplodeEffectTickBegin')
+      if (
+        (typeof effect === 'number' && effect > 0) ||
+        entity.values.get('m_bDidSmokeEffect') === true
+      )
+        continue
+      if (kind === 'molotov') {
+        const incendiary = entity.values.get('m_bIsIncGrenade')
+        if (typeof incendiary !== 'boolean') throw new Error('Missing recorded fire grenade type.')
+        if (incendiary) kind = 'incendiary'
+      }
+      const thrower = entity.values.get('m_hThrower')
+      if (typeof thrower !== 'number') throw new Error('Missing recorded grenade thrower.')
+      result.push({
+        entity: index,
+        serial: entity.serial,
+        kind,
+        thrower: playerByPawnHandle(thrower),
+        ...position(entity),
+      })
+    }
+    return result
+  }
   function snapshots(): PlayerSnapshot[] {
     const players: PlayerSnapshot[] = []
     for (const controller of entities.values()) {
@@ -421,6 +472,7 @@ export function createEntityDecoder() {
     },
     snapshots,
     bomb,
+    projectiles,
     gameRules() {
       const entity = [...entities.values()].find(
         (entity) => entity.className === 'CCSGameRulesProxy',

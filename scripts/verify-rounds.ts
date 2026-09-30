@@ -1,3 +1,4 @@
+import { replayBuffers } from '../src/replay/buffers.ts'
 import assert from 'node:assert/strict'
 import { open, readFile } from 'node:fs/promises'
 import { Effect, Stream } from 'effect'
@@ -19,6 +20,13 @@ const expected = JSON.parse(
 
 const expectedBombEvents = JSON.parse(
   await readFile(new URL('../fixtures/replay/bomb-events.json', import.meta.url), 'utf8'),
+)
+
+const expectedDetonations = JSON.parse(
+  await readFile(new URL('../fixtures/replay/detonations.json', import.meta.url), 'utf8'),
+)
+const expectedProjectiles = JSON.parse(
+  await readFile(new URL('../fixtures/replay/projectile-lifetimes.json', import.meta.url), 'utf8'),
 )
 
 await Effect.runPromise(
@@ -50,6 +58,8 @@ await Effect.runPromise(
       let bufferBytes = 0
       let inspectionRecords = 0
       const bombEvents: (BombEvent & { round: number })[] = []
+      const detonations: unknown[] = []
+      const projectiles: unknown[] = []
       const completed: typeof expected = []
       const discovered: { number: number; startTick: number }[] = []
       yield* Stream.runForEach(readReplay(source), (event) =>
@@ -61,28 +71,27 @@ await Effect.runPromise(
             bufferBytes = 0
             inspectionRecords = 0
             bombEvents.length = 0
+            detonations.length = 0
+            projectiles.length = 0
           } else {
-            const {
-              number,
-              startTick,
-              liveStartTick,
-              resultTick,
-              endTick,
-              overtime,
-              ticks,
-              positions,
-              alive,
-              health,
-              yaw,
-              teams,
-            } = event.round
-            bufferBytes +=
-              ticks.byteLength +
-              positions.byteLength +
-              alive.byteLength +
-              health.byteLength +
-              yaw.byteLength +
-              teams.byteLength
+            const { number, startTick, liveStartTick, resultTick, endTick, overtime } = event.round
+            bufferBytes += replayBuffers(event.round).reduce(
+              (bytes, buffer) => bytes + buffer.byteLength,
+              0,
+            )
+            detonations.push(
+              ...event.round.detonations.map((event) => ({ ...event, round: number })),
+            )
+            projectiles.push(
+              ...event.round.projectiles.map(({ entity, kind, thrower, startTick, endTick }) => ({
+                entity,
+                kind,
+                thrower,
+                startTick,
+                endTick,
+                round: number,
+              })),
+            )
             bombEvents.push(...event.round.bombEvents.map((event) => ({ ...event, round: number })))
             inspectionRecords += event.round.inspection.reduce(
               (count, track) => count + track.length,
@@ -94,12 +103,14 @@ await Effect.runPromise(
       )
       assert.deepEqual(completed, expected)
       assert.deepEqual(bombEvents, expectedBombEvents)
+      assert.deepEqual(detonations, expectedDetonations)
+      assert.deepEqual(projectiles, expectedProjectiles)
       assert.deepEqual(discovered, [
         { number: 1, startTick: 449 },
         ...expected.map(({ number, startTick }) => ({ number, startTick })),
       ])
       console.log(
-        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes. All ${bombEvents.length} bomb interactions match. Inspection uses ${inspectionRecords.toLocaleString('en-GB')} sparse records.`,
+        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes. All ${bombEvents.length} bomb interactions, ${projectiles.length} projectile lifetimes and ${detonations.length} detonations match. Inspection uses ${inspectionRecords.toLocaleString('en-GB')} sparse records.`,
       )
     }),
   ),

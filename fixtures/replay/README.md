@@ -95,3 +95,17 @@ packet segments lacked equipment history and are not used as fixtures.
 Beginnings and cancellations come from the reference parser’s entity callbacks.
 Plant, defuse and explosion completions also exist as raw recorded legacy events.
 The full-round verifier checks all 36 facts, including five explosions.
+
+## Grenade reference
+
+`projectile-lifetimes.json` contains 421 independently decoded projectile
+identities and visible flight intervals. `detonations.json` contains 418 raw
+recorded detonation events. `first-flash.json` retains every position of the
+first flash flight, using the last reference frame at each tick. Coordinates
+are normalized to float32, matching the published buffers. The full-match
+verifier compares every lifetime and detonation. The compact parser regression
+compares the complete first flight and the first four rounds' utility events.
+
+Detonation rings last one second as a presentation cue. They do not represent
+recorded effect duration. Projectile buffers bring full-match published typed
+arrays to 44,890,976 bytes, excluding object and browser overhead.

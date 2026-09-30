@@ -1,10 +1,12 @@
-import type { PlayerSnapshot } from './entities/index.ts'
+import { createProjectileCapture } from './projectiles.ts'
+import type { PlayerSnapshot, ProjectileSnapshot } from './entities/index.ts'
 import type {
   ReplayDeath,
   ReplayRound,
   PlayerInspection,
   BombState,
   BombEvent,
+  GrenadeDetonation,
 } from '../replay/types.ts'
 
 export interface RoundRules {
@@ -32,6 +34,8 @@ type Capture = {
   health: number[]
   yaw: number[]
   teams: number[]
+  projectiles: ReturnType<typeof createProjectileCapture>
+  detonations: GrenadeDetonation[]
   bombEvents: BombEvent[]
   bomb: ReplayRound['bomb']
   inspection: ReplayRound['inspection']
@@ -90,6 +94,8 @@ export function createRoundTracker() {
       inspection: round.inspection,
       bomb: round.bomb,
       bombEvents: round.bombEvents,
+      projectiles: round.projectiles.finish(endTick),
+      detonations: round.detonations,
       ticks: Uint32Array.from(round.ticks),
       positions: Float32Array.from(round.positions),
       alive: Uint8Array.from(round.alive),
@@ -159,6 +165,8 @@ export function createRoundTracker() {
           health: [],
           yaw: [],
           teams: [],
+          projectiles: createProjectileCapture(),
+          detonations: [],
           bombEvents: [],
           bomb: [],
           inspection: [],
@@ -172,6 +180,18 @@ export function createRoundTracker() {
       if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
         capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
+    },
+    projectiles(tick: number, snapshots: ProjectileSnapshot[]) {
+      if (!capture) return
+      for (const snapshot of snapshots)
+        if (!capture.players.some((player) => player.steamId === snapshot.thrower))
+          throw new Error('A grenade thrower is outside the recorded round roster.')
+      capture.projectiles.sample(tick, snapshots)
+    },
+    detonation(event: GrenadeDetonation) {
+      if (!capture) return
+      capture.detonations.push(event)
+      capture.projectiles.detonate(event)
     },
     bombEvent,
     bomb(tick: number, state: BombState) {

@@ -53,9 +53,11 @@ test('records import, playback and seek timings', async ({ page, browser }, test
     const firstRoundMs = await page.evaluate(
       () => performance.getEntriesByName('benchmark-first-round')[0].duration,
     )
+    const slider = replay.getByRole('slider', { name: 'Replay position' })
+    await slider.press('Home')
     await replay.locator('canvas').scrollIntoViewIfNeeded()
-    const players = replay.getByRole('list')
-    const startingPosition = await players.textContent()
+    const players = replay.getByLabel('Player inspection').getByText(/^X /)
+    const startingPosition = await players.allTextContents()
     const parsingDuringPlayback = (await page.getByRole('status').textContent())!.includes(
       'Parsing continues',
     )
@@ -76,10 +78,9 @@ test('records import, playback and seek timings', async ({ page, browser }, test
         }),
     )
     await replay.getByRole('button', { name: 'Pause', exact: true }).click()
-    expect(await players.textContent()).not.toEqual(startingPosition)
+    expect(await players.allTextContents()).not.toEqual(startingPosition)
     const seekMs = []
     const seekTicks = []
-    const slider = replay.getByRole('slider', { name: 'Replay position' })
     for (const key of ['End', 'Home']) {
       await page.evaluate(() => {
         performance.clearMeasures('benchmark-seek')
@@ -104,7 +105,7 @@ test('records import, playback and seek timings', async ({ page, browser }, test
         await page.evaluate(() => performance.getEntriesByName('benchmark-seek')[0].duration),
       )
       seekTicks.push(Number(await replay.getByTestId('replay-tick').getAttribute('data-tick')))
-      if (key === 'Home') await expect(players).toHaveText(startingPosition!)
+      if (key === 'Home') await expect(players).toHaveText(startingPosition)
     }
     expect(seekTicks[0]).toBeGreaterThan(seekTicks[1])
     runs.push({

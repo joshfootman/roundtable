@@ -43,6 +43,8 @@ const firstRound = {
     ],
   ],
   bomb: [{ tick: 0, state: { type: 'inactive' as const } }],
+  projectiles: [],
+  detonations: [],
   bombEvents: [],
   deaths: [],
   health: new Int32Array([100, 100]),

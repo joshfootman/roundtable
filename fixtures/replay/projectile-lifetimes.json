@@ -1,0 +1,3370 @@
+[
+  {
+    "entity": 948,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 6362,
+    "endTick": 6466,
+    "round": 1
+  },
+  {
+    "entity": 128,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 7782,
+    "endTick": 7886,
+    "round": 1
+  },
+  {
+    "entity": 175,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 10022,
+    "endTick": 10346,
+    "round": 2
+  },
+  {
+    "entity": 229,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 10134,
+    "endTick": 10331,
+    "round": 2
+  },
+  {
+    "entity": 655,
+    "kind": "he",
+    "thrower": "76561197973140692",
+    "startTick": 11172,
+    "endTick": 11276,
+    "round": 2
+  },
+  {
+    "entity": 475,
+    "kind": "he",
+    "thrower": "76561197989744167",
+    "startTick": 11792,
+    "endTick": 11896,
+    "round": 2
+  },
+  {
+    "entity": 915,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 12264,
+    "endTick": 12368,
+    "round": 2
+  },
+  {
+    "entity": 903,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 12477,
+    "endTick": 12821,
+    "round": 2
+  },
+  {
+    "entity": 198,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 12539,
+    "endTick": 12643,
+    "round": 2
+  },
+  {
+    "entity": 899,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 12588,
+    "endTick": 12692,
+    "round": 2
+  },
+  {
+    "entity": 472,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 18691,
+    "endTick": 18830,
+    "round": 3
+  },
+  {
+    "entity": 127,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 18991,
+    "endTick": 19114,
+    "round": 3
+  },
+  {
+    "entity": 66,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 19065,
+    "endTick": 19169,
+    "round": 3
+  },
+  {
+    "entity": 852,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 19072,
+    "endTick": 19176,
+    "round": 3
+  },
+  {
+    "entity": 960,
+    "kind": "incendiary",
+    "thrower": "76561197989744167",
+    "startTick": 19131,
+    "endTick": 19201,
+    "round": 3
+  },
+  {
+    "entity": 452,
+    "kind": "he",
+    "thrower": "76561197973140692",
+    "startTick": 19151,
+    "endTick": 19255,
+    "round": 3
+  },
+  {
+    "entity": 777,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 19512,
+    "endTick": 19650,
+    "round": 3
+  },
+  {
+    "entity": 303,
+    "kind": "flash",
+    "thrower": "76561198063336407",
+    "startTick": 19697,
+    "endTick": 19801,
+    "round": 3
+  },
+  {
+    "entity": 164,
+    "kind": "incendiary",
+    "thrower": "76561197973140692",
+    "startTick": 20035,
+    "endTick": 20078,
+    "round": 3
+  },
+  {
+    "entity": 804,
+    "kind": "he",
+    "thrower": "76561198201620490",
+    "startTick": 20066,
+    "endTick": 20170,
+    "round": 3
+  },
+  {
+    "entity": 805,
+    "kind": "molotov",
+    "thrower": "76561197991272318",
+    "startTick": 20168,
+    "endTick": 20278,
+    "round": 3
+  },
+  {
+    "entity": 801,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 20277,
+    "endTick": 20363,
+    "round": 3
+  },
+  {
+    "entity": 810,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 20441,
+    "endTick": 20545,
+    "round": 3
+  },
+  {
+    "entity": 811,
+    "kind": "incendiary",
+    "thrower": "76561198201620490",
+    "startTick": 20596,
+    "endTick": 20688,
+    "round": 3
+  },
+  {
+    "entity": 812,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 20662,
+    "endTick": 20740,
+    "round": 3
+  },
+  {
+    "entity": 443,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 21570,
+    "endTick": 21674,
+    "round": 3
+  },
+  {
+    "entity": 816,
+    "kind": "incendiary",
+    "thrower": "76561197989744167",
+    "startTick": 21654,
+    "endTick": 21751,
+    "round": 3
+  },
+  {
+    "entity": 818,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 21697,
+    "endTick": 21822,
+    "round": 3
+  },
+  {
+    "entity": 798,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 22820,
+    "endTick": 22924,
+    "round": 3
+  },
+  {
+    "entity": 344,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 23192,
+    "endTick": 23526,
+    "round": 3
+  },
+  {
+    "entity": 825,
+    "kind": "flash",
+    "thrower": "76561198063336407",
+    "startTick": 23303,
+    "endTick": 23407,
+    "round": 3
+  },
+  {
+    "entity": 803,
+    "kind": "incendiary",
+    "thrower": "76561197973140692",
+    "startTick": 24060,
+    "endTick": 24180,
+    "round": 3
+  },
+  {
+    "entity": 304,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 26564,
+    "endTick": 26714,
+    "round": 4
+  },
+  {
+    "entity": 832,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 26707,
+    "endTick": 27037,
+    "round": 4
+  },
+  {
+    "entity": 481,
+    "kind": "incendiary",
+    "thrower": "76561198063336407",
+    "startTick": 26930,
+    "endTick": 27020,
+    "round": 4
+  },
+  {
+    "entity": 547,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 26956,
+    "endTick": 27060,
+    "round": 4
+  },
+  {
+    "entity": 384,
+    "kind": "incendiary",
+    "thrower": "76561197989744167",
+    "startTick": 27002,
+    "endTick": 27084,
+    "round": 4
+  },
+  {
+    "entity": 346,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 27082,
+    "endTick": 27186,
+    "round": 4
+  },
+  {
+    "entity": 1012,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 27291,
+    "endTick": 27404,
+    "round": 4
+  },
+  {
+    "entity": 140,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 27384,
+    "endTick": 27488,
+    "round": 4
+  },
+  {
+    "entity": 130,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 27445,
+    "endTick": 27607,
+    "round": 4
+  },
+  {
+    "entity": 496,
+    "kind": "he",
+    "thrower": "76561197978835160",
+    "startTick": 28771,
+    "endTick": 28875,
+    "round": 4
+  },
+  {
+    "entity": 403,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 29320,
+    "endTick": 29420,
+    "round": 4
+  },
+  {
+    "entity": 321,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 29365,
+    "endTick": 29658,
+    "round": 4
+  },
+  {
+    "entity": 389,
+    "kind": "he",
+    "thrower": "76561198113666193",
+    "startTick": 29525,
+    "endTick": 29629,
+    "round": 4
+  },
+  {
+    "entity": 150,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 29577,
+    "endTick": 29681,
+    "round": 4
+  },
+  {
+    "entity": 176,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 29581,
+    "endTick": 29760,
+    "round": 4
+  },
+  {
+    "entity": 212,
+    "kind": "incendiary",
+    "thrower": "76561198113666193",
+    "startTick": 29647,
+    "endTick": 29762,
+    "round": 4
+  },
+  {
+    "entity": 301,
+    "kind": "he",
+    "thrower": "76561197989744167",
+    "startTick": 30011,
+    "endTick": 30115,
+    "round": 4
+  },
+  {
+    "entity": 89,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 30499,
+    "endTick": 30603,
+    "round": 4
+  },
+  {
+    "entity": 573,
+    "kind": "incendiary",
+    "thrower": "76561197978835160",
+    "startTick": 30644,
+    "endTick": 30773,
+    "round": 4
+  },
+  {
+    "entity": 723,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 33719,
+    "endTick": 34117,
+    "round": 5
+  },
+  {
+    "entity": 466,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 33767,
+    "endTick": 33873,
+    "round": 5
+  },
+  {
+    "entity": 112,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 34073,
+    "endTick": 34177,
+    "round": 5
+  },
+  {
+    "entity": 207,
+    "kind": "molotov",
+    "thrower": "76561197989430253",
+    "startTick": 34257,
+    "endTick": 34315,
+    "round": 5
+  },
+  {
+    "entity": 1001,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 34345,
+    "endTick": 34449,
+    "round": 5
+  },
+  {
+    "entity": 143,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 34463,
+    "endTick": 34567,
+    "round": 5
+  },
+  {
+    "entity": 226,
+    "kind": "he",
+    "thrower": "76561197989744167",
+    "startTick": 34549,
+    "endTick": 34653,
+    "round": 5
+  },
+  {
+    "entity": 507,
+    "kind": "incendiary",
+    "thrower": "76561197973140692",
+    "startTick": 34614,
+    "endTick": 34721,
+    "round": 5
+  },
+  {
+    "entity": 701,
+    "kind": "incendiary",
+    "thrower": "76561198063336407",
+    "startTick": 34860,
+    "endTick": 34907,
+    "round": 5
+  },
+  {
+    "entity": 552,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 34879,
+    "endTick": 35041,
+    "round": 5
+  },
+  {
+    "entity": 829,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 34939,
+    "endTick": 35043,
+    "round": 5
+  },
+  {
+    "entity": 187,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 35088,
+    "endTick": 35224,
+    "round": 5
+  },
+  {
+    "entity": 859,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 35231,
+    "endTick": 35335,
+    "round": 5
+  },
+  {
+    "entity": 1007,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 35298,
+    "endTick": 35402,
+    "round": 5
+  },
+  {
+    "entity": 923,
+    "kind": "he",
+    "thrower": "76561197978835160",
+    "startTick": 35552,
+    "endTick": 35656,
+    "round": 5
+  },
+  {
+    "entity": 318,
+    "kind": "incendiary",
+    "thrower": "76561197978835160",
+    "startTick": 35627,
+    "endTick": 35708,
+    "round": 5
+  },
+  {
+    "entity": 441,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 36278,
+    "endTick": 36690,
+    "round": 5
+  },
+  {
+    "entity": 513,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 36299,
+    "endTick": 36594,
+    "round": 5
+  },
+  {
+    "entity": 235,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 36302,
+    "endTick": 36406,
+    "round": 5
+  },
+  {
+    "entity": 531,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 36893,
+    "endTick": 36997,
+    "round": 5
+  },
+  {
+    "entity": 406,
+    "kind": "molotov",
+    "thrower": "76561197991272318",
+    "startTick": 37298,
+    "endTick": 37427,
+    "round": 5
+  },
+  {
+    "entity": 642,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 37346,
+    "endTick": 37700,
+    "round": 5
+  },
+  {
+    "entity": 473,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 37470,
+    "endTick": 37574,
+    "round": 5
+  },
+  {
+    "entity": 107,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 37792,
+    "endTick": 37896,
+    "round": 5
+  },
+  {
+    "entity": 715,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 42881,
+    "endTick": 42994,
+    "round": 6
+  },
+  {
+    "entity": 549,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 42936,
+    "endTick": 43040,
+    "round": 6
+  },
+  {
+    "entity": 987,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 43027,
+    "endTick": 43131,
+    "round": 6
+  },
+  {
+    "entity": 351,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 43139,
+    "endTick": 43497,
+    "round": 6
+  },
+  {
+    "entity": 725,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 43252,
+    "endTick": 43356,
+    "round": 6
+  },
+  {
+    "entity": 586,
+    "kind": "incendiary",
+    "thrower": "76561197973140692",
+    "startTick": 43310,
+    "endTick": 43435,
+    "round": 6
+  },
+  {
+    "entity": 875,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 43327,
+    "endTick": 43431,
+    "round": 6
+  },
+  {
+    "entity": 856,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 43425,
+    "endTick": 43529,
+    "round": 6
+  },
+  {
+    "entity": 696,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 43469,
+    "endTick": 43485,
+    "round": 6
+  },
+  {
+    "entity": 711,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 43469,
+    "endTick": 43573,
+    "round": 6
+  },
+  {
+    "entity": 454,
+    "kind": "incendiary",
+    "thrower": "76561198113666193",
+    "startTick": 43472,
+    "endTick": 43558,
+    "round": 6
+  },
+  {
+    "entity": 329,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 43553,
+    "endTick": 43657,
+    "round": 6
+  },
+  {
+    "entity": 128,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 43554,
+    "endTick": 43658,
+    "round": 6
+  },
+  {
+    "entity": 218,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 43558,
+    "endTick": 43662,
+    "round": 6
+  },
+  {
+    "entity": 974,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 43633,
+    "endTick": 43737,
+    "round": 6
+  },
+  {
+    "entity": 418,
+    "kind": "he",
+    "thrower": "76561197989744167",
+    "startTick": 43778,
+    "endTick": 43882,
+    "round": 6
+  },
+  {
+    "entity": 670,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 44076,
+    "endTick": 44238,
+    "round": 6
+  },
+  {
+    "entity": 698,
+    "kind": "he",
+    "thrower": "76561197978835160",
+    "startTick": 44764,
+    "endTick": 44868,
+    "round": 6
+  },
+  {
+    "entity": 677,
+    "kind": "incendiary",
+    "thrower": "76561197978835160",
+    "startTick": 44852,
+    "endTick": 44959,
+    "round": 6
+  },
+  {
+    "entity": 534,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 46856,
+    "endTick": 46949,
+    "round": 7
+  },
+  {
+    "entity": 544,
+    "kind": "molotov",
+    "thrower": "76561197989430253",
+    "startTick": 46957,
+    "endTick": 47074,
+    "round": 7
+  },
+  {
+    "entity": 614,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 47258,
+    "endTick": 47579,
+    "round": 7
+  },
+  {
+    "entity": 492,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 47281,
+    "endTick": 47385,
+    "round": 7
+  },
+  {
+    "entity": 884,
+    "kind": "incendiary",
+    "thrower": "76561198063336407",
+    "startTick": 47300,
+    "endTick": 47400,
+    "round": 7
+  },
+  {
+    "entity": 906,
+    "kind": "he",
+    "thrower": "76561197978835160",
+    "startTick": 47333,
+    "endTick": 47437,
+    "round": 7
+  },
+  {
+    "entity": 887,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 47345,
+    "endTick": 47449,
+    "round": 7
+  },
+  {
+    "entity": 669,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 47352,
+    "endTick": 47678,
+    "round": 7
+  },
+  {
+    "entity": 522,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 47432,
+    "endTick": 47536,
+    "round": 7
+  },
+  {
+    "entity": 200,
+    "kind": "incendiary",
+    "thrower": "76561197978835160",
+    "startTick": 47448,
+    "endTick": 47543,
+    "round": 7
+  },
+  {
+    "entity": 567,
+    "kind": "he",
+    "thrower": "76561197973140692",
+    "startTick": 47702,
+    "endTick": 47806,
+    "round": 7
+  },
+  {
+    "entity": 433,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 47810,
+    "endTick": 47914,
+    "round": 7
+  },
+  {
+    "entity": 447,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 47870,
+    "endTick": 47974,
+    "round": 7
+  },
+  {
+    "entity": 590,
+    "kind": "he",
+    "thrower": "76561197997351207",
+    "startTick": 48400,
+    "endTick": 48504,
+    "round": 7
+  },
+  {
+    "entity": 470,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 48648,
+    "endTick": 48752,
+    "round": 7
+  },
+  {
+    "entity": 352,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 48956,
+    "endTick": 49077,
+    "round": 7
+  },
+  {
+    "entity": 939,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 49363,
+    "endTick": 49455,
+    "round": 7
+  },
+  {
+    "entity": 529,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 49562,
+    "endTick": 49777,
+    "round": 7
+  },
+  {
+    "entity": 914,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 49716,
+    "endTick": 49817,
+    "round": 7
+  },
+  {
+    "entity": 333,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 49805,
+    "endTick": 50168,
+    "round": 7
+  },
+  {
+    "entity": 436,
+    "kind": "molotov",
+    "thrower": "76561197991272318",
+    "startTick": 49812,
+    "endTick": 49893,
+    "round": 7
+  },
+  {
+    "entity": 280,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 49855,
+    "endTick": 49959,
+    "round": 7
+  },
+  {
+    "entity": 360,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 49896,
+    "endTick": 50000,
+    "round": 7
+  },
+  {
+    "entity": 334,
+    "kind": "he",
+    "thrower": "76561197989744167",
+    "startTick": 49949,
+    "endTick": 50053,
+    "round": 7
+  },
+  {
+    "entity": 918,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 49979,
+    "endTick": 50083,
+    "round": 7
+  },
+  {
+    "entity": 997,
+    "kind": "flash",
+    "thrower": "76561198063336407",
+    "startTick": 50073,
+    "endTick": 50177,
+    "round": 7
+  },
+  {
+    "entity": 223,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 50196,
+    "endTick": 50281,
+    "round": 7
+  },
+  {
+    "entity": 680,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 50370,
+    "endTick": 50474,
+    "round": 7
+  },
+  {
+    "entity": 485,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 51763,
+    "endTick": 51867,
+    "round": 7
+  },
+  {
+    "entity": 654,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 51774,
+    "endTick": 51897,
+    "round": 7
+  },
+  {
+    "entity": 99,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 54435,
+    "endTick": 54525,
+    "round": 8
+  },
+  {
+    "entity": 98,
+    "kind": "molotov",
+    "thrower": "76561197989430253",
+    "startTick": 54467,
+    "endTick": 54588,
+    "round": 8
+  },
+  {
+    "entity": 381,
+    "kind": "incendiary",
+    "thrower": "76561197978835160",
+    "startTick": 54783,
+    "endTick": 54895,
+    "round": 8
+  },
+  {
+    "entity": 126,
+    "kind": "incendiary",
+    "thrower": "76561197973140692",
+    "startTick": 54809,
+    "endTick": 54881,
+    "round": 8
+  },
+  {
+    "entity": 116,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 54870,
+    "endTick": 55200,
+    "round": 8
+  },
+  {
+    "entity": 907,
+    "kind": "incendiary",
+    "thrower": "76561197989744167",
+    "startTick": 54899,
+    "endTick": 55010,
+    "round": 8
+  },
+  {
+    "entity": 237,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 55102,
+    "endTick": 55171,
+    "round": 8
+  },
+  {
+    "entity": 77,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 55127,
+    "endTick": 55207,
+    "round": 8
+  },
+  {
+    "entity": 429,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 55231,
+    "endTick": 55335,
+    "round": 8
+  },
+  {
+    "entity": 361,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 55347,
+    "endTick": 55451,
+    "round": 8
+  },
+  {
+    "entity": 830,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 55402,
+    "endTick": 55506,
+    "round": 8
+  },
+  {
+    "entity": 588,
+    "kind": "he",
+    "thrower": "76561197989744167",
+    "startTick": 55619,
+    "endTick": 55723,
+    "round": 8
+  },
+  {
+    "entity": 246,
+    "kind": "he",
+    "thrower": "76561197973140692",
+    "startTick": 56153,
+    "endTick": 56257,
+    "round": 8
+  },
+  {
+    "entity": 481,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 56395,
+    "endTick": 56499,
+    "round": 8
+  },
+  {
+    "entity": 598,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 57702,
+    "endTick": 58056,
+    "round": 8
+  },
+  {
+    "entity": 205,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 57804,
+    "endTick": 57908,
+    "round": 8
+  },
+  {
+    "entity": 346,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 57878,
+    "endTick": 57982,
+    "round": 8
+  },
+  {
+    "entity": 72,
+    "kind": "molotov",
+    "thrower": "76561197989430253",
+    "startTick": 58025,
+    "endTick": 58148,
+    "round": 8
+  },
+  {
+    "entity": 972,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 58145,
+    "endTick": 58249,
+    "round": 8
+  },
+  {
+    "entity": 140,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 58184,
+    "endTick": 58288,
+    "round": 8
+  },
+  {
+    "entity": 304,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 58319,
+    "endTick": 58448,
+    "round": 8
+  },
+  {
+    "entity": 1012,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 59104,
+    "endTick": 59208,
+    "round": 8
+  },
+  {
+    "entity": 496,
+    "kind": "molotov",
+    "thrower": "76561197973140692",
+    "startTick": 59592,
+    "endTick": 59645,
+    "round": 8
+  },
+  {
+    "entity": 117,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 61684,
+    "endTick": 62017,
+    "round": 9
+  },
+  {
+    "entity": 206,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 61789,
+    "endTick": 61869,
+    "round": 9
+  },
+  {
+    "entity": 279,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 62061,
+    "endTick": 62165,
+    "round": 9
+  },
+  {
+    "entity": 193,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 62178,
+    "endTick": 62517,
+    "round": 9
+  },
+  {
+    "entity": 1002,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 62353,
+    "endTick": 62457,
+    "round": 9
+  },
+  {
+    "entity": 1016,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 62372,
+    "endTick": 62476,
+    "round": 9
+  },
+  {
+    "entity": 122,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 62432,
+    "endTick": 62536,
+    "round": 9
+  },
+  {
+    "entity": 970,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 62834,
+    "endTick": 62938,
+    "round": 9
+  },
+  {
+    "entity": 749,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 62929,
+    "endTick": 63033,
+    "round": 9
+  },
+  {
+    "entity": 550,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 63213,
+    "endTick": 63416,
+    "round": 9
+  },
+  {
+    "entity": 271,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 63230,
+    "endTick": 63333,
+    "round": 9
+  },
+  {
+    "entity": 289,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 65266,
+    "endTick": 65425,
+    "round": 10
+  },
+  {
+    "entity": 67,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 65454,
+    "endTick": 65558,
+    "round": 10
+  },
+  {
+    "entity": 487,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 65489,
+    "endTick": 65887,
+    "round": 10
+  },
+  {
+    "entity": 76,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 65575,
+    "endTick": 65679,
+    "round": 10
+  },
+  {
+    "entity": 411,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 65601,
+    "endTick": 65717,
+    "round": 10
+  },
+  {
+    "entity": 926,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 65637,
+    "endTick": 65741,
+    "round": 10
+  },
+  {
+    "entity": 602,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 65669,
+    "endTick": 65773,
+    "round": 10
+  },
+  {
+    "entity": 845,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 65726,
+    "endTick": 65830,
+    "round": 10
+  },
+  {
+    "entity": 587,
+    "kind": "incendiary",
+    "thrower": "76561197989744167",
+    "startTick": 65738,
+    "endTick": 65818,
+    "round": 10
+  },
+  {
+    "entity": 535,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 65748,
+    "endTick": 65852,
+    "round": 10
+  },
+  {
+    "entity": 606,
+    "kind": "incendiary",
+    "thrower": "76561197978835160",
+    "startTick": 65796,
+    "endTick": 65914,
+    "round": 10
+  },
+  {
+    "entity": 561,
+    "kind": "incendiary",
+    "thrower": "76561197973140692",
+    "startTick": 65798,
+    "endTick": 65895,
+    "round": 10
+  },
+  {
+    "entity": 239,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 65844,
+    "endTick": 65948,
+    "round": 10
+  },
+  {
+    "entity": 180,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 66181,
+    "endTick": 66297,
+    "round": 10
+  },
+  {
+    "entity": 867,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 66499,
+    "endTick": 66628,
+    "round": 10
+  },
+  {
+    "entity": 868,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 66559,
+    "endTick": 66911,
+    "round": 10
+  },
+  {
+    "entity": 604,
+    "kind": "molotov",
+    "thrower": "76561197991272318",
+    "startTick": 67144,
+    "endTick": 67197,
+    "round": 10
+  },
+  {
+    "entity": 415,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 74059,
+    "endTick": 74180,
+    "round": 11
+  },
+  {
+    "entity": 670,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 74257,
+    "endTick": 74588,
+    "round": 11
+  },
+  {
+    "entity": 133,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 74418,
+    "endTick": 74522,
+    "round": 11
+  },
+  {
+    "entity": 615,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 74459,
+    "endTick": 74563,
+    "round": 11
+  },
+  {
+    "entity": 83,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 74481,
+    "endTick": 74585,
+    "round": 11
+  },
+  {
+    "entity": 755,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 74639,
+    "endTick": 74743,
+    "round": 11
+  },
+  {
+    "entity": 762,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 74755,
+    "endTick": 75094,
+    "round": 11
+  },
+  {
+    "entity": 231,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 74844,
+    "endTick": 74948,
+    "round": 11
+  },
+  {
+    "entity": 744,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 74867,
+    "endTick": 74971,
+    "round": 11
+  },
+  {
+    "entity": 759,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 74954,
+    "endTick": 75058,
+    "round": 11
+  },
+  {
+    "entity": 704,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 75167,
+    "endTick": 75271,
+    "round": 11
+  },
+  {
+    "entity": 214,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 75453,
+    "endTick": 75557,
+    "round": 11
+  },
+  {
+    "entity": 625,
+    "kind": "molotov",
+    "thrower": "76561197989430253",
+    "startTick": 75836,
+    "endTick": 75965,
+    "round": 11
+  },
+  {
+    "entity": 243,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 75924,
+    "endTick": 76028,
+    "round": 11
+  },
+  {
+    "entity": 359,
+    "kind": "molotov",
+    "thrower": "76561198068422762",
+    "startTick": 76196,
+    "endTick": 76325,
+    "round": 11
+  },
+  {
+    "entity": 562,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 76206,
+    "endTick": 76310,
+    "round": 11
+  },
+  {
+    "entity": 179,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 76791,
+    "endTick": 77056,
+    "round": 11
+  },
+  {
+    "entity": 343,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 76849,
+    "endTick": 76953,
+    "round": 11
+  },
+  {
+    "entity": 879,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 76905,
+    "endTick": 77009,
+    "round": 11
+  },
+  {
+    "entity": 437,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 77143,
+    "endTick": 77247,
+    "round": 11
+  },
+  {
+    "entity": 933,
+    "kind": "molotov",
+    "thrower": "76561197991272318",
+    "startTick": 77242,
+    "endTick": 77348,
+    "round": 11
+  },
+  {
+    "entity": 293,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 77428,
+    "endTick": 77553,
+    "round": 11
+  },
+  {
+    "entity": 736,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 78084,
+    "endTick": 78187,
+    "round": 11
+  },
+  {
+    "entity": 878,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 81133,
+    "endTick": 81282,
+    "round": 12
+  },
+  {
+    "entity": 559,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 81263,
+    "endTick": 81367,
+    "round": 12
+  },
+  {
+    "entity": 265,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 81499,
+    "endTick": 81603,
+    "round": 12
+  },
+  {
+    "entity": 678,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 81502,
+    "endTick": 81606,
+    "round": 12
+  },
+  {
+    "entity": 528,
+    "kind": "incendiary",
+    "thrower": "76561197989744167",
+    "startTick": 81551,
+    "endTick": 81631,
+    "round": 12
+  },
+  {
+    "entity": 347,
+    "kind": "he",
+    "thrower": "76561197978835160",
+    "startTick": 81555,
+    "endTick": 81659,
+    "round": 12
+  },
+  {
+    "entity": 1021,
+    "kind": "incendiary",
+    "thrower": "76561197973140692",
+    "startTick": 81556,
+    "endTick": 81685,
+    "round": 12
+  },
+  {
+    "entity": 874,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 81596,
+    "endTick": 81941,
+    "round": 12
+  },
+  {
+    "entity": 632,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 81629,
+    "endTick": 81733,
+    "round": 12
+  },
+  {
+    "entity": 192,
+    "kind": "molotov",
+    "thrower": "76561197989430253",
+    "startTick": 81656,
+    "endTick": 81775,
+    "round": 12
+  },
+  {
+    "entity": 873,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 81833,
+    "endTick": 81900,
+    "round": 12
+  },
+  {
+    "entity": 774,
+    "kind": "he",
+    "thrower": "76561197973140692",
+    "startTick": 82004,
+    "endTick": 82108,
+    "round": 12
+  },
+  {
+    "entity": 229,
+    "kind": "molotov",
+    "thrower": "76561197997351207",
+    "startTick": 82074,
+    "endTick": 82203,
+    "round": 12
+  },
+  {
+    "entity": 325,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 82112,
+    "endTick": 82216,
+    "round": 12
+  },
+  {
+    "entity": 245,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 82285,
+    "endTick": 82388,
+    "round": 12
+  },
+  {
+    "entity": 694,
+    "kind": "incendiary",
+    "thrower": "76561197978835160",
+    "startTick": 83113,
+    "endTick": 83218,
+    "round": 12
+  },
+  {
+    "entity": 583,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 83160,
+    "endTick": 83396,
+    "round": 12
+  },
+  {
+    "entity": 930,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 83369,
+    "endTick": 83473,
+    "round": 12
+  },
+  {
+    "entity": 838,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 83491,
+    "endTick": 83832,
+    "round": 12
+  },
+  {
+    "entity": 684,
+    "kind": "incendiary",
+    "thrower": "76561198063336407",
+    "startTick": 83564,
+    "endTick": 83693,
+    "round": 12
+  },
+  {
+    "entity": 505,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 84228,
+    "endTick": 84497,
+    "round": 12
+  },
+  {
+    "entity": 858,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 84328,
+    "endTick": 84541,
+    "round": 12
+  },
+  {
+    "entity": 688,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 84376,
+    "endTick": 84480,
+    "round": 12
+  },
+  {
+    "entity": 954,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 84825,
+    "endTick": 85179,
+    "round": 12
+  },
+  {
+    "entity": 950,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 85556,
+    "endTick": 85680,
+    "round": 12
+  },
+  {
+    "entity": 956,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 86052,
+    "endTick": 86156,
+    "round": 12
+  },
+  {
+    "entity": 839,
+    "kind": "molotov",
+    "thrower": "76561197991272318",
+    "startTick": 86057,
+    "endTick": 86186,
+    "round": 12
+  },
+  {
+    "entity": 672,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 86063,
+    "endTick": 86167,
+    "round": 12
+  },
+  {
+    "entity": 964,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 86135,
+    "endTick": 86239,
+    "round": 12
+  },
+  {
+    "entity": 963,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 86147,
+    "endTick": 86251,
+    "round": 12
+  },
+  {
+    "entity": 275,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 86562,
+    "endTick": 86666,
+    "round": 12
+  },
+  {
+    "entity": 274,
+    "kind": "flash",
+    "thrower": "76561198063336407",
+    "startTick": 87458,
+    "endTick": 87562,
+    "round": 12
+  },
+  {
+    "entity": 832,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 103169,
+    "endTick": 103273,
+    "round": 13
+  },
+  {
+    "entity": 395,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 105011,
+    "endTick": 105115,
+    "round": 13
+  },
+  {
+    "entity": 539,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 105441,
+    "endTick": 105542,
+    "round": 13
+  },
+  {
+    "entity": 598,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 106779,
+    "endTick": 106883,
+    "round": 13
+  },
+  {
+    "entity": 250,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 108567,
+    "endTick": 108710,
+    "round": 14
+  },
+  {
+    "entity": 760,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 108756,
+    "endTick": 109094,
+    "round": 14
+  },
+  {
+    "entity": 546,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 108973,
+    "endTick": 109077,
+    "round": 14
+  },
+  {
+    "entity": 582,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 109040,
+    "endTick": 109144,
+    "round": 14
+  },
+  {
+    "entity": 661,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 109060,
+    "endTick": 109164,
+    "round": 14
+  },
+  {
+    "entity": 1016,
+    "kind": "molotov",
+    "thrower": "76561197978835160",
+    "startTick": 109808,
+    "endTick": 109937,
+    "round": 14
+  },
+  {
+    "entity": 222,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 110238,
+    "endTick": 110512,
+    "round": 14
+  },
+  {
+    "entity": 211,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 110514,
+    "endTick": 110618,
+    "round": 14
+  },
+  {
+    "entity": 787,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 110540,
+    "endTick": 110644,
+    "round": 14
+  },
+  {
+    "entity": 749,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 110960,
+    "endTick": 111359,
+    "round": 14
+  },
+  {
+    "entity": 171,
+    "kind": "molotov",
+    "thrower": "76561197973140692",
+    "startTick": 111120,
+    "endTick": 111202,
+    "round": 14
+  },
+  {
+    "entity": 206,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 111279,
+    "endTick": 111383,
+    "round": 14
+  },
+  {
+    "entity": 236,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 113504,
+    "endTick": 113608,
+    "round": 14
+  },
+  {
+    "entity": 985,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 116465,
+    "endTick": 116725,
+    "round": 15
+  },
+  {
+    "entity": 757,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 116580,
+    "endTick": 116684,
+    "round": 15
+  },
+  {
+    "entity": 314,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 116610,
+    "endTick": 116714,
+    "round": 15
+  },
+  {
+    "entity": 596,
+    "kind": "incendiary",
+    "thrower": "76561197989430253",
+    "startTick": 116668,
+    "endTick": 116797,
+    "round": 15
+  },
+  {
+    "entity": 404,
+    "kind": "incendiary",
+    "thrower": "76561198068422762",
+    "startTick": 116692,
+    "endTick": 116816,
+    "round": 15
+  },
+  {
+    "entity": 103,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 116823,
+    "endTick": 116927,
+    "round": 15
+  },
+  {
+    "entity": 818,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 116842,
+    "endTick": 117097,
+    "round": 15
+  },
+  {
+    "entity": 820,
+    "kind": "incendiary",
+    "thrower": "76561197997351207",
+    "startTick": 116867,
+    "endTick": 116972,
+    "round": 15
+  },
+  {
+    "entity": 289,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 116928,
+    "endTick": 117032,
+    "round": 15
+  },
+  {
+    "entity": 579,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 117070,
+    "endTick": 117256,
+    "round": 15
+  },
+  {
+    "entity": 270,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 117110,
+    "endTick": 117214,
+    "round": 15
+  },
+  {
+    "entity": 487,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 117112,
+    "endTick": 117216,
+    "round": 15
+  },
+  {
+    "entity": 300,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 117160,
+    "endTick": 117264,
+    "round": 15
+  },
+  {
+    "entity": 180,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 117248,
+    "endTick": 117352,
+    "round": 15
+  },
+  {
+    "entity": 120,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 117370,
+    "endTick": 117474,
+    "round": 15
+  },
+  {
+    "entity": 869,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 117960,
+    "endTick": 118134,
+    "round": 15
+  },
+  {
+    "entity": 750,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 117967,
+    "endTick": 118071,
+    "round": 15
+  },
+  {
+    "entity": 287,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 117987,
+    "endTick": 118100,
+    "round": 15
+  },
+  {
+    "entity": 642,
+    "kind": "he",
+    "thrower": "76561198201620490",
+    "startTick": 118278,
+    "endTick": 118382,
+    "round": 15
+  },
+  {
+    "entity": 855,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 118800,
+    "endTick": 118885,
+    "round": 15
+  },
+  {
+    "entity": 670,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 125394,
+    "endTick": 125573,
+    "round": 16
+  },
+  {
+    "entity": 562,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 125541,
+    "endTick": 125646,
+    "round": 16
+  },
+  {
+    "entity": 243,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 125603,
+    "endTick": 125962,
+    "round": 16
+  },
+  {
+    "entity": 310,
+    "kind": "incendiary",
+    "thrower": "76561197989430253",
+    "startTick": 125792,
+    "endTick": 125902,
+    "round": 16
+  },
+  {
+    "entity": 762,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 125794,
+    "endTick": 125898,
+    "round": 16
+  },
+  {
+    "entity": 134,
+    "kind": "incendiary",
+    "thrower": "76561198068422762",
+    "startTick": 125915,
+    "endTick": 126044,
+    "round": 16
+  },
+  {
+    "entity": 565,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 125924,
+    "endTick": 126028,
+    "round": 16
+  },
+  {
+    "entity": 149,
+    "kind": "he",
+    "thrower": "76561198068422762",
+    "startTick": 125992,
+    "endTick": 126096,
+    "round": 16
+  },
+  {
+    "entity": 454,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 126258,
+    "endTick": 126341,
+    "round": 16
+  },
+  {
+    "entity": 698,
+    "kind": "molotov",
+    "thrower": "76561197989744167",
+    "startTick": 126377,
+    "endTick": 126454,
+    "round": 16
+  },
+  {
+    "entity": 756,
+    "kind": "molotov",
+    "thrower": "76561198201620490",
+    "startTick": 126550,
+    "endTick": 126668,
+    "round": 16
+  },
+  {
+    "entity": 244,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 127049,
+    "endTick": 127153,
+    "round": 16
+  },
+  {
+    "entity": 437,
+    "kind": "flash",
+    "thrower": "76561198063336407",
+    "startTick": 127064,
+    "endTick": 127168,
+    "round": 16
+  },
+  {
+    "entity": 161,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 127090,
+    "endTick": 127168,
+    "round": 16
+  },
+  {
+    "entity": 856,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 127268,
+    "endTick": 127372,
+    "round": 16
+  },
+  {
+    "entity": 733,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 127358,
+    "endTick": 127521,
+    "round": 16
+  },
+  {
+    "entity": 296,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 127471,
+    "endTick": 127575,
+    "round": 16
+  },
+  {
+    "entity": 235,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 127991,
+    "endTick": 128089,
+    "round": 16
+  },
+  {
+    "entity": 234,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 128202,
+    "endTick": 128306,
+    "round": 16
+  },
+  {
+    "entity": 264,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 128884,
+    "endTick": 128988,
+    "round": 16
+  },
+  {
+    "entity": 93,
+    "kind": "molotov",
+    "thrower": "76561197978835160",
+    "startTick": 129340,
+    "endTick": 129432,
+    "round": 16
+  },
+  {
+    "entity": 752,
+    "kind": "incendiary",
+    "thrower": "76561197991272318",
+    "startTick": 129745,
+    "endTick": 129825,
+    "round": 16
+  },
+  {
+    "entity": 699,
+    "kind": "incendiary",
+    "thrower": "76561198113666193",
+    "startTick": 130179,
+    "endTick": 130272,
+    "round": 16
+  },
+  {
+    "entity": 638,
+    "kind": "molotov",
+    "thrower": "76561198063336407",
+    "startTick": 130657,
+    "endTick": 130743,
+    "round": 16
+  },
+  {
+    "entity": 223,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 135986,
+    "endTick": 136299,
+    "round": 17
+  },
+  {
+    "entity": 694,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 136054,
+    "endTick": 136158,
+    "round": 17
+  },
+  {
+    "entity": 874,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 136076,
+    "endTick": 136265,
+    "round": 17
+  },
+  {
+    "entity": 930,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 136079,
+    "endTick": 136183,
+    "round": 17
+  },
+  {
+    "entity": 421,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 136146,
+    "endTick": 136250,
+    "round": 17
+  },
+  {
+    "entity": 241,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 136151,
+    "endTick": 136255,
+    "round": 17
+  },
+  {
+    "entity": 663,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 136170,
+    "endTick": 136274,
+    "round": 17
+  },
+  {
+    "entity": 684,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 136254,
+    "endTick": 136490,
+    "round": 17
+  },
+  {
+    "entity": 352,
+    "kind": "he",
+    "thrower": "76561198068422762",
+    "startTick": 136896,
+    "endTick": 137000,
+    "round": 17
+  },
+  {
+    "entity": 862,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 137450,
+    "endTick": 137578,
+    "round": 17
+  },
+  {
+    "entity": 709,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 137498,
+    "endTick": 137602,
+    "round": 17
+  },
+  {
+    "entity": 945,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 137665,
+    "endTick": 138029,
+    "round": 17
+  },
+  {
+    "entity": 934,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 137933,
+    "endTick": 138037,
+    "round": 17
+  },
+  {
+    "entity": 892,
+    "kind": "he",
+    "thrower": "76561197997351207",
+    "startTick": 138136,
+    "endTick": 138240,
+    "round": 17
+  },
+  {
+    "entity": 92,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 138702,
+    "endTick": 138806,
+    "round": 17
+  },
+  {
+    "entity": 838,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 138978,
+    "endTick": 139212,
+    "round": 17
+  },
+  {
+    "entity": 957,
+    "kind": "incendiary",
+    "thrower": "76561197997351207",
+    "startTick": 139259,
+    "endTick": 139367,
+    "round": 17
+  },
+  {
+    "entity": 238,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 140226,
+    "endTick": 140330,
+    "round": 17
+  },
+  {
+    "entity": 320,
+    "kind": "molotov",
+    "thrower": "76561197978835160",
+    "startTick": 140276,
+    "endTick": 140367,
+    "round": 17
+  },
+  {
+    "entity": 956,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 140898,
+    "endTick": 141002,
+    "round": 17
+  },
+  {
+    "entity": 155,
+    "kind": "incendiary",
+    "thrower": "76561198068422762",
+    "startTick": 144094,
+    "endTick": 144214,
+    "round": 18
+  },
+  {
+    "entity": 618,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 144117,
+    "endTick": 144221,
+    "round": 18
+  },
+  {
+    "entity": 237,
+    "kind": "incendiary",
+    "thrower": "76561197997351207",
+    "startTick": 144170,
+    "endTick": 144229,
+    "round": 18
+  },
+  {
+    "entity": 523,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 144420,
+    "endTick": 144524,
+    "round": 18
+  },
+  {
+    "entity": 622,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 144492,
+    "endTick": 144570,
+    "round": 18
+  },
+  {
+    "entity": 592,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 144617,
+    "endTick": 144721,
+    "round": 18
+  },
+  {
+    "entity": 1014,
+    "kind": "he",
+    "thrower": "76561197997351207",
+    "startTick": 144663,
+    "endTick": 144767,
+    "round": 18
+  },
+  {
+    "entity": 304,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 144829,
+    "endTick": 144933,
+    "round": 18
+  },
+  {
+    "entity": 478,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 144878,
+    "endTick": 144992,
+    "round": 18
+  },
+  {
+    "entity": 451,
+    "kind": "incendiary",
+    "thrower": "76561197991272318",
+    "startTick": 145260,
+    "endTick": 145369,
+    "round": 18
+  },
+  {
+    "entity": 547,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 146018,
+    "endTick": 146163,
+    "round": 18
+  },
+  {
+    "entity": 395,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 147224,
+    "endTick": 147364,
+    "round": 18
+  },
+  {
+    "entity": 1012,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 148746,
+    "endTick": 148850,
+    "round": 18
+  },
+  {
+    "entity": 288,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 148846,
+    "endTick": 148946,
+    "round": 18
+  },
+  {
+    "entity": 826,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 149375,
+    "endTick": 149479,
+    "round": 18
+  },
+  {
+    "entity": 455,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 149455,
+    "endTick": 149559,
+    "round": 18
+  },
+  {
+    "entity": 922,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 149759,
+    "endTick": 149863,
+    "round": 18
+  },
+  {
+    "entity": 539,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 150259,
+    "endTick": 150363,
+    "round": 18
+  },
+  {
+    "entity": 825,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 152871,
+    "endTick": 152975,
+    "round": 19
+  },
+  {
+    "entity": 71,
+    "kind": "incendiary",
+    "thrower": "76561198068422762",
+    "startTick": 152877,
+    "endTick": 153006,
+    "round": 19
+  },
+  {
+    "entity": 787,
+    "kind": "incendiary",
+    "thrower": "76561197989430253",
+    "startTick": 152937,
+    "endTick": 153002,
+    "round": 19
+  },
+  {
+    "entity": 482,
+    "kind": "he",
+    "thrower": "76561198068422762",
+    "startTick": 153022,
+    "endTick": 153126,
+    "round": 19
+  },
+  {
+    "entity": 228,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 153238,
+    "endTick": 153342,
+    "round": 19
+  },
+  {
+    "entity": 206,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 153298,
+    "endTick": 153350,
+    "round": 19
+  },
+  {
+    "entity": 123,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 153314,
+    "endTick": 153418,
+    "round": 19
+  },
+  {
+    "entity": 811,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 153635,
+    "endTick": 153739,
+    "round": 19
+  },
+  {
+    "entity": 650,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 155578,
+    "endTick": 155756,
+    "round": 20
+  },
+  {
+    "entity": 574,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 155759,
+    "endTick": 156124,
+    "round": 20
+  },
+  {
+    "entity": 411,
+    "kind": "incendiary",
+    "thrower": "76561197997351207",
+    "startTick": 155969,
+    "endTick": 156098,
+    "round": 20
+  },
+  {
+    "entity": 845,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 155997,
+    "endTick": 156101,
+    "round": 20
+  },
+  {
+    "entity": 639,
+    "kind": "incendiary",
+    "thrower": "76561197991272318",
+    "startTick": 156009,
+    "endTick": 156138,
+    "round": 20
+  },
+  {
+    "entity": 792,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 156096,
+    "endTick": 156403,
+    "round": 20
+  },
+  {
+    "entity": 435,
+    "kind": "he",
+    "thrower": "76561198068422762",
+    "startTick": 156164,
+    "endTick": 156268,
+    "round": 20
+  },
+  {
+    "entity": 103,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 156204,
+    "endTick": 156308,
+    "round": 20
+  },
+  {
+    "entity": 97,
+    "kind": "flash",
+    "thrower": "76561198063336407",
+    "startTick": 156330,
+    "endTick": 156434,
+    "round": 20
+  },
+  {
+    "entity": 943,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 157091,
+    "endTick": 157285,
+    "round": 20
+  },
+  {
+    "entity": 180,
+    "kind": "incendiary",
+    "thrower": "76561198068422762",
+    "startTick": 157303,
+    "endTick": 157416,
+    "round": 20
+  },
+  {
+    "entity": 599,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 157314,
+    "endTick": 157427,
+    "round": 20
+  },
+  {
+    "entity": 230,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 157488,
+    "endTick": 157620,
+    "round": 20
+  },
+  {
+    "entity": 973,
+    "kind": "he",
+    "thrower": "76561198201620490",
+    "startTick": 157582,
+    "endTick": 157686,
+    "round": 20
+  },
+  {
+    "entity": 269,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 157614,
+    "endTick": 157718,
+    "round": 20
+  },
+  {
+    "entity": 74,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 157875,
+    "endTick": 157979,
+    "round": 20
+  },
+  {
+    "entity": 588,
+    "kind": "molotov",
+    "thrower": "76561198063336407",
+    "startTick": 157938,
+    "endTick": 158051,
+    "round": 20
+  },
+  {
+    "entity": 664,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 158085,
+    "endTick": 158189,
+    "round": 20
+  },
+  {
+    "entity": 491,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 158264,
+    "endTick": 158368,
+    "round": 20
+  },
+  {
+    "entity": 233,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 158385,
+    "endTick": 158489,
+    "round": 20
+  },
+  {
+    "entity": 345,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 159217,
+    "endTick": 159355,
+    "round": 20
+  },
+  {
+    "entity": 326,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 166264,
+    "endTick": 166548,
+    "round": 21
+  },
+  {
+    "entity": 537,
+    "kind": "smoke",
+    "thrower": "76561197989744167",
+    "startTick": 166265,
+    "endTick": 166526,
+    "round": 21
+  },
+  {
+    "entity": 625,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 166353,
+    "endTick": 166720,
+    "round": 21
+  },
+  {
+    "entity": 742,
+    "kind": "flash",
+    "thrower": "76561197989744167",
+    "startTick": 166415,
+    "endTick": 166519,
+    "round": 21
+  },
+  {
+    "entity": 744,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 166444,
+    "endTick": 166548,
+    "round": 21
+  },
+  {
+    "entity": 244,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 166457,
+    "endTick": 166561,
+    "round": 21
+  },
+  {
+    "entity": 357,
+    "kind": "incendiary",
+    "thrower": "76561197991272318",
+    "startTick": 166595,
+    "endTick": 166699,
+    "round": 21
+  },
+  {
+    "entity": 607,
+    "kind": "incendiary",
+    "thrower": "76561197989430253",
+    "startTick": 166600,
+    "endTick": 166668,
+    "round": 21
+  },
+  {
+    "entity": 636,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 166722,
+    "endTick": 166826,
+    "round": 21
+  },
+  {
+    "entity": 296,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 166830,
+    "endTick": 166934,
+    "round": 21
+  },
+  {
+    "entity": 488,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 166871,
+    "endTick": 166975,
+    "round": 21
+  },
+  {
+    "entity": 747,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 167030,
+    "endTick": 167134,
+    "round": 21
+  },
+  {
+    "entity": 375,
+    "kind": "incendiary",
+    "thrower": "76561198068422762",
+    "startTick": 167222,
+    "endTick": 167334,
+    "round": 21
+  },
+  {
+    "entity": 179,
+    "kind": "incendiary",
+    "thrower": "76561198201620490",
+    "startTick": 167328,
+    "endTick": 167393,
+    "round": 21
+  },
+  {
+    "entity": 733,
+    "kind": "he",
+    "thrower": "76561198201620490",
+    "startTick": 167587,
+    "endTick": 167691,
+    "round": 21
+  },
+  {
+    "entity": 312,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 168970,
+    "endTick": 169074,
+    "round": 21
+  },
+  {
+    "entity": 93,
+    "kind": "molotov",
+    "thrower": "76561197973140692",
+    "startTick": 169854,
+    "endTick": 169931,
+    "round": 21
+  },
+  {
+    "entity": 654,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 175157,
+    "endTick": 175272,
+    "round": 22
+  },
+  {
+    "entity": 265,
+    "kind": "incendiary",
+    "thrower": "76561197991272318",
+    "startTick": 175513,
+    "endTick": 175642,
+    "round": 22
+  },
+  {
+    "entity": 873,
+    "kind": "flash",
+    "thrower": "76561197997351207",
+    "startTick": 175516,
+    "endTick": 175620,
+    "round": 22
+  },
+  {
+    "entity": 1009,
+    "kind": "incendiary",
+    "thrower": "76561197989430253",
+    "startTick": 175578,
+    "endTick": 175651,
+    "round": 22
+  },
+  {
+    "entity": 533,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 175813,
+    "endTick": 175917,
+    "round": 22
+  },
+  {
+    "entity": 182,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 175893,
+    "endTick": 175997,
+    "round": 22
+  },
+  {
+    "entity": 694,
+    "kind": "he",
+    "thrower": "76561197991272318",
+    "startTick": 175950,
+    "endTick": 176054,
+    "round": 22
+  },
+  {
+    "entity": 662,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 176604,
+    "endTick": 176754,
+    "round": 22
+  },
+  {
+    "entity": 528,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 178461,
+    "endTick": 178615,
+    "round": 22
+  },
+  {
+    "entity": 352,
+    "kind": "incendiary",
+    "thrower": "76561197991272318",
+    "startTick": 178559,
+    "endTick": 178667,
+    "round": 22
+  },
+  {
+    "entity": 914,
+    "kind": "flash",
+    "thrower": "76561198068422762",
+    "startTick": 178608,
+    "endTick": 178712,
+    "round": 22
+  },
+  {
+    "entity": 709,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 178755,
+    "endTick": 178859,
+    "round": 22
+  },
+  {
+    "entity": 874,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 178985,
+    "endTick": 179164,
+    "round": 22
+  },
+  {
+    "entity": 688,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 179436,
+    "endTick": 179715,
+    "round": 22
+  },
+  {
+    "entity": 204,
+    "kind": "flash",
+    "thrower": "76561198201620490",
+    "startTick": 179883,
+    "endTick": 179987,
+    "round": 22
+  },
+  {
+    "entity": 934,
+    "kind": "smoke",
+    "thrower": "76561197973140692",
+    "startTick": 180242,
+    "endTick": 180508,
+    "round": 22
+  },
+  {
+    "entity": 486,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 180312,
+    "endTick": 180416,
+    "round": 22
+  },
+  {
+    "entity": 583,
+    "kind": "incendiary",
+    "thrower": "76561198201620490",
+    "startTick": 180510,
+    "endTick": 180614,
+    "round": 22
+  },
+  {
+    "entity": 951,
+    "kind": "he",
+    "thrower": "76561198201620490",
+    "startTick": 180625,
+    "endTick": 180729,
+    "round": 22
+  },
+  {
+    "entity": 682,
+    "kind": "flash",
+    "thrower": "76561197991272318",
+    "startTick": 180765,
+    "endTick": 180869,
+    "round": 22
+  },
+  {
+    "entity": 436,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 180888,
+    "endTick": 180992,
+    "round": 22
+  },
+  {
+    "entity": 957,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 181428,
+    "endTick": 181518,
+    "round": 22
+  },
+  {
+    "entity": 803,
+    "kind": "smoke",
+    "thrower": "76561197991272318",
+    "startTick": 188949,
+    "endTick": 189083,
+    "round": 23
+  },
+  {
+    "entity": 544,
+    "kind": "smoke",
+    "thrower": "76561198113666193",
+    "startTick": 189153,
+    "endTick": 189518,
+    "round": 23
+  },
+  {
+    "entity": 592,
+    "kind": "he",
+    "thrower": "76561198063336407",
+    "startTick": 189323,
+    "endTick": 189427,
+    "round": 23
+  },
+  {
+    "entity": 523,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 189325,
+    "endTick": 189429,
+    "round": 23
+  },
+  {
+    "entity": 203,
+    "kind": "incendiary",
+    "thrower": "76561198068422762",
+    "startTick": 189411,
+    "endTick": 189538,
+    "round": 23
+  },
+  {
+    "entity": 304,
+    "kind": "incendiary",
+    "thrower": "76561198201620490",
+    "startTick": 189454,
+    "endTick": 189558,
+    "round": 23
+  },
+  {
+    "entity": 200,
+    "kind": "he",
+    "thrower": "76561198068422762",
+    "startTick": 189490,
+    "endTick": 189594,
+    "round": 23
+  },
+  {
+    "entity": 451,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 189508,
+    "endTick": 189612,
+    "round": 23
+  },
+  {
+    "entity": 872,
+    "kind": "smoke",
+    "thrower": "76561198068422762",
+    "startTick": 189805,
+    "endTick": 189852,
+    "round": 23
+  },
+  {
+    "entity": 478,
+    "kind": "flash",
+    "thrower": "76561197989430253",
+    "startTick": 189853,
+    "endTick": 189957,
+    "round": 23
+  },
+  {
+    "entity": 832,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 190666,
+    "endTick": 190770,
+    "round": 23
+  },
+  {
+    "entity": 99,
+    "kind": "he",
+    "thrower": "76561197989430253",
+    "startTick": 190707,
+    "endTick": 190811,
+    "round": 23
+  },
+  {
+    "entity": 686,
+    "kind": "smoke",
+    "thrower": "76561198201620490",
+    "startTick": 190741,
+    "endTick": 190892,
+    "round": 23
+  },
+  {
+    "entity": 741,
+    "kind": "smoke",
+    "thrower": "76561197997351207",
+    "startTick": 190830,
+    "endTick": 190911,
+    "round": 23
+  },
+  {
+    "entity": 344,
+    "kind": "smoke",
+    "thrower": "76561197989430253",
+    "startTick": 190901,
+    "endTick": 191024,
+    "round": 23
+  },
+  {
+    "entity": 348,
+    "kind": "molotov",
+    "thrower": "76561198113666193",
+    "startTick": 191031,
+    "endTick": 191159,
+    "round": 23
+  },
+  {
+    "entity": 104,
+    "kind": "smoke",
+    "thrower": "76561198063336407",
+    "startTick": 193454,
+    "endTick": 193648,
+    "round": 23
+  },
+  {
+    "entity": 162,
+    "kind": "molotov",
+    "thrower": "76561198063336407",
+    "startTick": 193561,
+    "endTick": 193675,
+    "round": 23
+  },
+  {
+    "entity": 455,
+    "kind": "flash",
+    "thrower": "76561198113666193",
+    "startTick": 194129,
+    "endTick": 194233,
+    "round": 23
+  },
+  {
+    "entity": 172,
+    "kind": "molotov",
+    "thrower": "76561197978835160",
+    "startTick": 194240,
+    "endTick": 194341,
+    "round": 23
+  },
+  {
+    "entity": 922,
+    "kind": "flash",
+    "thrower": "76561197978835160",
+    "startTick": 194357,
+    "endTick": 194461,
+    "round": 23
+  },
+  {
+    "entity": 368,
+    "kind": "flash",
+    "thrower": "76561197973140692",
+    "startTick": 194513,
+    "endTick": 194617,
+    "round": 23
+  },
+  {
+    "entity": 379,
+    "kind": "smoke",
+    "thrower": "76561197978835160",
+    "startTick": 194542,
+    "endTick": 194607,
+    "round": 23
+  },
+  {
+    "entity": 831,
+    "kind": "he",
+    "thrower": "76561197978835160",
+    "startTick": 194655,
+    "endTick": 194759,
+    "round": 23
+  }
+]

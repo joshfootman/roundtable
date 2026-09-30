@@ -32,9 +32,17 @@ import {
 } from './generated/roster_pb.ts'
 import { BitReader } from './entities/bit-reader.ts'
 import { createEntityDecoder } from './entities/index.ts'
+import type { GrenadeDetonation } from '../replay/types.ts'
 import { createRoundTracker, type ReplayEvent } from './round-lifecycle.ts'
 export type { ReplayEvent } from './round-lifecycle.ts'
 
+const detonationKinds: Record<string, GrenadeDetonation['kind']> = {
+  flashbang_detonate: 'flash',
+  hegrenade_detonate: 'he',
+  smokegrenade_detonate: 'smoke',
+  inferno_startburn: 'fire',
+  decoy_started: 'decoy',
+}
 const LIMIT = 32 * 1024 * 1024
 export function readReplay(
   input: DemoSource,
@@ -102,7 +110,8 @@ export function readReplay(
           if (
             ['player_death', 'bomb_planted', 'bomb_defused', 'bomb_exploded'].includes(
               descriptor.name,
-            )
+            ) ||
+            descriptor.name in detonationKinds
           )
             recorded.push({ event, descriptor })
         }
@@ -110,6 +119,7 @@ export function readReplay(
       if (tracker.recording) {
         tracker.sample(tick, entities.snapshots())
         tracker.bomb(tick, entities.bomb())
+        tracker.projectiles(tick, entities.projectiles())
         for (const { event, descriptor } of recorded) {
           function key(name: string, type: number) {
             const index = descriptor.keys.findIndex((key) => key.name === name)
@@ -118,7 +128,16 @@ export function readReplay(
               throw new Error(`A ${descriptor.name} event has an invalid ${name}.`)
             return value
           }
-          if (descriptor.name === 'player_death') {
+          const kind = detonationKinds[descriptor.name]
+          if (kind) {
+            const x = key('x', 2).valFloat
+            const y = key('y', 2).valFloat
+            const z = key('z', 2).valFloat
+            const entity = key('entityid', 4).valShort
+            if (![x, y, z].every(Number.isFinite) || entity < 0)
+              throw new Error('Invalid recorded grenade detonation.')
+            tracker.detonation({ tick, kind, entity, x, y, z })
+          } else if (descriptor.name === 'player_death') {
             const attacker = key('attacker', 9).valShort
             tracker.death({
               tick,

@@ -142,6 +142,34 @@ test('decodes a real competitive round against independent identities and positi
     { definition: 43, count: 1 },
     { definition: 46, count: 1 },
   ])
+  const flashOracle = JSON.parse(readFileSync('fixtures/replay/first-flash.json', 'utf8')) as {
+    positions: { tick: number; position: { X: number; Y: number; Z: number } }[]
+  }
+  const flash = round.projectiles.find((projectile) => projectile.entity === 948)!
+  expect({
+    kind: flash.kind,
+    thrower: flash.thrower,
+    startTick: flash.startTick,
+    endTick: flash.endTick,
+  }).toEqual({ kind: 'flash', thrower: '76561198068422762', startTick: 6362, endTick: 6466 })
+  expect(Array.from(flash.ticks)).toEqual(flashOracle.positions.map((sample) => sample.tick))
+  expect(Array.from(flash.positions)).toEqual(
+    flashOracle.positions.flatMap((sample) => [
+      sample.position.X,
+      sample.position.Y,
+      sample.position.Z,
+    ]),
+  )
+  expect(round.detonations.filter((event) => event.tick === 6466 && event.entity === 948)).toEqual([
+    {
+      tick: 6466,
+      entity: 948,
+      kind: 'flash',
+      x: 999.5439453125,
+      y: 475.7112121582031,
+      z: 416.1570129394531,
+    },
+  ])
   expect(round.number).toBe(1)
   expect(round.startTick).toBe(oracle.startTick)
   expect(round.liveStartTick).toBe(5732)
@@ -230,6 +258,29 @@ test('replays bomb interactions and completion in a contiguous recorded segment'
     readRounds(source(bytes)).pipe(Stream.take(4), Stream.runCollect),
   )
   expect(Array.from(rounds).map((round) => round.number)).toEqual([1, 2, 3, 4])
+  const expectedDetonations = JSON.parse(
+    readFileSync('fixtures/replay/detonations.json', 'utf8'),
+  ) as { round: number }[]
+  const expectedProjectiles = JSON.parse(
+    readFileSync('fixtures/replay/projectile-lifetimes.json', 'utf8'),
+  ) as { round: number }[]
+  expect(
+    Array.from(rounds).flatMap((round) =>
+      round.detonations.map((event) => ({ ...event, round: round.number })),
+    ),
+  ).toEqual(expectedDetonations.filter((event) => event.round <= 4))
+  expect(
+    Array.from(rounds).flatMap((round) =>
+      round.projectiles.map(({ entity, kind, thrower, startTick, endTick }) => ({
+        entity,
+        kind,
+        thrower,
+        startTick,
+        endTick,
+        round: round.number,
+      })),
+    ),
+  ).toEqual(expectedProjectiles.filter((event) => event.round <= 4))
   const round = Array.from(rounds)[3]!
   expect(Array.from(rounds)[1]!.bombEvents).toEqual([
     { tick: 13170, type: 'plant-start', player: '76561197997351207' },

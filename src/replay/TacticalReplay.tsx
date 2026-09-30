@@ -1,3 +1,4 @@
+import { utilityAppearance, DETONATION_DISPLAY_SECONDS } from './utility.ts'
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
 import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js'
@@ -82,6 +83,9 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       if (cancelled) return
       const sceneMap = new Container()
       sceneMap.addChild(new Sprite(texture))
+      const utility = new Graphics()
+      sceneMap.addChild(utility)
+      let symbolScale = 1
       const markers = round.players.map((_, index) => {
         const marker = new Container()
         const body = new Graphics().circle(0, 0, 10).fill('#ffffff').stroke({
@@ -119,6 +123,41 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
 
       function draw() {
         const sample = sampleAtTick(round.ticks, tick)
+        utility.clear()
+        for (const projectile of round.projectiles) {
+          if (tick < projectile.startTick || tick >= projectile.endTick) continue
+          const last = sampleAtTick(projectile.ticks, tick)
+          const appearance = utilityAppearance[projectile.kind]
+          for (let index = 0; index <= last; index++) {
+            const offset = index * 3
+            const point = worldToMap(
+              map,
+              projectile.positions[offset]!,
+              projectile.positions[offset + 1]!,
+            )
+            if (index === 0) utility.moveTo(point.x, point.y)
+            else utility.lineTo(point.x, point.y)
+          }
+          utility.stroke({ color: appearance.color, width: 2 * symbolScale, alpha: 0.7 })
+          const offset = last * 3
+          const point = worldToMap(
+            map,
+            projectile.positions[offset]!,
+            projectile.positions[offset + 1]!,
+          )
+          utility.circle(point.x, point.y, 4 * symbolScale).fill(appearance.color)
+        }
+        for (const event of round.detonations) {
+          if (
+            tick < event.tick ||
+            (tick - event.tick) * round.tickInterval >= DETONATION_DISPLAY_SECONDS
+          )
+            continue
+          const point = worldToMap(map, event.x, event.y)
+          utility
+            .circle(point.x, point.y, 16 * symbolScale)
+            .stroke({ color: utilityAppearance[event.kind].color, width: 2 * symbolScale })
+        }
         for (let player = 0; player < markers.length; player++) {
           const position = (sample * markers.length + player) * 3
           const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
@@ -184,6 +223,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         const width = element.clientWidth
         app.renderer.resize(width, width)
         sceneMap.scale.set(width / map.imageSize)
+        symbolScale = (map.imageSize * 0.8) / width
         for (const { container } of markers) container.scale.set((map.imageSize * 0.8) / width)
         bombMarker.scale.set((map.imageSize * 0.8) / width)
         draw()
@@ -304,6 +344,33 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           onChange={(event) => playback.current?.seek(event.currentTarget.valueAsNumber)}
         />
       </label>
+      <ul aria-label="Flying grenades" className="mt-4 list-none space-y-2 p-0 text-sm">
+        {round.projectiles
+          .filter(
+            (projectile) =>
+              projectile.startTick <= recordedTick && recordedTick < projectile.endTick,
+          )
+          .map((projectile) => {
+            const index = sampleAtTick(projectile.ticks, recordedTick) * 3
+            return (
+              <li key={`${projectile.entity}:${projectile.serial}`}>
+                {utilityAppearance[projectile.kind].name} ·{' '}
+                {round.players.find((player) => player.steamId === projectile.thrower)!.name}
+                {` · X ${projectile.positions[index]!.toFixed(1)} · Y ${projectile.positions[index + 1]!.toFixed(1)} · Z ${projectile.positions[index + 2]!.toFixed(1)}`}
+              </li>
+            )
+          })}
+      </ul>
+      <ol aria-label="Grenade detonations" className="mt-3 list-none space-y-2 p-0 text-sm">
+        {round.detonations
+          .filter((event) => event.tick <= recordedTick)
+          .map((event, index) => (
+            <li key={index}>
+              {utilityAppearance[event.kind].name} detonated
+              {` · X ${event.x.toFixed(1)} · Y ${event.y.toFixed(1)} · Z ${event.z.toFixed(1)}`}
+            </li>
+          ))}
+      </ol>
       <p aria-label="Bomb state" className="mt-5 text-sm text-[#a7b5aa]">
         Bomb{' '}
         {bomb.type === 'carried'

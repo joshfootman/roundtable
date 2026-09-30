@@ -1,3 +1,4 @@
+import { replayBuffers } from '../replay/buffers.ts'
 import { Cause, Effect, Option, Stream } from 'effect'
 import { DemoReadError } from './errors'
 import { readRecordingInfo } from './metadata'
@@ -6,17 +7,7 @@ import type { ImportResult } from './import'
 
 function send(result: ImportResult) {
   if (result.type === 'round') {
-    const { ticks, positions, alive, health, yaw, teams } = result.round
-    self.postMessage(result, {
-      transfer: [
-        ticks.buffer,
-        positions.buffer,
-        alive.buffer,
-        health.buffer,
-        yaw.buffer,
-        teams.buffer,
-      ],
-    })
+    self.postMessage(result, { transfer: replayBuffers(result.round) })
   } else self.postMessage(result)
 }
 

@@ -78,10 +78,17 @@ func main() {
 			d = map[string]any{"thrower": id(g.Thrower), "type": int(g.GrenadeType), "entity": g.GrenadeEntityID, "position": g.Position}
 		case events.GrenadeProjectileThrow:
 			g := v.Projectile
-			d = map[string]any{"thrower": id(g.Thrower), "entity": g.Entity.ID(), "weapon": weapon(g.WeaponInstance), "position": g.Position()}
+			d = map[string]any{"thrower": id(g.Thrower), "entity": g.Entity.ID(), "class": g.Entity.ServerClass().Name(), "weapon": weapon(g.WeaponInstance), "position": g.Position()}
 		case events.GrenadeProjectileDestroy:
 			g := v.Projectile
-			d = map[string]any{"thrower": id(g.Thrower), "entity": g.Entity.ID(), "weapon": weapon(g.WeaponInstance), "trajectory": g.Trajectory2}
+			d = map[string]any{"thrower": id(g.Thrower), "entity": g.Entity.ID(), "class": g.Entity.ServerClass().Name(), "weapon": weapon(g.WeaponInstance), "trajectory": g.Trajectory2}
+		case events.GenericGameEvent:
+			switch v.Name {
+			case "player_death", "bomb_planted", "bomb_defused", "bomb_exploded", "flashbang_detonate", "hegrenade_detonate", "smokegrenade_detonate", "smokegrenade_expired", "inferno_startburn", "inferno_expire", "decoy_started", "decoy_expired":
+				d = map[string]any{"name": v.Name, "data": v.Data}
+			default:
+				return
+			}
 		case events.PlayerFlashed:
 			d = map[string]any{"player": id(v.Player), "attacker": id(v.Attacker), "durationSeconds": v.FlashDuration().Seconds()}
 		case events.InfernoStart:
