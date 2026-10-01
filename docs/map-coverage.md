@@ -7,6 +7,7 @@ Collected and validated on 1 October 2026. The renderer supports the ten-map inv
 | Map      | Fixture                                  | Completed rounds |
 | -------- | ---------------------------------------- | ---------------: |
 | Ancient  | `natus-vincere-vs-spirit-m2-ancient.dem` |               42 |
+| Ancient  | `faze-vs-natus-vincere-m1-ancient.dem`   |               22 |
 | Anubis   | `vitality-vs-inner-circle-m1-anubis.dem` |               21 |
 | Cache    | `vitality-vs-inner-circle-m2-cache.dem`  |               29 |
 | Dust II  | `faze-vs-vitality-m2-dust2.dem`          |               23 |
@@ -20,7 +21,7 @@ Collected and validated on 1 October 2026. The renderer supports the ten-map inv
 
 Ancient includes triple overtime; Cache and the newer Inferno include overtime. NAVI–Spirit at BLAST Bounty 2025 provides a match between HLTV #3 and #1, satisfying HLTV’s published five-star criterion. Astralis–MOUZ at World Final 2024 supplies compatible Nuke and Vertigo recordings; it is not claimed as five-star. The manifest links every match. Downloads retain the original archives.
 
-The earlier Copenhagen recordings omit the optional wire field `server_start_tick`, independently confirmed with `protoc`. The app previously rejected them because its metadata contract unnecessarily required that unused field. `DemoMetadata` now contains only required product values. It does not expose a nullable or invented server tick. The reported Copenhagen Ancient recording imports and plays. Its current playback starts at round 2. All 21 emitted rounds, numbered 2 through 22, match the independent boundary reference. This fix does not change round discovery. Recent recordings required explicit entity wire types and correct handling of player user ID zero versus the world-kill sentinel.
+The earlier Copenhagen recordings omit the optional wire field `server_start_tick`, independently confirmed with `protoc`. The app previously rejected them because its metadata contract unnecessarily required that unused field. `DemoMetadata` now contains only required product values. It does not expose a nullable or invented server tick. The Copenhagen Ancient recording now includes pistol round. Its opening checkpoint records an active competitive freeze at tick 0. The tracker captures that state even without a `round_start` event. The recorded freeze ends at tick 1681, the result is at 9451, and round 2 starts at 9899. All 22 rounds match the independent reference. Opening checkpoints during live play remain excluded. Recent recordings required explicit entity wire types and correct handling of player user ID zero versus the world-kill sentinel.
 
 ## Calibration and imagery
 
@@ -34,7 +35,7 @@ Browser checks use ignored compact first-round extracts of the real recordings. 
 
 ## Independent verification
 
-The custom parser matches all 259 completed rounds across these 11 recordings: round boundaries, kill identities and planted-bomb positions. Lint, formatting, TypeScript, 31 unit tests, eight browser tests and the production build pass. Real compact first-round browser imports, play/pause and backward seeks passed for each added map; Nuke, Vertigo and Train also retained the tick through floor changes.
+The custom parser matches all 281 completed rounds across 12 recordings, including Copenhagen Ancient: round boundaries, kill identities and planted-bomb positions. Lint, formatting, TypeScript, 33 unit tests, eight browser tests and the production build pass. Real compact first-round browser imports, play/pause and backward seeks passed for each added map; Nuke, Vertigo and Train also retained the tick through floor changes.
 
 Committed reports in `fixtures/maps-reference/` come from demoinfocs-golang v5.2.0, not the production parser. The reference generator excludes events outside accepted competitive round intervals. It records full round boundaries, kills and planted-bomb XYZ, plus the first round’s start/live player XYZ and facing. Player samples are not an assertion of every movement frame or exact utility reconstruction.
 

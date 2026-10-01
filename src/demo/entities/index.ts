@@ -102,6 +102,7 @@ const replayFields = new Set([
   ]),
   ...[
     'm_bWarmupPeriod',
+    'm_bFreezePeriod',
     'm_totalRoundsPlayed',
     'm_bHasMatchStarted',
     'm_eRoundWinReason',
@@ -544,6 +545,7 @@ export function createEntityDecoder() {
       )
       if (!entity) return undefined
       const warmup = entity.values.get('m_pGameRules.m_bWarmupPeriod')
+      const freezePeriod = entity.values.get('m_pGameRules.m_bFreezePeriod')
       const rounds = entity.values.get('m_pGameRules.m_totalRoundsPlayed')
       const started = entity.values.get('m_pGameRules.m_bHasMatchStarted')
       const reason = entity.values.get('m_pGameRules.m_eRoundWinReason')
@@ -551,6 +553,7 @@ export function createEntityDecoder() {
       const overtime = entity.values.get('m_pGameRules.m_nOvertimePlaying')
       if (
         typeof warmup !== 'boolean' ||
+        typeof freezePeriod !== 'boolean' ||
         typeof rounds !== 'number' ||
         typeof started !== 'boolean' ||
         typeof reason !== 'number' ||
@@ -561,6 +564,7 @@ export function createEntityDecoder() {
         throw new Error('Missing recorded competitive round rules.')
       return {
         warmup,
+        freezePeriod,
         totalRoundsPlayed: rounds,
         started,
         reason,

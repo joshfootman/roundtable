@@ -38,6 +38,10 @@ verification commands require the local reference recording described in the
   artwork. Map calibration uses extracted Valve overview data published by
   [MurkyYT/cs2-map-icons](https://github.com/MurkyYT/cs2-map-icons); see the
   [calibration notes](src/replay/README.md) for the supplied images and transforms.
+- [Juknum/counter-strike-icons](https://github.com/Juknum/counter-strike-icons):
+  extracted Valve CS2 equipment and kill-feed SVGs stored for a future UI refresh.
+  The pinned source and upstream asset terms are documented in
+  [the icon asset guide](src/assets/cs2/README.md).
 - [demoparser](https://github.com/LaihoE/demoparser),
   [demofile-net](https://github.com/saul/demofile-net) and
   [cs2parser](https://github.com/osztenkurden/cs2parser): additional parser

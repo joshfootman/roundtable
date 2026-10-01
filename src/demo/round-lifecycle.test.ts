@@ -3,6 +3,7 @@ import { createRoundTracker, type ReplayEvent, type RoundRules } from './round-l
 
 const rules: RoundRules = {
   warmup: false,
+  freezePeriod: true,
   started: true,
   totalRoundsPlayed: 0,
   reason: 0,

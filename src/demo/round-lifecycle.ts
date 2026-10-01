@@ -14,6 +14,7 @@ import type {
 
 export interface RoundRules {
   warmup: boolean
+  freezePeriod: boolean
   totalRoundsPlayed: number
   started: boolean
   reason: number
@@ -190,7 +191,9 @@ export function createRoundTracker() {
         rules.started &&
         (events.includes('round_start') ||
           (rules.reason === 0 &&
-            (scoreReset || (previous && (!previous.started || previous.reason !== 0)))))
+            (scoreReset ||
+              (previous === undefined && rules.freezePeriod) ||
+              (previous && (!previous.started || previous.reason !== 0)))))
       if (startsRound && capture?.startTick !== tick) {
         if (capture?.phase === 'postround' && rules.totalRoundsPlayed === capture.number)
           output.push({ type: 'round', round: finish(capture, tick) })
