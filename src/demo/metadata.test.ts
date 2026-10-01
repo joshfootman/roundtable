@@ -40,6 +40,29 @@ function demo(headerRecord: Uint8Array, infoRecord?: Uint8Array) {
   return bytes
 }
 
+test('accepts an omitted server start tick while requiring replay metadata', async () => {
+  const decoded = fromBinary(CDemoFileHeaderSchema, header.slice(8))
+  clearField(decoded, CDemoFileHeaderSchema.field.serverStartTick)
+  const recording = () => {
+    const payload = toBinary(CDemoFileHeaderSchema, decoded)
+    return demo(new Uint8Array([1, 0, ...varint(payload.length), ...payload]), info)
+  }
+  await expect(parse(recording())).resolves.toEqual({
+    mapName: 'de_dust2',
+    serverName: 'BLAST Premier 2024',
+    clientName: 'SourceTV Demo',
+    gameDirectory: '/home/csserver001/cs2/game/csgo',
+    demoVersion: 'valve_demo_2',
+    patchVersion: 14011,
+    buildNumber: 10072,
+    durationSeconds: 3078.25,
+    playbackTicks: 197008,
+    playbackFrames: 197003,
+  })
+  clearField(decoded, CDemoFileHeaderSchema.field.mapName)
+  await expect(parse(recording())).rejects.toThrow(/missing required metadata \(map_name\)/)
+})
+
 test('rejects incomplete metadata and preserves explicitly recorded zero', async () => {
   await expect(parse(demo(header))).rejects.toThrow(/missing playback metadata/)
   const decoded = fromBinary(CDemoFileHeaderSchema, header.slice(8))
