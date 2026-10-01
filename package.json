@@ -25,6 +25,7 @@
     "verify:round": "node --experimental-transform-types scripts/verify-demo.ts --round",
     "benchmark:playback": "playwright test --config playwright.benchmark.config.ts",
     "verify:rounds": "node --experimental-transform-types scripts/verify-rounds.ts",
+    "verify:maps": "node --experimental-transform-types scripts/verify-maps.ts",
     "inspect:maps": "node --experimental-transform-types scripts/inspect-maps.ts"
   },
   "dependencies": {

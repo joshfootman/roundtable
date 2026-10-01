@@ -1,0 +1,1385 @@
+{
+  "mapName": "de_mirage",
+  "rounds": [
+    {
+      "number": 1,
+      "overtime": 0,
+      "startTick": 4036,
+      "liveStartTick": 13442,
+      "resultTick": 18439,
+      "endTick": 18887,
+      "winner": 2,
+      "start": {
+        "tick": 4036,
+        "players": [
+          {
+            "steamId": "76561197973140692",
+            "name": "mezii",
+            "team": 2,
+            "x": 1216,
+            "y": -307,
+            "z": -164.814453125,
+            "yaw": -90
+          },
+          {
+            "steamId": "76561197978835160",
+            "name": "flameZ",
+            "team": 2,
+            "x": 1216,
+            "y": -211,
+            "z": -163.96875,
+            "yaw": -90
+          },
+          {
+            "steamId": "76561197989430253",
+            "name": "karrigan",
+            "team": 3,
+            "x": -1656,
+            "y": -1800,
+            "z": -267.2064208984375,
+            "yaw": 94.00006
+          },
+          {
+            "steamId": "76561197989744167",
+            "name": "apEX",
+            "team": 2,
+            "x": 1136,
+            "y": -64,
+            "z": -164.4991455078125,
+            "yaw": 90
+          },
+          {
+            "steamId": "76561197991272318",
+            "name": "ropz",
+            "team": 3,
+            "x": -1656,
+            "y": -1976,
+            "z": -267.45831298828125,
+            "yaw": -60.99987
+          },
+          {
+            "steamId": "76561197997351207",
+            "name": "rain",
+            "team": 3,
+            "x": -1720,
+            "y": -1896,
+            "z": -267.602294921875,
+            "yaw": 50.000153
+          },
+          {
+            "steamId": "76561198063336407",
+            "name": "Spinx",
+            "team": 2,
+            "x": 1216,
+            "y": -16,
+            "z": -163.96875,
+            "yaw": 90
+          },
+          {
+            "steamId": "76561198068422762",
+            "name": "frozen",
+            "team": 3,
+            "x": -1776,
+            "y": -1976,
+            "z": -263.96875,
+            "yaw": -29.000122
+          },
+          {
+            "steamId": "76561198113666193",
+            "name": "ZywOo",
+            "team": 2,
+            "x": 1216,
+            "y": -115,
+            "z": -163.96875,
+            "yaw": 90
+          },
+          {
+            "steamId": "76561198201620490",
+            "name": "broky",
+            "team": 3,
+            "x": -1776,
+            "y": -1800,
+            "z": -263.96875,
+            "yaw": 36.000137
+          }
+        ]
+      },
+      "live": {
+        "tick": 13442,
+        "players": [
+          {
+            "steamId": "76561197973140692",
+            "name": "mezii",
+            "team": 2,
+            "x": 1216,
+            "y": -307,
+            "z": -164.814453125,
+            "yaw": -91.713524
+          },
+          {
+            "steamId": "76561197978835160",
+            "name": "flameZ",
+            "team": 2,
+            "x": 1216,
+            "y": -211,
+            "z": -163.96875,
+            "yaw": -74.94633
+          },
+          {
+            "steamId": "76561197989430253",
+            "name": "karrigan",
+            "team": 3,
+            "x": -1656,
+            "y": -1800,
+            "z": -267.2064208984375,
+            "yaw": 88.69708
+          },
+          {
+            "steamId": "76561197989744167",
+            "name": "apEX",
+            "team": 2,
+            "x": 1136,
+            "y": -64,
+            "z": -164.4991455078125,
+            "yaw": -67.28096
+          },
+          {
+            "steamId": "76561197991272318",
+            "name": "ropz",
+            "team": 3,
+            "x": -1656,
+            "y": -1976,
+            "z": -267.45831298828125,
+            "yaw": 71.31775
+          },
+          {
+            "steamId": "76561197997351207",
+            "name": "rain",
+            "team": 3,
+            "x": -1720,
+            "y": -1896,
+            "z": -267.602294921875,
+            "yaw": -56.84086
+          },
+          {
+            "steamId": "76561198063336407",
+            "name": "Spinx",
+            "team": 2,
+            "x": 1216,
+            "y": -16,
+            "z": -163.96875,
+            "yaw": -94.477615
+          },
+          {
+            "steamId": "76561198068422762",
+            "name": "frozen",
+            "team": 3,
+            "x": -1776,
+            "y": -1976,
+            "z": -263.96875,
+            "yaw": 72.86786
+          },
+          {
+            "steamId": "76561198113666193",
+            "name": "ZywOo",
+            "team": 2,
+            "x": 1216,
+            "y": -115,
+            "z": -163.96875,
+            "yaw": -79.92794
+          },
+          {
+            "steamId": "76561198201620490",
+            "name": "broky",
+            "team": 3,
+            "x": -1776,
+            "y": -1800,
+            "z": -263.96875,
+            "yaw": 61.874313
+          }
+        ]
+      }
+    },
+    {
+      "number": 2,
+      "overtime": 0,
+      "startTick": 18887,
+      "liveStartTick": 20167,
+      "resultTick": 25990,
+      "endTick": 26438,
+      "winner": 2
+    },
+    {
+      "number": 3,
+      "overtime": 0,
+      "startTick": 26438,
+      "liveStartTick": 27718,
+      "resultTick": 34109,
+      "endTick": 34557,
+      "winner": 2
+    },
+    {
+      "number": 4,
+      "overtime": 0,
+      "startTick": 34557,
+      "liveStartTick": 35837,
+      "resultTick": 43087,
+      "endTick": 43535,
+      "winner": 2
+    },
+    {
+      "number": 5,
+      "overtime": 0,
+      "startTick": 43535,
+      "liveStartTick": 44815,
+      "resultTick": 47756,
+      "endTick": 48204,
+      "winner": 3
+    },
+    {
+      "number": 6,
+      "overtime": 0,
+      "startTick": 48204,
+      "liveStartTick": 49484,
+      "resultTick": 54180,
+      "endTick": 54628,
+      "winner": 3
+    },
+    {
+      "number": 7,
+      "overtime": 0,
+      "startTick": 54628,
+      "liveStartTick": 55908,
+      "resultTick": 60672,
+      "endTick": 61120,
+      "winner": 3
+    },
+    {
+      "number": 8,
+      "overtime": 0,
+      "startTick": 61120,
+      "liveStartTick": 62400,
+      "resultTick": 66934,
+      "endTick": 67382,
+      "winner": 2
+    },
+    {
+      "number": 9,
+      "overtime": 0,
+      "startTick": 67382,
+      "liveStartTick": 71036,
+      "resultTick": 73941,
+      "endTick": 74389,
+      "winner": 2
+    },
+    {
+      "number": 10,
+      "overtime": 0,
+      "startTick": 74389,
+      "liveStartTick": 75669,
+      "resultTick": 79974,
+      "endTick": 80422,
+      "winner": 2
+    },
+    {
+      "number": 11,
+      "overtime": 0,
+      "startTick": 80422,
+      "liveStartTick": 81702,
+      "resultTick": 90226,
+      "endTick": 90674,
+      "winner": 2
+    },
+    {
+      "number": 12,
+      "overtime": 0,
+      "startTick": 90674,
+      "liveStartTick": 91954,
+      "resultTick": 95520,
+      "endTick": 96064,
+      "winner": 2
+    },
+    {
+      "number": 13,
+      "overtime": 0,
+      "startTick": 96064,
+      "liveStartTick": 109438,
+      "resultTick": 112180,
+      "endTick": 112628,
+      "winner": 2
+    },
+    {
+      "number": 14,
+      "overtime": 0,
+      "startTick": 112628,
+      "liveStartTick": 113908,
+      "resultTick": 119020,
+      "endTick": 119468,
+      "winner": 2
+    },
+    {
+      "number": 15,
+      "overtime": 0,
+      "startTick": 119468,
+      "liveStartTick": 120748,
+      "resultTick": 126303,
+      "endTick": 126751,
+      "winner": 2
+    },
+    {
+      "number": 16,
+      "overtime": 0,
+      "startTick": 126751,
+      "liveStartTick": 128031,
+      "resultTick": 134676,
+      "endTick": 135124,
+      "winner": 3
+    },
+    {
+      "number": 17,
+      "overtime": 0,
+      "startTick": 135124,
+      "liveStartTick": 138620,
+      "resultTick": 142424,
+      "endTick": 142872,
+      "winner": 3
+    },
+    {
+      "number": 18,
+      "overtime": 0,
+      "startTick": 142872,
+      "liveStartTick": 144152,
+      "resultTick": 145266,
+      "endTick": 145714,
+      "winner": 3
+    },
+    {
+      "number": 19,
+      "overtime": 0,
+      "startTick": 145714,
+      "liveStartTick": 146994,
+      "resultTick": 151088,
+      "endTick": 153448,
+      "winner": 3
+    }
+  ],
+  "plants": [
+    {
+      "round": 1,
+      "tick": 16643,
+      "site": "A",
+      "x": -253.96875,
+      "y": -2154.4375,
+      "z": -174.625
+    },
+    {
+      "round": 2,
+      "tick": 23366,
+      "site": "A",
+      "x": -494.28125,
+      "y": -2004.625,
+      "z": -179.96875
+    },
+    {
+      "round": 3,
+      "tick": 31485,
+      "site": "B",
+      "x": -1905.125,
+      "y": 243.6875,
+      "z": -159.96875
+    },
+    {
+      "round": 4,
+      "tick": 41651,
+      "site": "A",
+      "x": -257.9375,
+      "y": -2156.40625,
+      "z": -174.625
+    },
+    {
+      "round": 11,
+      "tick": 88075,
+      "site": "A",
+      "x": -624.90625,
+      "y": -2177.9375,
+      "z": -179.96875
+    },
+    {
+      "round": 12,
+      "tick": 94014,
+      "site": "A",
+      "x": -607.46875,
+      "y": -2168.375,
+      "z": -179.96875
+    },
+    {
+      "round": 13,
+      "tick": 111524,
+      "site": "B",
+      "x": -1973.75,
+      "y": 450.03125,
+      "z": -159.96875
+    },
+    {
+      "round": 14,
+      "tick": 118853,
+      "site": "A",
+      "x": -280.6875,
+      "y": -2158.09375,
+      "z": -175.5
+    },
+    {
+      "round": 15,
+      "tick": 125515,
+      "site": "A",
+      "x": -280.5625,
+      "y": -2165.21875,
+      "z": -174.875
+    },
+    {
+      "round": 16,
+      "tick": 132980,
+      "site": "B",
+      "x": -1969.03125,
+      "y": 450.03125,
+      "z": -159.96875
+    },
+    {
+      "round": 19,
+      "tick": 148939,
+      "site": "A",
+      "x": -253.96875,
+      "y": -2134.0625,
+      "z": -174.6875
+    }
+  ],
+  "deaths": [
+    {
+      "round": 1,
+      "tick": 16237,
+      "victim": "76561197997351207",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 1,
+      "tick": 17175,
+      "victim": "76561197989430253",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 1,
+      "tick": 17222,
+      "victim": "76561197978835160",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 1,
+      "tick": 17263,
+      "victim": "76561198113666193",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 1,
+      "tick": 17532,
+      "victim": "76561197991272318",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 1,
+      "tick": 17538,
+      "victim": "76561198063336407",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 1,
+      "tick": 18318,
+      "victim": "76561198201620490",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 1,
+      "tick": 18439,
+      "victim": "76561198068422762",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 2,
+      "tick": 21546,
+      "victim": "76561197989430253",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 3,
+      "tick": 29801,
+      "victim": "76561197989744167",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 3,
+      "tick": 29868,
+      "victim": "76561197991272318",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 3,
+      "tick": 29903,
+      "victim": "76561198068422762",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 3,
+      "tick": 30083,
+      "victim": "76561197973140692",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 3,
+      "tick": 30592,
+      "victim": "76561197997351207",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 3,
+      "tick": 30970,
+      "victim": "76561197989430253",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 37801,
+      "victim": "76561197991272318",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 38800,
+      "victim": "76561197989744167",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 39021,
+      "victim": "76561198068422762",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 39881,
+      "victim": "76561197989430253",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 39913,
+      "victim": "76561198063336407",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 40786,
+      "victim": "76561197997351207",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 41986,
+      "victim": "76561197978835160",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 4,
+      "tick": 43087,
+      "victim": "76561198201620490",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 5,
+      "tick": 47099,
+      "victim": "76561197973140692",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 5,
+      "tick": 47122,
+      "victim": "76561198068422762",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 5,
+      "tick": 47261,
+      "victim": "76561198063336407",
+      "killer": "76561197989430253",
+      "world": false
+    },
+    {
+      "round": 5,
+      "tick": 47360,
+      "victim": "76561197978835160",
+      "killer": "76561197989430253",
+      "world": false
+    },
+    {
+      "round": 5,
+      "tick": 47456,
+      "victim": "76561197989430253",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 5,
+      "tick": 47531,
+      "victim": "76561198113666193",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 5,
+      "tick": 47756,
+      "victim": "76561197989744167",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 50272,
+      "victim": "76561197997351207",
+      "killer": "76561197973140692",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 50345,
+      "victim": "76561197991272318",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 50405,
+      "victim": "76561197973140692",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 51253,
+      "victim": "76561198113666193",
+      "killer": "76561197989430253",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 51265,
+      "victim": "76561197989430253",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 51368,
+      "victim": "76561197978835160",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 53967,
+      "victim": "76561197989744167",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 6,
+      "tick": 54180,
+      "victim": "76561198063336407",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 7,
+      "tick": 57522,
+      "victim": "76561197989430253",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 7,
+      "tick": 60189,
+      "victim": "76561197978835160",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 7,
+      "tick": 60393,
+      "victim": "76561198113666193",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 7,
+      "tick": 60432,
+      "victim": "76561197973140692",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 7,
+      "tick": 60547,
+      "victim": "76561198063336407",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 7,
+      "tick": 60641,
+      "victim": "76561198068422762",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 7,
+      "tick": 60672,
+      "victim": "76561197989744167",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 63572,
+      "victim": "76561197989744167",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 63758,
+      "victim": "76561197989430253",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 63810,
+      "victim": "76561198201620490",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 66444,
+      "victim": "76561198063336407",
+      "killer": "76561197997351207",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 66514,
+      "victim": "76561197973140692",
+      "killer": "76561197997351207",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 66552,
+      "victim": "76561197997351207",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 66701,
+      "victim": "76561198113666193",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 66813,
+      "victim": "76561198068422762",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 8,
+      "tick": 66934,
+      "victim": "76561197991272318",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 9,
+      "tick": 72720,
+      "victim": "76561197989430253",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 9,
+      "tick": 72747,
+      "victim": "76561198113666193",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 9,
+      "tick": 72797,
+      "victim": "76561197973140692",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 9,
+      "tick": 73655,
+      "victim": "76561198068422762",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 9,
+      "tick": 73704,
+      "victim": "76561198201620490",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 9,
+      "tick": 73813,
+      "victim": "76561197991272318",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 9,
+      "tick": 73941,
+      "victim": "76561197997351207",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 10,
+      "tick": 79650,
+      "victim": "76561197991272318",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 10,
+      "tick": 79756,
+      "victim": "76561198068422762",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 10,
+      "tick": 79900,
+      "victim": "76561197997351207",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 10,
+      "tick": 79929,
+      "victim": "76561197989430253",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 10,
+      "tick": 79974,
+      "victim": "76561198201620490",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 85512,
+      "victim": "76561197978835160",
+      "killer": "76561197989430253",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 85727,
+      "victim": "76561197989744167",
+      "killer": "76561197997351207",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 85881,
+      "victim": "76561197997351207",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 86413,
+      "victim": "76561198201620490",
+      "killer": "76561197973140692",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 87365,
+      "victim": "76561197989430253",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 87687,
+      "victim": "76561198113666193",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 87726,
+      "victim": "76561198068422762",
+      "killer": "76561197973140692",
+      "world": false
+    },
+    {
+      "round": 11,
+      "tick": 90226,
+      "victim": "76561197991272318",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 12,
+      "tick": 92857,
+      "victim": "76561197978835160",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 12,
+      "tick": 94060,
+      "victim": "76561197989430253",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 12,
+      "tick": 94121,
+      "victim": "76561197997351207",
+      "killer": "76561197973140692",
+      "world": false
+    },
+    {
+      "round": 12,
+      "tick": 94130,
+      "victim": "76561197973140692",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 12,
+      "tick": 94259,
+      "victim": "76561198201620490",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 12,
+      "tick": 95138,
+      "victim": "76561197991272318",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 12,
+      "tick": 95520,
+      "victim": "76561198068422762",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 13,
+      "tick": 110711,
+      "victim": "76561197989430253",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 13,
+      "tick": 110880,
+      "victim": "76561197997351207",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 13,
+      "tick": 110924,
+      "victim": "76561197973140692",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 13,
+      "tick": 110964,
+      "victim": "76561198063336407",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 13,
+      "tick": 111035,
+      "victim": "76561197989744167",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 13,
+      "tick": 112034,
+      "victim": "76561197978835160",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 13,
+      "tick": 112180,
+      "victim": "76561198113666193",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 117331,
+      "victim": "76561198068422762",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 117374,
+      "victim": "76561198201620490",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 117547,
+      "victim": "76561197989430253",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 117759,
+      "victim": "76561197973140692",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 117833,
+      "victim": "76561197978835160",
+      "killer": "76561197997351207",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 117922,
+      "victim": "76561198063336407",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 118540,
+      "victim": "76561197989744167",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 118763,
+      "victim": "76561197991272318",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 14,
+      "tick": 119020,
+      "victim": "76561198113666193",
+      "killer": "76561197997351207",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 122031,
+      "victim": "76561198068422762",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 122104,
+      "victim": "76561198063336407",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 122284,
+      "victim": "76561197989744167",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 123236,
+      "victim": "76561197991272318",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 124686,
+      "victim": "76561197978835160",
+      "killer": "76561198201620490",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 124856,
+      "victim": "76561198201620490",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 125540,
+      "victim": "76561197973140692",
+      "killer": "76561197997351207",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 125956,
+      "victim": "76561197997351207",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 15,
+      "tick": 126303,
+      "victim": "76561198113666193",
+      "killer": "76561197989430253",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 129337,
+      "victim": "76561197989430253",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 132257,
+      "victim": "76561197997351207",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 132364,
+      "victim": "76561198063336407",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 132471,
+      "victim": "76561198113666193",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 132599,
+      "victim": "76561198201620490",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 132616,
+      "victim": "76561197989744167",
+      "killer": "76561197991272318",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 133555,
+      "victim": "76561197991272318",
+      "killer": "76561197973140692",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 133701,
+      "victim": "76561197973140692",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 16,
+      "tick": 133909,
+      "victim": "76561198068422762",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 17,
+      "tick": 142005,
+      "victim": "76561198068422762",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 17,
+      "tick": 142103,
+      "victim": "76561198201620490",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 17,
+      "tick": 142206,
+      "victim": "76561197997351207",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 17,
+      "tick": 142274,
+      "victim": "76561197991272318",
+      "killer": "76561197989744167",
+      "world": false
+    },
+    {
+      "round": 17,
+      "tick": 142424,
+      "victim": "76561197989430253",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 18,
+      "tick": 145101,
+      "victim": "76561197997351207",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 18,
+      "tick": 145135,
+      "victim": "76561197991272318",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 18,
+      "tick": 145207,
+      "victim": "76561198068422762",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 18,
+      "tick": 145254,
+      "victim": "76561198201620490",
+      "killer": "76561198063336407",
+      "world": false
+    },
+    {
+      "round": 18,
+      "tick": 145266,
+      "victim": "76561197989430253",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 19,
+      "tick": 147902,
+      "victim": "76561197989430253",
+      "killer": "76561198113666193",
+      "world": false
+    },
+    {
+      "round": 19,
+      "tick": 148020,
+      "victim": "76561198113666193",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 19,
+      "tick": 148079,
+      "victim": "76561197997351207",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 19,
+      "tick": 150279,
+      "victim": "76561198201620490",
+      "killer": "76561197978835160",
+      "world": false
+    },
+    {
+      "round": 19,
+      "tick": 150282,
+      "victim": "76561197978835160",
+      "killer": "76561198068422762",
+      "world": false
+    },
+    {
+      "round": 19,
+      "tick": 150401,
+      "victim": "76561198068422762",
+      "killer": "76561197973140692",
+      "world": false
+    },
+    {
+      "round": 19,
+      "tick": 150585,
+      "victim": "76561197991272318",
+      "killer": "76561198063336407",
+      "world": false
+    }
+  ],
+  "samples": [],
+  "finalTick": 153448,
+  "totalRoundsPlayed": 19
+}

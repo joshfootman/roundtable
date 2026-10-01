@@ -1,6 +1,6 @@
 # CS2 replay viewer
 
-Status: local import, progressive round discovery and selection, competitive eligibility, and tactical playback with freeze and post-round phases implemented with Effect and PixiJS. Player inspection, kills, bomb interactions, recorded grenade trajectories, approximate smoke/fire areas, shot-direction traces, flash indicators, player/team filters and utility toggles are implemented. All 23 supplied Dust2 rounds match independent boundary and event oracles. Overtime is covered by generated lifecycle tests; real overtime and knife fixtures remain compatibility checks. Playback measurements are recorded in docs/playback-benchmark.md.
+Status: local import, progressive round discovery and selection, competitive eligibility, and tactical playback with freeze and post-round phases implemented with Effect and PixiJS. Player inspection, kills, bomb interactions, recorded grenade trajectories, approximate smoke/fire areas, shot-direction traces, flash indicators, player/team filters and utility toggles are implemented. All 23 supplied Dust2 rounds match independent boundary and event oracles. Real overtime fixtures cover Ancient, Cache and Inferno. Ten-map calibration and selectable floors are documented in docs/map-coverage.md; knife fixtures remain compatibility checks. Playback measurements are recorded in docs/playback-benchmark.md.
 Requirements below settled unless marked **proposed**, **optional** or **open**.
 
 ## Product

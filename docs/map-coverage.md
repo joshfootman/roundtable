@@ -1,51 +1,48 @@
 # Map fixture coverage
 
-Collected on 1 October 2026. Every inventory map has a local CS2 demo; only Dust II has completed playback validation. Individual implementation tasks live in [TASKS.md](TASKS.md).
+Collected and validated on 1 October 2026. The renderer supports the ten-map inventory through map calibration data and a shared rotation/floor model. Full recordings stay in ignored `fixtures/local/`; Dust II remains at `fixtures/faze-vs-vitality-m2-dust2.dem`. Raw recordings are development inputs, not CI dependencies. [The manifest](../fixtures/maps.json) records source URLs, byte sizes and SHA-256 hashes.
 
-Full recordings live in `fixtures/local/`, which Git ignores. The existing Dust II recording remains at `fixtures/faze-vs-vitality-m2-dust2.dem`. These recordings are development inputs, not public example assets or CI dependencies. [The manifest](../fixtures/maps.json) records independently decoded map identifiers, byte sizes and SHA-256 hashes.
+## Accepted recordings
 
-## Sources
+| Map      | Fixture                                  | Completed rounds |
+| -------- | ---------------------------------------- | ---------------: |
+| Ancient  | `natus-vincere-vs-spirit-m2-ancient.dem` |               42 |
+| Anubis   | `vitality-vs-inner-circle-m1-anubis.dem` |               21 |
+| Cache    | `vitality-vs-inner-circle-m2-cache.dem`  |               29 |
+| Dust II  | `faze-vs-vitality-m2-dust2.dem`          |               23 |
+| Inferno  | `faze-vs-vitality-m1-inferno.dem`        |               17 |
+| Inferno  | `vitality-vs-g2-m4-inferno.dem`          |               28 |
+| Mirage   | `faze-vs-vitality-m3-mirage.dem`         |               19 |
+| Nuke     | `astralis-vs-mouz-m2-nuke.dem`           |               22 |
+| Overpass | `vitality-vs-g2-m3-overpass.dem`         |               19 |
+| Train    | `vitality-vs-g2-m5-train.dem`            |               19 |
+| Vertigo  | `astralis-vs-mouz-m1-vertigo.dem`        |               20 |
 
-- [FaZe–Vitality, Spring Final 2024](https://www.hltv.org/matches/2372742/faze-vs-vitality-blast-premier-spring-final-2024): reused the supplied archive for Inferno and Mirage. Dust II was already validated.
-- [Spirit–FaZe, Copenhagen Major 2024](https://www.hltv.org/matches/2370722/spirit-vs-faze-pgl-cs2-major-copenhagen-2024): downloaded from HLTV, demo 86162; extracted Nuke and Vertigo. The match page identifies the teams as HLTV #2 and #1. Both satisfy HLTV's five-star filter criterion, “two top 3 teams”; this rating is inferred from that published criterion, not a displayed historical star badge. Both maps include overtime.
-- [FaZe–Natus Vincere, Copenhagen Major 2024](https://www.hltv.org/matches/2370727/faze-vs-natus-vincere-pgl-cs2-major-copenhagen-2024): downloaded from HLTV; extracted Ancient.
-- [Vitality–G2, London final 2025](https://www.hltv.org/matches/2384856/vitality-vs-g2-blast-open-london-2025-finals): downloaded from HLTV, demo 99751; extracted Overpass, Inferno and Train. Inferno finished 12–16, providing a real overtime recording.
-- [Vitality–Inner Circle, Porto 2026](https://www.hltv.org/matches/2396927/vitality-vs-inner-circle-blast-open-porto-2026): downloaded from HLTV, demo 110627; extracted Anubis and Cache. Cache finished 13–16. This is CS2 Cache, not an old CS:GO fixture.
+Ancient includes triple overtime; Cache and the newer Inferno include overtime. NAVI–Spirit at BLAST Bounty 2025 provides a match between HLTV #3 and #1, satisfying HLTV’s published five-star criterion. Astralis–MOUZ at World Final 2024 supplies compatible Nuke and Vertigo recordings; it is not claimed as five-star. The manifest links every match. Downloads retain the original archives.
 
-The downloaded archives remain in Downloads. Only the selected extracted recordings are stored inside the repository directory.
+The earlier Copenhagen Ancient, Nuke and Vertigo recordings omit required `server_start_tick`, independently confirmed with `protoc`. They remain rejected. Metadata requirements have not been relaxed. Recent recordings required explicit entity wire types and correct handling of player user ID zero versus the world-kill sentinel.
 
-## Initial validation
+## Calibration and imagery
 
-`protoc` independently decoded the file headers for all newly collected recordings. The custom parser was then exercised against required metadata and the first completed competitive round:
+Positions, facing, shots, bomb and utility share the same transform. The supplied Inferno image needs 270° clockwise image-space rotation; Mirage needs 90°. Inferno’s independently recorded A/B plants land near `(755,179)` and `(187,488)` on its pictured sites. The earlier spawn-only inference of a 90° Inferno rotation was wrong and is superseded by these landmarks.
 
-| Map      | Fixture                                  | Parser result                                                | Map work remaining                                                                                                            |
-| -------- | ---------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| Ancient  | `faze-vs-natus-vincere-m1-ancient.dem`   | Rejected: absent `server_start_tick`                         | Obtain a recording satisfying the metadata contract; verify calibration and layout version.                                   |
-| Anubis   | `vitality-vs-inner-circle-m1-anubis.dem` | Metadata succeeds; entity decoding fails                     | Support the recorded field types; verify calibration against this layout version.                                             |
-| Cache    | `vitality-vs-inner-circle-m2-cache.dem`  | Metadata succeeds; entity decoding fails                     | Obtain matching CS2 radar/calibration and add the map definition.                                                             |
-| Dust II  | Existing Spring Final fixture            | Previously validated across all 23 rounds                    | Complete; retain existing regression coverage.                                                                                |
-| Inferno  | `faze-vs-vitality-m1-inferno.dem`        | First competitive round succeeds: ten players, 12,774 frames | Rotate coordinates and facing; verify utility, bomb and landmark alignment.                                                   |
-| Inferno  | `vitality-vs-g2-m4-inferno.dem`          | Metadata succeeds; entity decoding fails                     | After compatibility work, verify layout version and real overtime playback.                                                   |
-| Mirage   | `faze-vs-vitality-m3-mirage.dem`         | First competitive round succeeds                             | Verify landmarks, facing and utility alignment; do not equate parser success with calibration validation.                     |
-| Nuke     | `spirit-vs-faze-m2-nuke.dem`             | Rejected: absent `server_start_tick`                         | Obtain a recording satisfying the metadata contract; add calibration and floor selection/filtering.                           |
-| Overpass | `vitality-vs-g2-m3-overpass.dem`         | Metadata succeeds; entity decoding fails                     | Verify calibration against the 2025 layout.                                                                                   |
-| Train    | `vitality-vs-g2-m5-train.dem`            | Metadata succeeds; entity decoding fails                     | Obtain matching CS2 radar/calibration and add the map definition.                                                             |
-| Vertigo  | `spirit-vs-faze-m3-vertigo.dem`          | Rejected: absent `server_start_tick`                         | Obtain a recording satisfying the metadata contract; verify the radar version, add calibration and floor selection/filtering. |
+Nuke’s supplied upper and lower images used different orientations. Both were replaced with matching native game radars to retain one coordinate transform for both floors. Cache and Train also use native game radars. These five images and all overview calibration values come from [cs2-map-icons](https://github.com/MurkyYT/cs2-map-icons/tree/ae7ed6ac9bdebf7782c71ee2454f20738595e57e), pinned to `ae7ed6ac9bdebf7782c71ee2454f20738595e57e`. Existing supplied imagery remains for the other maps.
 
-All five newer recordings fail on `EntityPlatformTypes_t (m_nPlatformType)`. This is an entity decoder compatibility problem, independent of map calibration. Supporting that field may expose further differences; these fixtures have not yet passed replay parsing.
+Split floors use overview height boundaries: Nuke −495, Vertigo 11700, Train −50. Train opens on its lower floor, where the recorded starting players stand. Floor changes retain the scene, playback tick and play/pause state, and filter players, bomb, shots and utility consistently. Hidden trajectory segments are not joined across floors.
 
-The three Copenhagen fixtures genuinely omit `server_start_tick` according to independent header decoding. They remain rejected under the required-metadata policy. Do not insert zero, return null or weaken that policy to make these fixtures pass.
+Browser checks use ignored compact first-round extracts of the real recordings. They establish import, visual spawn alignment and shared renderer behavior; they do not replace full-recording parser checks. Regression tests exercise rotation/facing, height boundaries, recent entity compatibility and floor changes with actual canvas output. Utility areas remain approximate.
 
-For the supplied Inferno radar, current world-to-map coordinates place the recorded CT spawn near `(925, 384)` and T spawn near `(88, 707)`, away from the spawn areas. A 90° clockwise image-space rotation around the radar centre maps these to approximately `(640, 925)` and `(317, 88)`, matching the pictured spawn areas. This establishes the rotation direction; full calibration still needs independent landmark checks. Facing, shots, bomb positions and utility must share the same transform.
+## Independent verification
 
-Nuke and Vertigo already have upper/lower radar images, but neither has a map definition or floor model. Floor selection must preserve the current round and playback tick and apply consistently to players, bomb and utility. Cache and Train have no radar images in `src/assets/`.
+The custom parser matches all 259 completed rounds across these 11 recordings: round boundaries, kill identities and planted-bomb positions. Lint, formatting, TypeScript, 31 unit tests, eight browser tests and the production build pass. Real compact first-round browser imports, play/pause and backward seeks passed for each added map; Nuke, Vertigo and Train also retained the tick through floor changes.
 
-## Reproduce
+Committed reports in `fixtures/maps-reference/` come from demoinfocs-golang v5.2.0, not the production parser. The reference generator excludes events outside accepted competitive round intervals. It records full round boundaries, kills and planted-bomb XYZ, plus the first round’s start/live player XYZ and facing. Player samples are not an assertion of every movement frame or exact utility reconstruction.
 
 ```sh
-npm run inspect:maps -- fixtures/local/*.dem
+cd scripts/replay-reference/maps
+go run . /absolute/path/to/recording.dem > ../../../fixtures/maps-reference/recording.json
+cd ../../..
+npm run verify:maps -- fixtures/local/recording.dem
 ```
 
-The command reports metadata followed by a first-round summary, continues to the next file after a failure, and exits nonzero if any fixture fails. It closes each file through an Effect scope. This is a local inspection tool, not an independent correctness oracle or an automated calibration test. It does not validate the entire recording.
-
-Before completing a map task, verify accepted metadata, full competitive/overtime round discovery, independently checked landmark coordinates, facing, bomb/utility alignment, scrubbing and playback in the browser. Add compact fixtures and regression assertions for actual differences; do not duplicate the existing Dust II suite for every map.
+The Effect verifier closes files through a scope and fails on differences. Pass only accepted fixtures with matching committed references; the deliberately incompatible Copenhagen files are not inputs to this gate. `npm run inspect:maps -- fixtures/local/*.dem` remains a first-round compatibility inspection and intentionally reports those rejections.

@@ -75,5 +75,26 @@
     "bytes": 458993903,
     "sha256": "79805d1f6f23ea338af85f2987e4a2e9b21c4c64c36d8b1c4ec96bfd00fed244",
     "source": "https://www.hltv.org/matches/2396927/vitality-vs-inner-circle-blast-open-porto-2026"
+  },
+  {
+    "file": "fixtures/local/natus-vincere-vs-spirit-m2-ancient.dem",
+    "map": "de_ancient",
+    "bytes": 930047114,
+    "sha256": "66a5ba8e5d4b299f7adc4ef6d7238d088afe2ab8f9a868cbf6a959af099f77b6",
+    "source": "https://www.hltv.org/matches/2378459/natus-vincere-vs-spirit-blast-bounty-2025-season-1-finals"
+  },
+  {
+    "file": "fixtures/local/astralis-vs-mouz-m1-vertigo.dem",
+    "map": "de_vertigo",
+    "bytes": 555826391,
+    "sha256": "75a77c8b774436be896d524c36360150be5a1f69cfb0489d2d1e03408fe6463f",
+    "source": "https://www.hltv.org/matches/2376875/astralis-vs-mouz-blast-premier-world-final-2024"
+  },
+  {
+    "file": "fixtures/local/astralis-vs-mouz-m2-nuke.dem",
+    "map": "de_nuke",
+    "bytes": 557582360,
+    "sha256": "ba11df88b012500f55a5a12a1f6552470d96a3cb52ea7f57bf520074ac6e3923",
+    "source": "https://www.hltv.org/matches/2376875/astralis-vs-mouz-blast-premier-world-final-2024"
   }
 ]
