@@ -104,7 +104,7 @@ test('explains archive extraction and recovers with a raw demo', async ({ page }
   await expect(page.getByText('renamed.zip', { exact: true })).toBeVisible()
 })
 
-test('can submit another demo while an earlier import is pending', async ({ page }) => {
+test('cancels an import and immediately opens another demo', async ({ page }) => {
   let capture: (route: Route) => void
   const pending = new Promise<Route>((resolve) => {
     capture = resolve
@@ -153,6 +153,12 @@ test('can submit another demo while an earlier import is pending', async ({ page
   await expect(
     rounds.getByRole('button', { name: 'Round 2 · Pending', exact: true }),
   ).toBeDisabled()
+  await page.getByRole('button', { name: 'Cancel import', exact: true }).click()
+  await expect(page.getByRole('status')).toHaveText(
+    'Parsing cancelled. No completed competitive rounds found.',
+  )
+  await expect(rounds.getByRole('button')).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Cancel import', exact: true })).toHaveCount(0)
   await input.setInputFiles(await demoFile())
   await submit.click()
   await expect(page.getByRole('status')).toContainText('First round loaded.')
@@ -534,6 +540,18 @@ test('selects completed rounds without restarting import or changing selection o
   await expect(rounds.getByRole('button')).toHaveCount(1)
   await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '100')
+  await replay.getByRole('slider', { name: 'Replay position' }).focus()
+  await page.keyboard.press('End')
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '102')
+  await page.getByRole('button', { name: 'Cancel import', exact: true }).click()
+  await expect(page.getByRole('status')).toHaveText(
+    'First round loaded. 1 rounds available. Parsing cancelled.',
+  )
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '102')
+  await expect(replay.locator('canvas')).toHaveCount(1)
+  await expect(
+    rounds.getByRole('button', { name: 'Round 1 · Ready', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true')
   expect(workerRequests).toBe(1)
 })
 

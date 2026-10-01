@@ -186,10 +186,30 @@ test('retains a completed round after failure and releases the worker', async ()
   )
 })
 
-test('interruption releases an unfinished import', async () => {
+test('cancellation retains completed rounds and releases an unfinished import', async () => {
   await Effect.runPromise(
     Effect.gen(function* () {
-      const { fiber, worker } = yield* start()
+      const { fiber, worker, events, receivedRound } = yield* start()
+      const reading: ImportState = { status: 'reading', filename: 'match.dem' }
+      expect(updateImport(reading, { type: 'cancel' })).toEqual({
+        status: 'cancelled',
+        filename: 'match.dem',
+      })
+      worker.reply({ type: 'metadata', metadata, roundStartTicks: [] })
+      worker.reply({ type: 'round', round: firstRound })
+      yield* Deferred.await(receivedRound)
+      let state = events.reduce<ImportState>(updateImport, reading)
+      state = updateImport(state, { type: 'round-start', number: 2, startTick: 539 })
+      expect(updateImport(state, { type: 'cancel' })).toEqual({
+        status: 'ready',
+        filename: 'match.dem',
+        metadata,
+        roundStartTicks: [],
+        rounds: [firstRound],
+        selectedStartTick: 537,
+        discoveredRound: undefined,
+        parsing: { status: 'cancelled' },
+      })
       yield* Fiber.interrupt(fiber)
       expect(worker.terminated).toBe(true)
     }),

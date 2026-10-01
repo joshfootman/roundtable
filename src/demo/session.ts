@@ -3,11 +3,16 @@ import type { ImportEvent } from './import'
 import type { ReplayEvent } from './round'
 import type { ReplayRound } from '../replay/types'
 
-type Parsing = { status: 'active' } | { status: 'complete' } | { status: 'failed'; message: string }
+type Parsing =
+  | { status: 'active' }
+  | { status: 'complete' }
+  | { status: 'cancelled' }
+  | { status: 'failed'; message: string }
 
 export type ImportState =
   | { status: 'empty' }
   | { status: 'reading'; filename: string }
+  | { status: 'cancelled'; filename: string }
   | {
       status: 'ready'
       filename: string
@@ -23,6 +28,7 @@ export type ImportState =
 export type ImportAction =
   | ImportEvent
   | { type: 'start'; filename: string }
+  | { type: 'cancel' }
   | { type: 'failed'; message: string }
   | { type: 'select-round'; startTick: number }
 
@@ -30,6 +36,11 @@ export function updateImport(state: ImportState, action: ImportAction): ImportSt
   switch (action.type) {
     case 'start':
       return { status: 'reading', filename: action.filename }
+    case 'cancel':
+      if (state.status === 'reading') return { status: 'cancelled', filename: state.filename }
+      return state.status === 'ready' && state.parsing.status === 'active'
+        ? { ...state, parsing: { status: 'cancelled' }, discoveredRound: undefined }
+        : state
     case 'metadata':
       if (state.status !== 'reading') return state
       return {

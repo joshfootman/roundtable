@@ -13,6 +13,14 @@ const emptyRoundStatus = {
   active: 'Reading the first competitive round…',
   complete: 'Parsing complete. No completed competitive rounds found.',
   failed: 'Parsing stopped. No completed competitive rounds found.',
+  cancelled: 'Parsing cancelled. No completed competitive rounds found.',
+}
+
+const parsingStatus = {
+  active: 'Parsing continues…',
+  complete: 'Parsing complete.',
+  failed: 'Parsing stopped.',
+  cancelled: 'Parsing cancelled.',
 }
 
 function duration(seconds: number) {
@@ -40,7 +48,7 @@ function Home() {
     const result = await Effect.runPromiseExit(
       Stream.runForEach(importDemo(file), (event) =>
         Effect.sync(() => {
-          if (!controller.signal.aborted) setState((state) => updateImport(state, event))
+          setState((state) => (controller.signal.aborted ? state : updateImport(state, event)))
         }),
       ),
       { signal: controller.signal },
@@ -55,8 +63,16 @@ function Home() {
           onNone: () => 'The demo reader stopped unexpectedly. Try importing the file again.',
         }),
       )
-      setState((state) => updateImport(state, { type: 'failed', message }))
+      setState((state) =>
+        controller.signal.aborted ? state : updateImport(state, { type: 'failed', message }),
+      )
     }
+  }
+
+  function cancelImport() {
+    activeImport.current?.abort()
+    activeImport.current = null
+    setState((state) => updateImport(state, { type: 'cancel' }))
   }
 
   const firstRound = state.status === 'ready' ? state.rounds[0] : undefined
@@ -102,6 +118,12 @@ function Home() {
               <input type="file" name="demo" accept=".dem" required />
             </label>
             <button type="submit">Import demo</button>
+            {(state.status === 'reading' ||
+              (state.status === 'ready' && state.parsing.status === 'active')) && (
+              <button type="button" onClick={cancelImport}>
+                Cancel import
+              </button>
+            )}
           </div>
         </form>
         <p className="file-hint">Have a ZIP or RAR download? Extract the .dem file first.</p>
@@ -109,11 +131,13 @@ function Home() {
       <output aria-live="polite" className="import-status">
         {state.status === 'reading'
           ? `Reading ${state.filename}…`
-          : state.status === 'ready'
-            ? state.rounds.length
-              ? `First round loaded. ${state.rounds.length} rounds available. ${state.parsing.status === 'active' ? 'Parsing continues…' : state.parsing.status === 'complete' ? 'Parsing complete.' : 'Parsing stopped.'}`
-              : emptyRoundStatus[state.parsing.status]
-            : ''}
+          : state.status === 'cancelled'
+            ? `Import cancelled. ${state.filename}`
+            : state.status === 'ready'
+              ? state.rounds.length
+                ? `First round loaded. ${state.rounds.length} rounds available. ${parsingStatus[state.parsing.status]}`
+                : emptyRoundStatus[state.parsing.status]
+              : ''}
       </output>
       {state.status === 'error' && (
         <section className="rounded-xl bg-[#38231f] p-6 text-[#ffdbcc]" role="alert">

@@ -36,7 +36,7 @@
 - [x] Replay Train fixtures on a calibrated map
 - [x] Replay Vertigo fixtures with selectable floors while preserving playback position
 - [x] Explain unsupported maps and unavailable replay data
-- [ ] Cancel an import and immediately open another demo
+- [x] Cancel an import and immediately open another demo
 - [ ] Retry recoverable file reads up to three total attempts
 - [ ] Retain completed rounds after parsing fails
 - [ ] Recover gracefully from insufficient browser memory
