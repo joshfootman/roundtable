@@ -53,7 +53,7 @@
 - [x] Benchmark pre-parsed versus live-parsed example loading
 - [x] Benchmark optional cached replay loading with Dexie
 - [x] Prevent performance regressions with Playwright benchmarks
-- [ ] Verify sustained playback and memory usage on laptop
+- [x] Verify sustained playback and memory usage on laptop
 - [ ] Verify repeated imports release previous replay resources
 
 <!-- - [ ] Audit the complete replay flow against WCAG 2.1 AA -->

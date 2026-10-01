@@ -1,0 +1,155 @@
+{
+  "recordedAt": "2026-10-01T19:14:42.759Z",
+  "environment": {
+    "cpu": "Apple M2",
+    "os": "darwin",
+    "release": "25.3.0",
+    "memoryBytes": 17179869184,
+    "node": "v24.11.0",
+    "chromium": "153.0.8010.12",
+    "headless": true,
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "build": {
+    "mode": "production Vite build, no CPU/network throttling, completed import before baseline",
+    "indexSha256": "ce9324f8ee0c704f8bc3d7a88f254bfb98b37fe6fc42cd8ec16aa16c51adab97"
+  },
+  "appCommit": "5e6d943a54a89b8717614e10f40a5ef233a81d9a",
+  "workloadContext": "No other application benchmarks active; ordinary desktop activity not controlled.",
+  "source": {
+    "filename": "faze-vs-vitality-m2-dust2.dem",
+    "sha256": "0d5a5f00301ea55780f30184b9e257b9d0e742fb5d3e6b4c70878340be6eb7d4",
+    "match": "https://www.hltv.org/matches/2372742/faze-vs-vitality-blast-premier-spring-final-2024"
+  },
+  "playback": {
+    "round": 2,
+    "tickInterval": 0.015625,
+    "initialTick": 9562,
+    "finalTick": 13414,
+    "elapsedMs": 60008.2000002861,
+    "sampledFrames": 3550,
+    "frameGapP50Ms": 16.69999999999709,
+    "frameGapP95Ms": 16.799999999995634,
+    "frameGapMaxMs": 199.89999999999964
+  },
+  "controls": {
+    "seeks": [
+      {
+        "key": "End",
+        "responseMs": 35.73245799999859
+      },
+      {
+        "key": "Home",
+        "responseMs": 7.645375000000058
+      }
+    ],
+    "utilityToggles": 6
+  },
+  "memory": {
+    "sampleCadenceMs": 5000,
+    "samples": [
+      {
+        "elapsedMs": 0,
+        "usedSize": 12643728,
+        "totalSize": 13500416,
+        "embedderHeapUsedSize": 2713320,
+        "backingStorageSize": 50625310
+      },
+      {
+        "elapsedMs": 5002.985125,
+        "usedSize": 14522084,
+        "totalSize": 17956864,
+        "embedderHeapUsedSize": 6386680,
+        "backingStorageSize": 50714277
+      },
+      {
+        "elapsedMs": 10058.71125,
+        "usedSize": 15541548,
+        "totalSize": 19529728,
+        "embedderHeapUsedSize": 4817384,
+        "backingStorageSize": 50717239
+      },
+      {
+        "elapsedMs": 15093.875832999998,
+        "usedSize": 15914792,
+        "totalSize": 23724032,
+        "embedderHeapUsedSize": 3643280,
+        "backingStorageSize": 50757653
+      },
+      {
+        "elapsedMs": 20097.432125,
+        "usedSize": 15069500,
+        "totalSize": 24248320,
+        "embedderHeapUsedSize": 6361264,
+        "backingStorageSize": 50758234
+      },
+      {
+        "elapsedMs": 25107.518458,
+        "usedSize": 14752488,
+        "totalSize": 24248320,
+        "embedderHeapUsedSize": 9618608,
+        "backingStorageSize": 50758757
+      },
+      {
+        "elapsedMs": 30109.942208,
+        "usedSize": 15781580,
+        "totalSize": 24248320,
+        "embedderHeapUsedSize": 5657096,
+        "backingStorageSize": 50757824
+      },
+      {
+        "elapsedMs": 35121.359125,
+        "usedSize": 15481220,
+        "totalSize": 24248320,
+        "embedderHeapUsedSize": 8714048,
+        "backingStorageSize": 50758353
+      },
+      {
+        "elapsedMs": 40126.829125,
+        "usedSize": 16158648,
+        "totalSize": 24248320,
+        "embedderHeapUsedSize": 4647136,
+        "backingStorageSize": 50757683
+      },
+      {
+        "elapsedMs": 45141.199125,
+        "usedSize": 14669128,
+        "totalSize": 23461888,
+        "embedderHeapUsedSize": 3550592,
+        "backingStorageSize": 50757632
+      },
+      {
+        "elapsedMs": 50144.606166,
+        "usedSize": 20577116,
+        "totalSize": 30015488,
+        "embedderHeapUsedSize": 6803496,
+        "backingStorageSize": 50758747
+      },
+      {
+        "elapsedMs": 55156.72875,
+        "usedSize": 17646064,
+        "totalSize": 30015488,
+        "embedderHeapUsedSize": 10336088,
+        "backingStorageSize": 50760131
+      },
+      {
+        "elapsedMs": 60159.298333,
+        "usedSize": 15844248,
+        "totalSize": 30801920,
+        "embedderHeapUsedSize": 5173232,
+        "backingStorageSize": 50758139
+      }
+    ],
+    "afterGC": {
+      "usedSize": 13974620,
+      "totalSize": 15073280,
+      "embedderHeapUsedSize": 2885472,
+      "backingStorageSize": 50757550
+    },
+    "peakUsedSize": 20577116,
+    "limitations": "CDP main-renderer V8 heap and reported backing/embedder storage only; excludes workers, GPU and total browser/process memory. Forced GC changes normal collection behaviour. One minute is not a long-session leak proof."
+  }
+}
