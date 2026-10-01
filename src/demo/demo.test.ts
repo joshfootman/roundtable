@@ -100,36 +100,42 @@ test('decodes a real competitive round against independent identities and positi
       victim: '76561197989430253',
       killer: { type: 'player', steamId: '76561197978835160' },
       headshot: true,
+      weapon: 'usp_silencer',
     },
     {
       tick: 7695,
       victim: '76561197991272318',
       killer: { type: 'player', steamId: '76561198063336407' },
       headshot: true,
+      weapon: 'usp_silencer',
     },
     {
       tick: 7749,
       victim: '76561198201620490',
       killer: { type: 'player', steamId: '76561197973140692' },
       headshot: true,
+      weapon: 'hkp2000',
     },
     {
       tick: 7764,
       victim: '76561197973140692',
       killer: { type: 'player', steamId: '76561197997351207' },
       headshot: true,
+      weapon: 'glock',
     },
     {
       tick: 7782,
       victim: '76561198068422762',
       killer: { type: 'player', steamId: '76561198063336407' },
       headshot: true,
+      weapon: 'usp_silencer',
     },
     {
       tick: 7834,
       victim: '76561197997351207',
       killer: { type: 'player', steamId: '76561198063336407' },
       headshot: true,
+      weapon: 'usp_silencer',
     },
   ])
   const brokyTrack = round.inspection[round.players.findIndex((player) => player.name === 'broky')]!

@@ -34,7 +34,13 @@ test('replays a 2026 recording through movement and a world death', async () => 
   expect(round.teams[state]).toBe(3)
   expect(round.yaw[state]).toBeCloseTo(170.91464, 3)
   expect(round.deaths.filter((death) => death.killer.type === 'world')).toEqual([
-    { tick: 14525, victim: '76561198359519930', killer: { type: 'world' }, headshot: false },
+    {
+      tick: 14525,
+      victim: '76561198359519930',
+      killer: { type: 'world' },
+      headshot: false,
+      weapon: 'planted_c4',
+    },
   ])
 })
 

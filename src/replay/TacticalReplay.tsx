@@ -1,3 +1,6 @@
+import { EquipmentIcon, GameIcon, equipmentIcon, recordedWeaponName } from './icons.tsx'
+import headshotIcon from '../assets/cs2/deathnotice/icon_headshot.svg'
+import suicideIcon from '../assets/cs2/deathnotice/icon_suicide.svg'
 import { createUtilityRenderer } from './utility-renderer.ts'
 import {
   utilityAppearance,
@@ -18,7 +21,27 @@ import {
   type MapDefinition,
   type MapFloor,
 } from './maps'
-import type { ReplayRound } from './types'
+import type { BombEvent, ReplayRound } from './types'
+
+const bombEventIconKeys: Record<BombEvent['type'], string> = {
+  'plant-start': 'c4',
+  'plant-abort': 'c4',
+  planted: 'planted_c4',
+  'defuse-start': 'defuser',
+  'defuse-abort': 'defuser',
+  defused: 'defuser',
+  exploded: 'planted_c4',
+}
+
+const utilityIconKeys = {
+  flash: 'flashbang',
+  he: 'hegrenade',
+  smoke: 'smokegrenade',
+  molotov: 'molotov',
+  incendiary: 'incgrenade',
+  decoy: 'decoy',
+  fire: 'inferno',
+}
 
 const bombEventLabels = {
   'plant-start': 'started planting',
@@ -506,6 +529,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           .map((shot, index) => (
             <li key={index}>
               {round.players.find((player) => player.steamId === shot.player)!.name} ·{' '}
+              <EquipmentIcon definition={shot.weapon} />
               {equipmentName(shot.weapon)} shot
               {` · X ${shot.x.toFixed(1)} · Y ${shot.y.toFixed(1)} · Z ${shot.z.toFixed(1)} · Pitch ${shot.pitch.toFixed(1)}° · Facing ${shot.yaw.toFixed(1)}°`}
             </li>
@@ -518,6 +542,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       >
         {recordAtTick(round.fires, recordedTick).fires.map((fire) => (
           <li key={`${fire.entity}:${fire.serial}`}>
+            <GameIcon src={equipmentIcon('inferno')} />
             Approximate fire area · {fire.positions.length / 3} burning{' '}
             {fire.positions.length === 3 ? 'cell' : 'cells'}
           </li>
@@ -532,6 +557,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           .filter((smoke) => smoke.startTick <= recordedTick && recordedTick < smoke.endTick)
           .map((smoke) => (
             <li key={`${smoke.entity}:${smoke.startTick}`}>
+              <GameIcon src={equipmentIcon('smokegrenade')} />
               Approximate smoke area
               {` · X ${smoke.x.toFixed(1)} · Y ${smoke.y.toFixed(1)} · Z ${smoke.z.toFixed(1)}`}
             </li>
@@ -551,6 +577,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
             const index = sampleAtTick(projectile.ticks, recordedTick) * 3
             return (
               <li key={`${projectile.entity}:${projectile.serial}`}>
+                <GameIcon src={equipmentIcon(utilityIconKeys[projectile.kind])} />
                 {utilityAppearance[projectile.kind].name} ·{' '}
                 {round.players.find((player) => player.steamId === projectile.thrower)!.name}
                 {` · X ${projectile.positions[index]!.toFixed(1)} · Y ${projectile.positions[index + 1]!.toFixed(1)} · Z ${projectile.positions[index + 2]!.toFixed(1)}`}
@@ -567,12 +594,19 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           .filter((event) => event.tick <= recordedTick)
           .map((event, index) => (
             <li key={index}>
+              <GameIcon src={equipmentIcon(utilityIconKeys[event.kind])} />
               {utilityAppearance[event.kind].name} detonated
               {` · X ${event.x.toFixed(1)} · Y ${event.y.toFixed(1)} · Z ${event.z.toFixed(1)}`}
             </li>
           ))}
       </ol>
       <p aria-label="Bomb state" className="mt-5 text-sm text-[#a7b5aa]">
+        {bomb.type !== 'inactive' && (
+          <GameIcon src={equipmentIcon(bomb.type === 'planted' ? 'planted_c4' : 'c4')} />
+        )}
+        {bomb.type === 'planted' && bomb.defuser.type === 'player' && (
+          <GameIcon src={equipmentIcon('defuser')} />
+        )}
         Bomb{' '}
         {bomb.type === 'carried'
           ? `${bomb.planting ? 'being planted by' : 'carried by'} ${round.players.find((player) => player.steamId === bomb.carrier)!.name}`
@@ -590,7 +624,12 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
               event.type === 'exploded'
                 ? 'Bomb exploded'
                 : `${round.players.find((player) => player.steamId === event.player)!.name} ${bombEventLabels[event.type]}`
-            return <li key={index}>{label}</li>
+            return (
+              <li key={index}>
+                <GameIcon src={equipmentIcon(bombEventIconKeys[event.type])} />
+                {label}
+              </li>
+            )
           })}
       </ol>
       <div className="mt-5">
@@ -608,7 +647,23 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
               return (
                 <li key={index}>
                   {source} → {victim.name}
-                  {death.headshot ? ' · Headshot' : ''}
+                  {' · '}
+                  <GameIcon src={equipmentIcon(death.weapon)} wide />
+                  {recordedWeaponName(death.weapon)}
+                  {killer.type === 'player' && killer.steamId === death.victim && (
+                    <>
+                      {' · '}
+                      <GameIcon src={suicideIcon} />
+                      Suicide
+                    </>
+                  )}
+                  {death.headshot && (
+                    <>
+                      {' · '}
+                      <GameIcon src={headshotIcon} />
+                      Headshot
+                    </>
+                  )}
                 </li>
               )
             })}
@@ -645,24 +700,32 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
                   {round.alive[state] ? 'Alive' : 'Dead'}
                 </p>
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
-                  Weapon {weapon.type === 'none' ? 'None' : equipmentName(weapon.definition)}
+                  {weapon.type !== 'none' && <EquipmentIcon definition={weapon.definition} />}Weapon{' '}
+                  {weapon.type === 'none' ? 'None' : equipmentName(weapon.definition)}
                   {weapon.type === 'gun' && ` · Ammo ${weapon.magazine} / ${weapon.reserve}`}
                 </p>
                 <p className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums">
-                  Money ${money} · Armour {armour} · {helmet ? 'Helmet' : 'No helmet'}
+                  Money ${money} · {armour > 0 && <GameIcon src={equipmentIcon('kevlar')} />}Armour{' '}
+                  {armour} · {helmet && <GameIcon src={equipmentIcon('helmet')} />}
+                  {helmet ? 'Helmet' : 'No helmet'}
                 </p>
                 <p className="mt-2 mb-0 text-xs text-[#a7b5aa]">
                   Grenades{' '}
                   {grenades.length
-                    ? grenades
-                        .map((item) => `${equipmentName(item.definition)} × ${item.count}`)
-                        .join(' · ')
+                    ? grenades.map((item, index) => (
+                        <span key={item.definition}>
+                          {index > 0 && ' · '}
+                          <EquipmentIcon definition={item.definition} />
+                          {equipmentName(item.definition)} × {item.count}
+                        </span>
+                      ))
                     : 'None'}
                 </p>
                 <p
                   hidden={!overlays.flashes}
                   className="mt-2 mb-0 font-mono text-xs text-[#a7b5aa] tabular-nums"
                 >
+                  {remainingFlash > 0 && <GameIcon src={equipmentIcon('flashbang_assist')} />}
                   {remainingFlash > 0
                     ? `Flashed · ${remainingFlash.toFixed(1)} s remaining`
                     : 'Not flashed'}

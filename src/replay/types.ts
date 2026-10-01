@@ -87,6 +87,7 @@ export interface ReplayDeath {
   tick: number
   victim: string
   killer: { type: 'player'; steamId: string } | { type: 'world' }
+  weapon: string
   headshot: boolean
 }
 

@@ -342,8 +342,23 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
     .filter({ hasText: 'Spinx' })
   await expect(spinx).toContainText('Weapon USP-S · Ammo 9 / 24')
   await expect(replay.getByLabel('Kill feed').getByRole('listitem').last()).toHaveText(
-    'Spinx → rain · Headshot',
+    'Spinx → rain · USP-S · Headshot',
   )
+  const lastKill = replay.getByLabel('Kill feed').getByRole('listitem').last()
+  await expect(lastKill.locator('img').first()).toHaveAttribute('src', /usp_silencer/)
+  await expect(lastKill.locator('img').last()).toHaveAttribute('src', /icon_headshot/)
+  await expect
+    .poll(() =>
+      replay
+        .locator('img')
+        .evaluateAll((images) =>
+          images.every(
+            (image) =>
+              image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0,
+          ),
+        ),
+    )
+    .toBe(true)
   await scrubber.press('Home')
   await play.focus()
   await page.keyboard.press('Space')

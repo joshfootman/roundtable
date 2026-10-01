@@ -174,10 +174,13 @@ export function readReplay(
         } else if (!tracker.recording) continue
         else if (descriptor.name === 'player_death') {
           const attacker = key('attacker', 9).valShort
+          const weapon = key('weapon', 1).valString
+          if (!weapon.trim()) throw new Error('A recorded death is missing its weapon.')
           tracker.death({
             tick,
             victim: entities.playerByUserId(key('userid', 9).valShort),
             killer: entities.killerByUserId(attacker),
+            weapon,
             headshot: key('headshot', 6).valBool,
           })
         } else if (descriptor.name === 'bomb_exploded')

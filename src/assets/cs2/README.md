@@ -2,7 +2,7 @@
 
 Unmodified SVG assets from
 [Juknum/counter-strike-icons](https://github.com/Juknum/counter-strike-icons),
-stored locally for Roundtable's future UI refresh. Roundtable is a non-commercial
+used locally by Roundtable's replay UI. Roundtable is a non-commercial
 CV/portfolio project.
 
 - Source commit: `85ec43bd170d0622db8eadf160e666c161976375`
@@ -16,7 +16,7 @@ Original filenames are preserved. The headshot icon is
 `equipment/m4a1.svg` is the M4A4, `equipment/m4a1_silencer.svg` is the M4A1-S,
 and `equipment/hkp2000.svg` / `equipment/p2000.svg` are P2000 variants.
 
-These files are staged for later use and are not yet connected to the UI.
+The replay UI uses these assets for recorded weapons, kill weapons, headshots, armour, helmets, grenades, flash indicators and bomb interactions. Death-event weapon identifiers select kill icons. Unknown causes keep their recorded text. Empty upstream world and trigger-hurt SVGs are not rendered.
 
 ## Attribution
 
