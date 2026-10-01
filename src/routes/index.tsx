@@ -2,7 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Cause, Effect, Exit, Option, Stream } from 'effect'
-import { importDemo } from '../demo/import'
+import { importDemo, type ImportEvent, type DemoImportError } from '../demo/import'
+import { importExample } from '../demo/example'
 import { updateImport, type ImportState } from '../demo/session'
 import { TacticalReplay } from '../replay/TacticalReplay'
 import { mapDefinition } from '../replay/maps'
@@ -39,14 +40,17 @@ function Home() {
     const file = new FormData(event.currentTarget).get('demo')
     if (!(file instanceof File) || !file.name) return
 
+    await openReplay(file.name, importDemo(file))
+  }
+
+  async function openReplay(filename: string, events: Stream.Stream<ImportEvent, DemoImportError>) {
     activeImport.current?.abort()
     const controller = new AbortController()
     activeImport.current = controller
-    const filename = file.name
     setState((state) => updateImport(state, { type: 'start', filename }))
 
     const result = await Effect.runPromiseExit(
-      Stream.runForEach(importDemo(file), (event) =>
+      Stream.runForEach(events, (event) =>
         Effect.sync(() => {
           setState((state) => (controller.signal.aborted ? state : updateImport(state, event)))
         }),
@@ -127,6 +131,15 @@ function Home() {
           </div>
         </form>
         <p className="file-hint">Have a ZIP or RAR download? Extract the .dem file first.</p>
+        <button
+          type="button"
+          className="mt-4 rounded-md border border-current px-4 py-2"
+          onClick={() =>
+            void openReplay('FaZe vs Vitality · Dust II · Spring Final 2024', importExample())
+          }
+        >
+          Load example match
+        </button>
       </section>
       <output aria-live="polite" className="import-status">
         {state.status === 'reading'

@@ -835,3 +835,27 @@ test('explains unavailable replay while preserving recorded metadata and players
   await expect(page.getByRole('button', { name: 'Round 1 · Ready', exact: true })).toBeVisible()
   await expect(page.locator('canvas')).toHaveCount(0)
 })
+
+test('loads the complete example match without a local file and replays its final round', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Load example match' }).click()
+  await expect(page.getByRole('status')).toHaveText(
+    'First round loaded. 23 rounds available. Parsing complete.',
+    { timeout: 30000 },
+  )
+  await expect(page.getByRole('alert')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Round 23 · Ready', exact: true }).click()
+  const replay = page.getByRole('region', { name: 'Dust II · Round 23', exact: true })
+  await expect(replay).toContainText('Dust II · Round 23')
+  const tick = replay.getByTestId('replay-tick')
+  const initial = await tick.getAttribute('data-tick')
+  await replay.getByRole('button', { name: 'Play', exact: true }).click()
+  await expect(tick).not.toHaveAttribute('data-tick', initial!)
+  await replay.getByRole('button', { name: 'Pause', exact: true }).click()
+  const slider = replay.getByRole('slider', { name: 'Replay position' })
+  await slider.focus()
+  await slider.press('End')
+  await expect(tick).toHaveAttribute('data-tick', '197008')
+})

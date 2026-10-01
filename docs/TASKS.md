@@ -49,7 +49,7 @@
 <!-- - [ ] Keep replay controls usable with zoom and narrow layouts -->
 <!-- - [ ] Meet contrast, non-colour cues and flashing requirements -->
 
-- [ ] Offer an example match without requiring a local demo
+- [x] Offer an example match without requiring a local demo
 - [ ] Benchmark pre-parsed versus live-parsed example loading
 - [ ] Benchmark optional cached replay loading with Dexie
 - [ ] Prevent performance regressions with Playwright benchmarks
