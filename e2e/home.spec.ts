@@ -141,7 +141,6 @@ test('can submit another demo while an earlier import is pending', async ({ page
         demoVersion: 'valve_demo_2',
         patchVersion: 14011,
         buildNumber: 10072,
-        serverStartTick: 42184,
         durationSeconds: 3078.25,
         playbackTicks: 197008,
         playbackFrames: 197003,
@@ -450,7 +449,7 @@ test('selects completed rounds without restarting import or changing selection o
           postMessage({ type: 'metadata', roundStartTicks: [], metadata: {
             mapName: 'de_dust2', serverName: 'Reference server', clientName: 'SourceTV',
             gameDirectory: 'csgo', demoVersion: 'valve_demo_2', patchVersion: 1,
-            buildNumber: 1, serverStartTick: 0, durationSeconds: 100,
+            buildNumber: 1, durationSeconds: 100,
             playbackTicks: 6400, playbackFrames: 6400
           }});
           postMessage(round(1));
@@ -613,7 +612,7 @@ test('switches map floors without replacing the canvas or interrupting playback'
       postMessage({ type: 'metadata', roundStartTicks: [], metadata: {
         mapName: 'de_nuke', serverName: 'Reference server', clientName: 'SourceTV',
         gameDirectory: 'csgo', demoVersion: 'valve_demo_2', patchVersion: 1,
-        buildNumber: 1, serverStartTick: 0, durationSeconds: 100,
+        buildNumber: 1, durationSeconds: 100,
         playbackTicks: 6400, playbackFrames: 6400
       }});
       postMessage({ type: 'round', round: {

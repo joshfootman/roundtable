@@ -20,7 +20,7 @@ Collected and validated on 1 October 2026. The renderer supports the ten-map inv
 
 Ancient includes triple overtime; Cache and the newer Inferno include overtime. NAVI–Spirit at BLAST Bounty 2025 provides a match between HLTV #3 and #1, satisfying HLTV’s published five-star criterion. Astralis–MOUZ at World Final 2024 supplies compatible Nuke and Vertigo recordings; it is not claimed as five-star. The manifest links every match. Downloads retain the original archives.
 
-The earlier Copenhagen Ancient, Nuke and Vertigo recordings omit required `server_start_tick`, independently confirmed with `protoc`. They remain rejected. Metadata requirements have not been relaxed. Recent recordings required explicit entity wire types and correct handling of player user ID zero versus the world-kill sentinel.
+The earlier Copenhagen recordings omit the optional wire field `server_start_tick`, independently confirmed with `protoc`. The app previously rejected them because its metadata contract unnecessarily required that unused field. `DemoMetadata` now contains only required product values. It does not expose a nullable or invented server tick. The reported Copenhagen Ancient recording imports and plays. Its current playback starts at round 2. All 21 emitted rounds, numbered 2 through 22, match the independent boundary reference. This fix does not change round discovery. Recent recordings required explicit entity wire types and correct handling of player user ID zero versus the world-kill sentinel.
 
 ## Calibration and imagery
 

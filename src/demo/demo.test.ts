@@ -63,7 +63,6 @@ test('decodes a real competitive round against independent identities and positi
     demoVersion: 'valve_demo_2',
     patchVersion: 14011,
     buildNumber: 10072,
-    serverStartTick: 42184,
     durationSeconds: 3078.25,
     playbackTicks: 197008,
     playbackFrames: 197003,

@@ -13,7 +13,6 @@ export interface DemoMetadata {
   demoVersion: string
   patchVersion: number
   buildNumber: number
-  serverStartTick: number
   durationSeconds: number
   playbackTicks: number
   playbackFrames: number
@@ -155,7 +154,6 @@ function decodeHeader(bytes: Uint8Array): Effect.Effect<HeaderMetadata, Metadata
       demoVersion: requiredString(header, fields.demoVersionName, header.demoVersionName),
       patchVersion: requiredNumber(header, fields.patchVersion, header.patchVersion),
       buildNumber: requiredNumber(header, fields.buildNum, header.buildNum),
-      serverStartTick: requiredNumber(header, fields.serverStartTick, header.serverStartTick),
     }
   }, 'The demo header is damaged. Download the demo again.')
 }
