@@ -5,6 +5,7 @@ import type {
   BombState,
   GrenadeKind,
   FireArea,
+  ReplayDeath,
 } from '../../replay/types.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
@@ -390,6 +391,11 @@ export function createEntityDecoder() {
       throw new Error('The replay contains duplicate player identities.')
     return players.sort((a, b) => a.steamId.localeCompare(b.steamId))
   }
+  function playerByUserId(id: number) {
+    const steamId = users.get(id & 0xff)
+    if (!steamId) throw new Error('A replay event refers to an unknown player.')
+    return steamId
+  }
   return {
     sendTables(bytes: Uint8Array) {
       serializers = readSerializers(bytes)
@@ -495,10 +501,10 @@ export function createEntityDecoder() {
         fields(reader, entity.serializer, entity.values, entity.polymorphic, tick)
       }
     },
-    playerByUserId(id: number) {
-      const steamId = users.get(id & 0xff)
-      if (!steamId) throw new Error('A replay event refers to an unknown player.')
-      return steamId
+    playerByUserId,
+    killerByUserId(id: number): ReplayDeath['killer'] {
+      if (id === 65535 || (id === 0 && !users.has(0))) return { type: 'world' }
+      return { type: 'player', steamId: playerByUserId(id) }
     },
     snapshots,
     bomb,

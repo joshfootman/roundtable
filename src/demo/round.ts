@@ -177,10 +177,7 @@ export function readReplay(
           tracker.death({
             tick,
             victim: entities.playerByUserId(key('userid', 9).valShort),
-            killer:
-              attacker === 0
-                ? { type: 'world' }
-                : { type: 'player', steamId: entities.playerByUserId(attacker) },
+            killer: entities.killerByUserId(attacker),
             headshot: key('headshot', 6).valBool,
           })
         } else if (descriptor.name === 'bomb_exploded')

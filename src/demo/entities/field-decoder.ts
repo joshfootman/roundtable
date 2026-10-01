@@ -1,5 +1,5 @@
 import { BitReader } from './bit-reader.ts'
-export type EntityValue = number | bigint | boolean | string | number[]
+export type EntityValue = number | bigint | boolean | string | number[] | Uint8Array
 export type ValueDecoder = (reader: BitReader) => EntityValue
 export interface Encoding {
   name: string
@@ -71,6 +71,10 @@ function floatDecoder(field: Encoding): ValueDecoder {
   return quantized(field)
 }
 const unsignedTypes = new Set([
+  'AnimationAlgorithm_t',
+  'DecalMode_t',
+  'WeaponGameplayAnimState',
+  'EntityPlatformTypes_t',
   'BloodType',
   'PlayerConnectedState',
   'GameTick_t',
@@ -138,7 +142,7 @@ const unsignedTypes = new Set([
 export function decoder(field: Encoding): ValueDecoder {
   const type = field.type
   if (type === 'float32' || type === 'CNetworkedQuantizedFloat') return floatDecoder(field)
-  if (type === 'uint64' || type === 'CStrongHandle')
+  if (type === 'uint64' || type === 'CStrongHandle' || type === 'ResourceId_t')
     return field.encoder === 'fixed64'
       ? (reader) => reader.fixed64()
       : (reader) => reader.varUint64()
@@ -180,7 +184,9 @@ export function decoder(field: Encoding): ValueDecoder {
     return (reader) => reader.boolean()
   if (['int8', 'int16', 'int32', 'HSequence', 'CEntityIndex', 'AmmoIndex_t'].includes(type))
     return (reader) => reader.varInt()
-  if (['char', 'CUtlString', 'CUtlSymbolLarge'].includes(type)) return (reader) => reader.string()
+  if (['char', 'CUtlString', 'CUtlSymbolLarge', 'CGlobalSymbol'].includes(type))
+    return (reader) => reader.string()
+  if (type === 'CUtlBinaryBlock') return (reader) => reader.bytes(reader.varUint())
   if (type === 'GameTime_t') return (reader) => reader.float()
   if (unsignedTypes.has(type)) return (reader) => reader.varUint()
   return () => {

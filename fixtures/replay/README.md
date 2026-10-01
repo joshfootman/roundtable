@@ -135,3 +135,25 @@ computed from the replay tick. Baseline reads do not invent flash beginnings.
 Subsequent full entity checkpoints are skipped during sequential parsing, as in
 the reference decoder, so repeated snapshots cannot restart a flash timer.
 Indicators are steady markers with text; they never flash the page.
+
+## Newer protocol fixture
+
+`anubis-2026-first-round.dem.gz` contains the first competitive round of
+[Vitality–Inner Circle at BLAST Open Porto 2026](https://www.hltv.org/matches/2396927/vitality-vs-inner-circle-blast-open-porto-2026).
+The full source is `fixtures/local/vitality-vs-inner-circle-m1-anubis.dem`, with
+SHA-256 `f41e9f1e473b953434082238aa836b04437c4db70a8c0a0aca2e0f6cee1f150f`.
+The same extraction process preserves records through tick 14584. The compressed
+fixture is 5,479,977 bytes and expands to 9,370,761 bytes. Its SHA-256 is
+`bbd76379c4455bcfa8f110d70a9e8da8d7e15ee503cff17520e4585db2c16b85`.
+
+```sh
+node --experimental-transform-types scripts/extract-replay-fixture.ts fixtures/local/vitality-vs-inner-circle-m1-anubis.dem 14584 fixtures/replay/anubis-2026-first-round.dem.gz
+```
+
+`compatibility.test.ts` imports this recording through `readDemo`. Its literal
+movement, identity, facing and health assertions come from demoinfocs-golang
+v5.2.0 at FrameDone tick 12000. That reference independently records the first
+round beginning at 367, its result at 14136 and the next round beginning at 14584. It reports headtr1ck's death at 14525 with no killer. The recorded event
+uses attacker 65535. The fixture exercises newer animation enums, 64-bit resource
+identifiers, binary blocks and global symbols before the asserted movement.
+The older v4.5.1 reference cannot decode these 2026 recordings reliably.
