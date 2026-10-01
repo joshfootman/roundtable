@@ -1,6 +1,6 @@
 import { replayBuffers } from '../replay/buffers.ts'
 import { Cause, Effect, Option, Stream } from 'effect'
-import { DemoReadError } from './errors'
+import { fileSource } from './file-source'
 import { readRecordingInfo } from './metadata'
 import { readReplay } from './round'
 import type { ImportResult } from './import'
@@ -13,19 +13,7 @@ function send(result: ImportResult) {
 
 self.onmessage = (event: MessageEvent<File>) => {
   const file = event.data
-  const source = {
-    size: file.size,
-    readRange: (offset: number, length: number) =>
-      Effect.tryPromise({
-        try: () =>
-          file
-            .slice(offset, offset + length)
-            .arrayBuffer()
-            .then((buffer) => new Uint8Array(buffer)),
-        catch: () =>
-          new DemoReadError({ message: 'The demo file could not be read. Select it again.' }),
-      }),
-  }
+  const source = fileSource(file)
   Effect.runFork(
     Effect.gen(function* () {
       const recording = yield* readRecordingInfo(source)
