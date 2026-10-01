@@ -158,7 +158,7 @@ test('can submit another demo while an earlier import is pending', async ({ page
   await expect(page.getByRole('status')).toContainText('First round loaded.')
   await expect(page.getByRole('heading', { name: 'Dust II', exact: true })).toBeVisible()
   await expect(page.getByText('BLAST Premier 2024', { exact: true })).toBeVisible()
-  await expect(page.getByRole('alert')).toContainText('Completed rounds remain playable')
+  await expect(page.getByRole('alert')).toContainText('Completed round data remains available')
   await expect(rounds.getByRole('button', { name: /Pending/ })).toHaveCount(0)
 })
 
@@ -379,7 +379,7 @@ test('plays and scrubs the recorded round on the canvas, pauses, resumes and sto
   await freezeTime.uncheck()
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', tick!)
   await replay.getByRole('button', { name: 'Pause', exact: true }).click()
-  await expect(page.getByRole('alert')).toContainText('Completed rounds remain playable')
+  await expect(page.getByRole('alert')).toContainText('Completed round data remains available')
   await scrubber.press('End')
   await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '8282')
   await expect(broky).toContainText('X -2000.4 · Y 1383.1 · Z 29.7 · Dead')
@@ -747,4 +747,56 @@ test('switches map floors without replacing the canvas or interrupting playback'
     playingTick,
   )
   expect(await originalCanvas!.evaluate((element) => element.isConnected)).toBe(true)
+})
+
+test('explains unavailable replay while preserving recorded metadata and players', async ({
+  page,
+}) => {
+  await page.goto('/')
+  const input = page.getByLabel('Choose a .dem file')
+  const submit = page.getByRole('button', { name: 'Import demo' })
+  await input.setInputFiles({
+    name: 'metadata-only.dem',
+    mimeType: 'application/octet-stream',
+    buffer: await readFile(new URL('../fixtures/metadata/dust2-metadata.bin', import.meta.url)),
+  })
+  await submit.click()
+  await expect(page.getByRole('status')).toHaveText(
+    'Parsing complete. No completed competitive rounds found.',
+  )
+  await expect(page.getByRole('region', { name: 'Rounds', exact: true })).toContainText(
+    'No completed competitive rounds were found in this recording. Metadata remains available.',
+  )
+  await expect(page.getByRole('region', { name: 'Dust II', exact: true })).toContainText(
+    'BLAST Premier 2024',
+  )
+  await expect(page.getByRole('alert')).toHaveCount(0)
+  await expect(page.locator('canvas')).toHaveCount(0)
+
+  const bytes = gunzipSync(
+    await readFile(new URL('../fixtures/replay/dust2-first-round.dem.gz', import.meta.url)),
+  )
+  const mapOffset = bytes.indexOf(Buffer.from('de_dust2'))
+  expect(mapOffset).toBeGreaterThan(0)
+  bytes.write('de_other', mapOffset)
+  await input.setInputFiles({
+    name: 'unknown-map.dem',
+    mimeType: 'application/octet-stream',
+    buffer: bytes,
+  })
+  await submit.click()
+  await expect(
+    page.getByRole('heading', { name: 'Map imagery unavailable', exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.getByText('A calibrated radar is not registered for de_other.', { exact: false }),
+  ).toBeVisible()
+  await expect(page.getByRole('region', { name: 'de_other', exact: true })).toContainText(
+    'BLAST Premier 2024',
+  )
+  await expect(
+    page.getByRole('region', { name: 'Player roster' }).getByRole('listitem'),
+  ).toHaveCount(10)
+  await expect(page.getByRole('button', { name: 'Round 1 · Ready', exact: true })).toBeVisible()
+  await expect(page.locator('canvas')).toHaveCount(0)
 })

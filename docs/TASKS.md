@@ -35,23 +35,27 @@
 - [x] Replay Overpass fixtures on a calibrated map
 - [x] Replay Train fixtures on a calibrated map
 - [x] Replay Vertigo fixtures with selectable floors while preserving playback position
-- [ ] Explain unsupported maps and unavailable replay data
+- [x] Explain unsupported maps and unavailable replay data
 - [ ] Cancel an import and immediately open another demo
 - [ ] Retry recoverable file reads up to three total attempts
 - [ ] Retain completed rounds after parsing fails
 - [ ] Recover gracefully from insufficient browser memory
 - [ ] Verify playback against older and recent tournament demos
-- [ ] Control playback and inspect players on a phone
-- [ ] Scrub the timeline accurately with touch
-- [ ] Complete import and replay controls using only a keyboard
-- [ ] Expose meaningful replay information to screen readers
-- [ ] Keep replay controls usable with zoom and narrow layouts
-- [ ] Meet contrast, non-colour cues and flashing requirements
+
+<!-- - [ ] Control playback and inspect players on a phone -->
+<!-- - [ ] Scrub the timeline accurately with touch -->
+<!-- - [ ] Complete import and replay controls using only a keyboard -->
+<!-- - [ ] Expose meaningful replay information to screen readers -->
+<!-- - [ ] Keep replay controls usable with zoom and narrow layouts -->
+<!-- - [ ] Meet contrast, non-colour cues and flashing requirements -->
+
 - [ ] Offer an example match without requiring a local demo
 - [ ] Benchmark pre-parsed versus live-parsed example loading
 - [ ] Benchmark optional cached replay loading with Dexie
 - [ ] Prevent performance regressions with Playwright benchmarks
-- [ ] Verify sustained playback and memory usage on laptop and phone
+- [ ] Verify sustained playback and memory usage on laptop
 - [ ] Verify repeated imports release previous replay resources
-- [ ] Audit the complete replay flow against WCAG 2.1 AA
+
+<!-- - [ ] Audit the complete replay flow against WCAG 2.1 AA -->
+
 - [ ] Open and refresh replay routes on static hosting

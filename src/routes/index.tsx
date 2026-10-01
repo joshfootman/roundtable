@@ -9,6 +9,12 @@ import { mapDefinition } from '../replay/maps'
 
 export const Route = createFileRoute('/')({ component: Home })
 
+const emptyRoundStatus = {
+  active: 'Reading the first competitive round…',
+  complete: 'Parsing complete. No completed competitive rounds found.',
+  failed: 'Parsing stopped. No completed competitive rounds found.',
+}
+
 function duration(seconds: number) {
   const centiseconds = Math.round(seconds * 100)
   return `${Math.floor(centiseconds / 6000)}m ${((centiseconds % 6000) / 100).toFixed(2)}s`
@@ -106,7 +112,7 @@ function Home() {
           : state.status === 'ready'
             ? state.rounds.length
               ? `First round loaded. ${state.rounds.length} rounds available. ${state.parsing.status === 'active' ? 'Parsing continues…' : state.parsing.status === 'complete' ? 'Parsing complete.' : 'Parsing stopped.'}`
-              : 'Reading the first competitive round…'
+              : emptyRoundStatus[state.parsing.status]
             : ''}
       </output>
       {state.status === 'error' && (
@@ -160,6 +166,12 @@ function Home() {
           <h2 id="rounds-title" className="m-0 text-2xl font-[550]">
             Rounds
           </h2>
+          {state.parsing.status === 'complete' && state.rounds.length === 0 && (
+            <p className="mt-3 text-sm leading-relaxed text-[#a7b5aa]">
+              No completed competitive rounds were found in this recording. Metadata remains
+              available. Choose another demo to replay a round.
+            </p>
+          )}
           <ul className="mt-4 flex list-none flex-wrap gap-2 p-0">
             {state.rounds.map((round) => (
               <li key={round.startTick}>
@@ -230,7 +242,11 @@ function Home() {
       )}
       {state.status === 'ready' && state.parsing.status === 'failed' && (
         <p role="alert" className="mt-6 rounded-xl bg-[#38231f] p-6 text-[#ffdbcc]">
-          Parsing stopped. Completed rounds remain playable. {state.parsing.message}
+          Parsing stopped.{' '}
+          {state.rounds.length > 0
+            ? 'Completed round data remains available.'
+            : 'No completed competitive rounds are available.'}{' '}
+          {state.parsing.message}
         </p>
       )}
       <footer>Built for a closer look at Counter-Strike.</footer>
