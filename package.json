@@ -28,7 +28,8 @@
     "verify:maps": "node --experimental-transform-types scripts/verify-maps.ts",
     "inspect:maps": "node --experimental-transform-types scripts/inspect-maps.ts",
     "generate:example": "node --experimental-transform-types scripts/generate-example.ts",
-    "verify:example": "node --experimental-transform-types scripts/verify-example.ts"
+    "verify:example": "node --experimental-transform-types scripts/verify-example.ts",
+    "benchmark:loading": "playwright test --config playwright.loading.config.ts"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.15.0",
