@@ -16,3 +16,5 @@ playwright-report/
 test-results/
 fixtures/*.dem
 fixtures/local/
+
+dist-cache/

@@ -51,7 +51,7 @@
 
 - [x] Offer an example match without requiring a local demo
 - [x] Benchmark pre-parsed versus live-parsed example loading
-- [ ] Benchmark optional cached replay loading with Dexie
+- [x] Benchmark optional cached replay loading with Dexie
 - [ ] Prevent performance regressions with Playwright benchmarks
 - [ ] Verify sustained playback and memory usage on laptop
 - [ ] Verify repeated imports release previous replay resources
