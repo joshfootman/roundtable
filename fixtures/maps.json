@@ -1,0 +1,79 @@
+[
+  {
+    "file": "fixtures/faze-vs-vitality-m2-dust2.dem",
+    "map": "de_dust2",
+    "bytes": 598102502,
+    "sha256": "0d5a5f00301ea55780f30184b9e257b9d0e742fb5d3e6b4c70878340be6eb7d4",
+    "source": "https://www.hltv.org/matches/2372742/faze-vs-vitality-blast-premier-spring-final-2024"
+  },
+  {
+    "file": "fixtures/local/faze-vs-natus-vincere-m1-ancient.dem",
+    "map": "de_ancient",
+    "bytes": 269052158,
+    "sha256": "2786c2414f66604ef126ccdc110cf6fdbaa3e672de4f6b1e1123496e6c116a14",
+    "source": "https://www.hltv.org/matches/2370727/faze-vs-natus-vincere-pgl-cs2-major-copenhagen-2024"
+  },
+  {
+    "file": "fixtures/local/faze-vs-vitality-m1-inferno.dem",
+    "map": "de_inferno",
+    "bytes": 476480329,
+    "sha256": "19be9dbe315eb19ff60037459abbb50b534ebac907dde5040bc568935254e298",
+    "source": "https://www.hltv.org/matches/2372742/faze-vs-vitality-blast-premier-spring-final-2024"
+  },
+  {
+    "file": "fixtures/local/faze-vs-vitality-m3-mirage.dem",
+    "map": "de_mirage",
+    "bytes": 457445233,
+    "sha256": "4f20e7c3581291b5dde93492e4f8aa9b0e77f20621714179cc8771294cc71b05",
+    "source": "https://www.hltv.org/matches/2372742/faze-vs-vitality-blast-premier-spring-final-2024"
+  },
+  {
+    "file": "fixtures/local/spirit-vs-faze-m2-nuke.dem",
+    "map": "de_nuke",
+    "bytes": 438557171,
+    "sha256": "9fd5dc9eb89eee96f7ca14a0dade96e7a99896e6f021d592baecd18ed46b228f",
+    "source": "https://www.hltv.org/matches/2370722/spirit-vs-faze-pgl-cs2-major-copenhagen-2024"
+  },
+  {
+    "file": "fixtures/local/spirit-vs-faze-m3-vertigo.dem",
+    "map": "de_vertigo",
+    "bytes": 436015117,
+    "sha256": "d128723bd93f4d9c85a18a598f98f162a55392f63cb23b176711e77402268917",
+    "source": "https://www.hltv.org/matches/2370722/spirit-vs-faze-pgl-cs2-major-copenhagen-2024"
+  },
+  {
+    "file": "fixtures/local/vitality-vs-g2-m3-overpass.dem",
+    "map": "de_overpass",
+    "bytes": 452014141,
+    "sha256": "7b43fa4215d99ce767d17f9d1f36e8997b7aeeb6227fa8b2738b9d377b48f28e",
+    "source": "https://www.hltv.org/matches/2384856/vitality-vs-g2-blast-open-london-2025-finals"
+  },
+  {
+    "file": "fixtures/local/vitality-vs-g2-m4-inferno.dem",
+    "map": "de_inferno",
+    "bytes": 684861658,
+    "sha256": "e30486bdbd0b9e64adcaf819823b7c46e609f4126e945e9b1bcb34f11c1df7b7",
+    "source": "https://www.hltv.org/matches/2384856/vitality-vs-g2-blast-open-london-2025-finals"
+  },
+  {
+    "file": "fixtures/local/vitality-vs-g2-m5-train.dem",
+    "map": "de_train",
+    "bytes": 469999465,
+    "sha256": "20d3fb5e31b6e2d392f95a2c004257823f680e5f258aed76c8bde98aa480ce0b",
+    "source": "https://www.hltv.org/matches/2384856/vitality-vs-g2-blast-open-london-2025-finals"
+  },
+  {
+    "file": "fixtures/local/vitality-vs-inner-circle-m1-anubis.dem",
+    "map": "de_anubis",
+    "bytes": 334479496,
+    "sha256": "f41e9f1e473b953434082238aa836b04437c4db70a8c0a0aca2e0f6cee1f150f",
+    "source": "https://www.hltv.org/matches/2396927/vitality-vs-inner-circle-blast-open-porto-2026"
+  },
+  {
+    "file": "fixtures/local/vitality-vs-inner-circle-m2-cache.dem",
+    "map": "de_cache",
+    "bytes": 458993903,
+    "sha256": "79805d1f6f23ea338af85f2987e4a2e9b21c4c64c36d8b1c4ec96bfd00fed244",
+    "source": "https://www.hltv.org/matches/2396927/vitality-vs-inner-circle-blast-open-porto-2026"
+  }
+]

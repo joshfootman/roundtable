@@ -25,12 +25,16 @@
 - [x] Display flashed-player indicators
 - [x] Filter visible players and teams
 - [x] Toggle utility overlays
-- [ ] Switch Nuke floors while preserving playback position
-- [ ] Replay Ancient and Anubis fixtures on calibrated maps
-- [ ] Replay Dust II and Mirage fixtures on calibrated maps
-- [ ] Replay Inferno and Overpass fixtures on calibrated maps
-- [ ] Replay Cache and Train fixtures on calibrated maps
-- [ ] Replay Vertigo fixtures on a calibrated map
+- [x] Replay Dust II fixtures on a calibrated map
+- [ ] Replay Ancient fixtures on a calibrated map
+- [ ] Replay Anubis fixtures on a calibrated map
+- [ ] Replay Cache fixtures on a calibrated map
+- [ ] Replay Inferno fixtures on a calibrated map with correct rotation
+- [ ] Replay Mirage fixtures on a calibrated map
+- [ ] Replay Nuke fixtures with selectable floors while preserving playback position
+- [ ] Replay Overpass fixtures on a calibrated map
+- [ ] Replay Train fixtures on a calibrated map
+- [ ] Replay Vertigo fixtures with selectable floors while preserving playback position
 - [ ] Explain unsupported maps and unavailable replay data
 - [ ] Cancel an import and immediately open another demo
 - [ ] Retry recoverable file reads up to three total attempts

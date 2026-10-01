@@ -165,3 +165,10 @@ JavaScript numbers cannot represent them exactly.
 | karrigan | 76561197989430253 |            15 |
 
 The compact first-round fixture and independent coordinate samples are documented in [replay/README.md](replay/README.md).
+
+## Additional map recordings
+
+Full recordings covering the ten-map inventory are stored in ignored `fixtures/local/`.
+See [map coverage](../docs/map-coverage.md) for acquisition sources, parser failures,
+calibration work and the local inspection command. [maps.json](maps.json) records
+file sizes and hashes; a fresh checkout must obtain the recordings separately.

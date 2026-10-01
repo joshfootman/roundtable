@@ -44,7 +44,7 @@ Excluded: CS:GO, 3D, heatmaps, annotations, advanced economy/pattern analysis, l
 - No universal historical guarantee; no arbitrary rejection of working older files.
 - POV: coverage unresolved; missing information explicit, never invented.
 - Missing values ≠ zero. Stable player identity ≠ recyclable entity slot.
-- Map imagery/calibration versioned; verify against demo layout.
+- Map imagery/calibration versioned; verify against demo layout. Fixture coverage and current blockers: [map-coverage.md](map-coverage.md).
 - Working map inventory (2026-09-28): Ancient, Anubis, Cache, Dust II, Inferno, Mirage, Nuke, Overpass, Train, Vertigo.
 - Additional tournament staples: add with relevant CS2 demos + matching radar/calibration; no blanket Workshop support or CS:GO parsing.
 
