@@ -32,7 +32,8 @@
     "benchmark:loading": "playwright test --config playwright.loading.config.ts",
     "benchmark:cache": "playwright test --config playwright.cache.config.ts",
     "benchmark:gate": "PLAYBACK_GATE=1 playwright test --config playwright.benchmark.config.ts --project desktop",
-    "benchmark:sustained": "playwright test --config playwright.lifecycle.config.ts --grep \"a minute\""
+    "benchmark:sustained": "playwright test --config playwright.lifecycle.config.ts --grep \"a minute\"",
+    "benchmark:imports": "playwright test --config playwright.lifecycle.config.ts --grep \"repeated import cycles\""
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.15.0",

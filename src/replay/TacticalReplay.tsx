@@ -11,7 +11,16 @@ import {
 } from './utility.ts'
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
-import { Application, Assets, Container, Graphics, Sprite, Text, type Texture } from 'pixi.js'
+import {
+  Application,
+  Assets,
+  Container,
+  Graphics,
+  Sprite,
+  Text,
+  TextStyle,
+  type Texture,
+} from 'pixi.js'
 import { sampleAtTick, recordAtTick, bombPosition, flashRemaining } from './frames'
 import {
   mapDefinition,
@@ -22,6 +31,13 @@ import {
   type MapFloor,
 } from './maps'
 import type { BombEvent, ReplayRound } from './types'
+
+const playerLabelStyle = new TextStyle({
+  fontFamily: 'sans-serif',
+  fontSize: 12,
+  fontWeight: 'bold',
+  fill: '#101713',
+})
 
 const bombEventIconKeys: Record<BombEvent['type'], string> = {
   'plant-start': 'c4',
@@ -169,12 +185,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         marker.addChild(flash)
         const label = new Text({
           text: String(index + 1),
-          style: {
-            fontFamily: 'sans-serif',
-            fontSize: 12,
-            fontWeight: 'bold',
-            fill: '#101713',
-          },
+          style: playerLabelStyle,
         })
         label.anchor.set(0.5)
         marker.addChild(label)

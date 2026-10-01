@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   testDir: './benchmarks',
-  testMatch: 'sustained.spec.ts',
+  testMatch: ['sustained.spec.ts', 'repeated-imports.spec.ts'],
   timeout: 150_000,
   workers: 1,
   retries: 0,
