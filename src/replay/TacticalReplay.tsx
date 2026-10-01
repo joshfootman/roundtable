@@ -8,9 +8,16 @@ import {
 } from './utility.ts'
 import { equipmentName } from './equipment.ts'
 import { useEffect, useRef, useState } from 'react'
-import { Application, Assets, Container, Graphics, Sprite, Text } from 'pixi.js'
+import { Application, Assets, Container, Graphics, Sprite, Text, type Texture } from 'pixi.js'
 import { sampleAtTick, recordAtTick, bombPosition, flashRemaining } from './frames'
-import { mapDefinition, worldToMap, type MapDefinition } from './maps'
+import {
+  mapDefinition,
+  mapFacing,
+  visibleOnFloor,
+  worldToMap,
+  type MapDefinition,
+  type MapFloor,
+} from './maps'
 import type { ReplayRound } from './types'
 
 const bombEventLabels = {
@@ -39,6 +46,7 @@ interface Playback {
   play(): void
   pause(): void
   seek(tick: number): void
+  setFloor(floor: MapFloor): void
   setOverlays(overlays: UtilityVisibility): void
   setFilters(filters: PlayerFilters): void
   setMinimum(tick: number): void
@@ -72,6 +80,7 @@ export function TacticalReplay({ round, mapName }: { round: ReplayRound; mapName
 function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition }) {
   const host = useRef<HTMLDivElement>(null)
   const playback = useRef<Playback | null>(null)
+  const [floor, setFloor] = useState<MapFloor>(map.floors === 'split' ? map.initialFloor : 'upper')
   const [overlays, setOverlays] = useState(initialUtilityVisibility)
   const [filters, setFilters] = useState(initialPlayerFilters)
   const [includeFreezeTime, setIncludeFreezeTime] = useState(false)
@@ -87,6 +96,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
     let minimum = round.liveStartTick
     let playing = false
     let lastPublished = 0
+    let currentFloor: MapFloor = map.floors === 'split' ? map.initialFloor : 'upper'
     let currentFilters = initialPlayerFilters()
     let currentOverlays = initialUtilityVisibility()
 
@@ -105,10 +115,15 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         app.destroy(true, { children: true })
         return
       }
-      const texture = await Assets.load(map.image)
+      const upper = await Assets.load(map.floors === 'split' ? map.images.upper : map.image)
+      const textures: Record<MapFloor, Texture> = {
+        upper,
+        lower: map.floors === 'split' ? await Assets.load(map.images.lower) : upper,
+      }
       if (cancelled) return
       const sceneMap = new Container()
-      sceneMap.addChild(new Sprite(texture))
+      const radar = new Sprite(textures[currentFloor])
+      sceneMap.addChild(radar)
       const utilities = createUtilityRenderer(round, map)
       sceneMap.addChild(utilities.container)
       let symbolScale = 1
@@ -154,7 +169,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
 
       function draw() {
         const sample = sampleAtTick(round.ticks, tick)
-        utilities.draw(tick, symbolScale, currentOverlays)
+        utilities.draw(tick, symbolScale, currentOverlays, currentFloor)
         for (let player = 0; player < markers.length; player++) {
           const position = (sample * markers.length + player) * 3
           const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
@@ -168,20 +183,18 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
               tick,
               round.tickInterval,
             ) > 0
-          container.visible = playerVisible(
-            round.players[player]!.steamId,
-            round.teams[state]!,
-            currentFilters,
-          )
+          container.visible =
+            visibleOnFloor(map, currentFloor, round.positions[position + 2]!) &&
+            playerVisible(round.players[player]!.steamId, round.teams[state]!, currentFilters)
           body.tint = color
           direction.tint = color
-          direction.rotation = (-round.yaw[state]! * Math.PI) / 180
+          direction.rotation = mapFacing(map, round.yaw[state]!)
           container.position.set(point.x, point.y)
           container.alpha = round.alive[sample * markers.length + player] ? 1 : 0.35
         }
         const bomb = recordAtTick(round.bomb, tick).state
         const position = bombPosition(round, bomb, sample)
-        bombMarker.visible = position !== undefined
+        bombMarker.visible = position !== undefined && visibleOnFloor(map, currentFloor, position.z)
         if (position) {
           const point = worldToMap(map, position.x, position.y)
           const offset = bomb.type === 'carried' ? 15 * bombMarker.scale.x : 0
@@ -200,6 +213,12 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         app.render()
       }
       playback.current = {
+        setFloor(next) {
+          currentFloor = next
+          radar.texture = textures[next]
+          draw()
+          app.render()
+        },
         setOverlays(next) {
           currentOverlays = next
           draw()
@@ -322,6 +341,28 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         ref={host}
         className="mt-5 aspect-square w-full overflow-hidden rounded-xl outline outline-white/10"
       />
+      {map.floors === 'split' && (
+        <fieldset className="mt-4 flex gap-5">
+          <legend className="text-sm font-semibold">Map floor</legend>
+          {(['upper', 'lower'] as const).map((value) => (
+            <label key={value} className="flex min-h-11 items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="map-floor"
+                value={value}
+                checked={floor === value}
+                disabled={scene.status !== 'ready'}
+                className="size-4 accent-[#bedb8a]"
+                onChange={() => {
+                  setFloor(value)
+                  playback.current?.setFloor(value)
+                }}
+              />
+              {value === 'upper' ? 'Upper floor' : 'Lower floor'}
+            </label>
+          ))}
+        </fieldset>
+      )}
       <label className="mt-4 flex min-h-11 items-center gap-3 text-sm">
         <input
           type="checkbox"

@@ -4,18 +4,32 @@ import ancient from '../assets/de_ancient_radar_psd.png'
 import anubis from '../assets/de_anubis_radar_psd.png'
 import inferno from '../assets/de_inferno_radar_psd.png'
 import overpass from '../assets/de_overpass_radar_psd.png'
+import nuke from '../assets/de_nuke_radar_psd.png'
+import nukeLower from '../assets/de_nuke_lower_radar_psd.png'
+import vertigo from '../assets/de_vertigo_radar_psd.png'
+import vertigoLower from '../assets/de_vertigo_lower_radar_psd.png'
+import cache from '../assets/de_cache_radar_psd.png'
+import train from '../assets/de_train_radar_psd.png'
+import trainLower from '../assets/de_train_lower_radar_psd.png'
 
-export interface MapDefinition {
+export type MapFloor = 'upper' | 'lower'
+
+export type MapDefinition = {
   name: string
-  image: string
   imageSize: number
   origin: { x: number; y: number }
   scale: number
-}
+  rotation: 0 | 90 | 180 | 270
+} & (
+  | { floors: 'single'; image: string }
+  | { floors: 'split'; images: Record<MapFloor, string>; boundaryZ: number; initialFloor: MapFloor }
+)
 
 const maps: Readonly<Record<string, MapDefinition>> = {
   de_dust2: {
     name: 'Dust II',
+    floors: 'single',
+    rotation: 0,
     image: dust2,
     imageSize: 1024,
     origin: { x: -2476, y: 3239 },
@@ -23,6 +37,8 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_mirage: {
     name: 'Mirage',
+    floors: 'single',
+    rotation: 90,
     image: mirage,
     imageSize: 1024,
     origin: { x: -3230, y: 1713 },
@@ -30,6 +46,8 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_ancient: {
     name: 'Ancient',
+    floors: 'single',
+    rotation: 0,
     image: ancient,
     imageSize: 1024,
     origin: { x: -2953, y: 2164 },
@@ -37,6 +55,8 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_anubis: {
     name: 'Anubis',
+    floors: 'single',
+    rotation: 0,
     image: anubis,
     imageSize: 1024,
     origin: { x: -2796, y: 3328 },
@@ -44,6 +64,8 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_inferno: {
     name: 'Inferno',
+    floors: 'single',
+    rotation: 270,
     image: inferno,
     imageSize: 1024,
     origin: { x: -2087, y: 3870 },
@@ -51,17 +73,80 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_overpass: {
     name: 'Overpass',
+    floors: 'single',
+    rotation: 0,
     image: overpass,
     imageSize: 1024,
     origin: { x: -4831, y: 1781 },
     scale: 5.2,
   },
+  de_nuke: {
+    name: 'Nuke',
+    floors: 'split',
+    images: { upper: nuke, lower: nukeLower },
+    imageSize: 1024,
+    origin: { x: -3453, y: 2887 },
+    scale: 7,
+    rotation: 0,
+    boundaryZ: -495,
+    initialFloor: 'upper',
+  },
+  de_vertigo: {
+    name: 'Vertigo',
+    floors: 'split',
+    images: { upper: vertigo, lower: vertigoLower },
+    imageSize: 1024,
+    origin: { x: -3168, y: 1762 },
+    scale: 4,
+    rotation: 0,
+    boundaryZ: 11700,
+    initialFloor: 'upper',
+  },
+  de_cache: {
+    name: 'Cache',
+    floors: 'single',
+    image: cache,
+    imageSize: 1024,
+    origin: { x: -2000, y: 3250 },
+    scale: 5.5,
+    rotation: 0,
+  },
+  de_train: {
+    name: 'Train',
+    floors: 'split',
+    images: { upper: train, lower: trainLower },
+    imageSize: 1024,
+    origin: { x: -2308, y: 2078 },
+    scale: 4.082077,
+    rotation: 0,
+    boundaryZ: -50,
+    initialFloor: 'lower',
+  },
 }
 
 export function mapDefinition(identifier: string): MapDefinition | undefined {
-  return maps[identifier]
+  return Object.hasOwn(maps, identifier) ? maps[identifier] : undefined
 }
 
-export function worldToMap(map: MapDefinition, x: number, y: number) {
-  return { x: (x - map.origin.x) / map.scale, y: (map.origin.y - y) / map.scale }
+export function worldToMap(map: MapDefinition, worldX: number, worldY: number) {
+  const x = (worldX - map.origin.x) / map.scale
+  const y = (map.origin.y - worldY) / map.scale
+  switch (map.rotation) {
+    case 90:
+      return { x: map.imageSize - y, y: x }
+    case 180:
+      return { x: map.imageSize - x, y: map.imageSize - y }
+    case 270:
+      return { x: y, y: map.imageSize - x }
+    default:
+      return { x, y }
+  }
+}
+
+export function mapFacing(map: MapDefinition, yaw: number): number {
+  return ((map.rotation - yaw) * Math.PI) / 180
+}
+
+export function visibleOnFloor(map: MapDefinition, floor: MapFloor, z: number): boolean {
+  return map.floors === 'single' || (floor === 'upper' ? z >= map.boundaryZ : z < map.boundaryZ)
 }

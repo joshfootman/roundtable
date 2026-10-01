@@ -602,3 +602,135 @@ test('replays timed utility and bomb states across recorded rounds', async ({ pa
   await expect(state).toContainText('Bomb planted')
   await expect(events).toHaveText(['frozen started planting', 'frozen planted the bomb'])
 })
+
+test('switches map floors without replacing the canvas or interrupting playback', async ({
+  page,
+}) => {
+  await page.route(/\/demo\.worker-[^/]+\.js(?:\?.*)?$/, (route) =>
+    route.fulfill({
+      contentType: 'text/javascript',
+      body: `self.onmessage = () => {
+      postMessage({ type: 'metadata', roundStartTicks: [], metadata: {
+        mapName: 'de_nuke', serverName: 'Reference server', clientName: 'SourceTV',
+        gameDirectory: 'csgo', demoVersion: 'valve_demo_2', patchVersion: 1,
+        buildNumber: 1, serverStartTick: 0, durationSeconds: 100,
+        playbackTicks: 6400, playbackFrames: 6400
+      }});
+      postMessage({ type: 'round', round: {
+        number: 1, overtime: 0, startTick: 100, liveStartTick: 100, resultTick: 600, endTick: 700,
+        tickInterval: 1 / 64, players: [{name: 'Upper player', steamId: 'upper'}, {name: 'Lower player', steamId: 'lower'}],
+        ticks: new Uint32Array([100, 600]),
+        positions: new Float32Array([-1000, 0, 0, -1000, 0, -600, -500, 0, 0, -500, 0, -600]),
+        alive: new Uint8Array([1,1,1,1]), health: new Int32Array([100,100,100,100]),
+        yaw: new Float32Array([0,0,0,0]), teams: new Uint8Array([2,3,2,3]),
+        inspection: [0,1].map(() => [{tick: 100, weapon: {type: 'none'}, money: 800, armour: 0, helmet: false, grenades: [], flash: {type: 'none'}}]),
+        bomb: [{tick: 100, state: {type: 'dropped', x: -900, y: 0, z: -600}}],
+        fires: [{tick: 100, fires: [{entity: 1, serial: 1, positions: [-800, 0, -600]}]}],
+        shots: [{tick: 100, player: 'lower', weapon: 7, x: -1000, y: 0, z: -600, pitch: 0, yaw: 0}],
+        smokes: [{entity: 2, startTick: 100, endTick: 700, x: -1400, y: 500, z: -600}],
+        projectiles: [{entity: 3, serial: 1, kind: 'he', thrower: 'lower', startTick: 100, endTick: 200,
+          ticks: new Uint32Array([100, 101, 102]),
+          positions: new Float32Array([-2000, 1000, -600, -1500, 1000, 0, -1000, 1000, -600])}],
+        detonations: [
+          {tick: 100, kind: 'he', entity: 4, x: -500, y: 1500, z: -600},
+          {tick: 100, kind: 'flash', entity: 5, x: 1000, y: 1500, z: 0}
+        ], bombEvents: [], deaths: []
+      }});
+    };`,
+    }),
+  )
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.goto('/')
+  await page.getByLabel('Choose a .dem file').setInputFiles(await demoFile())
+  await page.getByRole('button', { name: 'Import demo' }).click()
+  const replay = page.getByRole('region', { name: 'Nuke · Round 1', exact: true })
+  const upper = replay.getByRole('radio', { name: 'Upper floor', exact: true })
+  const lower = replay.getByRole('radio', { name: 'Lower floor', exact: true })
+  await expect(upper).toBeEnabled()
+  await page.clock.install()
+  const canvas = replay.locator('canvas')
+  const originalCanvas = await canvas.elementHandle()
+  const upperImage = await canvas.screenshot()
+  await lower.check()
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '100')
+  const lowerImage = await canvas.screenshot()
+  expect(lowerImage).not.toEqual(upperImage)
+  await replay.getByText('Utility overlays', { exact: true }).click()
+  const smoke = replay.getByRole('checkbox', { name: 'Smoke areas', exact: true })
+  await smoke.uncheck()
+  expect(await canvas.screenshot()).not.toEqual(lowerImage)
+  await smoke.check()
+  expect(await canvas.screenshot()).toEqual(lowerImage)
+  await replay.getByText('Player filters', { exact: true }).click()
+  await replay.getByRole('checkbox', { name: 'Lower player', exact: true }).uncheck()
+  expect(await canvas.screenshot()).not.toEqual(lowerImage)
+  await replay.getByRole('checkbox', { name: 'Lower player', exact: true }).check()
+  expect(await canvas.screenshot()).toEqual(lowerImage)
+  await upper.check()
+  expect(await canvas.screenshot()).toEqual(upperImage)
+  await smoke.uncheck()
+  expect(await canvas.screenshot()).toEqual(upperImage)
+  await smoke.check()
+  await replay.getByRole('checkbox', { name: 'Lower player', exact: true }).uncheck()
+  expect(await canvas.screenshot()).toEqual(upperImage)
+  expect(await originalCanvas!.evaluate((element) => element.isConnected)).toBe(true)
+  const crop = async (x: number, y: number, size = 24) => {
+    await canvas.scrollIntoViewIfNeeded()
+    const box = (await canvas.boundingBox())!
+    const scale = box.width / 1024
+    return page.screenshot({
+      clip: {
+        x: box.x + (x - size / 2) * scale,
+        y: box.y + (y - size / 2) * scale,
+        width: size * scale,
+        height: size * scale,
+      },
+    })
+  }
+  const trajectories = replay.getByRole('checkbox', { name: 'Grenade trajectories', exact: true })
+  const detonations = replay.getByRole('checkbox', { name: 'Grenade detonations', exact: true })
+  const scrubber = replay.getByRole('slider', { name: 'Replay position', exact: true })
+  await seekReplay(scrubber, 101)
+  const upperMarker = await crop(279, 270)
+  await trajectories.uncheck()
+  expect(await crop(279, 270)).not.toEqual(upperMarker)
+  await trajectories.check()
+  await seekReplay(scrubber, 102)
+  const hiddenMarker = await crop(350, 270)
+  await trajectories.uncheck()
+  expect(await crop(350, 270)).toEqual(hiddenMarker)
+  await trajectories.check()
+  const upperDetonation = await crop(636, 198, 128)
+  await detonations.uncheck()
+  expect(await crop(636, 198, 128)).not.toEqual(upperDetonation)
+  await detonations.check()
+  await lower.check()
+  const lowerMarker = await crop(350, 270)
+  const hiddenBridge = await crop(279, 270)
+  await trajectories.uncheck()
+  expect(await crop(350, 270)).not.toEqual(lowerMarker)
+  expect(await crop(279, 270)).toEqual(hiddenBridge)
+  await trajectories.check()
+  const lowerDetonation = await crop(422, 198, 128)
+  const hiddenUpperDetonation = await crop(636, 198, 128)
+  await detonations.uncheck()
+  expect(await crop(422, 198, 128)).not.toEqual(lowerDetonation)
+  expect(await crop(636, 198, 128)).toEqual(hiddenUpperDetonation)
+  await detonations.check()
+  await seekReplay(scrubber, 200)
+  const endedProjectile = await crop(350, 270)
+  await trajectories.uncheck()
+  expect(await crop(350, 270)).toEqual(endedProjectile)
+  await trajectories.check()
+  await upper.check()
+  await replay.getByRole('button', { name: 'Play', exact: true }).click()
+  await page.clock.runFor(512)
+  const playingTick = Number(await replay.getByTestId('replay-tick').getAttribute('data-tick'))
+  await lower.check()
+  await expect(replay.getByRole('button', { name: 'Pause', exact: true })).toBeVisible()
+  await page.clock.runFor(512)
+  expect(Number(await replay.getByTestId('replay-tick').getAttribute('data-tick'))).toBeGreaterThan(
+    playingTick,
+  )
+  expect(await originalCanvas!.evaluate((element) => element.isConnected)).toBe(true)
+})
