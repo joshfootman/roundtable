@@ -30,7 +30,8 @@
     "generate:example": "node --experimental-transform-types scripts/generate-example.ts",
     "verify:example": "node --experimental-transform-types scripts/verify-example.ts",
     "benchmark:loading": "playwright test --config playwright.loading.config.ts",
-    "benchmark:cache": "playwright test --config playwright.cache.config.ts"
+    "benchmark:cache": "playwright test --config playwright.cache.config.ts",
+    "benchmark:gate": "PLAYBACK_GATE=1 playwright test --config playwright.benchmark.config.ts --project desktop"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.15.0",

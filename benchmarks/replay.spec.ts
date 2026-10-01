@@ -1,11 +1,17 @@
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
-import { stat, writeFile } from 'node:fs/promises'
+import { readFile, stat, writeFile } from 'node:fs/promises'
+import { gunzipSync } from 'node:zlib'
 import { cpus, platform, release, totalmem } from 'node:os'
 import { resolve } from 'node:path'
 import { expect, test } from '@playwright/test'
 
-const demoPath = resolve(process.env.DEMO_PATH ?? 'fixtures/local/faze-vs-vitality-m2-dust2.dem')
+const gate = process.env.PLAYBACK_GATE === '1'
+const demoPath = resolve(
+  gate
+    ? 'fixtures/replay/dust2-first-round.dem.gz'
+    : (process.env.DEMO_PATH ?? 'fixtures/local/faze-vs-vitality-m2-dust2.dem'),
+)
 
 function percentile(values: number[], fraction: number) {
   const sorted = [...values].sort((a, b) => a - b)
@@ -14,11 +20,19 @@ function percentile(values: number[], fraction: number) {
 
 test('records import, playback and seek timings', async ({ page, browser }, testInfo) => {
   const hash = createHash('sha256')
-  for await (const chunk of createReadStream(demoPath)) hash.update(chunk)
+  const compact = gate ? gunzipSync(await readFile(demoPath)) : undefined
+  if (compact) hash.update(compact)
+  else for await (const chunk of createReadStream(demoPath)) hash.update(chunk)
   const runs = []
   for (let run = 0; run < 3; run++) {
     await page.goto('/')
-    await page.getByLabel('Choose a .dem file').setInputFiles(demoPath)
+    await page
+      .getByLabel('Choose a .dem file')
+      .setInputFiles(
+        compact
+          ? { name: 'dust2-first-round.dem', mimeType: 'application/octet-stream', buffer: compact }
+          : demoPath,
+      )
     await page.evaluate(() => {
       document.querySelector('form')!.addEventListener(
         'submit',
@@ -132,7 +146,12 @@ test('records import, playback and seek timings', async ({ page, browser }, test
       chromium: browser.version(),
       headless: true,
     },
-    demo: { path: demoPath, bytes: (await stat(demoPath)).size, sha256: hash.digest('hex') },
+    demo: {
+      path: demoPath,
+      bytes: compact?.length ?? (await stat(demoPath)).size,
+      sha256: hash.digest('hex'),
+    },
+    gate,
     build: 'vite build followed by vite preview, no CPU or network throttling',
     runs,
   }
@@ -143,4 +162,28 @@ test('records import, playback and seek timings', async ({ page, browser }, test
     contentType: 'application/json',
   })
   console.log(JSON.stringify(result, null, 2))
+  if (gate) {
+    expect(
+      percentile(
+        runs.map((run) => run.firstRoundMs),
+        0.5,
+      ),
+      'Median first playable round',
+    ).toBeLessThan(5000)
+    expect(
+      percentile(
+        runs.map((run) => run.frameGapP95Ms),
+        0.5,
+      ),
+      'Median playback frame-gap p95',
+    ).toBeLessThan(100)
+    for (const direction of ['seekEndMs', 'seekHomeMs'] as const)
+      expect(
+        percentile(
+          runs.map((run) => run[direction]),
+          0.5,
+        ),
+        `Median ${direction}`,
+      ).toBeLessThan(250)
+  }
 })

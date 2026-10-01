@@ -68,3 +68,25 @@ plays the first two live seconds, before the first grenade flight. Recorded
 utility visibility is separately checked through canvas hide/restore assertions
 in the regression suite. Mobile emulation remains a viewport check on this
 laptop, not a physical-phone performance measurement.
+
+## CI regression gate
+
+`npm run benchmark:gate` runs the existing production-browser playback benchmark
+on the committed compact Dust II recording. It uses three fresh page imports at
+1440 × 900 and does not require an ignored full demo. The gate records fixture
+SHA-256, browser and hardware with all observations before evaluating them.
+
+The median first playable round must be below 5,000 ms. The median of the three
+frame-gap p95 observations must be below 100 ms. The median of each forward
+and backward seek direction must be below 250 ms. These broad responsiveness ceilings
+catch substantial regressions while allowing shared CI hardware variation. They
+do not promise 60 fps or enforce a percentage change against the Apple M2 baseline.
+The separate CI job uploads observations even when a gate fails.
+
+On 1 October 2026, the initial Apple M2 production run measured a 921.8 ms median
+first round, 16.8 ms median frame-gap p95 and 20.6 ms forward and 26.2 ms backward median seeks.
+A temporary experiment delayed every real parser-worker request by six seconds.
+The first-round gate failed. The delay was removed and is not part of the benchmark.
+Run the unmodified command to reproduce the passing gate. The current GitHub
+runner has not been measured locally; its uploaded hardware record is required
+before tightening these ceilings or claiming a comparative CI baseline.
