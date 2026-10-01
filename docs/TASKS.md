@@ -38,7 +38,7 @@
 - [x] Explain unsupported maps and unavailable replay data
 - [x] Cancel an import and immediately open another demo
 - [x] Retry recoverable file reads up to three total attempts
-- [ ] Retain completed rounds after parsing fails
+- [x] Retain completed rounds after parsing fails
 - [ ] Recover gracefully from insufficient browser memory
 - [ ] Verify playback against older and recent tournament demos
 
