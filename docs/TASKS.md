@@ -58,4 +58,4 @@
 
 <!-- - [ ] Audit the complete replay flow against WCAG 2.1 AA -->
 
-- [ ] Open and refresh replay routes on static hosting
+- [x] Open and refresh replay routes on static hosting
