@@ -4,7 +4,7 @@ import { fromBinary, toBinary } from '@bufbuild/protobuf'
 import { uncompress } from 'snappyjs'
 import { CDemoPacketSchema, CDemoFullPacketSchema } from '../src/demo/generated/demo_pb.ts'
 import { BitReader } from '../src/demo/entities/bit-reader.ts'
-const path = process.argv[2] ?? 'fixtures/faze-vs-vitality-m2-dust2.dem'
+const path = process.argv[2] ?? 'fixtures/local/faze-vs-vitality-m2-dust2.dem'
 const endTick =
   process.argv[3] === undefined
     ? (JSON.parse(readFileSync('fixtures/replay/oracle.json', 'utf8')) as { endTick: number })

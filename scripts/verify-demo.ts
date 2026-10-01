@@ -9,7 +9,7 @@ const verifyRound = process.argv.includes('--round')
 const verifyRoster = verifyRound || process.argv.includes('--roster')
 const path =
   process.argv.slice(2).find((argument) => !['--roster', '--round'].includes(argument)) ??
-  'fixtures/faze-vs-vitality-m2-dust2.dem'
+  'fixtures/local/faze-vs-vitality-m2-dust2.dem'
 let bytesRead = 0
 let reads = 0
 let largestRead = 0

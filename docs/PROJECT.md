@@ -16,7 +16,7 @@ Requirements below settled unless marked **proposed**, **optional** or **open**.
 ## Release scope
 
 - User-provided example match + local import.
-- Current example: FaZe vs Vitality, Dust2 (map 2), from the supplied BLAST Premier Spring Final 2024 archive. Local file: `fixtures/faze-vs-vitality-m2-dust2.dem`; provenance in [fixtures/README.md](../fixtures/README.md).
+- Current example: FaZe vs Vitality, Dust2 (map 2), from the supplied BLAST Premier Spring Final 2024 archive. Local file: `fixtures/local/faze-vs-vitality-m2-dust2.dem`; provenance in [fixtures/README.md](../fixtures/README.md).
 - Example: prefer pre-parsed static data; confirm after download-size/load-time versus live-parse benchmarks. Same replay contract/viewer; custom parser benchmarked separately.
 - Flat tactical map; one active round; every parsed round selectable.
 - Selectable rounds: competitive + overtime; freeze time + post-round activity included.
@@ -167,7 +167,7 @@ Dexie conditional:
 
 ## Verification + first milestone
 
-- Fixtures: the 2024 Dust2 example is available locally; recent match fixtures still needed for compatibility checks.
+- Fixtures: older 2024 and recent 2025–2026 tournament recordings are available locally. Independent references and coverage are recorded in [map coverage](map-coverage.md).
 - Differential checks: identities, rounds, positions, events; investigate disagreements.
 - Test binary readers, malformed/truncated inputs, backward seeks.
 - Test money/equipment, bomb/utility lifetimes, overtime, reconnects, Nuke floors.

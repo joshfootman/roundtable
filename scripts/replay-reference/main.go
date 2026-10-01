@@ -37,7 +37,7 @@ type fireFrame struct {
 }
 
 func main() {
-	path := "../../fixtures/faze-vs-vitality-m2-dust2.dem"
+	path := "../../fixtures/local/faze-vs-vitality-m2-dust2.dem"
 	if len(os.Args) > 1 {
 		path = os.Args[1]
 	}

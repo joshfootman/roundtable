@@ -1,6 +1,6 @@
 # First competitive round fixture
 
-Source is `fixtures/faze-vs-vitality-m2-dust2.dem`, the supplied 2024 BLAST Premier
+Source is `fixtures/local/faze-vs-vitality-m2-dust2.dem`, the supplied 2024 BLAST Premier
 Spring Final Dust II recording. Source SHA-256 is
 `0d5a5f00301ea55780f30184b9e257b9d0e742fb5d3e6b4c70878340be6eb7d4`.
 
@@ -63,7 +63,7 @@ with Go and the pinned demoinfocs v4.5.1 module:
 
 ```sh
 cd scripts/replay-reference
-go run . ../../fixtures/faze-vs-vitality-m2-dust2.dem > /tmp/roundtable-reference.json
+go run . ../../fixtures/local/faze-vs-vitality-m2-dust2.dem > /tmp/roundtable-reference.json
 ```
 
 The production parser reads no reference data. `npm run verify:round` compares
@@ -84,7 +84,7 @@ one at 7444. The existing parser regression checks that recorded transition.
 `dust2-through-round-4.dem.gz` preserves contiguous network history from the
 recording start through tick 32413. It completes four rounds and retains the
 original metadata footer. Regenerate with `node --experimental-transform-types
-scripts/extract-replay-fixture.ts fixtures/faze-vs-vitality-m2-dust2.dem 32413
+scripts/extract-replay-fixture.ts fixtures/local/faze-vs-vitality-m2-dust2.dem 32413
 fixtures/replay/dust2-through-round-4.dem.gz`. It is 14,411,094 bytes compressed.
 SHA-256 is `e8bc614d7039d65d4c47243ff4baf0cbad76b32dbc8a10a73dea16da2e7efbf9`.
 The independent parser matches the original recording at all 20 selected player

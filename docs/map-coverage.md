@@ -1,6 +1,6 @@
 # Map fixture coverage
 
-Collected and validated on 1 October 2026. The renderer supports the ten-map inventory through map calibration data and a shared rotation/floor model. Full recordings stay in ignored `fixtures/local/`; Dust II remains at `fixtures/faze-vs-vitality-m2-dust2.dem`. Raw recordings are development inputs, not CI dependencies. [The manifest](../fixtures/maps.json) records source URLs, byte sizes and SHA-256 hashes.
+Collected and validated on 1 October 2026. The renderer supports the ten-map inventory through map calibration data and a shared rotation/floor model. Full recordings stay in ignored `fixtures/local/`; Dust II remains at `fixtures/local/faze-vs-vitality-m2-dust2.dem`. Raw recordings are development inputs, not CI dependencies. [The manifest](../fixtures/maps.json) records source URLs, byte sizes and SHA-256 hashes.
 
 ## Accepted recordings
 
@@ -35,7 +35,7 @@ Browser checks use ignored compact first-round extracts of the real recordings. 
 
 ## Independent verification
 
-The custom parser matches all 281 completed rounds across 12 recordings, including Copenhagen Ancient: round boundaries, kill identities and planted-bomb positions. Lint, formatting, TypeScript, 33 unit tests, eight browser tests and the production build pass. Real compact first-round browser imports, play/pause and backward seeks passed for each added map; Nuke, Vertigo and Train also retained the tick through floor changes.
+The custom parser matches all 281 completed rounds across 12 recordings, including Copenhagen Ancient: round boundaries, kill identities and planted-bomb positions. Lint, formatting, TypeScript, 35 unit tests, nine browser tests and the production build pass. Real compact first-round browser imports, play/pause and backward seeks passed for each added map; Nuke, Vertigo and Train also retained the tick through floor changes.
 
 Committed reports in `fixtures/maps-reference/` come from demoinfocs-golang v5.2.0, not the production parser. The reference generator excludes events outside accepted competitive round intervals. It records full round boundaries, kills and planted-bomb XYZ, plus the first round’s start/live player XYZ and facing. Player samples are not an assertion of every movement frame or exact utility reconstruction.
 
@@ -46,4 +46,18 @@ cd ../../..
 npm run verify:maps -- fixtures/local/recording.dem
 ```
 
-The Effect verifier closes files through a scope and fails on differences. Pass only accepted fixtures with matching committed references; the deliberately incompatible Copenhagen files are not inputs to this gate. `npm run inspect:maps -- fixtures/local/*.dem` remains a first-round compatibility inspection and intentionally reports those rejections.
+The Effect verifier closes files through a scope and fails on differences. Pass recordings with matching committed references. Copenhagen Ancient is now accepted and included. The other Copenhagen recordings have no committed full-round reference, so they are not inputs to this gate. `npm run inspect:maps -- fixtures/local/*.dem` provides a first-round compatibility inspection.
+
+## Older and recent playback verification
+
+On 1 October 2026, the full-file differential gate was rerun for 2024 Dust II
+(23 rounds), Copenhagen Ancient (22), recent Anubis (21) and Cache (29). All 95
+rounds matched the independent boundaries, death identities and planted-bomb
+positions, with opening freeze/live player samples checked as well.
+
+Three production-browser imports each of Copenhagen Ancient and recent Anubis
+played recorded movement and sought forwards and backwards on this Apple M2
+laptop with Chromium 153.0.8010.12. These checks use real full files. Run
+`DEMO_PATH=fixtures/local/faze-vs-natus-vincere-m1-ancient.dem npm run benchmark:playback -- --project desktop`
+and repeat with `fixtures/local/vitality-vs-inner-circle-m1-anubis.dem`.
+The benchmark writes browser and hardware metadata with each result.

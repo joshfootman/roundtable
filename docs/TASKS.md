@@ -40,7 +40,7 @@
 - [x] Retry recoverable file reads up to three total attempts
 - [x] Retain completed rounds after parsing fails
 - [x] Recover gracefully from insufficient browser memory
-- [ ] Verify playback against older and recent tournament demos
+- [x] Verify playback against older and recent tournament demos
 
 <!-- - [ ] Control playback and inspect players on a phone -->
 <!-- - [ ] Scrub the timeline accurately with touch -->

@@ -1,6 +1,6 @@
 [
   {
-    "file": "fixtures/faze-vs-vitality-m2-dust2.dem",
+    "file": "fixtures/local/faze-vs-vitality-m2-dust2.dem",
     "map": "de_dust2",
     "bytes": 598102502,
     "sha256": "0d5a5f00301ea55780f30184b9e257b9d0e742fb5d3e6b4c70878340be6eb7d4",

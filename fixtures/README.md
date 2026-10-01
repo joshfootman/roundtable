@@ -72,7 +72,7 @@ python3 - <<'PY'
 from pathlib import Path
 import struct
 
-with Path('fixtures/faze-vs-vitality-m2-dust2.dem').open('rb') as demo:
+with Path('fixtures/local/faze-vs-vitality-m2-dust2.dem').open('rb') as demo:
     prefix = demo.read(182)
     info_offset = struct.unpack_from('<I', prefix, 8)[0]
     demo.seek(info_offset + 5)
@@ -104,7 +104,7 @@ remains the local integration check.
 Run `npm run verify:demo` to check the full local fixture through the production
 Effect parser and report its read count and byte budget. The command fails if
 the fixture is missing or its metadata differs from the verified values.
-Run `DEMO_PATH=fixtures/faze-vs-vitality-m2-dust2.dem npm run test:e2e` to exercise
+Run `DEMO_PATH=fixtures/local/faze-vs-vitality-m2-dust2.dem npm run test:e2e` to exercise
 the complete file through the browser input and worker. Without `DEMO_PATH`, Playwright uses the roster container below.
 Metadata unit tests continue to use the small metadata container.
 Run `npm run verify:roster` to check all ten player names and exact Steam IDs

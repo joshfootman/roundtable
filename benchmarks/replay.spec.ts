@@ -5,7 +5,7 @@ import { cpus, platform, release, totalmem } from 'node:os'
 import { resolve } from 'node:path'
 import { expect, test } from '@playwright/test'
 
-const demoPath = resolve(process.env.DEMO_PATH ?? 'fixtures/faze-vs-vitality-m2-dust2.dem')
+const demoPath = resolve(process.env.DEMO_PATH ?? 'fixtures/local/faze-vs-vitality-m2-dust2.dem')
 
 function percentile(values: number[], fraction: number) {
   const sorted = [...values].sort((a, b) => a - b)

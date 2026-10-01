@@ -7,7 +7,7 @@ import { DemoReadError } from '../src/demo/errors.ts'
 import { readReplay } from '../src/demo/round.ts'
 import type { BombEvent } from '../src/replay/types.ts'
 
-const path = process.argv[2] ?? 'fixtures/faze-vs-vitality-m2-dust2.dem'
+const path = process.argv[2] ?? 'fixtures/local/faze-vs-vitality-m2-dust2.dem'
 const expected = JSON.parse(
   await readFile(new URL('../fixtures/replay/round-boundaries.json', import.meta.url), 'utf8'),
 ) as {
