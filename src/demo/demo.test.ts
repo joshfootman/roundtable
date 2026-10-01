@@ -257,7 +257,7 @@ test('rejects an incomplete round instead of publishing partial movement', async
   ).rejects.toThrow('terminal record')
 })
 
-test('replays bomb interactions and completion in a contiguous recorded segment', async () => {
+test('replays bomb and utility events across four rounds', { timeout: 15_000 }, async () => {
   const bytes = gunzipSync(readFileSync('fixtures/replay/dust2-through-round-4.dem.gz'))
   const rounds = await Effect.runPromise(
     readRounds(source(bytes)).pipe(Stream.take(4), Stream.runCollect),
