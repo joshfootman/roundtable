@@ -463,7 +463,8 @@ test('selects completed rounds without restarting import or changing selection o
           }
         });
         channel.onmessage = ({ data }) => {
-          if (data === 'reset') { postMessage({ type: 'reset' }); postMessage(round(1)); }
+          if (data === 'memory') postMessage({ type: 'error', message: 'The browser ran out of memory while reading this demo. Close other tabs or choose a shorter recording.' });
+          else if (data === 'reset') { postMessage({ type: 'reset' }); postMessage(round(1)); }
           else postMessage(round(data));
         };
         self.onmessage = () => {
@@ -553,6 +554,22 @@ test('selects completed rounds without restarting import or changing selection o
     rounds.getByRole('button', { name: 'Round 1 · Ready', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true')
   expect(workerRequests).toBe(1)
+
+  await page.getByRole('button', { name: 'Import demo' }).click()
+  await expect(rounds.getByRole('button', { name: 'Round 2 · Ready', exact: true })).toBeVisible()
+  await page.evaluate(() => {
+    const channel = new BroadcastChannel('round-navigation')
+    channel.postMessage('memory')
+    channel.close()
+  })
+  await expect(page.getByRole('alert')).toContainText(
+    'Close other tabs or choose a shorter recording.',
+  )
+  await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+  await replay.getByRole('slider', { name: 'Replay position' }).focus()
+  await page.keyboard.press('End')
+  await expect(replay.getByTestId('replay-tick')).toHaveAttribute('data-tick', '102')
+  await expect(rounds.getByRole('button', { name: 'Round 2 · Ready', exact: true })).toBeEnabled()
 })
 
 test('replays timed utility and bomb states across recorded rounds', async ({ page }) => {

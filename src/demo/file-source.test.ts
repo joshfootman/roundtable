@@ -31,6 +31,27 @@ test('retries transient file reads up to three attempts and preserves the reques
       left: { _tag: 'DemoReadError', message: 'The demo file could not be read. Select it again.' },
     })
     expect(read).toHaveBeenCalledTimes(1)
+
+    read.mockClear().mockRejectedValue(new RangeError('Array buffer allocation failed'))
+    await expect(
+      Effect.runPromise(Effect.either(fileSource(file).readRange(1, 3))),
+    ).resolves.toMatchObject({
+      _tag: 'Left',
+      left: {
+        _tag: 'DemoReadError',
+        message:
+          'The browser ran out of memory while reading this demo. Close other tabs or choose a shorter recording.',
+      },
+    })
+    expect(read).toHaveBeenCalledTimes(1)
+    read.mockClear().mockRejectedValue(new RangeError('Invalid array length'))
+    await expect(
+      Effect.runPromise(Effect.either(fileSource(file).readRange(1, 3))),
+    ).resolves.toMatchObject({
+      _tag: 'Left',
+      left: { _tag: 'DemoReadError', message: 'The demo file could not be read. Select it again.' },
+    })
+    expect(read).toHaveBeenCalledTimes(1)
   } finally {
     read.mockRestore()
   }

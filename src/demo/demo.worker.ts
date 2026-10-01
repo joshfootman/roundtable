@@ -1,5 +1,6 @@
 import { replayBuffers } from '../replay/buffers.ts'
 import { Cause, Effect, Option, Stream } from 'effect'
+import { memoryFailureMessage } from './errors'
 import { fileSource } from './file-source'
 import { readRecordingInfo } from './metadata'
 import { readReplay } from './round'
@@ -27,7 +28,9 @@ self.onmessage = (event: MessageEvent<File>) => {
             type: 'error',
             message: Option.match(Cause.failureOption(cause), {
               onSome: (error) => error.message,
-              onNone: () => 'The demo reader encountered an unexpected error. Try another demo.',
+              onNone: () =>
+                memoryFailureMessage(Option.getOrUndefined(Cause.dieOption(cause))) ??
+                'The demo reader encountered an unexpected error. Try another demo.',
             }),
           }),
         ),

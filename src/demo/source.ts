@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import { uncompress } from 'snappyjs'
 import { EDemoCommands } from './generated/demo_pb.ts'
-import { DemoParseError, DemoReadError } from './errors.ts'
+import { DemoParseError, DemoReadError, memoryFailureMessage } from './errors.ts'
 
 export interface DemoSource {
   size: number
@@ -55,9 +55,10 @@ export function parse<T>(run: () => T): Effect.Effect<T, DemoParseError> {
         ? error
         : new DemoParseError({
             message:
-              error instanceof Error
+              memoryFailureMessage(error) ??
+              (error instanceof Error
                 ? error.message
-                : 'The demo data is damaged. Download it again.',
+                : 'The demo data is damaged. Download it again.'),
           }),
   })
 }
@@ -108,9 +109,11 @@ export function readRecordPayload(
     return framing.compressed
       ? yield* Effect.try({
           try: () => uncompress(bytes, limit),
-          catch: () =>
+          catch: (error) =>
             new DemoParseError({
-              message: `The demo has invalid or oversized compressed ${context}. Download it again.`,
+              message:
+                memoryFailureMessage(error) ??
+                `The demo has invalid or oversized compressed ${context}. Download it again.`,
             }),
         })
       : bytes

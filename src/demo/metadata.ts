@@ -1,7 +1,12 @@
 import { Effect } from 'effect'
 import { fromBinary, isFieldSet, type Message, type DescField } from '@bufbuild/protobuf'
 import { boundedSource, readRecordFraming, readRecordPayload, type DemoSource } from './source.ts'
-import { DemoParseError, DemoReadError, DemoUnsupportedError } from './errors.ts'
+import {
+  DemoParseError,
+  DemoReadError,
+  DemoUnsupportedError,
+  memoryFailureMessage,
+} from './errors.ts'
 export { DemoParseError, DemoReadError, DemoUnsupportedError } from './errors.ts'
 import { CDemoFileHeaderSchema, CDemoFileInfoSchema, EDemoCommands } from './generated/demo_pb.ts'
 
@@ -50,7 +55,9 @@ function decode<T>(run: () => T, message?: string): Effect.Effect<T, MetadataDec
         ? error
         : new DemoParseError({
             message:
-              message ?? (error instanceof Error ? error.message : 'The demo metadata is invalid.'),
+              memoryFailureMessage(error) ??
+              message ??
+              (error instanceof Error ? error.message : 'The demo metadata is invalid.'),
           }),
   })
 }

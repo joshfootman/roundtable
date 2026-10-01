@@ -39,7 +39,7 @@
 - [x] Cancel an import and immediately open another demo
 - [x] Retry recoverable file reads up to three total attempts
 - [x] Retain completed rounds after parsing fails
-- [ ] Recover gracefully from insufficient browser memory
+- [x] Recover gracefully from insufficient browser memory
 - [ ] Verify playback against older and recent tournament demos
 
 <!-- - [ ] Control playback and inspect players on a phone -->

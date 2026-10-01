@@ -4,7 +4,7 @@ import { recordAtTick } from '../replay/frames.ts'
 import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { Effect, Stream } from 'effect'
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { readDemo } from './demo'
 import { readFirstRound, readReplay, readRounds } from './round'
 import { readRecordFraming } from './source'
@@ -356,4 +356,34 @@ test('replays bomb interactions and completion in a contiguous recorded segment'
     carrier: '76561198068422762',
     planting: true,
   })
+})
+
+test('keeps the published round when a later replay allocation runs out of memory', async () => {
+  const bytes = gunzipSync(readFileSync('fixtures/replay/dust2-through-round-4.dem.gz'))
+  const completed: number[] = []
+  const allocation = vi.spyOn(Float32Array, 'from')
+  try {
+    const result = await Effect.runPromise(
+      Stream.runForEach(readReplay(source(bytes)), (event) =>
+        Effect.sync(() => {
+          if (event.type !== 'round') return
+          completed.push(event.round.number)
+          allocation.mockImplementation(() => {
+            throw new RangeError('Array buffer allocation failed')
+          })
+        }),
+      ).pipe(Effect.either),
+    )
+    expect(completed).toEqual([1])
+    expect(result).toMatchObject({
+      _tag: 'Left',
+      left: {
+        _tag: 'DemoParseError',
+        message:
+          'The browser ran out of memory while reading this demo. Close other tabs or choose a shorter recording.',
+      },
+    })
+  } finally {
+    allocation.mockRestore()
+  }
 })

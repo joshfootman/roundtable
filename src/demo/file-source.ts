@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { DemoReadError } from './errors'
+import { DemoReadError, memoryFailureMessage } from './errors'
 import type { DemoSource } from './source'
 
 export function fileSource(file: Blob): DemoSource {
@@ -16,7 +16,11 @@ export function fileSource(file: Blob): DemoSource {
         }),
         Effect.map((buffer) => new Uint8Array(buffer)),
         Effect.mapError(
-          () => new DemoReadError({ message: 'The demo file could not be read. Select it again.' }),
+          (error) =>
+            new DemoReadError({
+              message:
+                memoryFailureMessage(error) ?? 'The demo file could not be read. Select it again.',
+            }),
         ),
       ),
   }
