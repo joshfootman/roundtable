@@ -200,3 +200,74 @@ test('captures overtime freeze time and postmatch activity without a regulation 
     [{ type: 'round', round: { ...expected, number: 31, overtime: 2 } }],
   ])
 })
+
+test('captures an opening freeze checkpoint without inventing a midround start', () => {
+  const openingRules = { ...rules, freezePeriod: true }
+  const tracker = createRoundTracker()
+  expect(tracker.update(100, openingRules, [], 1 / 64)).toEqual([
+    { type: 'round-start', number: 1, startTick: 100 },
+  ])
+  for (const [tick, names, changes] of [
+    [100, [], {}],
+    [102, ['round_freeze_end'], { freezePeriod: false }],
+    [105, ['round_end'], { freezePeriod: false, reason: 9, totalRoundsPlayed: 1 }],
+  ] as const) {
+    tracker.update(tick, { ...openingRules, ...changes }, [...names], 1 / 64)
+    tracker.sample(tick, [
+      {
+        steamId: '76561198201620490',
+        name: 'broky',
+        team: 3,
+        x: tick,
+        y: 20,
+        z: 30,
+        alive: true,
+        health: 100,
+        yaw: 90,
+        money: 800,
+        armour: 0,
+        helmet: false,
+        flash: { type: 'none' },
+        grenades: [],
+        weapon: { type: 'none' },
+      },
+    ])
+  }
+  const events = tracker.update(
+    110,
+    { ...openingRules, totalRoundsPlayed: 1 },
+    ['round_start'],
+    1 / 64,
+  )
+  expect(
+    events.map((event) =>
+      event.type === 'round'
+        ? {
+            type: event.type,
+            number: event.round.number,
+            startTick: event.round.startTick,
+            liveStartTick: event.round.liveStartTick,
+            resultTick: event.round.resultTick,
+            endTick: event.round.endTick,
+            ticks: Array.from(event.round.ticks),
+            positions: Array.from(event.round.positions),
+          }
+        : event,
+    ),
+  ).toEqual([
+    {
+      type: 'round',
+      number: 1,
+      startTick: 100,
+      liveStartTick: 102,
+      resultTick: 105,
+      endTick: 110,
+      ticks: [100, 102, 105],
+      positions: [100, 20, 30, 102, 20, 30, 105, 20, 30],
+    },
+    { type: 'round-start', number: 2, startTick: 110 },
+  ])
+  const midround = createRoundTracker()
+  expect(midround.update(100, { ...openingRules, freezePeriod: false }, [], 1 / 64)).toEqual([])
+  expect(midround.recording).toBe(false)
+})
