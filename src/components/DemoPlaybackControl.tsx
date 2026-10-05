@@ -47,7 +47,7 @@ export function DemoPlaybackControl({
   return (
     <section
       aria-label="Playback controls"
-      className="absolute bottom-4 left-1/2 z-20 flex w-96 max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-2 rounded-xl bg-neutral-700/50 p-2 text-base text-mauve-200 tabular-nums"
+      className="absolute bottom-4 left-1/2 z-20 flex w-160 max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-2 rounded-xl bg-neutral-700/50 p-2 text-base text-mauve-200 tabular-nums"
     >
       <button
         type="button"
