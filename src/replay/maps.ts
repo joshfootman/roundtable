@@ -94,7 +94,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     imageSize: 1024,
     defaultZoom: 1.25,
     origin: { x: -3453, y: 2887 },
-    scale: 5,
+    scale: 7,
     rotation: 0,
     boundaryZ: -495,
     initialFloor: 'upper',

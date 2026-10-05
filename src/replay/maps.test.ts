@@ -58,3 +58,15 @@ test('assigns every height to exactly one floor and leaves single floor maps vis
     true,
   ])
 })
+
+test('places independent Nuke spawn coordinates on the native radar instead of beyond its edge', () => {
+  // demoinfocs reference: fixtures/maps-reference/astralis-vs-mouz-m2-nuke.json, round 1.
+  // Native overview uses pos_x -3453, pos_y 2887 and scale 7 at the pinned radar revision.
+  const nuke = mapDefinition('de_nuke')!
+  const ctSpawn = worldToMap(nuke, 2504, -344)
+  const tSpawn = worldToMap(nuke, -1808, -1025)
+  expect(ctSpawn.x).toBeCloseTo(851, 3)
+  expect(ctSpawn.y).toBeCloseTo(461.571, 3)
+  expect(tSpawn.x).toBeCloseTo(235, 3)
+  expect(tSpawn.y).toBeCloseTo(558.857, 3)
+})
