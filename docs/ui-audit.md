@@ -35,6 +35,6 @@ The audit covers all product-owned DOM components, global and responsive CSS, an
 
 ## Evidence and limits
 
-Source review identifies the corrections above. The six existing Chromium end-to-end tests cover imports, catalog playback, keyboard controls, responsive map placement, overflow, and player-panel behavior. Project lint, formatting, and TypeScript checks also run.
+Source review identifies the corrections above. The six existing Chromium end-to-end tests cover imports, catalog playback, keyboard controls, responsive map placement, overflow, and player-panel behavior. Lint, formatting, and TypeScript checks passed. The initial browser suite passed all six tests. After the styling edits, five passed and the responsive test failed its map-overlap assertion during viewport resizing. The isolated responsive test then passed. This intermittent failure remains open; its cause is not proven.
 
 The collaborative preview timed out on open, status, and navigation attempts. Rendered optical alignment, actual color contrast over map imagery, clipping, font loading in canvas, and perceived motion remain unverified. Passing functional browser tests is not a pixel or visual parity verdict. Translucent backgrounds can look different over different underlying content even when their CSS values match.
