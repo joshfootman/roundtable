@@ -59,7 +59,6 @@ positions, with opening freeze/live player samples checked as well.
 
 Three production-browser imports each of Copenhagen Ancient and recent Anubis
 played recorded movement and sought forwards and backwards on this Apple M2
-laptop with Chromium 153.0.8010.12. These checks use real full files. Run
-`DEMO_PATH=fixtures/local/faze-vs-natus-vincere-m1-ancient.dem npm run benchmark:playback -- --project desktop`
-and repeat with `fixtures/local/vitality-vs-inner-circle-m1-anubis.dem`.
-The benchmark writes browser and hardware metadata with each result.
+laptop with Chromium 153.0.8010.12. These checks used real full files. The playback
+benchmark was retired on 5 October 2026; these results are retained as historical
+verification. Current browser coverage lives in the regression suite.

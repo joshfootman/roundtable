@@ -1,8 +1,6 @@
 # Playback baseline
 
-`npm run benchmark:playback` builds the production app and runs Chromium against Vite preview. The benchmark is separate from the regression suite. It runs three fresh page imports per viewport, sequentially. `DEMO_PATH=/absolute/path/recording.dem npm run benchmark:playback` selects another local raw demo with calibrated map imagery.
-
-Each project writes `playback-baseline.json` under `test-results/benchmarks/`. The JSON includes all measurements, the demo hash, browser version, hardware, and build mode. Results are ignored by Git.
+The playback benchmark and its CI gate were removed on 5 October 2026 because frame-image equality was flaky across CI rendering. The measurements below are retained as historical results. Current CI covers lint, types, unit tests and production-browser regression tests.
 
 ## Measurement definitions
 
@@ -69,24 +67,13 @@ utility visibility is separately checked through canvas hide/restore assertions
 in the regression suite. Mobile emulation remains a viewport check on this
 laptop, not a physical-phone performance measurement.
 
-## CI regression gate
+## Retired CI regression gate
 
-`npm run benchmark:gate` runs the existing production-browser playback benchmark
-on the committed compact Dust II recording. It uses three fresh page imports at
-1440 × 900 and does not require an ignored full demo. The gate records fixture
-SHA-256, browser and hardware with all observations before evaluating them.
+The removed gate used three imports of the committed compact Dust II recording at
+1440 × 900. It required median first-round availability below 5,000 ms, median
+frame-gap p95 below 100 ms and each median seek direction below 250 ms.
 
-The median first playable round must be below 5,000 ms. The median of the three
-frame-gap p95 observations must be below 100 ms. The median of each forward
-and backward seek direction must be below 250 ms. These broad responsiveness ceilings
-catch substantial regressions while allowing shared CI hardware variation. They
-do not promise 60 fps or enforce a percentage change against the Apple M2 baseline.
-The separate CI job uploads observations even when a gate fails.
-
-On 1 October 2026, the initial Apple M2 production run measured a 921.8 ms median
-first round, 16.8 ms median frame-gap p95 and 20.6 ms forward and 26.2 ms backward median seeks.
-A temporary experiment delayed every real parser-worker request by six seconds.
-The first-round gate failed. The delay was removed and is not part of the benchmark.
-Run the unmodified command to reproduce the passing gate. The current GitHub
-runner has not been measured locally; its uploaded hardware record is required
-before tightening these ceilings or claiming a comparative CI baseline.
+On 1 October 2026, the initial Apple M2 run measured a 921.8 ms median first round,
+16.8 ms median frame-gap p95 and 20.6 ms forward and 26.2 ms backward median seeks.
+A temporary six-second delay on real parser-worker requests made the gate fail;
+the delay was then removed. These are historical observations, not current CI checks.
