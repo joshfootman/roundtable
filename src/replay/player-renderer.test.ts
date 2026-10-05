@@ -86,6 +86,25 @@ function marker(renderer: ReturnType<typeof createPlayerRenderer>, index: number
 }
 
 describe('recorded player rendering', () => {
+  it('restores overlapping player draw order after deaths and backward seeking', () => {
+    const replay = round()
+    for (let offset = 2; offset < replay.positions.length; offset += 3) replay.positions[offset] = 1
+    // B dies while A survives; both return alive when seeking back to the opening frame.
+    replay.alive[6] = 1
+    replay.alive[7] = 0
+    const renderer = createPlayerRenderer(replay, map, appearance, textures)
+    renderer.draw(100, 1, { floor: 'upper', flashes: true })
+    renderer.container.sortChildren()
+    const openingOrder = renderer.container.children.map((child) => child.uid)
+    renderer.draw(110, 1, { floor: 'upper', flashes: true })
+    renderer.container.sortChildren()
+    expect(renderer.container.children.map((child) => child.uid)).not.toEqual(openingOrder)
+    renderer.draw(100, 1, { floor: 'upper', flashes: true })
+    renderer.container.sortChildren()
+    expect(renderer.container.children.map((child) => child.uid)).toEqual(openingOrder)
+    renderer.container.destroy({ children: true })
+  })
+
   it('shows the fixed ladder slot during recorded climbing and clears it on exit, death and rewind', () => {
     const replay = round()
     const initial = replay.inspection[0]![0]!

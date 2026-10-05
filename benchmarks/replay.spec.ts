@@ -128,6 +128,9 @@ test('records import, playback and seek timings', async ({ page, browser }, test
         await page.mouse.move(0, 0)
         const restoredFrame = await canvas.screenshot({ animations: 'disabled' })
         if (!restoredFrame.equals(initialFrame)) {
+          // The CI artifact uploads output files; buffered attachments alone are not retained.
+          await writeFile(testInfo.outputPath('initial-frame.png'), initialFrame)
+          await writeFile(testInfo.outputPath('restored-frame.png'), restoredFrame)
           await testInfo.attach('initial-frame', { body: initialFrame, contentType: 'image/png' })
           await testInfo.attach('restored-frame', { body: restoredFrame, contentType: 'image/png' })
         }

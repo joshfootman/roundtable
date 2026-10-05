@@ -87,7 +87,7 @@ export function DemoImportStatus({ state }: { state: ImportState }) {
       {visual.status === 'error' && (
         <span
           role="alert"
-          className="demo-import-error mt-2 min-w-0 basis-full rounded-xl bg-neutral-800 px-3 py-2 text-xs leading-normal wrap-anywhere text-red-300"
+          className="demo-import-error mt-2 min-w-0 basis-full rounded-xl bg-neutral-800 px-3 py-2 text-xs leading-normal wrap-anywhere text-red-300 replay-desktop:absolute replay-desktop:top-full replay-desktop:right-0 replay-desktop:left-0 replay-desktop:z-50"
         >
           {visual.message}
         </span>

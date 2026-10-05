@@ -164,7 +164,8 @@ export function createPlayerRenderer(
       marker.position.set(point.x, point.y)
       marker.scale.set(symbolScale)
       marker.alpha = alive ? (otherFloor ? 0.6 : 1) : 0.35
-      marker.zIndex = otherFloor ? 0 : alive ? 2 : 1
+      // Preserve recorded player order within each layer, including after a backward seek.
+      marker.zIndex = (otherFloor ? 0 : alive ? 2 : 1) * round.players.length + player
     }
   }
 
