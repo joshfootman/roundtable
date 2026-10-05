@@ -36,7 +36,18 @@ const bombState = Schema.Union(
 const Header = Schema.mutable(
   Schema.Struct({
     number: integer,
+    teamNames: Schema.optional(
+      Schema.Struct({ ct: Schema.optional(text), t: Schema.optional(text) }),
+    ),
     score: Schema.optional(Schema.Struct({ ct: integer, t: integer })),
+    outcome: Schema.optional(
+      Schema.Struct({
+        winner: Schema.Literal('ct', 't'),
+        reason: integer,
+        teamName: Schema.optional(text),
+        mvp: Schema.optional(Schema.Struct({ name: text })),
+      }),
+    ),
     overtime: integer,
     startTick: integer,
     liveStartTick: integer,
@@ -127,6 +138,7 @@ const Header = Schema.mutable(
             Schema.Struct({
               tick: integer,
               money: integer,
+              onLadder: Schema.optional(Schema.Boolean),
               armour: integer,
               flash,
               helmet: Schema.Boolean,

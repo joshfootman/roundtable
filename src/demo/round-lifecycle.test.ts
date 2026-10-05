@@ -278,11 +278,12 @@ test('captures an opening freeze checkpoint without inventing a midround start',
   expect(midround.recording).toBe(false)
 })
 
-test('records owned gun pickups, ammo changes and drops while the held knife stays unchanged', () => {
+test('records inventory and ladder changes while the held knife stays unchanged', () => {
   const tracker = createRoundTracker()
   tracker.update(100, rules, ['round_start'], 1 / 64)
   const player = {
     steamId: '77',
+    onLadder: false,
     name: 'Player',
     team: 3 as const,
     x: 0,
@@ -306,7 +307,7 @@ test('records owned gun pickups, ammo changes and drops while the held knife sta
   tracker.sample(102, [
     { ...player, weapons: [{ type: 'gun', definition: 7, magazine: 29, reserve: 90 }, knife] },
   ])
-  tracker.sample(103, [{ ...player, weapons: [knife] }])
+  tracker.sample(103, [{ ...player, onLadder: true, weapons: [knife] }])
   tracker.sample(104, [{ ...player, weapons: [knife] }])
   tracker.update(105, { ...rules, freezePeriod: false }, ['round_freeze_end'], 1 / 64)
   tracker.update(106, { ...rules, reason: 8, totalRoundsPlayed: 1 }, ['round_end'], 1 / 64)
@@ -341,5 +342,17 @@ test('records owned gun pickups, ammo changes and drops while the held knife sta
       weapon: { type: 'item', definition: 42 },
       weapons: [{ type: 'item', definition: 42 }],
     },
+    {
+      tick: 104,
+      weapon: { type: 'item', definition: 42 },
+      weapons: [{ type: 'item', definition: 42 }],
+    },
+  ])
+  expect(event.round.inspection[0]?.map(({ tick, onLadder }) => ({ tick, onLadder }))).toEqual([
+    { tick: 100, onLadder: false },
+    { tick: 101, onLadder: false },
+    { tick: 102, onLadder: false },
+    { tick: 103, onLadder: true },
+    { tick: 104, onLadder: false },
   ])
 })

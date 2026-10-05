@@ -66,6 +66,8 @@ export interface PlayerSnapshot {
   steamId: string
   name: string
   team: 2 | 3
+  mvps?: number
+  onLadder?: boolean
   x: number
   y: number
   z: number
@@ -81,6 +83,7 @@ export interface PlayerSnapshot {
   weapons: ReplayWeapon[]
 }
 const replayFields = new Set([
+  'm_MoveType',
   'm_flFlashDuration',
   'm_fireCount',
   'm_steamID',
@@ -97,6 +100,8 @@ const replayFields = new Set([
   'm_iszPlayerName',
   'm_iTeamNum',
   'm_iScore',
+  'm_iMVPs',
+  'm_szClanTeamname',
   'm_iHealth',
   'm_lifeState',
   'm_angEyeAngles',
@@ -119,6 +124,7 @@ const replayFields = new Set([
     'm_totalRoundsPlayed',
     'm_bHasMatchStarted',
     'm_eRoundWinReason',
+    'm_iRoundWinStatus',
     'm_gamePhase',
     'm_nOvertimePlaying',
   ].map((name) => `m_pGameRules.${name}`),
@@ -413,10 +419,14 @@ export function createEntityDecoder() {
         if (typeof startTick !== 'number') throw new Error('Missing recorded flash beginning.')
         flash = { type: 'flashed', startTick, durationSeconds: duration }
       }
+      const mvps = controller.values.get('m_iMVPs')
+      const moveType = pawn.values.get('m_MoveType')
       players.push({
         steamId: steam.toString(),
         name,
         team,
+        ...(typeof mvps === 'number' ? { mvps } : {}),
+        ...(typeof moveType === 'number' ? { onLadder: moveType === 9 } : {}),
         ...position(pawn),
         alive: health > 0 && life === 0,
         health,
@@ -586,6 +596,7 @@ export function createEntityDecoder() {
       const reason = entity.values.get('m_pGameRules.m_eRoundWinReason')
       const phase = entity.values.get('m_pGameRules.m_gamePhase')
       const overtime = entity.values.get('m_pGameRules.m_nOvertimePlaying')
+      const winner = entity.values.get('m_pGameRules.m_iRoundWinStatus')
       if (
         typeof warmup !== 'boolean' ||
         typeof freezePeriod !== 'boolean' ||
@@ -598,10 +609,14 @@ export function createEntityDecoder() {
       )
         throw new Error('Missing recorded competitive round rules.')
       const scores = new Map<number, number>()
+      const names = new Map<number, string>()
       for (const team of view().teams) {
         const side = team.values.get('m_iTeamNum')
         const score = team.values.get('m_iScore')
         if (typeof side === 'number' && typeof score === 'number') scores.set(side, score)
+        const name = team.values.get('m_szClanTeamname')
+        if (typeof side === 'number' && typeof name === 'string' && name.trim())
+          names.set(side, name.trim())
       }
       const ct = scores.get(3)
       const t = scores.get(2)
@@ -613,7 +628,11 @@ export function createEntityDecoder() {
         reason,
         phase,
         overtime,
+        ...(winner === 2 || winner === 3
+          ? { winner: winner === 3 ? ('ct' as const) : ('t' as const) }
+          : {}),
         ...(ct !== undefined && t !== undefined ? { score: { ct, t } } : {}),
+        ...(names.size ? { teamNames: { ct: names.get(3), t: names.get(2) } } : {}),
       }
     },
   }

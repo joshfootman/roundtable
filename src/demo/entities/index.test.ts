@@ -18,6 +18,7 @@ const definitions: Record<string, [string, WireType][]> = {
   CCSTeam: [
     ['m_iTeamNum', 'uint32'],
     ['m_iScore', 'uint32'],
+    ['m_szClanTeamname', 'char'],
   ],
   CCSPlayerController: [
     ['m_steamID', 'uint64'],
@@ -41,6 +42,7 @@ const definitions: Record<string, [string, WireType][]> = {
       'uint32',
     ]),
     ['m_pWeaponServices.m_iAmmo.14', 'uint32'],
+    ['m_MoveType', 'uint32'],
   ],
   CWeapon: [
     ['m_iItemDefinitionIndex', 'uint32'],
@@ -190,19 +192,33 @@ function recording() {
 const pawn = [3, 100, 0, [0, 90, 0], 50, true, 0, 0, 0xffffff, 32, 10, 32, 20, 32, 30]
 const planted = [true, false, 0xffffff, 32, 10, 32, 20, 32, 30]
 
+test('retains ladder entry and exit from the recorded movement type', () => {
+  const { decoder, packet } = recording()
+  const values = [...pawn, 0, 0, 0, 0, 0, 0, 9]
+  packet([
+    { id: 1, className: 'CCSPlayerPawn', values },
+    { id: 2, className: 'CCSPlayerController', values: [11n, 1, 'Climber', 800] },
+  ])
+  expect(decoder.snapshots()[0]?.onLadder).toBe(true)
+  packet([{ id: 1, values: [...values.slice(0, -1), 2] }])
+  expect(decoder.snapshots()[0]?.onLadder).toBe(false)
+})
+
 test('reads scores by recorded team side and follows halftime updates', () => {
   const { decoder, packet } = recording()
   packet([
     { id: 1, className: 'CCSGameRulesProxy', values: [false, true, 12, true, 0, 2, 0] },
-    { id: 2, className: 'CCSTeam', values: [2, 7] },
-    { id: 3, className: 'CCSTeam', values: [3, 5] },
+    { id: 2, className: 'CCSTeam', values: [2, 7, 'FaZe'] },
+    { id: 3, className: 'CCSTeam', values: [3, 5, 'Vitality'] },
   ])
   expect(decoder.gameRules()?.score).toEqual({ ct: 5, t: 7 })
+  expect(decoder.gameRules()?.teamNames).toEqual({ ct: 'Vitality', t: 'FaZe' })
   packet([
     { id: 2, values: [3, 7] },
     { id: 3, values: [2, 5] },
   ])
   expect(decoder.gameRules()?.score).toEqual({ ct: 7, t: 5 })
+  expect(decoder.gameRules()?.teamNames).toEqual({ ct: 'FaZe', t: 'Vitality' })
   packet([{ id: 3, remove: 'inactive' }])
   expect(decoder.gameRules()?.score).toBeUndefined()
 })

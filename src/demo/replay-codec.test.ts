@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { expect, test } from 'vitest'
 import { decodeRound, encodeRound } from './replay-codec'
+import { recordAtTick } from '../replay/frames'
 
 test('decodes recorded binary tracks and rejects incompatible or truncated assets', () => {
   const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
@@ -59,4 +60,46 @@ test('decodes recorded binary tracks and rejects incompatible or truncated asset
   new DataView(wrongVersion).setUint32(0, 0)
   expect(() => decodeRound(wrongVersion)).toThrow('Unsupported replay asset version')
   expect(() => decodeRound(bytes.slice(0, -1))).toThrow('Truncated replay asset tracks')
+})
+
+test('preserves recorded outcomes and decodes legacy rounds without inventing a winner', () => {
+  const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
+  const round = decodeRound(new Uint8Array(raw).buffer)
+  round.outcome = { winner: 't', reason: 1, teamName: 'FaZe', mvp: { name: 'broky' } }
+  round.teamNames = { ct: 'Vitality', t: 'FaZe Clan' }
+  expect(decodeRound(encodeRound(round)).outcome).toEqual(round.outcome)
+  expect(decodeRound(encodeRound(round)).teamNames).toEqual(round.teamNames)
+  delete round.outcome
+  delete round.teamNames
+  expect(decodeRound(encodeRound(round)).outcome).toBeUndefined()
+  expect(decodeRound(encodeRound(round)).teamNames).toBeUndefined()
+})
+
+test('preserves recorded ladder states while accepting older assets without movement data', () => {
+  const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
+  const round = decodeRound(new Uint8Array(raw).buffer)
+  const inspection = round.inspection[0]![0]!
+  inspection.onLadder = true
+  expect(decodeRound(encodeRound(round)).inspection[0]![0]!.onLadder).toBe(true)
+  inspection.onLadder = false
+  expect(decodeRound(encodeRound(round)).inspection[0]![0]!.onLadder).toBe(false)
+  delete inspection.onLadder
+  expect(decodeRound(encodeRound(round)).inspection[0]![0]!.onLadder).toBeUndefined()
+})
+
+test('matches independently decoded ladder entry and exit in the bundled Nuke recording', () => {
+  const raw = gunzipSync(readFileSync('public/examples/astralis-vs-mouz-m2-nuke/round-1.rpl'))
+  const round = decodeRound(new Uint8Array(raw).buffer)
+  const observations = JSON.parse(readFileSync('fixtures/replay/nuke-ladder.json', 'utf8')) as {
+    tick: number
+    steamId: string
+    onLadder: boolean
+  }[]
+  for (const observation of observations) {
+    const player = round.players.findIndex(({ steamId }) => steamId === observation.steamId)
+    expect(player).toBeGreaterThanOrEqual(0)
+    expect(recordAtTick(round.inspection[player]!, observation.tick).onLadder).toBe(
+      observation.onLadder,
+    )
+  }
 })

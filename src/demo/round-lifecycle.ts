@@ -15,6 +15,8 @@ import type {
 
 export interface RoundRules {
   score?: ReplayRound['score']
+  teamNames?: { ct?: string; t?: string }
+  winner?: 'ct' | 't'
   warmup: boolean
   freezePeriod: boolean
   totalRoundsPlayed: number
@@ -30,7 +32,9 @@ export type ReplayEvent =
   | { type: 'reset' }
 
 type Capture = {
+  teamNames?: ReplayRound['teamNames']
   score?: ReplayRound['score']
+  outcome?: ReplayRound['outcome']
   startTick: number
   number: number
   overtime: number
@@ -67,6 +71,7 @@ function sameWeapon(x: ReplayWeapon, y: ReplayWeapon): boolean {
 
 function sameInspection(a: PlayerInspection, b: PlayerInspection): boolean {
   return (
+    a.onLadder === b.onLadder &&
     a.flash.type === b.flash.type &&
     (a.flash.type !== 'flashed' ||
       b.flash.type !== 'flashed' ||
@@ -105,7 +110,9 @@ export function createRoundTracker() {
     publishedRounds = round.number
     return {
       number: round.number,
+      ...(round.teamNames ? { teamNames: round.teamNames } : {}),
       ...(round.score ? { score: round.score } : {}),
+      ...(round.outcome ? { outcome: round.outcome } : {}),
       overtime: round.overtime,
       startTick: round.startTick,
       liveStartTick: round.liveStartTick,
@@ -171,6 +178,15 @@ export function createRoundTracker() {
     get recording() {
       return capture !== undefined
     },
+    result(winner: 'ct' | 't', reason: number, teamName?: string) {
+      if (!capture || capture.phase !== 'postround') return
+      capture.outcome = { ...capture.outcome, winner, reason, ...(teamName ? { teamName } : {}) }
+    },
+    mvp(steamId: string) {
+      if (!capture?.outcome) return
+      const player = capture.players.find((player) => player.steamId === steamId)
+      if (player) capture.outcome.mvp = { name: player.name }
+    },
     update(
       tick: number,
       rules: RoundRules | undefined,
@@ -235,8 +251,19 @@ export function createRoundTracker() {
       }
       if (capture?.phase === 'freeze' && events.includes('round_freeze_end'))
         capture = { ...capture, score: rules.score, phase: 'live', liveStartTick: tick }
-      if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
+      if (capture && capture.phase !== 'postround' && rules.teamNames)
+        capture.teamNames = { ...rules.teamNames }
+      if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end'))) {
         capture = { ...capture, phase: 'postround', resultTick: tick }
+        if (rules.winner) {
+          const teamName = rules.teamNames?.[rules.winner]
+          capture.outcome = {
+            winner: rules.winner,
+            reason: rules.reason,
+            ...(teamName ? { teamName } : {}),
+          }
+        }
+      }
       return output
     },
     shot(shot: ReplayShot) {
@@ -366,6 +393,14 @@ export function createRoundTracker() {
       } else ticks.push(tick)
       for (const [index, player] of players.entries()) {
         const current = byId.get(player.steamId)
+        const previousSnapshot = lastSnapshots.get(player.steamId)
+        if (
+          capture.outcome &&
+          current?.mvps !== undefined &&
+          previousSnapshot?.mvps !== undefined &&
+          current.mvps > previousSnapshot.mvps
+        )
+          capture.outcome.mvp = { name: player.name }
         if (current) lastSnapshots.set(player.steamId, current)
         const recorded = current ?? lastSnapshots.get(player.steamId)
         if (!recorded) throw new Error('A competitive player has no recorded position.')
@@ -379,6 +414,7 @@ export function createRoundTracker() {
         const previous = track.at(-1)
         const currentInspection = {
           tick,
+          ...(recorded.onLadder !== undefined ? { onLadder: recorded.onLadder } : {}),
           flash: recorded.flash,
           weapon: recorded.weapon,
           weapons: recorded.weapons,

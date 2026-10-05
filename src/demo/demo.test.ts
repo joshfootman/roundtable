@@ -91,6 +91,12 @@ test('decodes a real competitive round against independent identities and positi
     { type: 'round-start', number: 2, startTick: 8282 },
   ])
   const round = demo.firstRound
+  expect(round.outcome).toEqual({
+    winner: 'ct',
+    reason: 8,
+    teamName: 'Vitality',
+    mvp: { name: 'Spinx' },
+  })
   expect(round.players).toEqual(
     oracle.samples[0]!.players.map(({ steamId, name }) => ({ steamId, name })),
   )

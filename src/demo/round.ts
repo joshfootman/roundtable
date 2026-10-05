@@ -112,15 +112,21 @@ export function readReplay(
           if (!descriptor) throw new Error('Missing replay event descriptors.')
           names.push(descriptor.name)
           if (
-            ['player_death', 'bomb_planted', 'bomb_defused', 'bomb_exploded'].includes(
-              descriptor.name,
-            ) ||
+            [
+              'round_mvp',
+              'round_end',
+              'player_death',
+              'bomb_planted',
+              'bomb_defused',
+              'bomb_exploded',
+            ].includes(descriptor.name) ||
             descriptor.name in detonationKinds ||
             descriptor.name === 'smokegrenade_expired'
           )
             recorded.push({ event, descriptor })
         }
-      const events = tracker.update(tick, entities.gameRules(), names, tickInterval)
+      const rules = entities.gameRules()
+      const events = tracker.update(tick, rules, names, tickInterval)
       if (tracker.recording) {
         tracker.sample(tick, entities.snapshots())
         tracker.bomb(tick, entities.bomb())
@@ -172,7 +178,16 @@ export function readReplay(
         } else if (descriptor.name === 'smokegrenade_expired') {
           tracker.smokeExpired(key('entityid', 4).valShort, tick)
         } else if (!tracker.recording) continue
-        else if (descriptor.name === 'player_death') {
+        else if (descriptor.name === 'round_mvp') {
+          tracker.mvp(entities.playerByUserId(key('userid', 9).valShort))
+        } else if (descriptor.name === 'round_end') {
+          const winner = key('winner', 5).valByte
+          const reason = key('reason', 5).valByte
+          if (winner === 2 || winner === 3) {
+            const side = winner === 3 ? 'ct' : 't'
+            tracker.result(side, reason, rules?.teamNames?.[side])
+          }
+        } else if (descriptor.name === 'player_death') {
           const attacker = key('attacker', 9).valShort
           const weapon = key('weapon', 1).valString
           if (!weapon.trim()) throw new Error('A recorded death is missing its weapon.')

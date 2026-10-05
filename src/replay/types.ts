@@ -75,6 +75,7 @@ export type ReplayWeapon =
 
 export interface PlayerInspection {
   tick: number
+  onLadder?: boolean
   money: number
   armour: number
   flash: FlashState
@@ -94,7 +95,9 @@ export interface ReplayDeath {
 
 export interface ReplayRound {
   number: number
+  teamNames?: { ct?: string; t?: string }
   score?: { ct: number; t: number }
+  outcome?: { winner: 'ct' | 't'; reason: number; teamName?: string; mvp?: { name: string } }
   overtime: number
   startTick: number
   liveStartTick: number

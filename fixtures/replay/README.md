@@ -1,5 +1,12 @@
 # First competitive round fixture
 
+`nuke-ladder.json` records movement-state changes between ticks 7900 and 8500 in
+`fixtures/local/astralis-vs-mouz-m2-nuke.dem`. It was independently extracted with
+demoinfocs-golang v4.5.1 at FrameDone from the player pawn's `m_MoveType`, with 9
+identifying ladder movement. Initial states and subsequent transitions verify
+ladder entry and exit in the bundled Nuke replay. Source identity and SHA-256 are
+recorded in `src/demo/examples.ts`.
+
 Source is `fixtures/local/faze-vs-vitality-m2-dust2.dem`, the supplied 2024 BLAST Premier
 Spring Final Dust II recording. Source SHA-256 is
 `0d5a5f00301ea55780f30184b9e257b9d0e742fb5d3e6b4c70878340be6eb7d4`.

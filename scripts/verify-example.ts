@@ -73,6 +73,18 @@ for (const id of ids) {
     assert.equal(decoded.byteLength, descriptor.decodedBytes)
     assert.equal(createHash('sha256').update(decoded).digest('hex'), descriptor.sha256)
     const round = decodeRound(decoded.buffer)
+    assert.ok(round.outcome, `Missing recorded outcome for ${id} round ${round.number}`)
+    assert.ok(
+      round.teamNames?.ct && round.teamNames.t,
+      `Missing recorded clans for ${id} round ${round.number}`,
+    )
+    assert.equal(round.teamNames[round.outcome.winner], round.outcome.teamName)
+    assert.ok(
+      round.inspection.every((track) =>
+        track.every((state) => typeof state.onLadder === 'boolean'),
+      ),
+      `Missing recorded movement state for ${id} round ${round.number}`,
+    )
     assert.equal(round.number, descriptor.number)
     assert.equal(round.startTick, descriptor.startTick)
     const expected = reference.rounds.find((value) => value.number === round.number)

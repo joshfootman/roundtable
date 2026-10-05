@@ -12,7 +12,9 @@ import { ExampleManifest } from '../src/demo/example.ts'
 import { defaultExampleId, examples, parseExampleId } from '../src/demo/examples.ts'
 import type { ExampleId } from '../src/demo/examples.ts'
 
-const selection = process.argv[2] ?? defaultExampleId
+const args = process.argv.slice(2)
+const force = args.includes('--force')
+const selection = args.find((arg) => arg !== '--force') ?? defaultExampleId
 const id = parseExampleId(basename(selection).replace(/\.dem$/, ''))
 if (selection !== '--all' && id === undefined)
   throw new Error('Choose an accepted example ID or filename.')
@@ -32,6 +34,7 @@ for (const id of ids) {
   const sourceHash = hash.digest('hex')
   assert.equal(sourceHash, example.sourceSha256, `Unverified source recording ${example.filename}`)
   try {
+    if (force) throw new Error('Regeneration requested.')
     const existing = Schema.decodeUnknownSync(ExampleManifest)(
       JSON.parse(await readFile(`${directory}/manifest.json`, 'utf8')),
     )
@@ -90,6 +93,16 @@ for (const id of ids) {
               const decoded = decodeRound(buffer)
               assert.equal(decoded.number, round.number)
               assert.equal(decoded.startTick, round.startTick)
+              assert.ok(round.outcome, `Missing recorded outcome for ${id} round ${round.number}`)
+              assert.deepEqual(decoded.outcome, round.outcome)
+              assert.deepEqual(decoded.teamNames, round.teamNames)
+              assert.ok(
+                round.inspection.every((track) =>
+                  track.every((state) => typeof state.onLadder === 'boolean'),
+                ),
+                `Missing recorded movement state for ${id} round ${round.number}`,
+              )
+              assert.deepEqual(decoded.inspection, round.inspection)
               const compressed = gzipSync(new Uint8Array(buffer))
               const path = `round-${round.number}.rpl`
               await writeFile(`${directory}/${path}.tmp`, compressed)
