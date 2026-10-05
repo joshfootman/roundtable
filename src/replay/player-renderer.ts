@@ -32,7 +32,7 @@ export function createPlayerRenderer(
   const directionX = directionRadius * Math.cos(directionHalfAngle)
   const directionY = directionRadius * Math.sin(directionHalfAngle)
   const labelStyle = new TextStyle({
-    fontFamily: 'sans-serif',
+    fontFamily: ['Geist Variable', 'sans-serif'],
     fontSize: appearance.fontSize,
     fontWeight: 'bold',
     fill: appearance.background,
