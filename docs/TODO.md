@@ -1,1 +1,6 @@
 - vision cones?
+- work on UI /demo
+- cut down 80 odd unit tests
+- drawing
+- multiplayer / invite friends to watch / draw
+- zoom / pan controls

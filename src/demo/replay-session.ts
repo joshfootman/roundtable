@@ -68,6 +68,14 @@ export class ReplaySession {
     this.update({ type: 'cancel' })
   }
 
+  clear = () => {
+    this.controller?.abort()
+    this.controller = undefined
+    this.requestedRound = undefined
+    this.snapshot = { state: { status: 'empty' }, source: undefined }
+    for (const listener of this.listeners) listener()
+  }
+
   dispose() {
     this.controller?.abort()
     this.controller = undefined

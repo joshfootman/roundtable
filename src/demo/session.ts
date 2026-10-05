@@ -9,21 +9,27 @@ type Parsing =
   | { status: 'cancelled' }
   | { status: 'failed'; message: string }
 
+export type EmptyImportState = { status: 'empty' }
+export type ReadingImportState = { status: 'reading'; filename: string }
+export type CancelledImportState = { status: 'cancelled'; filename: string }
+export type ReadyImportState = {
+  status: 'ready'
+  filename: string
+  metadata: DemoMetadata
+  roundStartTicks: number[]
+  discoveredRound: Extract<ReplayEvent, { type: 'round-start' }> | undefined
+  rounds: ReplayRound[]
+  selectedStartTick: number | undefined
+  parsing: Parsing
+}
+export type ErrorImportState = { status: 'error'; filename: string; message: string }
+
 export type ImportState =
-  | { status: 'empty' }
-  | { status: 'reading'; filename: string }
-  | { status: 'cancelled'; filename: string }
-  | {
-      status: 'ready'
-      filename: string
-      metadata: DemoMetadata
-      roundStartTicks: number[]
-      discoveredRound: Extract<ReplayEvent, { type: 'round-start' }> | undefined
-      rounds: ReplayRound[]
-      selectedStartTick: number | undefined
-      parsing: Parsing
-    }
-  | { status: 'error'; filename: string; message: string }
+  | EmptyImportState
+  | ReadingImportState
+  | CancelledImportState
+  | ReadyImportState
+  | ErrorImportState
 
 export type ImportAction =
   | ImportEvent

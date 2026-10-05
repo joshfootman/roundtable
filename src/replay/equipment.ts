@@ -57,3 +57,12 @@ export function equipmentName(id: number): string {
   if (!name) throw new Error(`Unsupported recorded equipment ${id}.`)
   return name
 }
+
+const pistols = new Set([1, 2, 3, 4, 30, 32, 36, 61, 63, 64])
+
+export function weaponSlot(id: number): 'primary' | 'pistol' | 'knife' | undefined {
+  if (pistols.has(id)) return 'pistol'
+  if (id in firearms && id !== 31) return 'primary'
+  if (knives.has(id)) return 'knife'
+  return undefined
+}

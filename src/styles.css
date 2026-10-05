@@ -1,29 +1,61 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/geist';
+
+@theme {
+  --color-ct: #96c8fa;
+  --color-t: #eabe54;
+
+  --animate-demo-import-status-travel: demo-import-status-travel 800ms linear infinite;
+
+  @keyframes demo-import-status-travel {
+    from {
+      stroke-dashoffset: 0;
+    }
+    to {
+      stroke-dashoffset: -100;
+    }
+  }
+}
 
 :root {
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  color: #e7ece8;
-  background: #101613;
+  --font-sans: 'Geist Variable', sans-serif;
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
 }
+
 * {
   box-sizing: border-box;
 }
+
 html,
 body,
 #app {
   min-height: 100%;
 }
+
+html {
+  overscroll-behavior-y: none;
+}
+
+@media (any-pointer: coarse) {
+  html {
+    overscroll-behavior-y: auto;
+  }
+}
+
 body {
   margin: 0;
 }
+
 .workspace {
   max-width: 1120px;
   padding: 0 40px;
   margin: auto;
+  color: #e7ece8;
+  background: #101613;
 }
+
 .masthead {
   display: flex;
   justify-content: space-between;
@@ -32,6 +64,7 @@ body {
   padding: 32px 0;
   border-bottom: 1px solid #303c34;
 }
+
 .brand {
   color: #f0f5eb;
   font-weight: 750;
@@ -135,10 +168,6 @@ h2 {
 }
 input:focus-visible,
 button:focus-visible,
-a:focus-visible {
-  outline: 3px solid #e7f6cc;
-  outline-offset: 5px;
-}
 .import-controls button:hover {
   background: #d3edab;
 }
@@ -244,4 +273,70 @@ footer {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px 16px;
   }
+}
+
+.demo-timeline,
+.demo-timeline:focus-visible {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.demo-timeline::-webkit-slider-runnable-track {
+  height: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-mauve-200) var(--timeline-progress),
+    color-mix(in oklab, var(--color-mauve-200) 15%, transparent) var(--timeline-progress)
+  );
+}
+
+.demo-timeline::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  margin-top: -3px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-mauve-200);
+  box-shadow: none;
+}
+
+.demo-timeline::-moz-range-track {
+  height: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-mauve-200) 15%, transparent);
+}
+
+.demo-timeline::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-mauve-200);
+}
+
+.demo-timeline::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-mauve-200);
+  box-shadow: none;
+}
+
+.demo-timeline:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-mauve-200);
+  outline-offset: 3px;
+}
+
+.demo-timeline:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-mauve-200);
+  outline-offset: 3px;
+}
+
+.demo-playback-toggle:focus-visible {
+  background: color-mix(in oklab, var(--color-neutral-800) 50%, transparent);
 }

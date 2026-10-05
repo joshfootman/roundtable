@@ -10,34 +10,21 @@ import {
   type UtilityVisibility,
 } from './utility.ts'
 import { equipmentName } from './equipment.ts'
-import { useEffect, useRef, useState } from 'react'
-import {
-  Application,
-  Assets,
-  Container,
-  Graphics,
-  Sprite,
-  Text,
-  TextStyle,
-  type Texture,
-} from 'pixi.js'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Graphics } from 'pixi.js'
+import { createPlayerRenderer } from './player-renderer'
 import { sampleAtTick, recordAtTick, bombPosition, flashRemaining } from './frames'
 import {
   mapDefinition,
-  mapFacing,
   visibleOnFloor,
   worldToMap,
   type MapDefinition,
   type MapFloor,
 } from './maps'
 import type { BombEvent, ReplayRound } from './types'
-
-const playerLabelStyle = new TextStyle({
-  fontFamily: 'sans-serif',
-  fontSize: 12,
-  fontWeight: 'bold',
-  fill: '#101713',
-})
+import { createMapScene } from './map-scene'
+import { playerNumbers } from './player-numbers'
+import { createPlaybackClock } from './playback-clock'
 
 const bombEventIconKeys: Record<BombEvent['type'], string> = {
   'plant-start': 'c4',
@@ -117,6 +104,7 @@ export function TacticalReplay({ round, mapName }: { round: ReplayRound; mapName
 }
 
 function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition }) {
+  const numbers = useMemo(() => playerNumbers(round), [round])
   const host = useRef<HTMLDivElement>(null)
   const playback = useRef<Playback | null>(null)
   const [floor, setFloor] = useState<MapFloor>(map.floors === 'split' ? map.initialFloor : 'upper')
@@ -127,105 +115,41 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
 
   useEffect(() => {
     const element = host.current!
-    const app = new Application()
+    const mapScene = createMapScene(map)
+    const { app, container: sceneMap } = mapScene
     let cancelled = false
-    let initialized = false
-    let observer: ResizeObserver | undefined
     let tick = round.startTick
-    let minimum = round.liveStartTick
-    let playing = false
-    let lastPublished = 0
     let currentFloor: MapFloor = map.floors === 'split' ? map.initialFloor : 'upper'
     let currentFilters = initialPlayerFilters()
     let currentOverlays = initialUtilityVisibility()
 
     async function mount() {
-      await app.init({
-        width: map.imageSize,
-        height: map.imageSize,
-        background: '#101713',
-        resolution: Math.min(window.devicePixelRatio, 2),
-        autoDensity: true,
-        autoStart: false,
-        preference: 'webgl',
-      })
-      initialized = true
-      if (cancelled) {
-        app.destroy(true, { children: true })
-        return
-      }
-      const upper = await Assets.load(map.floors === 'split' ? map.images.upper : map.image)
-      const textures: Record<MapFloor, Texture> = {
-        upper,
-        lower: map.floors === 'split' ? await Assets.load(map.images.lower) : upper,
-      }
-      if (cancelled) return
-      const sceneMap = new Container()
-      const radar = new Sprite(textures[currentFloor])
-      sceneMap.addChild(radar)
+      if (!(await mapScene.mount(element))) return
       const utilities = createUtilityRenderer(round, map)
       sceneMap.addChild(utilities.container)
       let symbolScale = 1
-      const markers = round.players.map((_, index) => {
-        const marker = new Container()
-        const body = new Graphics().circle(0, 0, 10).fill('#ffffff').stroke({
-          color: '#101713',
-          width: 2,
-        })
-        marker.addChild(body)
-        const direction = new Graphics()
-          .poly([10, -5, 23, 0, 10, 5])
-          .fill('#ffffff')
-          .stroke({ color: '#101713', width: 2 })
-        marker.addChild(direction)
-        const flash = new Graphics()
-          .circle(-13, -13, 5)
-          .fill('#ffffff')
-          .stroke({ color: '#101713', width: 2 })
-        marker.addChild(flash)
-        const label = new Text({
-          text: String(index + 1),
-          style: playerLabelStyle,
-        })
-        label.anchor.set(0.5)
-        marker.addChild(label)
-        sceneMap.addChild(marker)
-        return { container: marker, body, direction, flash }
+      const players = createPlayerRenderer(round, map, {
+        ct: 0x8dc5ff,
+        t: 0xffd08a,
+        foreground: 0xffffff,
+        background: 0x101713,
+        fontSize: 12,
       })
+      sceneMap.addChild(players.container)
       const bombMarker = new Graphics()
         .rect(-9, -9, 18, 18)
         .fill('#bedb8a')
         .stroke({ color: '#101713', width: 2 })
       sceneMap.addChild(bombMarker)
-      app.stage.addChild(sceneMap)
-      app.canvas.setAttribute('aria-hidden', 'true')
-      element.appendChild(app.canvas)
 
       function draw() {
         const sample = sampleAtTick(round.ticks, tick)
         utilities.draw(tick, symbolScale, currentOverlays, currentFloor)
-        for (let player = 0; player < markers.length; player++) {
-          const position = (sample * markers.length + player) * 3
-          const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
-          const { container, body, direction, flash } = markers[player]!
-          const state = sample * markers.length + player
-          const color = round.teams[state] === 3 ? '#8dc5ff' : '#ffd08a'
-          flash.visible =
-            currentOverlays.flashes &&
-            flashRemaining(
-              recordAtTick(round.inspection[player]!, tick).flash,
-              tick,
-              round.tickInterval,
-            ) > 0
-          container.visible =
-            visibleOnFloor(map, currentFloor, round.positions[position + 2]!) &&
-            playerVisible(round.players[player]!.steamId, round.teams[state]!, currentFilters)
-          body.tint = color
-          direction.tint = color
-          direction.rotation = mapFacing(map, round.yaw[state]!)
-          container.position.set(point.x, point.y)
-          container.alpha = round.alive[sample * markers.length + player] ? 1 : 0.35
-        }
+        players.draw(tick, symbolScale, {
+          floor: currentFloor,
+          flashes: currentOverlays.flashes,
+          ...currentFilters,
+        })
         const bomb = recordAtTick(round.bomb, tick).state
         const position = bombPosition(round, bomb, sample)
         bombMarker.visible = position !== undefined && visibleOnFloor(map, currentFloor, position.z)
@@ -236,20 +160,33 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         }
         return sample
       }
-      function publish(sample: number) {
-        setScene({ status: 'ready', playing, tick: Math.floor(tick), sample })
-        lastPublished = performance.now()
-      }
-      function pause(sample = draw()) {
-        playing = false
-        app.ticker.stop()
-        publish(sample)
-        app.render()
-      }
+      const clock = createPlaybackClock({
+        initialTick: round.startTick,
+        minimum: round.liveStartTick,
+        maximum: round.endTick,
+        tickInterval: round.tickInterval,
+        draw(nextTick) {
+          tick = nextTick
+          draw()
+          if (!app.ticker.started) app.render()
+        },
+        publish(snapshot) {
+          setScene({
+            status: 'ready',
+            ...snapshot,
+            sample: sampleAtTick(round.ticks, snapshot.tick),
+          })
+        },
+        setRunning(running) {
+          if (running) app.ticker.start()
+          else app.ticker.stop()
+        },
+      })
       playback.current = {
+        ...clock,
         setFloor(next) {
           currentFloor = next
-          radar.texture = textures[next]
+          mapScene.setFloor(next)
           draw()
           app.render()
         },
@@ -263,64 +200,28 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
           draw()
           app.render()
         },
-        setMinimum(nextMinimum) {
-          minimum = nextMinimum
-          tick = Math.max(minimum, tick)
-          publish(draw())
-          app.render()
-        },
-        play() {
-          if (tick < minimum || tick >= round.endTick) tick = minimum
-          playing = true
-          publish(draw())
-          app.ticker.start()
-        },
-        pause,
-        seek(nextTick) {
-          tick = Math.max(minimum, Math.min(round.endTick, nextTick))
-          if (tick === round.endTick) pause()
-          else {
-            publish(draw())
-            app.render()
-          }
-        },
       }
-      app.ticker.add((clock) => {
-        tick = Math.min(round.endTick, tick + clock.elapsedMS / (round.tickInterval * 1000))
-        const sample = draw()
-        if (tick >= round.endTick) pause(sample)
-        else if (performance.now() - lastPublished >= 250) publish(sample)
-      })
-      observer = new ResizeObserver(() => {
-        const width = element.clientWidth
-        app.renderer.resize(width, width)
-        sceneMap.scale.set(width / map.imageSize)
-        symbolScale = (map.imageSize * 0.8) / width
-        for (const { container } of markers) container.scale.set((map.imageSize * 0.8) / width)
-        bombMarker.scale.set((map.imageSize * 0.8) / width)
+      app.ticker.add((ticker) => clock.advance(ticker.elapsedMS))
+      mapScene.observeResize((scale) => {
+        symbolScale = 0.8 / scale
+        bombMarker.scale.set(symbolScale)
         draw()
-        app.render()
       })
-      observer.observe(element)
-      publish(draw())
-      app.render()
+      clock.pause()
     }
     void mount().catch(() => {
       if (!cancelled) {
         playback.current = null
-        observer?.disconnect()
-        if (initialized) app.destroy(true, { children: true })
-        initialized = false
+        mapScene.destroy()
         setScene({ status: 'error' })
       }
     })
     return () => {
       cancelled = true
       playback.current = null
-      observer?.disconnect()
-      if (initialized) app.destroy(true, { children: true })
+      mapScene.destroy()
     }
-  }, [round, map])
+  }, [round, map, numbers])
 
   const sample = scene.status === 'ready' ? scene.sample : 0
   const minimum = includeFreezeTime ? round.startTick : round.liveStartTick
@@ -373,7 +274,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
       {scene.status === 'loading' && <p className="mt-4 text-sm">Loading tactical map…</p>}
       <div
         ref={host}
-        className="mt-5 aspect-square w-full overflow-hidden rounded-xl outline outline-white/10"
+        className="relative mt-5 aspect-square w-full overflow-hidden rounded-xl bg-[#101713] outline outline-white/10"
       />
       {map.floors === 'split' && (
         <fieldset className="mt-4 flex gap-5">
@@ -688,8 +589,13 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
         </p>
         <ul aria-label="Player inspection" className="mt-4 grid list-none gap-3 p-0 sm:grid-cols-2">
           {round.players.map((player, index) => {
+            const number = numbers.get(player.steamId)
             const state = sample * round.players.length + index
-            if (!playerVisible(player.steamId, round.teams[state]!, filters)) return null
+            if (
+              number === undefined ||
+              !playerVisible(player.steamId, round.teams[state]!, filters)
+            )
+              return null
             const offset = state * 3
             const { weapon, armour, helmet, grenades, money, flash } = recordAtTick(
               round.inspection[index]!,
@@ -699,7 +605,7 @@ function RoundReplay({ round, map }: { round: ReplayRound; map: MapDefinition })
             return (
               <li key={player.steamId} className="rounded-lg bg-[#1b251e] p-3">
                 <p className="m-0 text-sm font-semibold">
-                  {index + 1}. {player.name}{' '}
+                  {number}. {player.name}{' '}
                   <span className="font-normal text-[#a7b5aa]">
                     · {round.teams[state] === 3 ? 'Counter-Terrorists' : 'Terrorists'}
                   </span>
