@@ -50,21 +50,27 @@ export function DemoRoundControl({
           <Chevron direction="right" />
         </button>
       </nav>
-      <div
-        aria-label="Round score and time"
-        className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr] gap-2"
-      >
-        <div className={`${tile} h-12 bg-ct/25 font-bold text-ct`}>CT</div>
-        <div aria-label="Counter-Terrorist score" className={`${tile} bg-neutral-700/50`}>
+      <div aria-label="Round score and time" className="grid grid-cols-[1fr_1fr_1.5fr_1fr_1fr]">
+        <div
+          aria-label="Counter-Terrorist score"
+          className={`${tile} h-12 rounded-r-none bg-neutral-700/50 font-bold`}
+        >
           {round.score?.ct ?? '—'}
         </div>
-        <time aria-label="Elapsed round time" className={`${tile} bg-neutral-700/50`}>
+        <div className={`${tile} h-14 rounded-t-none bg-ct/25 pb-2 font-bold text-ct`}>CT</div>
+        <time
+          aria-label="Elapsed round time"
+          className={`${tile} h-12 rounded-l-none rounded-r-none bg-neutral-700/50`}
+        >
           {time}
         </time>
-        <div aria-label="Terrorist score" className={`${tile} bg-neutral-700/50`}>
+        <div className={`${tile} h-14 rounded-t-none bg-t/25 pb-2 font-bold text-t`}>T</div>
+        <div
+          aria-label="Terrorist score"
+          className={`${tile} h-12 rounded-l-none bg-neutral-700/50 font-bold`}
+        >
           {round.score?.t ?? '—'}
         </div>
-        <div className={`${tile} bg-t/25 font-bold text-t`}>T</div>
       </div>
     </section>
   )
