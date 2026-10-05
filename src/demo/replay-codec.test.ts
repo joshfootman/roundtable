@@ -25,6 +25,13 @@ test('decodes recorded binary tracks and rejects incompatible or truncated asset
     headshot: true,
   })
   const restored = decodeRound(encodeRound(round))
+  expect(round.score).toEqual({ ct: 0, t: 0 })
+  expect(restored.score).toEqual(round.score)
+  expect(restored.inspection).toEqual(round.inspection)
+  expect(round.inspection[0]?.[0]?.weapons).toEqual([
+    { type: 'gun', definition: 32, magazine: 13, reserve: 52 },
+    { type: 'item', definition: 507 },
+  ])
   expect(restored.ticks[0]).toBe(537)
   expect(restored.deaths[0]?.weapon).toBe('usp_silencer')
   expect(

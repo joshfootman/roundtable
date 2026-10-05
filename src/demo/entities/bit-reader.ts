@@ -1,5 +1,6 @@
 export class BitReader {
   private offset = 0
+  private floatView?: DataView
   constructor(private readonly data: Uint8Array) {}
   get remaining() {
     return this.data.length * 8 - this.offset
@@ -33,7 +34,9 @@ export class BitReader {
       this.offset += count * 8
       return this.data.subarray(start, start + count)
     }
-    return Uint8Array.from({ length: count }, () => this.bits(8))
+    const data = new Uint8Array(count)
+    for (let index = 0; index < count; index++) data[index] = this.bits(8)
+    return data
   }
   varUint(): number {
     let value = 0
@@ -71,8 +74,10 @@ export class BitReader {
     return this.bits(31)
   }
   float() {
-    const data = this.bytes(4)
-    return new DataView(data.buffer, data.byteOffset, 4).getFloat32(0, true)
+    if (this.remaining < 32) throw new Error('The demo contains truncated entity bytes.')
+    const view = (this.floatView ??= new DataView(new ArrayBuffer(4)))
+    view.setUint32(0, this.bits(32), true)
+    return view.getFloat32(0, true)
   }
   fixed64() {
     const data = this.bytes(8)

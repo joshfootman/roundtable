@@ -14,6 +14,12 @@ export interface Serializer {
   name: string
   fields: Field[]
 }
+type ResolvedField = { name: string; decode: ValueDecoder }
+interface FieldPathNode {
+  children: Map<number, FieldPathNode>
+  field?: ResolvedField
+}
+const resolvedFields = new WeakMap<Serializer, FieldPathNode>()
 const pointers = new Set([
   'CBodyComponentDCGBaseAnimating',
   'CBodyComponentBaseAnimating',
@@ -98,10 +104,32 @@ export function resolveField(
   serializer: Serializer,
   path: number[],
   polymorphic: Map<string, Serializer>,
-): { name: string; decode: ValueDecoder } {
+): ResolvedField {
+  let cached = resolvedFields.get(serializer)
+  for (const index of path) cached = cached?.children.get(index)
+  if (cached?.field) return cached.field
   let current = serializer
   let position = 0
   const names: string[] = []
+  let cacheable = true
+  function resolved(name: string, decode: ValueDecoder): ResolvedField {
+    const field = { name, decode }
+    if (cacheable) {
+      const root = resolvedFields.get(serializer)
+      let node: FieldPathNode = root ?? { children: new Map() }
+      if (!root) resolvedFields.set(serializer, node)
+      for (const index of path) {
+        let child: FieldPathNode | undefined = node.children.get(index)
+        if (!child) {
+          child = { children: new Map() }
+          node.children.set(index, child)
+        }
+        node = child
+      }
+      node.field = field
+    }
+    return field
+  }
   while (position < path.length) {
     const field = current.fields[path[position++]!]
     if (!field)
@@ -109,6 +137,9 @@ export function resolveField(
         `Invalid entity field path ${path} at ${position - 1} in ${current.name} (${current.fields.length} fields).`,
       )
     names.push(field.name)
+    // Polymorphic selectors and descendants depend on each entity's current selection.
+    if ((field.model === 'table' || field.model === 'tables') && field.choices.length)
+      cacheable = false
     if (position === path.length) {
       const name = names.join('.')
       if ((field.model === 'table' || field.model === 'tables') && field.choices.length) {
@@ -127,7 +158,7 @@ export function resolveField(
           },
         }
       }
-      return { name, decode: field.value }
+      return resolved(name, field.value)
     }
     if (field.model === 'table') {
       current = polymorphic.get(names.join('.')) ?? field.child
@@ -135,17 +166,14 @@ export function resolveField(
     }
     if (field.model === 'tables') {
       names.push(String(path[position++]!))
-      if (position === path.length) return { name: names.join('.'), decode: field.value }
+      if (position === path.length) return resolved(names.join('.'), field.value)
       current = field.child
       continue
     }
     if (field.model === 'vector' || field.model === 'array') {
       names.push(String(path[position++]!))
       if (position !== path.length) throw new Error('Invalid nested entity array.')
-      return {
-        name: names.join('.'),
-        decode: field.model === 'vector' ? field.element : field.value,
-      }
+      return resolved(names.join('.'), field.model === 'vector' ? field.element : field.value)
     }
     throw new Error(`Invalid nested scalar entity field ${field.name}.`)
   }

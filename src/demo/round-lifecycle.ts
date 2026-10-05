@@ -3,6 +3,7 @@ import type { PlayerSnapshot, ProjectileSnapshot } from './entities/index.ts'
 import type {
   ReplayDeath,
   ReplayRound,
+  ReplayWeapon,
   PlayerInspection,
   BombState,
   BombEvent,
@@ -13,6 +14,7 @@ import type {
 } from '../replay/types.ts'
 
 export interface RoundRules {
+  score?: ReplayRound['score']
   warmup: boolean
   freezePeriod: boolean
   totalRoundsPlayed: number
@@ -28,6 +30,7 @@ export type ReplayEvent =
   | { type: 'reset' }
 
 type Capture = {
+  score?: ReplayRound['score']
   startTick: number
   number: number
   overtime: number
@@ -54,9 +57,15 @@ type Capture = {
   | { phase: 'postround'; liveStartTick: number; resultTick: number }
 )
 
+function sameWeapon(x: ReplayWeapon, y: ReplayWeapon): boolean {
+  return (
+    x.type === y.type &&
+    (x.type === 'none' || y.type === 'none' || x.definition === y.definition) &&
+    (x.type !== 'gun' || y.type !== 'gun' || (x.magazine === y.magazine && x.reserve === y.reserve))
+  )
+}
+
 function sameInspection(a: PlayerInspection, b: PlayerInspection): boolean {
-  const x = a.weapon
-  const y = b.weapon
   return (
     a.flash.type === b.flash.type &&
     (a.flash.type !== 'flashed' ||
@@ -72,9 +81,9 @@ function sameInspection(a: PlayerInspection, b: PlayerInspection): boolean {
         item.definition === b.grenades[index]!.definition &&
         item.count === b.grenades[index]!.count,
     ) &&
-    x.type === y.type &&
-    (x.type === 'none' || y.type === 'none' || x.definition === y.definition) &&
-    (x.type !== 'gun' || y.type !== 'gun' || (x.magazine === y.magazine && x.reserve === y.reserve))
+    sameWeapon(a.weapon, b.weapon) &&
+    a.weapons.length === b.weapons.length &&
+    a.weapons.every((weapon, index) => sameWeapon(weapon, b.weapons[index]!))
   )
 }
 
@@ -96,6 +105,7 @@ export function createRoundTracker() {
     publishedRounds = round.number
     return {
       number: round.number,
+      ...(round.score ? { score: round.score } : {}),
       overtime: round.overtime,
       startTick: round.startTick,
       liveStartTick: round.liveStartTick,
@@ -201,6 +211,7 @@ export function createRoundTracker() {
           phase: 'freeze',
           startTick: tick,
           number: rules.totalRoundsPlayed + 1,
+          ...(rules.score ? { score: rules.score } : {}),
           overtime: rules.overtime,
           players: [],
           ticks: [],
@@ -223,7 +234,7 @@ export function createRoundTracker() {
         output.push({ type: 'round-start', number: capture.number, startTick: tick })
       }
       if (capture?.phase === 'freeze' && events.includes('round_freeze_end'))
-        capture = { ...capture, phase: 'live', liveStartTick: tick }
+        capture = { ...capture, score: rules.score, phase: 'live', liveStartTick: tick }
       if (capture?.phase === 'live' && (rules.reason !== 0 || events.includes('round_end')))
         capture = { ...capture, phase: 'postround', resultTick: tick }
       return output
@@ -370,6 +381,7 @@ export function createRoundTracker() {
           tick,
           flash: recorded.flash,
           weapon: recorded.weapon,
+          weapons: recorded.weapons,
           money: recorded.money,
           armour: recorded.armour,
           helmet: recorded.helmet,

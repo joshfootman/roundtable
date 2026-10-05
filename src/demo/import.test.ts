@@ -38,6 +38,7 @@ const firstRound = {
         helmet: false,
         flash: { type: 'none' as const },
         grenades: [],
+        weapons: [],
         weapon: { type: 'none' as const },
       },
     ],

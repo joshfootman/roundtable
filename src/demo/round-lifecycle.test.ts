@@ -37,6 +37,7 @@ test('discards knife stages and completed match attempts when recorded rules res
           helmet: false,
           flash: { type: 'none' as const },
           grenades: [],
+          weapons: [],
           weapon: { type: 'none' },
         },
       ])
@@ -90,6 +91,7 @@ test('discards knife stages and completed match attempts when recorded rules res
             helmet: false,
             flash: { type: 'none' as const },
             grenades: [],
+            weapons: [],
             weapon: { type: 'none' },
           },
         ],
@@ -140,6 +142,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
             helmet: false,
             flash: { type: 'none' as const },
             grenades: [],
+            weapons: [],
             weapon: { type: 'none' },
           },
         ])
@@ -180,6 +183,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
           helmet: false,
           flash: { type: 'none' as const },
           grenades: [],
+          weapons: [],
           weapon: { type: 'none' },
         },
       ],
@@ -230,6 +234,7 @@ test('captures an opening freeze checkpoint without inventing a midround start',
         helmet: false,
         flash: { type: 'none' },
         grenades: [],
+        weapons: [],
         weapon: { type: 'none' },
       },
     ])
@@ -271,4 +276,70 @@ test('captures an opening freeze checkpoint without inventing a midround start',
   const midround = createRoundTracker()
   expect(midround.update(100, { ...openingRules, freezePeriod: false }, [], 1 / 64)).toEqual([])
   expect(midround.recording).toBe(false)
+})
+
+test('records owned gun pickups, ammo changes and drops while the held knife stays unchanged', () => {
+  const tracker = createRoundTracker()
+  tracker.update(100, rules, ['round_start'], 1 / 64)
+  const player = {
+    steamId: '77',
+    name: 'Player',
+    team: 3 as const,
+    x: 0,
+    y: 0,
+    z: 0,
+    alive: true,
+    health: 100,
+    yaw: 0,
+    money: 800,
+    armour: 0,
+    helmet: false,
+    flash: { type: 'none' as const },
+    grenades: [],
+    weapon: { type: 'item' as const, definition: 42 },
+  }
+  const knife = { type: 'item' as const, definition: 42 }
+  tracker.sample(100, [{ ...player, weapons: [knife] }])
+  tracker.sample(101, [
+    { ...player, weapons: [{ type: 'gun', definition: 7, magazine: 30, reserve: 90 }, knife] },
+  ])
+  tracker.sample(102, [
+    { ...player, weapons: [{ type: 'gun', definition: 7, magazine: 29, reserve: 90 }, knife] },
+  ])
+  tracker.sample(103, [{ ...player, weapons: [knife] }])
+  tracker.sample(104, [{ ...player, weapons: [knife] }])
+  tracker.update(105, { ...rules, freezePeriod: false }, ['round_freeze_end'], 1 / 64)
+  tracker.update(106, { ...rules, reason: 8, totalRoundsPlayed: 1 }, ['round_end'], 1 / 64)
+  const [event] = tracker.end(107)
+  if (event?.type !== 'round') throw new Error('Missing completed round')
+  expect(
+    event.round.inspection[0]?.map(({ tick, weapon, weapons }) => ({ tick, weapon, weapons })),
+  ).toEqual([
+    {
+      tick: 100,
+      weapon: { type: 'item', definition: 42 },
+      weapons: [{ type: 'item', definition: 42 }],
+    },
+    {
+      tick: 101,
+      weapon: { type: 'item', definition: 42 },
+      weapons: [
+        { type: 'gun', definition: 7, magazine: 30, reserve: 90 },
+        { type: 'item', definition: 42 },
+      ],
+    },
+    {
+      tick: 102,
+      weapon: { type: 'item', definition: 42 },
+      weapons: [
+        { type: 'gun', definition: 7, magazine: 29, reserve: 90 },
+        { type: 'item', definition: 42 },
+      ],
+    },
+    {
+      tick: 103,
+      weapon: { type: 'item', definition: 42 },
+      weapons: [{ type: 'item', definition: 42 }],
+    },
+  ])
 })

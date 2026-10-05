@@ -81,6 +81,7 @@ export interface PlayerInspection {
   helmet: boolean
   grenades: { definition: number; count: number }[]
   weapon: ReplayWeapon
+  weapons: ReplayWeapon[]
 }
 
 export interface ReplayDeath {
@@ -93,6 +94,7 @@ export interface ReplayDeath {
 
 export interface ReplayRound {
   number: number
+  score?: { ct: number; t: number }
   overtime: number
   startTick: number
   liveStartTick: number

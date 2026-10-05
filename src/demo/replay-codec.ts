@@ -36,6 +36,7 @@ const bombState = Schema.Union(
 const Header = Schema.mutable(
   Schema.Struct({
     number: integer,
+    score: Schema.optional(Schema.Struct({ ct: integer, t: integer })),
     overtime: integer,
     startTick: integer,
     liveStartTick: integer,
@@ -133,6 +134,7 @@ const Header = Schema.mutable(
                 Schema.Array(Schema.Struct({ definition: integer, count: integer })),
               ),
               weapon,
+              weapons: Schema.mutable(Schema.Array(weapon)),
             }),
           ),
         ),

@@ -157,6 +157,8 @@ Performance testing:
 - Mobile emulation ≠ phone CPU/GPU/memory. Record actual models/browsers when testing.
 - Numerical budgets set after baseline; earlier 5 s/15 s suggestions not requirements.
 
+Parser import measurements and output-equivalence checks are recorded in [parser performance measurements](parser-performance.md).
+
 Dexie conditional:
 
 - Viewer delivery first; bounded cache writes afterwards.

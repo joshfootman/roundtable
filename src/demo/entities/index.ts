@@ -47,6 +47,17 @@ interface Entity {
   active: boolean
   polymorphic: Map<string, Serializer>
 }
+interface EntityProjection {
+  teams: Entity[]
+  controllers: Entity[]
+  controllersByPawn: Map<number, Entity>
+  plantedBombs: Entity[]
+  carriedBomb?: Entity
+  projectileCandidates: [number, Entity][]
+  infernos: [number, Entity][]
+  smokeIds: Set<number>
+  gameRules?: Entity
+}
 interface StringTable {
   definition: CSVCMsg_CreateStringTable
   entries: Map<number, { key: string; value: Uint8Array }>
@@ -67,6 +78,7 @@ export interface PlayerSnapshot {
   grenades: PlayerInspection['grenades']
   flash: PlayerInspection['flash']
   weapon: ReplayWeapon
+  weapons: ReplayWeapon[]
 }
 const replayFields = new Set([
   'm_flFlashDuration',
@@ -84,6 +96,7 @@ const replayFields = new Set([
   'm_hPlayerPawn',
   'm_iszPlayerName',
   'm_iTeamNum',
+  'm_iScore',
   'm_iHealth',
   'm_lifeState',
   'm_angEyeAngles',
@@ -123,6 +136,37 @@ export function createEntityDecoder() {
   const stringTables: StringTable[] = []
   let classBits = 0
   let receivedFullEntities = false
+  let projection: EntityProjection | undefined
+  function view(): EntityProjection {
+    if (projection) return projection
+    const result: EntityProjection = {
+      teams: [],
+      controllers: [],
+      controllersByPawn: new Map(),
+      plantedBombs: [],
+      projectileCandidates: [],
+      infernos: [],
+      smokeIds: new Set(),
+    }
+    for (const [id, entity] of entities) {
+      if (entity.className === 'CCSGameRulesProxy') result.gameRules ??= entity
+      if (!entity.active) continue
+      if (entity.className === 'CCSTeam') result.teams.push(entity)
+      if (entity.className === 'CCSPlayerController') {
+        result.controllers.push(entity)
+        const handle = entity.values.get('m_hPlayerPawn')
+        if (typeof handle === 'number' && !result.controllersByPawn.has(handle))
+          result.controllersByPawn.set(handle, entity)
+      }
+      if (entity.className === 'CPlantedC4') result.plantedBombs.push(entity)
+      if (entity.className === 'CC4') result.carriedBomb ??= entity
+      if (entity.values.has('m_hThrower')) result.projectileCandidates.push([id, entity])
+      if (entity.className === 'CInferno') result.infernos.push([id, entity])
+      if (entity.className === 'CSmokeGrenadeProjectile') result.smokeIds.add(id)
+    }
+    projection = result
+    return result
+  }
   function fields(
     reader: BitReader,
     serializer: Serializer,
@@ -204,29 +248,33 @@ export function createEntityDecoder() {
       throw new Error('A recorded entity handle cannot be resolved.')
     return entity
   }
-  function grenades(pawn: Entity): PlayerInspection['grenades'] {
+  function inventory(pawn: Entity): Pick<PlayerInspection, 'grenades' | 'weapons'> {
     const length = pawn.values.get('m_pWeaponServices.m_hMyWeapons')
     if (typeof length !== 'number') throw new Error('Missing recorded inventory length.')
     const counts = new Map<number, number>()
+    const weapons: Exclude<ReplayWeapon, { type: 'none' }>[] = []
     for (let index = 0; index < length; index++) {
       const handle = pawn.values.get(`m_pWeaponServices.m_hMyWeapons.${index}`)
       if (typeof handle !== 'number') throw new Error('Missing recorded inventory handle.')
-      if (handle === 0xffffff || handle === 0xffffffff) continue
-      const item = entityForHandle(handle)
-      const definition = item.values.get('m_iItemDefinitionIndex')
-      if (typeof definition !== 'number') throw new Error('Missing recorded inventory definition.')
+      const item = weapon(handle)
+      if (item.type === 'none') continue
+      weapons.push(item)
+      const definition = item.definition
       if (definition < 43 || definition > 48) continue
       const count = definition === 43 ? pawn.values.get('m_pWeaponServices.m_iAmmo.14') : 1
       if (typeof count !== 'number' || !Number.isInteger(count) || count < 0)
         throw new Error('Missing recorded grenade quantity.')
       if (count > 0) counts.set(definition, count)
     }
-    return [...counts]
-      .sort(([a], [b]) => a - b)
-      .map(([definition, count]) => ({ definition, count }))
+    return {
+      weapons: weapons.sort((a, b) => a.definition - b.definition),
+      grenades: [...counts]
+        .sort(([a], [b]) => a - b)
+        .map(([definition, count]) => ({ definition, count })),
+    }
   }
   function weapon(handle: EntityValue | undefined): ReplayWeapon {
-    if (typeof handle !== 'number') throw new Error('Missing recorded active weapon handle.')
+    if (typeof handle !== 'number') throw new Error('Missing recorded weapon handle.')
     if (handle === 0xffffff || handle === 0xffffffff) return { type: 'none' }
     const entity = entityForHandle(handle)
     const definition = entity.values.get('m_iItemDefinitionIndex')
@@ -256,19 +304,14 @@ export function createEntityDecoder() {
   }
   function playerByPawnHandle(handle: number): string {
     entityForHandle(handle)
-    const controller = [...entities.values()].find(
-      (entity) =>
-        entity.active &&
-        entity.className === 'CCSPlayerController' &&
-        entity.values.get('m_hPlayerPawn') === handle,
-    )
+    const controller = view().controllersByPawn.get(handle)
     const steam = controller?.values.get('m_steamID')
     if (typeof steam !== 'bigint' || steam <= 0n) throw new Error('Missing recorded pawn identity.')
     return steam.toString()
   }
   function bomb(): BombState {
-    const active = [...entities.values()].filter((entity) => entity.active)
-    for (const planted of active.filter((entity) => entity.className === 'CPlantedC4')) {
+    const current = view()
+    for (const planted of current.plantedBombs) {
       const ticking = planted.values.get('m_bBombTicking')
       const defused = planted.values.get('m_bBombDefused')
       if (typeof ticking !== 'boolean' || typeof defused !== 'boolean')
@@ -286,7 +329,7 @@ export function createEntityDecoder() {
         }
       }
     }
-    const c4 = active.find((entity) => entity.className === 'CC4')
+    const c4 = current.carriedBomb
     if (!c4) return { type: 'inactive' }
     const owner = c4.values.get('m_hOwnerEntity')
     if (typeof owner !== 'number') throw new Error('Missing recorded bomb owner.')
@@ -297,8 +340,7 @@ export function createEntityDecoder() {
   }
   function projectiles(): ProjectileSnapshot[] {
     const result: ProjectileSnapshot[] = []
-    for (const [index, entity] of entities) {
-      if (!entity.active || !entity.values.has('m_hThrower')) continue
+    for (const [index, entity] of view().projectileCandidates) {
       let kind = projectileClasses[entity.className]
       if (!kind) throw new Error(`Unsupported recorded grenade class ${entity.className}.`)
       const effect = entity.values.get('m_nExplodeEffectTickBegin')
@@ -326,8 +368,7 @@ export function createEntityDecoder() {
   }
   function snapshots(): PlayerSnapshot[] {
     const players: PlayerSnapshot[] = []
-    for (const controller of entities.values()) {
-      if (controller.className !== 'CCSPlayerController' || !controller.active) continue
+    for (const controller of view().controllers) {
       const steam = controller.values.get('m_steamID')
       const handle = controller.values.get('m_hPlayerPawn')
       if (
@@ -384,7 +425,7 @@ export function createEntityDecoder() {
         armour,
         helmet,
         flash,
-        grenades: grenades(pawn),
+        ...inventory(pawn),
         weapon: weapon(pawn.values.get('m_pWeaponServices.m_hActiveWeapon')),
       })
     }
@@ -453,6 +494,7 @@ export function createEntityDecoder() {
         receivedFullEntities = true
       }
       if (!classBits) throw new Error('Missing entity server information.')
+      projection = undefined
       const reader = new BitReader(message.entityData)
       let index = -1
       for (let i = 0; i < message.updatedEntries; i++) {
@@ -513,8 +555,7 @@ export function createEntityDecoder() {
     projectiles,
     fires(): FireArea[] {
       const fires: FireArea[] = []
-      for (const [id, entity] of entities) {
-        if (!entity.active || entity.className !== 'CInferno') continue
+      for (const [id, entity] of view().infernos) {
         const count = entity.values.get('m_fireCount')
         if (typeof count !== 'number' || !Number.isInteger(count) || count < 0)
           throw new Error('Missing recorded fire cell count.')
@@ -533,16 +574,10 @@ export function createEntityDecoder() {
       return fires.sort((a, b) => a.entity - b.entity)
     },
     smokeEntities() {
-      return new Set(
-        [...entities.entries()]
-          .filter(([, entity]) => entity.active && entity.className === 'CSmokeGrenadeProjectile')
-          .map(([id]) => id),
-      )
+      return view().smokeIds
     },
     gameRules() {
-      const entity = [...entities.values()].find(
-        (entity) => entity.className === 'CCSGameRulesProxy',
-      )
+      const entity = view().gameRules
       if (!entity) return undefined
       const warmup = entity.values.get('m_pGameRules.m_bWarmupPeriod')
       const freezePeriod = entity.values.get('m_pGameRules.m_bFreezePeriod')
@@ -562,6 +597,14 @@ export function createEntityDecoder() {
         overtime < 0
       )
         throw new Error('Missing recorded competitive round rules.')
+      const scores = new Map<number, number>()
+      for (const team of view().teams) {
+        const side = team.values.get('m_iTeamNum')
+        const score = team.values.get('m_iScore')
+        if (typeof side === 'number' && typeof score === 'number') scores.set(side, score)
+      }
+      const ct = scores.get(3)
+      const t = scores.get(2)
       return {
         warmup,
         freezePeriod,
@@ -570,6 +613,7 @@ export function createEntityDecoder() {
         reason,
         phase,
         overtime,
+        ...(ct !== undefined && t !== undefined ? { score: { ct, t } } : {}),
       }
     },
   }
