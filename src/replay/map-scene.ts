@@ -28,6 +28,7 @@ export function createMapScene(map: MapDefinition) {
       width: map.imageSize,
       height: map.imageSize,
       backgroundAlpha: 0,
+      antialias: true,
       resolution: Math.min(window.devicePixelRatio, 2),
       autoDensity: true,
       autoStart: false,

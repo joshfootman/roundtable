@@ -51,7 +51,7 @@ export function createUtilityRenderer(round: ReplayRound, map: MapDefinition) {
             .lineTo(end.x, end.y)
             .stroke({ color: '#f5eccb', width: symbolScale, alpha: 0.8 })
         }
-      if (visibility.fires)
+      if (visibility.fires && round.fires.length)
         for (const fire of recordAtTick(round.fires, tick).fires) {
           for (let cell = 0; cell < fire.positions.length; cell += 3) {
             if (!visibleOnFloor(map, floor, fire.positions[cell + 2]!)) continue

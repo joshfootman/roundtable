@@ -8,6 +8,7 @@ import { DemoPlaybackControl } from '#/components/DemoPlaybackControl'
 import type { ReplayRound } from '#/replay/types'
 import type { MapDefinition } from '#/replay/maps'
 import { DemoPlayerCards } from '#/components/DemoPlayerCards'
+import { DemoFloorControl } from '#/components/DemoFloorControl'
 import { DemoRoundControl } from '#/components/DemoRoundControl'
 import { ExampleDemos } from '#/components/ExampleDemos'
 import type { ExampleId } from '#/demo/examples'
@@ -188,7 +189,13 @@ function DemoRound({
     <>
       <DemoMap map={map} round={round} onPlayback={setPlayback} />
       <DemoRoundControl rounds={rounds} round={round} tick={tick} onSelectRound={onSelectRound} />
-      <DemoPlayerCards rounds={rounds} round={round} tick={tick} />
+      <DemoFloorControl map={map} playback={playback} />
+      <DemoPlayerCards
+        rounds={rounds}
+        round={round}
+        tick={tick}
+        hasFloorControl={map.floors === 'split'}
+      />
       <DemoPlaybackControl round={round} playback={playback} />
     </>
   )

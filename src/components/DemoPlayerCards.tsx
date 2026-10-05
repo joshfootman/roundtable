@@ -8,10 +8,12 @@ export function DemoPlayerCards({
   rounds,
   round,
   tick,
+  hasFloorControl = false,
 }: {
   rounds: readonly ReplayRound[]
   round: ReplayRound
   tick: number
+  hasFloorControl?: boolean
 }) {
   const players = playerCardsAtTick(rounds, round, tick)
   return (
@@ -23,7 +25,7 @@ export function DemoPlayerCards({
         <ul
           key={team}
           aria-label={team === 3 ? 'Counter-Terrorist players' : 'Terrorist players'}
-          className={`pointer-events-auto flex max-h-[calc(100%-7rem)] min-h-0 w-full max-w-80 flex-col gap-1 overflow-y-auto ${team === 2 ? 'justify-self-end' : ''}`}
+          className={`pointer-events-auto flex ${hasFloorControl ? 'max-h-[calc(100%-10rem)] md:max-h-[calc(100%-7rem)]' : 'max-h-[calc(100%-7rem)]'} min-h-0 w-full max-w-80 flex-col gap-1 overflow-y-auto ${team === 2 ? 'justify-self-end' : ''}`}
         >
           {players
             .filter((player) => player.team === team)

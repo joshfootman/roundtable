@@ -26,6 +26,11 @@ export function createPlayerRenderer(
 ) {
   const container = new Container()
   const numbers = playerNumbers(round)
+  const radius = 8.5
+  const directionRadius = radius + 2
+  const directionHalfAngle = Math.atan(0.5)
+  const directionX = directionRadius * Math.cos(directionHalfAngle)
+  const directionY = directionRadius * Math.sin(directionHalfAngle)
   const labelStyle = new TextStyle({
     fontFamily: 'sans-serif',
     fontSize: appearance.fontSize,
@@ -34,14 +39,14 @@ export function createPlayerRenderer(
   })
   const markers = round.players.map((player) => {
     const marker = new Container()
-    const body = new Graphics()
-      .circle(0, 0, 10)
-      .fill(0xffffff)
-      .stroke({ color: appearance.background, width: 2 })
+    const body = new Graphics().circle(0, 0, radius).fill(0xffffff)
     const direction = new Graphics()
-      .poly([10, -5, 23, 0, 10, 5])
+      .moveTo(directionX, -directionY)
+      .lineTo(16, 0)
+      .lineTo(directionX, directionY)
+      .arc(0, 0, directionRadius, directionHalfAngle, -directionHalfAngle, true)
+      .closePath()
       .fill(0xffffff)
-      .stroke({ color: appearance.background, width: 2 })
     const flash = new Graphics()
       .circle(-13, -13, 5)
       .fill(appearance.foreground)

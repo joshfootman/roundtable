@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import type { MapDefinition } from '../replay/maps'
+import { Assets, Sprite, type Texture } from 'pixi.js'
+import c4Icon from '../assets/cs2/equipment/c4.svg?url&no-inline'
+import { createBombRenderer } from '../replay/bomb-renderer'
+import type { MapDefinition, MapFloor } from '../replay/maps'
 import { createMapScene } from '../replay/map-scene'
 import {
   createPlaybackClock,
@@ -8,10 +11,19 @@ import {
 } from '../replay/playback-clock'
 import type { ReplayRound } from '../replay/types'
 import { createPlayerRenderer, type PlayerAppearance } from '../replay/player-renderer'
+import { createUtilityRenderer } from '../replay/utility-renderer'
+import { initialUtilityVisibility } from '../replay/utility'
+
+export type DemoPlaybackController = PlaybackClock & { setFloor(floor: MapFloor): void }
 
 export type DemoPlaybackState =
   | { status: 'loading' }
-  | { status: 'ready'; controller: PlaybackClock; snapshot: PlaybackSnapshot }
+  | {
+      status: 'ready'
+      controller: DemoPlaybackController
+      snapshot: PlaybackSnapshot
+      floor: MapFloor
+    }
   | { status: 'error' }
 
 export function DemoMap({
@@ -38,6 +50,8 @@ export function DemoMap({
     async function mount() {
       if (!(await mapScene.mount(element))) return
       if (round) {
+        const bombTexture = await Assets.load<Texture>(c4Icon)
+        if (cancelled) return
         const styles = getComputedStyle(element)
         const canvas = document.createElement('canvas')
         canvas.width = canvas.height = 1
@@ -54,19 +68,31 @@ export function DemoMap({
           t: color('--color-t'),
           foreground: color('--color-mauve-200'),
           background: color('--color-neutral-800'),
-          fontSize: 16,
+          fontSize: 14,
         }
+        const utilities = createUtilityRenderer(round, map)
+        mapScene.container.addChild(utilities.container)
         const players = createPlayerRenderer(round, map, appearance)
         mapScene.container.addChild(players.container)
-        const visibility = {
-          floor: map.floors === 'split' ? map.initialFloor : ('upper' as const),
-          flashes: true,
-        }
+        const bombMarker = new Sprite(bombTexture)
+        bombMarker.anchor.set(0.5)
+        bombMarker.width = bombMarker.height = 18
+        bombMarker.tint = appearance.foreground
+        const bomb = createBombRenderer(round, map, bombMarker)
+        mapScene.container.addChild(bomb.container)
+        const visibility = initialUtilityVisibility()
+        let floor: MapFloor = map.floors === 'split' ? map.initialFloor : 'upper'
         let tick = round.liveStartTick
         let symbolScale = 1
+        let controller: DemoPlaybackController
+        function draw() {
+          utilities.draw(tick, symbolScale, visibility, floor)
+          players.draw(tick, symbolScale, { floor, flashes: visibility.flashes })
+          bomb.draw(tick, symbolScale, floor)
+        }
         mapScene.observeResize((scale) => {
           symbolScale = 1 / scale
-          players.draw(tick, symbolScale, visibility)
+          draw()
         })
         clock = createPlaybackClock({
           initialTick: round.liveStartTick,
@@ -75,17 +101,28 @@ export function DemoMap({
           tickInterval: round.tickInterval,
           draw(nextTick) {
             tick = nextTick
-            players.draw(tick, symbolScale, visibility)
+            draw()
             if (!mapScene.app.ticker.started) mapScene.app.render()
           },
           publish(snapshot) {
-            if (!cancelled) onPlayback?.({ status: 'ready', controller: clock!, snapshot })
+            if (!cancelled) onPlayback?.({ status: 'ready', controller, snapshot, floor })
           },
           setRunning(running) {
             if (running) mapScene.app.ticker.start()
             else mapScene.app.ticker.stop()
           },
         })
+        controller = {
+          ...clock,
+          setFloor(nextFloor) {
+            floor = nextFloor
+            mapScene.setFloor(floor)
+            draw()
+            mapScene.app.render()
+            if (!cancelled)
+              onPlayback?.({ status: 'ready', controller, snapshot: clock!.getSnapshot(), floor })
+          },
+        }
         mapScene.app.ticker.add((ticker) => clock!.advance(ticker.elapsedMS))
         clock.pause()
       } else {
