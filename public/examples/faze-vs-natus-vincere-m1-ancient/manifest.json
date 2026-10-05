@@ -1,0 +1,198 @@
+{
+  "formatVersion": 1,
+  "source": {
+    "filename": "faze-vs-natus-vincere-m1-ancient.dem",
+    "sha256": "2786c2414f66604ef126ccdc110cf6fdbaa3e672de4f6b1e1123496e6c116a14",
+    "match": "https://www.hltv.org/matches/2370727/faze-vs-natus-vincere-pgl-cs2-major-copenhagen-2024"
+  },
+  "metadata": {
+    "mapName": "de_ancient",
+    "serverName": "PGL Major CS2 Server",
+    "clientName": "SourceTV Demo",
+    "gameDirectory": "/home/steam/steamcmd/cs2_ds/game/csgo",
+    "demoVersion": "valve_demo_2",
+    "patchVersion": 14000,
+    "buildNumber": 9961,
+    "durationSeconds": 2657.28125,
+    "playbackTicks": 170066,
+    "playbackFrames": 170056
+  },
+  "rounds": [
+    {
+      "number": 1,
+      "startTick": 0,
+      "path": "round-1.rpl",
+      "compressedBytes": 793574,
+      "decodedBytes": 2412388,
+      "sha256": "0fce70e0589533bbe0e49ab694ff41715cd6351a8e0c8a8af6a26e7bd70f9c17"
+    },
+    {
+      "number": 2,
+      "startTick": 9899,
+      "path": "round-2.rpl",
+      "compressedBytes": 853607,
+      "decodedBytes": 2487668,
+      "sha256": "084c00cfb20067727aed2f779113d3a08222cc593745f35593ef32cf852342f8"
+    },
+    {
+      "number": 3,
+      "startTick": 19390,
+      "path": "round-3.rpl",
+      "compressedBytes": 313755,
+      "decodedBytes": 1380064,
+      "sha256": "8bfa52f8b25d08803ba9f9242e4dffb0717fc49dbbdfe923a10fa228d135d6df"
+    },
+    {
+      "number": 4,
+      "startTick": 23113,
+      "path": "round-4.rpl",
+      "compressedBytes": 414210,
+      "decodedBytes": 1856104,
+      "sha256": "af38db80dc1936375562a33de41c3eefea1f321c13e5afede943ce3f3e80c86b"
+    },
+    {
+      "number": 5,
+      "startTick": 29368,
+      "path": "round-5.rpl",
+      "compressedBytes": 586894,
+      "decodedBytes": 1884348,
+      "sha256": "c73d8c4d8db7ee3170d81d83fc1acd6425403b87877daf0eeae997661518482f"
+    },
+    {
+      "number": 6,
+      "startTick": 36292,
+      "path": "round-6.rpl",
+      "compressedBytes": 690053,
+      "decodedBytes": 2331844,
+      "sha256": "e51b48d07f3a94854f2d018979e298d0ddeee60436d5af07c48f127eb9a04c84"
+    },
+    {
+      "number": 7,
+      "startTick": 44517,
+      "path": "round-7.rpl",
+      "compressedBytes": 612719,
+      "decodedBytes": 2289356,
+      "sha256": "80b5d3feb59906609be344fec101b42cc59c74cab0ad90d37d88ccef97a55663"
+    },
+    {
+      "number": 8,
+      "startTick": 52417,
+      "path": "round-8.rpl",
+      "compressedBytes": 541504,
+      "decodedBytes": 2311092,
+      "sha256": "7de44bc132fcbeb7c318590ba426bfde349ab14ce3c2aa5ef9534bb6ebe5b91e"
+    },
+    {
+      "number": 9,
+      "startTick": 60849,
+      "path": "round-9.rpl",
+      "compressedBytes": 565971,
+      "decodedBytes": 2024632,
+      "sha256": "72b27df46a4aad8828722ac302a04f3491ecf6085e8a69d6284891d797c40b2d"
+    },
+    {
+      "number": 10,
+      "startTick": 67485,
+      "path": "round-10.rpl",
+      "compressedBytes": 404677,
+      "decodedBytes": 2010608,
+      "sha256": "4fdec8bedf08c2f680165ddd8d4a4ac63d611eb1f7c7d65e1351744d5b3db319"
+    },
+    {
+      "number": 11,
+      "startTick": 74612,
+      "path": "round-11.rpl",
+      "compressedBytes": 567383,
+      "decodedBytes": 2246436,
+      "sha256": "ec73307cb3d2304d02f4b5883c83a4647dbada92611dcaf88474444a4805c7ea"
+    },
+    {
+      "number": 12,
+      "startTick": 82061,
+      "path": "round-12.rpl",
+      "compressedBytes": 424868,
+      "decodedBytes": 1895632,
+      "sha256": "6d17246db442889559f5b1be5e2151b678ffa4a0498f9929b2d8eefc1c557202"
+    },
+    {
+      "number": 13,
+      "startTick": 88105,
+      "path": "round-13.rpl",
+      "compressedBytes": 468328,
+      "decodedBytes": 1981908,
+      "sha256": "a6fefdc5650668e93a71c3be6fd43479074f5dd43e4e006de16b64d3d3d50c5e"
+    },
+    {
+      "number": 14,
+      "startTick": 95960,
+      "path": "round-14.rpl",
+      "compressedBytes": 655100,
+      "decodedBytes": 2206532,
+      "sha256": "e2dd0a0ac657447732adf5e480b70614de054d4cf05cb07c126a198d709fa76a"
+    },
+    {
+      "number": 15,
+      "startTick": 104464,
+      "path": "round-15.rpl",
+      "compressedBytes": 542029,
+      "decodedBytes": 2204200,
+      "sha256": "9f64d89ccbf1c055e776e49a36221516d7684f33c082498c526fcbf235585d1b"
+    },
+    {
+      "number": 16,
+      "startTick": 112400,
+      "path": "round-16.rpl",
+      "compressedBytes": 452234,
+      "decodedBytes": 1860480,
+      "sha256": "64d283fa1cbe956a4babbfaef8bc0a399fd5da6de22fa0e3d86a27731ad5f3a5"
+    },
+    {
+      "number": 17,
+      "startTick": 118751,
+      "path": "round-17.rpl",
+      "compressedBytes": 530838,
+      "decodedBytes": 2803492,
+      "sha256": "cda5684027fcca98e5d9bf8bdb1482c76596c4effdf50f64947821509d3eddb3"
+    },
+    {
+      "number": 18,
+      "startTick": 128570,
+      "path": "round-18.rpl",
+      "compressedBytes": 380762,
+      "decodedBytes": 1633240,
+      "sha256": "9166b03b8198722c94074d855b4de5fd9ec3d58bc9533737006c5c2edd80d8b3"
+    },
+    {
+      "number": 19,
+      "startTick": 133688,
+      "path": "round-19.rpl",
+      "compressedBytes": 768115,
+      "decodedBytes": 2655096,
+      "sha256": "f26dd6dc58420a1551ca2f39a97b83fd39f08c03a5413f4c4c21517d7bdb891c"
+    },
+    {
+      "number": 20,
+      "startTick": 142776,
+      "path": "round-20.rpl",
+      "compressedBytes": 500266,
+      "decodedBytes": 2161556,
+      "sha256": "dbb4378ffb0c5c06b78375c4ba7bdd68f3f4ba643e9a2f79a3ecd4a3603407ba"
+    },
+    {
+      "number": 21,
+      "startTick": 150496,
+      "path": "round-21.rpl",
+      "compressedBytes": 530421,
+      "decodedBytes": 2055576,
+      "sha256": "d862a01d3642dfd660771f79cef4cdac5c6c10a482c4060a336efe3bfa1cdc6d"
+    },
+    {
+      "number": 22,
+      "startTick": 157252,
+      "path": "round-22.rpl",
+      "compressedBytes": 665404,
+      "decodedBytes": 3310392,
+      "sha256": "d5fb8696b168b66cadd83c06f0a743431f9a4eac077b8abe678c634f208ae263"
+    }
+  ]
+}

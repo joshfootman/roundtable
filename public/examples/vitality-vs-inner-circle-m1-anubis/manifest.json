@@ -1,0 +1,190 @@
+{
+  "formatVersion": 1,
+  "source": {
+    "filename": "vitality-vs-inner-circle-m1-anubis.dem",
+    "sha256": "f41e9f1e473b953434082238aa836b04437c4db70a8c0a0aca2e0f6cee1f150f",
+    "match": "https://www.hltv.org/matches/2396927/vitality-vs-inner-circle-blast-open-porto-2026"
+  },
+  "metadata": {
+    "mapName": "de_anubis",
+    "serverName": "BLAST.tv Premier CS2 Server",
+    "clientName": "SourceTV Demo",
+    "gameDirectory": "/home/steam/cs2/game/csgo",
+    "demoVersion": "valve_demo_2",
+    "patchVersion": 14174,
+    "buildNumber": 10847,
+    "durationSeconds": 2894.921875,
+    "playbackTicks": 185275,
+    "playbackFrames": 185276
+  },
+  "rounds": [
+    {
+      "number": 1,
+      "startTick": 367,
+      "path": "round-1.rpl",
+      "compressedBytes": 408227,
+      "decodedBytes": 3533380,
+      "sha256": "beef37b756e9f81f04d4769db36877b6ce07530a0167fd216871674e9e3cc279"
+    },
+    {
+      "number": 2,
+      "startTick": 14584,
+      "path": "round-2.rpl",
+      "compressedBytes": 405000,
+      "decodedBytes": 1487224,
+      "sha256": "8f2715a6afb1a2bdf690a7e618e9246d9de911281cb973c2d83beb11c057bc6b"
+    },
+    {
+      "number": 3,
+      "startTick": 20105,
+      "path": "round-3.rpl",
+      "compressedBytes": 602747,
+      "decodedBytes": 2345136,
+      "sha256": "13c814d2f0aadd185ddb9241c0edb2cd22fbc52332378771d78c6df65117bcf6"
+    },
+    {
+      "number": 4,
+      "startTick": 28836,
+      "path": "round-4.rpl",
+      "compressedBytes": 596534,
+      "decodedBytes": 2284880,
+      "sha256": "9e3a8f75ad5a08ce0accac46a714509251509a951fa4c637086e1a56d6bc4092"
+    },
+    {
+      "number": 5,
+      "startTick": 37177,
+      "path": "round-5.rpl",
+      "compressedBytes": 547085,
+      "decodedBytes": 1891760,
+      "sha256": "ecdea611ef32eb76216d3f7bf47196877dd623efd2648711efb1bee7daa08ba1"
+    },
+    {
+      "number": 6,
+      "startTick": 44149,
+      "path": "round-6.rpl",
+      "compressedBytes": 602323,
+      "decodedBytes": 2293400,
+      "sha256": "387912cfc99d15686a0935962d07124e8b52e5c31ea0abc7f8ab9dbb03500751"
+    },
+    {
+      "number": 7,
+      "startTick": 52350,
+      "path": "round-7.rpl",
+      "compressedBytes": 693937,
+      "decodedBytes": 2175440,
+      "sha256": "f703b217d7baa690eff702688345a2d095d775488d3f5b3c003f5bccfb77d6a2"
+    },
+    {
+      "number": 8,
+      "startTick": 60763,
+      "path": "round-8.rpl",
+      "compressedBytes": 518557,
+      "decodedBytes": 2743156,
+      "sha256": "b1eed599f6650c700aa0d31b005985fdb505931e37c02ee777817a0523843f59"
+    },
+    {
+      "number": 9,
+      "startTick": 70870,
+      "path": "round-9.rpl",
+      "compressedBytes": 518648,
+      "decodedBytes": 1917672,
+      "sha256": "a6b1d4a42e58e1736069e2a9502b48b66febe38f7761528b3b06b43a4ab1df89"
+    },
+    {
+      "number": 10,
+      "startTick": 77632,
+      "path": "round-10.rpl",
+      "compressedBytes": 545612,
+      "decodedBytes": 2832764,
+      "sha256": "a4877a2443a2cecd512aa0850f2a3c6c50274891e92933762091ca9e156d9501"
+    },
+    {
+      "number": 11,
+      "startTick": 88329,
+      "path": "round-11.rpl",
+      "compressedBytes": 417816,
+      "decodedBytes": 1823104,
+      "sha256": "14889a61684acb515a3d0c6af923d0671d79514a40cb701d245a46ea43ea2d1a"
+    },
+    {
+      "number": 12,
+      "startTick": 94481,
+      "path": "round-12.rpl",
+      "compressedBytes": 367289,
+      "decodedBytes": 1757832,
+      "sha256": "a418caa053ef4893f83b158c714add0dbfd3c5bab70943fa6c3b195b7d63d201"
+    },
+    {
+      "number": 13,
+      "startTick": 100713,
+      "path": "round-13.rpl",
+      "compressedBytes": 414967,
+      "decodedBytes": 4253288,
+      "sha256": "d51359ec98f5357140050d8e15a45b66606456acfbf3597ac1550cd717eabdf5"
+    },
+    {
+      "number": 14,
+      "startTick": 118310,
+      "path": "round-14.rpl",
+      "compressedBytes": 298183,
+      "decodedBytes": 1324884,
+      "sha256": "71f9581ee5c7d90e30e5543f3acfdccff1bb34071b70e0d65e2c46b3c301cec2"
+    },
+    {
+      "number": 15,
+      "startTick": 123001,
+      "path": "round-15.rpl",
+      "compressedBytes": 298910,
+      "decodedBytes": 1320564,
+      "sha256": "b281378ed883c2d5a8fbcaaca5bac0439ccd735afc7391ecf86f13d27f919e3f"
+    },
+    {
+      "number": 16,
+      "startTick": 127932,
+      "path": "round-16.rpl",
+      "compressedBytes": 538449,
+      "decodedBytes": 2086412,
+      "sha256": "ef664eae9f936911ca17c8043cbf7df058cec73ef0eb7519dcc0aba35f74c21d"
+    },
+    {
+      "number": 17,
+      "startTick": 135216,
+      "path": "round-17.rpl",
+      "compressedBytes": 743116,
+      "decodedBytes": 3119956,
+      "sha256": "6c71a46801b9fd782e865352420be8a62529cafbb979d2b5e35a5240d94c183a"
+    },
+    {
+      "number": 18,
+      "startTick": 147018,
+      "path": "round-18.rpl",
+      "compressedBytes": 602994,
+      "decodedBytes": 2525492,
+      "sha256": "f043b4eb3dd96463d7ff3ebc174805eadf937e46068b8b19bd27e2a79afd115e"
+    },
+    {
+      "number": 19,
+      "startTick": 155991,
+      "path": "round-19.rpl",
+      "compressedBytes": 511617,
+      "decodedBytes": 2200416,
+      "sha256": "2dab9bc8ea05409d32c3adf688048c962a216ca5a359b957ac3e15442a5f8c87"
+    },
+    {
+      "number": 20,
+      "startTick": 164430,
+      "path": "round-20.rpl",
+      "compressedBytes": 568047,
+      "decodedBytes": 2681516,
+      "sha256": "1c954945df036b13924d0d1612f3775157eac970b07c6643b6dc4d8a5bd906fa"
+    },
+    {
+      "number": 21,
+      "startTick": 174808,
+      "path": "round-21.rpl",
+      "compressedBytes": 509917,
+      "decodedBytes": 2975792,
+      "sha256": "d291bcf824addb7384dff3c20700807ebdda62fac768a0dbd2e463a887ee80a2"
+    }
+  ]
+}

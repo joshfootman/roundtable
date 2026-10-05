@@ -48,6 +48,9 @@ test('reports invalid files and recovers through the same chooser', async ({ pag
   await expect(page.getByText('Demo import failed.', { exact: true })).toBeAttached()
   await expect(page.getByText(/ZIP.*Extract.*\.dem/i)).toBeAttached()
   await expect(page.locator('canvas')).toHaveCount(0)
+  await expect(page.getByRole('region', { name: 'Example demos' }).getByRole('button')).toHaveCount(
+    12,
+  )
   await input.setInputFiles(await demoFile())
   await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled({
     timeout: 15_000,
@@ -75,4 +78,61 @@ test('restores example rounds on the shared replay workspace', async ({ page }) 
   await page.goto('/replay?source=local&round=2')
   await expect(page.getByText('No demo chosen', { exact: true })).toBeVisible()
   await expect(page.locator('canvas')).toHaveCount(0)
+})
+
+test('shows twelve real match cards and starts a recording from the keyboard', async ({ page }) => {
+  await page.goto('/')
+  const catalog = page.getByRole('region', { name: 'Example demos' })
+  await expect(catalog.getByRole('button')).toHaveCount(12)
+  const images = catalog.locator('img')
+  await expect(images).toHaveCount(36)
+  for (const card of await catalog.getByRole('button').all()) {
+    await card.scrollIntoViewIfNeeded()
+    await expect
+      .poll(() =>
+        card
+          .locator('img')
+          .evaluateAll((elements) =>
+            elements.every(
+              (element) =>
+                element instanceof HTMLImageElement && element.complete && element.naturalWidth > 0,
+            ),
+          ),
+      )
+      .toBe(true)
+  }
+  const dust2 = catalog.getByRole('button', {
+    name: 'Play FaZe vs Vitality, Dust II, BLAST Premier Spring Final 2024, map 2',
+    exact: true,
+  })
+  await dust2.focus()
+  await expect(dust2).toBeFocused()
+  await page.keyboard.press('Enter')
+  const pause = page.getByRole('button', { name: 'Pause round', exact: true })
+  await expect(pause).toBeEnabled({ timeout: 30_000 })
+  await expect(catalog).toHaveCount(0)
+  await expect(page.locator('canvas')).toHaveCount(1)
+  const timeline = page.getByRole('slider', { name: 'Round timeline' })
+  const initial = await timeline.inputValue()
+  await expect.poll(() => timeline.inputValue()).not.toBe(initial)
+  await pause.click()
+})
+
+test('plays a distinct example and keeps the catalog within a phone viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.goto('/')
+  const catalog = page.getByRole('region', { name: 'Example demos' })
+  await expect(catalog.getByRole('button')).toHaveCount(12)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
+  await catalog
+    .getByRole('button', {
+      name: 'Play FaZe vs Natus Vincere, Ancient, PGL CS2 Major Copenhagen 2024, map 1',
+      exact: true,
+    })
+    .click()
+  await expect(page.getByRole('button', { name: 'Pause round', exact: true })).toBeEnabled({
+    timeout: 30_000,
+  })
+  await expect(catalog).toHaveCount(0)
+  await expect(page.locator('canvas')).toHaveCount(1)
 })

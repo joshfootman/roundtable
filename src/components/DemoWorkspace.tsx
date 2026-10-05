@@ -9,12 +9,18 @@ import type { ReplayRound } from '#/replay/types'
 import type { MapDefinition } from '#/replay/maps'
 import { DemoPlayerCards } from '#/components/DemoPlayerCards'
 import { DemoRoundControl } from '#/components/DemoRoundControl'
+import { ExampleDemos } from '#/components/ExampleDemos'
+import type { ExampleId } from '#/demo/examples'
 
 export function DemoWorkspace() {
   const { replay } = RootRoute.useRouteContext()
-  const { state } = React.useSyncExternalStore(replay.subscribe, replay.getSnapshot)
+  const { state, source } = React.useSyncExternalStore(replay.subscribe, replay.getSnapshot)
+
+  const [pendingExample, setPendingExample] = React.useState<ExampleId | undefined>()
+  const finishAutoPlay = React.useCallback(() => setPendingExample(undefined), [])
 
   function upload(evt: React.ChangeEvent<HTMLInputElement>) {
+    setPendingExample(undefined)
     const file = evt.currentTarget.files?.[0]
     if (!file) {
       replay.clear()
@@ -25,13 +31,31 @@ export function DemoWorkspace() {
 
   return (
     <main className="h-screen bg-neutral-900 p-4">
-      <div className="flex h-full flex-col rounded-4xl bg-neutral-800 text-mauve-200">
+      <div className="flex h-full min-h-0 flex-col rounded-4xl bg-neutral-800 text-mauve-200">
         <Header
           fileName={state.status !== 'empty' ? state.filename : undefined}
           uploadFile={upload}
           state={state}
         />
-        {state.status === 'ready' ? <Demo state={state} /> : <ExampleDemos />}
+        {state.status === 'ready' &&
+        mapDefinition(state.metadata.mapName) &&
+        state.rounds.some((round) => round.startTick === state.selectedStartTick) ? (
+          <Demo
+            key={source?.kind === 'example' ? source.id : 'local'}
+            state={state}
+            autoPlay={source?.kind === 'example' && pendingExample === source.id}
+            onAutoPlay={finishAutoPlay}
+          />
+        ) : (
+          <ExampleDemos
+            state={state}
+            activeExample={source?.kind === 'example' ? source.id : undefined}
+            onSelect={(id) => {
+              setPendingExample(id)
+              replay.openExample(id)
+            }}
+          />
+        )}
       </div>
     </main>
   )
@@ -96,11 +120,15 @@ function Header({
   )
 }
 
-function ExampleDemos() {
-  return <></>
-}
-
-function Demo({ state }: { state: ReadyImportState }) {
+function Demo({
+  state,
+  autoPlay,
+  onAutoPlay,
+}: {
+  state: ReadyImportState
+  autoPlay: boolean
+  onAutoPlay: () => void
+}) {
   const { replay } = RootRoute.useRouteContext()
   const map = mapDefinition(state.metadata.mapName)
   const round = state.rounds.find((round) => round.startTick === state.selectedStartTick)
@@ -119,6 +147,8 @@ function Demo({ state }: { state: ReadyImportState }) {
             round={round}
             rounds={state.rounds}
             onSelectRound={(number) => replay.selectRound(number)}
+            autoPlay={autoPlay}
+            onAutoPlay={onAutoPlay}
           />
         ) : (
           <DemoMap map={map} />
@@ -133,14 +163,26 @@ function DemoRound({
   round,
   rounds,
   onSelectRound,
+  autoPlay,
+  onAutoPlay,
 }: {
   map: MapDefinition
   round: ReplayRound
   rounds: readonly ReplayRound[]
   onSelectRound: (number: number) => void
+  autoPlay: boolean
+  onAutoPlay: () => void
 }) {
   const [playback, setPlayback] = React.useState<DemoPlaybackState>({ status: 'loading' })
   const tick = playback.status === 'ready' ? playback.snapshot.tick : round.liveStartTick
+  const started = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!autoPlay || started.current || playback.status !== 'ready') return
+    started.current = true
+    playback.controller.play()
+    onAutoPlay()
+  }, [autoPlay, playback, onAutoPlay])
 
   return (
     <>

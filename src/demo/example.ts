@@ -2,6 +2,8 @@ import { Effect, Schema, Stream } from 'effect'
 import { DemoImportError, type ImportEvent } from './import.ts'
 import { memoryFailureMessage } from './errors.ts'
 import { decodeRound } from './replay-codec.ts'
+import { defaultExampleId, examples } from './examples.ts'
+import type { ExampleId } from './examples.ts'
 
 export const ExampleManifest = Schema.Struct({
   formatVersion: Schema.Literal(1),
@@ -43,11 +45,14 @@ export const ExampleManifest = Schema.Struct({
   ),
 )
 
-export function importExample(): Stream.Stream<ImportEvent, DemoImportError> {
+export function importExample(
+  id: ExampleId = defaultExampleId,
+): Stream.Stream<ImportEvent, DemoImportError> {
+  const example = examples[id]
   const fetchAsset = (path: string) =>
     Effect.tryPromise({
       try: async (signal) => {
-        const response = await fetch(`/example/${path}`, { signal })
+        const response = await fetch(`${example.assetBase}/${path}`, { signal })
         if (!response.ok) throw new Error(`Example download failed (${response.status}).`)
         return new Uint8Array(await response.arrayBuffer())
       },
@@ -70,6 +75,18 @@ export function importExample(): Stream.Stream<ImportEvent, DemoImportError> {
           () => new DemoImportError({ message: 'The example match manifest is incompatible.' }),
         ),
       )
+      if (
+        manifest.source.filename !== example.filename ||
+        manifest.source.sha256 !== example.sourceSha256 ||
+        manifest.source.match !== example.sourceUrl ||
+        manifest.metadata.mapName !== example.map ||
+        manifest.rounds.length !== example.roundCount
+      )
+        return yield* Effect.fail(
+          new DemoImportError({
+            message: 'The example manifest does not match the selected recording.',
+          }),
+        )
       const metadata: ImportEvent = {
         type: 'metadata',
         metadata: manifest.metadata,

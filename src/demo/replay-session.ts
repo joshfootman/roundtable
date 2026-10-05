@@ -1,10 +1,14 @@
 import { Cause, Effect, Exit, Option, Stream } from 'effect'
 import { importDemo, type ImportEvent, type DemoImportError } from './import'
 import { importExample } from './example'
+import { defaultExampleId, examples } from './examples'
+import type { ExampleId } from './examples'
 import { updateImport, type ImportState, type ImportAction } from './session'
 
+export type ReplaySource = { kind: 'local' } | { kind: 'example'; id: ExampleId }
+
 export class ReplaySession {
-  private snapshot: { state: ImportState; source: 'local' | 'example' | undefined } = {
+  private snapshot: { state: ImportState; source: ReplaySource | undefined } = {
     state: { status: 'empty' },
     source: undefined,
   }
@@ -28,28 +32,32 @@ export class ReplaySession {
     for (const listener of this.listeners) listener()
   }
 
-  restore(source: 'local' | 'example', round?: number) {
+  restore(source: 'local' | 'example', round?: number, example: ExampleId = defaultExampleId) {
     this.requestedRound = round ?? 1
-    if (source === 'example' && this.snapshot.source !== source) {
-      this.open('FaZe vs Vitality · Dust II · Spring Final 2024', source, importExample())
+    const current = this.snapshot.source
+    if (source === 'example') {
+      if (current?.kind !== 'example' || current.id !== example) {
+        const descriptor = examples[example]
+        this.open(descriptor.filename, { kind: 'example', id: example }, importExample(example))
+      } else this.selectRound(round ?? 1)
     } else {
-      if (this.snapshot.source !== source) {
+      if (current?.kind !== 'local') {
         this.controller?.abort()
         this.controller = undefined
-        this.snapshot = { state: { status: 'empty' }, source }
-      } else this.snapshot = { ...this.snapshot, source }
+        this.snapshot = { state: { status: 'empty' }, source: { kind: 'local' } }
+      }
       this.selectRound(round ?? 1)
     }
   }
 
-  openExample() {
+  openExample(id: ExampleId = defaultExampleId) {
     this.requestedRound = undefined
-    this.open('FaZe vs Vitality · Dust II · Spring Final 2024', 'example', importExample())
+    this.open(examples[id].filename, { kind: 'example', id }, importExample(id))
   }
 
   openFile(file: File) {
     if (this.snapshot.state.status !== 'empty') this.requestedRound = undefined
-    this.open(file.name, 'local', importDemo(file))
+    this.open(file.name, { kind: 'local' }, importDemo(file))
     return this.requestedRound
   }
 
@@ -86,7 +94,7 @@ export class ReplaySession {
 
   private open(
     filename: string,
-    source: 'local' | 'example',
+    source: ReplaySource,
     events: Stream.Stream<ImportEvent, DemoImportError>,
   ) {
     this.controller?.abort()

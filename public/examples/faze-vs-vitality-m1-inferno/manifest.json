@@ -1,0 +1,158 @@
+{
+  "formatVersion": 1,
+  "source": {
+    "filename": "faze-vs-vitality-m1-inferno.dem",
+    "sha256": "19be9dbe315eb19ff60037459abbb50b534ebac907dde5040bc568935254e298",
+    "match": "https://www.hltv.org/matches/2372742/faze-vs-vitality-blast-premier-spring-final-2024"
+  },
+  "metadata": {
+    "mapName": "de_inferno",
+    "serverName": "BLAST Premier 2024",
+    "clientName": "SourceTV Demo",
+    "gameDirectory": "/home/csserver001/cs2/game/csgo",
+    "demoVersion": "valve_demo_2",
+    "patchVersion": 14011,
+    "buildNumber": 10072,
+    "durationSeconds": 2435.15625,
+    "playbackTicks": 155850,
+    "playbackFrames": 155783
+  },
+  "rounds": [
+    {
+      "number": 1,
+      "startTick": 575,
+      "path": "round-1.rpl",
+      "compressedBytes": 570053,
+      "decodedBytes": 3108360,
+      "sha256": "73d6b406f4b41db8c8565dd17d236266f6ca3e51f3408637f4b728a99c6579da"
+    },
+    {
+      "number": 2,
+      "startTick": 13350,
+      "path": "round-2.rpl",
+      "compressedBytes": 316772,
+      "decodedBytes": 2651568,
+      "sha256": "0db548084cccdebe24a1c228b1d9bd933bc3128010443e6eb8e9c7bb5a801e32"
+    },
+    {
+      "number": 3,
+      "startTick": 23430,
+      "path": "round-3.rpl",
+      "compressedBytes": 457019,
+      "decodedBytes": 2044484,
+      "sha256": "0eb94f134313450747b91f0d778b96184550d3a7a6582ec494dd4e31b91125e4"
+    },
+    {
+      "number": 4,
+      "startTick": 30283,
+      "path": "round-4.rpl",
+      "compressedBytes": 689712,
+      "decodedBytes": 2724628,
+      "sha256": "86dd11e34c70d05079c0a641d6ae906e8f7ac3956e7e81d495735a65c8bba818"
+    },
+    {
+      "number": 5,
+      "startTick": 40298,
+      "path": "round-5.rpl",
+      "compressedBytes": 487103,
+      "decodedBytes": 1678152,
+      "sha256": "bc9a052fc8da946bb44ec23abdb5a3576d96489f34d115bb55e0f6f085bcde44"
+    },
+    {
+      "number": 6,
+      "startTick": 46059,
+      "path": "round-6.rpl",
+      "compressedBytes": 770149,
+      "decodedBytes": 2747148,
+      "sha256": "57ee40fd57d229d46f4f02d95c44c375fa381b8229d8630e0461404d2c19d1f7"
+    },
+    {
+      "number": 7,
+      "startTick": 56099,
+      "path": "round-7.rpl",
+      "compressedBytes": 768238,
+      "decodedBytes": 3576852,
+      "sha256": "e3a3460342eb1e909e341fda50edcbd488212a4eb4db299f1bc86accc2e57369"
+    },
+    {
+      "number": 8,
+      "startTick": 68461,
+      "path": "round-8.rpl",
+      "compressedBytes": 452494,
+      "decodedBytes": 1666952,
+      "sha256": "b18e6f94c718c3803a07202c96ef31de7bdc92a8d45f08c58d34c1b773f4fb0b"
+    },
+    {
+      "number": 9,
+      "startTick": 74275,
+      "path": "round-9.rpl",
+      "compressedBytes": 587108,
+      "decodedBytes": 2566928,
+      "sha256": "327b2b42fc1ef3cc32aaa38465a7d3ef02b08d425b833c03193aa3da8e7063f9"
+    },
+    {
+      "number": 10,
+      "startTick": 83527,
+      "path": "round-10.rpl",
+      "compressedBytes": 621532,
+      "decodedBytes": 2523164,
+      "sha256": "a96c6717fcf5309f620f005a5dea8300a564da9b31124f8947d4a54bc66cfe64"
+    },
+    {
+      "number": 11,
+      "startTick": 92763,
+      "path": "round-11.rpl",
+      "compressedBytes": 528529,
+      "decodedBytes": 2939892,
+      "sha256": "d43a9249b8271b7cf2bc600c91fce9093df4a2faf5da1d2283c5c1fade7613a7"
+    },
+    {
+      "number": 12,
+      "startTick": 103134,
+      "path": "round-12.rpl",
+      "compressedBytes": 467478,
+      "decodedBytes": 2189444,
+      "sha256": "41f5c13f047b9f885dfc0b6156bd7fa6b9944b1b6dd4f21a84e27b0b2467c766"
+    },
+    {
+      "number": 13,
+      "startTick": 110959,
+      "path": "round-13.rpl",
+      "compressedBytes": 593791,
+      "decodedBytes": 5108516,
+      "sha256": "d4100feeda35c64281b77a215036e420aaa7dc7b3461e8785ad3c35bc836c098"
+    },
+    {
+      "number": 14,
+      "startTick": 131781,
+      "path": "round-14.rpl",
+      "compressedBytes": 666019,
+      "decodedBytes": 2385112,
+      "sha256": "8585a019bacc16bc48b9373b063b8a163c7d9f5264d7f09d9e0dc22c2c8664f6"
+    },
+    {
+      "number": 15,
+      "startTick": 140869,
+      "path": "round-15.rpl",
+      "compressedBytes": 219699,
+      "decodedBytes": 935368,
+      "sha256": "8ff71e1f1434cc476d76c4d5ebc5aa8216231fe35b75b4edaf438ca5809e2f14"
+    },
+    {
+      "number": 16,
+      "startTick": 144080,
+      "path": "round-16.rpl",
+      "compressedBytes": 282173,
+      "decodedBytes": 1810256,
+      "sha256": "1dfc50a916cbe138aa1ba8f713441a04a4b9baaa544a0000ff50fca6a30609bd"
+    },
+    {
+      "number": 17,
+      "startTick": 149913,
+      "path": "round-17.rpl",
+      "compressedBytes": 296668,
+      "decodedBytes": 1709448,
+      "sha256": "0e850f96a46428dc1337cfe24f561dca9ff6d5908768c96f8a5fdd09820b6f4a"
+    }
+  ]
+}

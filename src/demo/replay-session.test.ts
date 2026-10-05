@@ -3,6 +3,7 @@ import type { ReplayRound } from '../replay/types'
 import type { ImportResult } from './import'
 import type { DemoMetadata } from './metadata'
 import { ReplaySession } from './replay-session'
+import { defaultExampleId, examples } from './examples'
 
 const metadata: DemoMetadata = {
   mapName: 'de_dust2',
@@ -85,7 +86,7 @@ test('clears parsed results and notifies existing subscribers during the next im
     worker.reply({ type: 'complete' })
     await vi.waitFor(() =>
       expect(replay.getSnapshot()).toMatchObject({
-        source: 'local',
+        source: { kind: 'local' },
         state: { status: 'ready', metadata, rounds: [round], parsing: { status: 'complete' } },
       }),
     )
@@ -98,7 +99,7 @@ test('clears parsed results and notifies existing subscribers during the next im
     expect(replay.openFile(new File(['next demo'], 'next.dem'))).toBeUndefined()
     expect(snapshots.at(-1)).toEqual({
       state: { status: 'reading', filename: 'next.dem' },
-      source: 'local',
+      source: { kind: 'local' },
     })
     await vi.waitFor(() => expect(ControlledWorker.instances).toHaveLength(2))
     ControlledWorker.instances[1]!.reply({ type: 'metadata', metadata, roundStartTicks: [] })
@@ -134,4 +135,45 @@ test('clearing an active import terminates its worker and ignores queued results
   } finally {
     replay.dispose()
   }
+})
+
+test('restoring the same example retains its import and switching identity aborts it', async () => {
+  const requests: { url: string; signal: AbortSignal }[] = []
+  vi.stubGlobal('fetch', (url: string, options: { signal: AbortSignal }) => {
+    requests.push({ url, signal: options.signal })
+    return new Promise<Response>((_resolve, reject) => {
+      options.signal.addEventListener('abort', () =>
+        reject(new DOMException('Aborted', 'AbortError')),
+      )
+    })
+  })
+  const replay = new ReplaySession()
+  const second = 'faze-vs-natus-vincere-m1-ancient'
+
+  try {
+    replay.restore('example', 1, defaultExampleId)
+    await vi.waitFor(() => expect(requests).toHaveLength(1))
+    expect(requests[0]!.url).toBe('/example/manifest.json')
+    const originalState = replay.getSnapshot().state
+
+    replay.restore('example', 2, defaultExampleId)
+
+    expect(replay.getSnapshot().state).toBe(originalState)
+    expect(requests).toHaveLength(1)
+    expect(requests[0]!.signal.aborted).toBe(false)
+
+    replay.restore('example', 1, second)
+
+    await vi.waitFor(() => expect(requests).toHaveLength(2))
+    expect(requests[0]!.signal.aborted).toBe(true)
+    expect(requests[1]!.signal.aborted).toBe(false)
+    expect(requests[1]!.url).toBe('/examples/faze-vs-natus-vincere-m1-ancient/manifest.json')
+    expect(replay.getSnapshot()).toEqual({
+      source: { kind: 'example', id: second },
+      state: { status: 'reading', filename: examples[second].filename },
+    })
+  } finally {
+    replay.dispose()
+  }
+  await vi.waitFor(() => expect(requests[1]!.signal.aborted).toBe(true))
 })
