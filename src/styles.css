@@ -209,6 +209,82 @@ body {
   min-width: 0;
 }
 
+.demo-kill-feed {
+  align-self: flex-end;
+  width: min(100%, 360px);
+  min-width: 0;
+  z-index: 20;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.demo-kill-feed-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  max-height: 176px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutral-600) transparent;
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+  border-radius: 14px;
+  outline-offset: 2px;
+}
+
+.demo-kill-feed-list:focus-visible {
+  outline: 2px solid var(--color-mauve-200);
+}
+
+.demo-kill-feed-entry {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: none;
+  min-height: 32px;
+  max-width: 100%;
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--color-neutral-700) 50%, transparent);
+}
+
+.demo-kill-feed-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demo-kill-feed-name[data-team='2'] {
+  color: var(--color-t);
+}
+
+.demo-kill-feed-name[data-team='3'] {
+  color: var(--color-ct);
+}
+
+.demo-kill-feed-weapon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  color: white;
+}
+
+.demo-kill-feed-weapon img {
+  width: 42px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.demo-kill-feed-weapon .demo-kill-feed-headshot {
+  width: 18px;
+}
+
 @media (min-width: 640px) {
   .demo-github > a {
     padding-right: 4px;
@@ -251,7 +327,7 @@ body {
   .demo-round {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: repeat(4, auto);
+    grid-template-rows: repeat(5, auto);
     align-items: start;
     gap: 8px;
   }
@@ -277,12 +353,18 @@ body {
   }
 
   .demo-player-details {
+    grid-row: 5;
+  }
+
+  .demo-kill-feed {
+    grid-column: 1;
     grid-row: 4;
+    width: 100%;
   }
 
   .demo-map-viewport {
     grid-column: 2;
-    grid-row: 1 / 5;
+    grid-row: 1 / 6;
     align-self: start;
     width: clamp(240px, 40vw, 70dvh);
   }
@@ -380,6 +462,21 @@ body {
     width: 320px;
   }
 
+  .demo-kill-feed {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 320px;
+  }
+
+  .demo-round-multifloor .demo-kill-feed {
+    top: 72px;
+  }
+
+  .demo-kill-feed-list {
+    max-height: min(176px, 23dvh);
+  }
+
   .demo-playback-controls {
     position: absolute;
     bottom: 16px;
@@ -416,13 +513,17 @@ body {
 
   .demo-player-cards-overlay .demo-player-team {
     width: min(100%, 27vw, 320px);
-    max-height: calc(100% - 112px);
+    max-height: calc(100% - 200px);
     overflow-y: auto;
     pointer-events: auto;
   }
 
   .demo-player-cards-overlay .demo-player-team:last-child {
     justify-self: end;
+  }
+
+  .demo-round-multifloor .demo-player-cards-overlay .demo-player-team {
+    max-height: calc(100% - 256px);
   }
 }
 

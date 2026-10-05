@@ -13,6 +13,7 @@ import { DemoRoundControl } from '#/components/DemoRoundControl'
 import { ExampleDemos } from '#/components/ExampleDemos'
 import type { ExampleId } from '#/demo/examples'
 import { playerCardsAtTick } from '#/replay/player-cards'
+import { DemoKillFeed } from '#/components/DemoKillFeed'
 
 export function DemoWorkspace() {
   const { replay } = RootRoute.useRouteContext()
@@ -204,13 +205,14 @@ function DemoRound({
   }, [autoPlay, playback, onAutoPlay])
 
   return (
-    <div className="demo-round">
+    <div className={`demo-round ${map.floors === 'single' ? '' : 'demo-round-multifloor'}`}>
       <DemoRoundControl rounds={rounds} round={round} tick={tick} onSelectRound={onSelectRound} />
       <DemoFloorControl map={map} playback={playback} />
       <div className="demo-map-viewport">
         <DemoMap map={map} round={round} onPlayback={setPlayback} />
       </div>
       <DemoPlaybackControl round={round} playback={playback} />
+      <DemoKillFeed round={round} tick={tick} />
       <div className="demo-desktop-players">
         <DemoPlayerCards players={players} presentation="overlay" />
       </div>
