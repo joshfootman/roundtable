@@ -21,7 +21,7 @@ export function ExampleDemos({
     state.status === 'reading' || (state.status === 'ready' && state.parsing.status === 'active')
 
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto p-4 pt-0">
+    <div className="demo-content min-h-0 flex-1 overflow-y-auto">
       <section
         aria-labelledby="example-demos-heading"
         className="rounded-2xl bg-neutral-900/50 px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-6"
@@ -44,7 +44,7 @@ export function ExampleDemos({
                 aria-label={`Play ${example.teams[0].name} vs ${example.teams[1].name}, ${example.mapName}, ${example.event}, map ${example.mapNumber}`}
                 aria-busy={busy}
                 onClick={() => onSelect(example.id)}
-                className="min-w-0 cursor-pointer overflow-hidden rounded-2xl bg-neutral-700/30 text-left outline-offset-3 transition-colors duration-150 ease-out hover:bg-neutral-700/60 focus-visible:outline-2 focus-visible:outline-mauve-200 active:bg-neutral-700 motion-reduce:transition-none"
+                className="min-w-0 cursor-pointer overflow-hidden rounded-2xl bg-neutral-700/30 text-left outline-offset-2 transition-colors duration-150 ease-out hover:bg-neutral-700/60 focus-visible:outline-2 focus-visible:outline-mauve-200 active:bg-neutral-700 motion-reduce:transition-none"
               >
                 <div className="relative">
                   <img

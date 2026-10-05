@@ -20,12 +20,12 @@ export function DemoRoundControl({
     .toString()
     .padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`
   const tile = 'flex items-center justify-center rounded-xl'
-  const button = `${tile} bg-neutral-700/50 size-10 cursor-pointer outline-offset-2 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 disabled:cursor-default disabled:opacity-35 disabled:hover:bg-neutral-800/90`
+  const button = `${tile} bg-neutral-700/50 size-11 cursor-pointer outline-offset-2 enabled:hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 disabled:cursor-default disabled:opacity-35`
 
   return (
     <section
       aria-label="Round controls"
-      className="absolute top-4 left-4 z-10 flex w-80 max-w-[calc(100%-2rem)] flex-col gap-2 text-base text-mauve-200 tabular-nums"
+      className="demo-round-controls z-10 flex flex-col gap-2 text-base text-mauve-200 tabular-nums"
     >
       <nav aria-label="Round navigation" className="grid grid-cols-[auto_1fr_auto] gap-2">
         <button

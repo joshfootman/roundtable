@@ -83,12 +83,15 @@ export function DemoImportStatus({ state }: { state: ImportState }) {
           />
         </svg>
         <span className="sr-only">{labels[visual.status]}</span>
-        {visual.status === 'error' && (
-          <span className="absolute inset-x-0 top-full z-10 mt-2 rounded-xl bg-stone-800 px-3 py-2 text-xs leading-normal wrap-anywhere text-red-300">
-            {visual.message}
-          </span>
-        )}
       </span>
+      {visual.status === 'error' && (
+        <span
+          role="alert"
+          className="demo-import-error rounded-xl bg-neutral-800 px-3 py-2 text-xs leading-normal wrap-anywhere text-red-300"
+        >
+          {visual.message}
+        </span>
+      )}
     </>
   )
 }

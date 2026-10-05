@@ -136,3 +136,79 @@ test('plays a distinct example and keeps the catalog within a phone viewport', a
   await expect(catalog).toHaveCount(0)
   await expect(page.locator('canvas')).toHaveCount(1)
 })
+
+test('keeps the phone map clear and preserves playback while inspecting players', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const input = page.locator('input[type=file]')
+  await expect(page.getByText('Choose demo', { exact: true })).toBeVisible()
+  await input.setInputFiles(await demoFile())
+  const play = page.getByRole('button', { name: 'Play round', exact: true })
+  await expect(play).toBeEnabled({ timeout: 15_000 })
+  const canvas = page.locator('canvas')
+  const canvasHandle = await canvas.elementHandle()
+  const timeline = page.getByRole('slider', { name: 'Round timeline' })
+  await timeline.focus()
+  await timeline.press('End')
+  const selectedTick = await timeline.inputValue()
+  const players = page.locator('summary').filter({ hasText: /^Players$/ })
+  const ctPlayers = page.getByRole('list', { name: 'Counter-Terrorist players' })
+  const tPlayers = page.getByRole('list', { name: 'Terrorist players', exact: true })
+  await expect(ctPlayers).toBeVisible()
+  await expect(ctPlayers.getByRole('listitem')).toHaveCount(5)
+  await expect(tPlayers.getByRole('listitem')).toHaveCount(5)
+  await players.focus()
+  await page.keyboard.press('Enter')
+  await expect(ctPlayers).toBeHidden()
+  await page.keyboard.press('Enter')
+  await expect(ctPlayers).toBeVisible()
+  await expect(timeline).toHaveValue(selectedTick)
+  expect(await canvasHandle!.evaluate((element) => element.isConnected)).toBe(true)
+  await players.click()
+  await expect(ctPlayers).toBeHidden()
+
+  await timeline.focus()
+  await timeline.press('Home')
+  await play.click()
+  const runningTick = await timeline.inputValue()
+  await players.click()
+  const pause = page.getByRole('button', { name: 'Pause round', exact: true })
+  await expect(pause).toHaveAttribute('aria-pressed', 'true')
+  await expect.poll(() => timeline.inputValue()).not.toBe(runningTick)
+  await pause.click()
+  await players.click()
+  await timeline.focus()
+  await timeline.press('End')
+
+  for (const viewport of [
+    { width: 320, height: 568 },
+    { width: 844, height: 390 },
+    { width: 768, height: 1024 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await expect(players).toBeVisible()
+    await expect(ctPlayers).toBeHidden()
+    const mapBounds = await canvas.boundingBox()
+    const playbackBounds = await page
+      .getByRole('region', { name: 'Playback controls' })
+      .boundingBox()
+    expect(mapBounds!.height).toBeGreaterThanOrEqual(240)
+    expect(
+      playbackBounds!.x + playbackBounds!.width <= mapBounds!.x + 1 ||
+        playbackBounds!.y >= mapBounds!.y + mapBounds!.height - 1,
+    ).toBe(true)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      viewport.width,
+    )
+    await expect(timeline).toHaveValue(selectedTick)
+  }
+
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await expect(players).toBeHidden()
+  await expect(ctPlayers).toBeVisible()
+  await expect(tPlayers).toBeVisible()
+  await expect(timeline).toHaveValue(selectedTick)
+  expect(await canvasHandle!.evaluate((element) => element.isConnected)).toBe(true)
+})

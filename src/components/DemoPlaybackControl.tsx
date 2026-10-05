@@ -47,14 +47,14 @@ export function DemoPlaybackControl({
   return (
     <section
       aria-label="Playback controls"
-      className="absolute bottom-4 left-1/2 z-20 flex w-160 max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-2 rounded-xl bg-neutral-700/50 p-2 text-base text-mauve-200 tabular-nums"
+      className="demo-playback-controls z-20 grid items-center gap-x-2 rounded-2xl bg-neutral-700/50 p-2 text-base text-mauve-200 tabular-nums"
     >
       <button
         type="button"
         aria-label={playing ? 'Pause round' : 'Play round'}
         aria-pressed={playing}
         disabled={!ready}
-        className="demo-playback-toggle flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-lg outline-offset-2 hover:bg-neutral-800/50 focus-visible:outline-2 focus-visible:outline-mauve-200 disabled:cursor-default disabled:opacity-35"
+        className="demo-playback-toggle flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg outline-offset-2 focus-visible:outline-2 focus-visible:outline-mauve-200 enabled:hover:bg-neutral-800/50 disabled:cursor-default disabled:opacity-35"
         onClick={() => {
           if (playback.status !== 'ready') return
           if (playing) playback.controller.pause()
@@ -74,7 +74,7 @@ export function DemoPlaybackControl({
         step={1}
         value={tick}
         disabled={!ready}
-        className="demo-timeline h-6 min-w-0 flex-1 cursor-pointer disabled:cursor-default disabled:opacity-35"
+        className="demo-timeline h-11 min-w-0 flex-1 cursor-pointer disabled:cursor-default disabled:opacity-35"
         style={{ '--timeline-progress': `${progress}%` } as CSSProperties}
         onChange={(event) => {
           if (playback.status === 'ready')
@@ -95,7 +95,7 @@ export function DemoPlaybackControl({
         onBlur={finishScrub}
       />
       <div
-        className="flex shrink-0 items-center gap-1 whitespace-nowrap"
+        className="demo-playback-time flex shrink-0 items-center gap-1 whitespace-nowrap"
         aria-label="Playback time"
       >
         <time>{elapsed}</time>

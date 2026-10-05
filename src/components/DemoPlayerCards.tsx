@@ -1,31 +1,25 @@
 import { equipmentName } from '#/replay/equipment'
 import { EquipmentIcon, GameIcon, equipmentIcon } from '#/replay/icons'
-import { playerCardsAtTick } from '#/replay/player-cards'
 import type { PlayerCardData } from '#/replay/player-cards'
-import type { ReplayRound, ReplayWeapon } from '#/replay/types'
+import type { ReplayWeapon } from '#/replay/types'
 
 export function DemoPlayerCards({
-  rounds,
-  round,
-  tick,
-  hasFloorControl = false,
+  players,
+  presentation,
 }: {
-  rounds: readonly ReplayRound[]
-  round: ReplayRound
-  tick: number
-  hasFloorControl?: boolean
+  players: readonly PlayerCardData[]
+  presentation: 'inline' | 'overlay'
 }) {
-  const players = playerCardsAtTick(rounds, round, tick)
   return (
     <div
       aria-label="Player cards"
-      className="pointer-events-none absolute inset-4 bottom-24 grid grid-cols-2 items-end gap-4 xl:bottom-4"
+      className={`demo-player-cards demo-player-cards-${presentation}`}
     >
       {([3, 2] as const).map((team) => (
         <ul
           key={team}
           aria-label={team === 3 ? 'Counter-Terrorist players' : 'Terrorist players'}
-          className={`pointer-events-auto flex ${hasFloorControl ? 'max-h-[calc(100%-10rem)] md:max-h-[calc(100%-7rem)]' : 'max-h-[calc(100%-7rem)]'} min-h-0 w-full max-w-80 flex-col gap-1 overflow-y-auto ${team === 2 ? 'justify-self-end' : ''}`}
+          className="demo-player-team flex min-h-0 flex-col gap-1"
         >
           {players
             .filter((player) => player.team === team)
