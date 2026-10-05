@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Assets, Sprite, type Texture } from 'pixi.js'
 import c4Icon from '../assets/cs2/equipment/c4.svg?url&no-inline'
+import defuseIcon from '../assets/cs2/equipment/defuser.svg?url&no-inline'
 import { createBombRenderer } from '../replay/bomb-renderer'
 import type { MapDefinition, MapFloor } from '../replay/maps'
 import { createMapScene } from '../replay/map-scene'
@@ -30,10 +31,12 @@ export function DemoMap({
   map,
   round,
   onPlayback,
+  onResult,
 }: {
   map: MapDefinition
   round?: ReplayRound
   onPlayback?: (state: DemoPlaybackState) => void
+  onResult?: (outcome: ReplayRound['outcome'] | null) => void
 }) {
   const host = useRef<HTMLDivElement>(null)
   const [failedMap, setFailedMap] = useState<MapDefinition>()
@@ -45,12 +48,17 @@ export function DemoMap({
     const mapScene = createMapScene(map)
     let cancelled = false
     let clock: PlaybackClock | undefined
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let updateMotion: (() => void) | undefined
     onPlayback?.({ status: 'loading' })
 
     async function mount() {
       if (!(await mapScene.mount(element))) return
       if (round) {
-        const bombTexture = await Assets.load<Texture>(c4Icon)
+        const [bombTexture, defuseTexture] = await Promise.all([
+          Assets.load<Texture>(c4Icon),
+          Assets.load<Texture>(defuseIcon),
+        ])
         if (cancelled) return
         const styles = getComputedStyle(element)
         const canvas = document.createElement('canvas')
@@ -68,17 +76,25 @@ export function DemoMap({
           t: color('--color-t'),
           foreground: color('--color-mauve-200'),
           background: color('--color-neutral-800'),
+          armed: color('--color-bomb'),
           fontSize: 14,
         }
         const utilities = createUtilityRenderer(round, map)
         mapScene.container.addChild(utilities.container)
-        const players = createPlayerRenderer(round, map, appearance)
+        const players = createPlayerRenderer(round, map, appearance, {
+          bomb: bombTexture,
+          defuse: defuseTexture,
+        })
         mapScene.container.addChild(players.container)
         const bombMarker = new Sprite(bombTexture)
         bombMarker.anchor.set(0.5)
         bombMarker.width = bombMarker.height = 18
         bombMarker.tint = appearance.foreground
-        const bomb = createBombRenderer(round, map, bombMarker)
+        const bomb = createBombRenderer(round, map, bombMarker, {
+          neutral: appearance.foreground,
+          armed: appearance.armed,
+          defusing: appearance.ct,
+        })
         mapScene.container.addChild(bomb.container)
         const visibility = initialUtilityVisibility()
         let floor: MapFloor = map.floors === 'split' ? map.initialFloor : 'upper'
@@ -88,8 +104,13 @@ export function DemoMap({
         function draw() {
           utilities.draw(tick, symbolScale, visibility, floor)
           players.draw(tick, symbolScale, { floor, flashes: visibility.flashes })
-          bomb.draw(tick, symbolScale, floor)
+          bomb.draw(tick, symbolScale, floor, reducedMotion.matches)
         }
+        updateMotion = () => {
+          draw()
+          mapScene.app.render()
+        }
+        reducedMotion.addEventListener('change', updateMotion)
         mapScene.observeResize((scale) => {
           symbolScale = 1 / scale
           draw()
@@ -106,6 +127,14 @@ export function DemoMap({
           },
           publish(snapshot) {
             if (!cancelled) onPlayback?.({ status: 'ready', controller, snapshot, floor })
+          },
+          onMove({ from, to, cause }) {
+            if (cancelled) return
+            if (cause !== 'advance') onResult?.(null)
+            else if (round.outcome && from < round.resultTick && to >= round.resultTick) {
+              onPlayback?.({ status: 'ready', controller, snapshot: clock!.getSnapshot(), floor })
+              onResult?.(round.outcome)
+            }
           },
           setRunning(running) {
             if (running) mapScene.app.ticker.start()
@@ -139,9 +168,10 @@ export function DemoMap({
 
     return () => {
       cancelled = true
+      if (updateMotion) reducedMotion.removeEventListener('change', updateMotion)
       mapScene.destroy()
     }
-  }, [map, round, onPlayback])
+  }, [map, round, onPlayback, onResult])
 
   return (
     <div ref={host} className="relative size-full min-h-0">

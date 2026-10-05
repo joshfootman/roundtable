@@ -4,6 +4,7 @@
 @theme {
   --color-ct: #96c8fa;
   --color-t: #eabe54;
+  --color-bomb: #f59e0b;
 
   --animate-demo-import-status-travel: demo-import-status-travel 800ms linear infinite;
 

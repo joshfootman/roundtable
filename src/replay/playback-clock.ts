@@ -3,6 +3,12 @@ export interface PlaybackSnapshot {
   tick: number
 }
 
+export type PlaybackMovement = {
+  from: number
+  to: number
+  cause: 'advance' | 'seek' | 'restart'
+}
+
 export interface PlaybackClock {
   play(): void
   pause(): void
@@ -20,6 +26,7 @@ export function createPlaybackClock({
   draw,
   publish,
   setRunning,
+  onMove,
 }: {
   initialTick: number
   minimum: number
@@ -28,6 +35,7 @@ export function createPlaybackClock({
   draw: (tick: number) => void
   publish: (snapshot: PlaybackSnapshot) => void
   setRunning: (running: boolean) => void
+  onMove?: (movement: PlaybackMovement) => void
 }): PlaybackClock {
   let tick = initialTick
   let playing = false
@@ -52,7 +60,11 @@ export function createPlaybackClock({
   return {
     getSnapshot,
     play() {
-      if (tick < minimum || tick >= maximum) tick = minimum
+      if (tick < minimum || tick >= maximum) {
+        const from = tick
+        tick = minimum
+        onMove?.({ from, to: tick, cause: 'restart' })
+      }
       playing = true
       draw(tick)
       notify()
@@ -60,7 +72,9 @@ export function createPlaybackClock({
     },
     pause,
     seek(nextTick) {
+      const from = tick
       tick = Math.max(minimum, Math.min(maximum, nextTick))
+      onMove?.({ from, to: tick, cause: 'seek' })
       if (tick === maximum) pause()
       else {
         draw(tick)
@@ -75,7 +89,9 @@ export function createPlaybackClock({
     },
     advance(elapsedMS) {
       if (!playing) return
+      const from = tick
       tick = Math.min(maximum, tick + elapsedMS / (tickInterval * 1000))
+      onMove?.({ from, to: tick, cause: 'advance' })
       if (tick >= maximum) pause()
       else {
         draw(tick)

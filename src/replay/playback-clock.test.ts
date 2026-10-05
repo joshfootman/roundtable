@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { createPlaybackClock, type PlaybackSnapshot } from './playback-clock'
+import { createPlaybackClock, type PlaybackMovement, type PlaybackSnapshot } from './playback-clock'
 
 function setup(initialTick = 100) {
   const published: PlaybackSnapshot[] = []
   const drawn: number[] = []
   const running: boolean[] = []
+  const movements: PlaybackMovement[] = []
   const clock = createPlaybackClock({
     initialTick,
     minimum: 100,
@@ -13,11 +14,38 @@ function setup(initialTick = 100) {
     draw: (tick) => drawn.push(tick),
     publish: (snapshot) => published.push(snapshot),
     setRunning: (value) => running.push(value),
+    onMove: (movement) => movements.push(movement),
   })
-  return { clock, published, drawn, running }
+  return { clock, published, drawn, running, movements }
 }
 
 describe('playback clock', () => {
+  it('reports a playback crossing before a throttled snapshot or final pause', () => {
+    const { clock, movements, published } = setup()
+    clock.play()
+    clock.advance(100)
+    expect(movements).toEqual([{ from: 100, to: 110, cause: 'advance' }])
+    expect(published).toHaveLength(1)
+    clock.advance(2000)
+    expect(movements.at(-1)).toEqual({ from: 110, to: 200, cause: 'advance' })
+    expect(clock.getSnapshot()).toEqual({ playing: false, tick: 200 })
+  })
+
+  it('distinguishes seek and restart from a natural result crossing', () => {
+    const { clock, movements } = setup()
+    clock.seek(180)
+    clock.play()
+    clock.advance(200)
+    clock.play()
+    expect(movements).toEqual([
+      { from: 100, to: 180, cause: 'seek' },
+      { from: 180, to: 200, cause: 'advance' },
+      { from: 200, to: 100, cause: 'restart' },
+    ])
+    clock.seek(100)
+    expect(movements.at(-1)).toEqual({ from: 100, to: 100, cause: 'seek' })
+  })
+
   it('starts paused and ignores advances until playing', () => {
     const { clock, drawn } = setup()
     clock.advance(100)

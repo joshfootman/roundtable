@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Container, Graphics, Text } from 'pixi.js'
+import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js'
 import { createPlayerRenderer } from './player-renderer'
 import type { MapDefinition } from './maps'
 import type { PlayerInspection, ReplayRound } from './types'
@@ -16,12 +16,14 @@ const map: MapDefinition = {
   boundaryZ: 0,
   initialFloor: 'upper',
 }
+const textures = { bomb: Texture.EMPTY, defuse: Texture.WHITE }
 const appearance = {
   ct: 0x96c8fa,
   t: 0xeabe54,
   foreground: 0xeeeeee,
   background: 0x222222,
   fontSize: 16,
+  armed: 0xf59e0b,
 }
 
 function round(): ReplayRound {
@@ -77,12 +79,121 @@ function marker(renderer: ReturnType<typeof createPlayerRenderer>, index: number
     direction: container.children[1] as Graphics,
     flash: container.children[2] as Graphics,
     label: container.children[3] as Text,
+    elevation: container.children[4] as Graphics,
+    objective: container.children[5] as Sprite,
+    ladder: container.children[6] as Graphics,
   }
 }
 
 describe('recorded player rendering', () => {
+  it('shows the fixed ladder slot during recorded climbing and clears it on exit, death and rewind', () => {
+    const replay = round()
+    const initial = replay.inspection[0]![0]!
+    replay.inspection[0] = [
+      { ...initial, tick: 90, onLadder: false },
+      { ...initial, tick: 100, onLadder: true },
+      { ...initial, tick: 104, onLadder: false },
+    ]
+    const renderer = createPlayerRenderer(replay, map, appearance, textures)
+    const a = marker(renderer, 0)
+    renderer.draw(100, 2, { floor: 'lower', flashes: true })
+    expect([
+      a.ladder.visible,
+      a.ladder.x,
+      a.ladder.y,
+      a.flash.visible,
+      a.elevation.visible,
+    ]).toEqual([true, 12, 12, true, true])
+    renderer.draw(104, 1, { floor: 'upper', flashes: true })
+    expect(a.ladder.visible).toBe(false)
+    renderer.draw(100, 1, { floor: 'upper', flashes: true })
+    expect(a.ladder.visible).toBe(true)
+    replay.alive[3] = 0
+    renderer.draw(100, 1, { floor: 'upper', flashes: true })
+    expect(a.ladder.visible).toBe(false)
+    renderer.draw(90, 1, { floor: 'upper', flashes: true })
+    expect(a.ladder.visible).toBe(false)
+    renderer.container.destroy({ children: true })
+  })
+
+  it('anchors floor direction above the marker and restores filled markers when floors switch', () => {
+    const renderer = createPlayerRenderer(round(), map, appearance, textures)
+    const a = marker(renderer, 0)
+    const b = marker(renderer, 1)
+    renderer.draw(100, 1, { floor: 'upper', flashes: true })
+    expect([a.elevation.visible, b.elevation.visible, b.elevation.scale.y]).toEqual([
+      false,
+      true,
+      -1,
+    ])
+    expect([b.container.alpha, b.label.style.fill, a.label.style.fill]).toEqual([
+      0.6,
+      appearance.foreground,
+      appearance.background,
+    ])
+    expect(b.container.zIndex).toBeLessThan(a.container.zIndex)
+    renderer.draw(100, 1, { floor: 'lower', flashes: true })
+    expect([a.elevation.visible, a.elevation.scale.y, a.elevation.y, b.elevation.visible]).toEqual([
+      true,
+      1,
+      -20,
+      false,
+    ])
+    expect([b.container.alpha, b.label.style.fill]).toEqual([1, appearance.background])
+    renderer.container.destroy({ children: true })
+  })
+
+  it('shares one objective slot across carrying, planting and defusing while keeping flash separate', () => {
+    const replay = round()
+    replay.bomb = [
+      { tick: 90, state: { type: 'inactive' } },
+      { tick: 100, state: { type: 'carried', carrier: 'a', planting: false } },
+      { tick: 102, state: { type: 'carried', carrier: 'a', planting: true } },
+      {
+        tick: 104,
+        state: { type: 'planted', x: 120, y: 180, z: 1, defuser: { type: 'player', steamId: 'a' } },
+      },
+      { tick: 106, state: { type: 'planted', x: 120, y: 180, z: 1, defuser: { type: 'none' } } },
+    ]
+    const renderer = createPlayerRenderer(replay, map, appearance, textures)
+    const a = marker(renderer, 0)
+    renderer.draw(100, 2, { floor: 'upper', flashes: true })
+    expect([
+      a.objective.visible,
+      a.objective.width,
+      a.objective.height,
+      a.objective.x,
+      a.objective.y,
+      a.objective.tint,
+      a.flash.visible,
+    ]).toEqual([true, 10, 10, 12, -12, appearance.foreground, true])
+    renderer.draw(102, 1, { floor: 'upper', flashes: true })
+    expect([
+      a.objective.visible,
+      a.objective.texture,
+      a.objective.width,
+      a.objective.tint,
+      a.flash.visible,
+    ]).toEqual([true, textures.bomb, 12, appearance.armed, true])
+    renderer.draw(104, 1, { floor: 'upper', flashes: true })
+    expect([a.objective.visible, a.objective.texture, a.objective.tint, a.flash.visible]).toEqual([
+      true,
+      textures.defuse,
+      appearance.ct,
+      true,
+    ])
+    renderer.draw(106, 1, { floor: 'upper', flashes: true })
+    expect(a.objective.visible).toBe(false)
+    renderer.draw(102, 1, { floor: 'upper', flashes: true })
+    expect([a.objective.texture, a.objective.tint]).toEqual([textures.bomb, appearance.armed])
+    replay.alive[3] = 0
+    renderer.draw(102, 1, { floor: 'upper', flashes: true })
+    expect([a.objective.visible, a.flash.visible]).toEqual([false, false])
+    renderer.container.destroy({ children: true })
+  })
+
   it('calibrates the preceding sample and facing while keeping live-start numbers and screen scaling', () => {
-    const renderer = createPlayerRenderer(round(), map, appearance)
+    const renderer = createPlayerRenderer(round(), map, appearance, textures)
     renderer.draw(109, 2, { floor: 'upper', flashes: true })
     const a = marker(renderer, 0)
     const b = marker(renderer, 1)
@@ -93,7 +204,7 @@ describe('recorded player rendering', () => {
       a.container.visible,
       b.container.visible,
       marker(renderer, 2).container.visible,
-    ]).toEqual([true, false, false])
+    ]).toEqual([true, true, false])
     renderer.draw(90, 0.5, { floor: 'upper', flashes: true })
     expect([a.container.x, a.container.y, a.label.text, a.body.tint, a.container.scale.x]).toEqual([
       1024,
@@ -106,7 +217,7 @@ describe('recorded player rendering', () => {
   })
 
   it('updates death and flash expiry without retaining later states after a backward seek', () => {
-    const renderer = createPlayerRenderer(round(), map, appearance)
+    const renderer = createPlayerRenderer(round(), map, appearance, textures)
     const a = marker(renderer, 0)
     renderer.draw(100, 1, { floor: 'upper', flashes: true })
     expect([a.container.alpha, a.flash.visible]).toEqual([1, true])
@@ -123,18 +234,18 @@ describe('recorded player rendering', () => {
     renderer.container.destroy({ children: true })
   })
 
-  it('combines player, team and floor visibility and restores markers when filters clear', () => {
-    const renderer = createPlayerRenderer(round(), map, appearance)
+  it('keeps other-floor players visible while respecting player and team filters', () => {
+    const renderer = createPlayerRenderer(round(), map, appearance, textures)
     const a = marker(renderer, 0)
     const b = marker(renderer, 1)
     renderer.draw(100, 1, { floor: 'lower', flashes: true })
-    expect([a.container.visible, b.container.visible]).toEqual([false, true])
+    expect([a.container.visible, b.container.visible]).toEqual([true, true])
     renderer.draw(100, 1, { floor: 'upper', flashes: true, hiddenPlayers: new Set(['a']) })
-    expect([a.container.visible, b.container.visible]).toEqual([false, false])
+    expect([a.container.visible, b.container.visible]).toEqual([false, true])
     renderer.draw(100, 1, { floor: 'upper', flashes: true, hiddenTeams: new Set([3]) })
-    expect([a.container.visible, b.container.visible]).toEqual([false, false])
+    expect([a.container.visible, b.container.visible]).toEqual([false, true])
     renderer.draw(100, 1, { floor: 'upper', flashes: true })
-    expect([a.container.visible, b.container.visible]).toEqual([true, false])
+    expect([a.container.visible, b.container.visible]).toEqual([true, true])
     renderer.container.destroy({ children: true })
   })
 })
