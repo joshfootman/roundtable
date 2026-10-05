@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Route as RootRoute } from '../routes/__root'
 import React from 'react'
 import { DemoImportStatus } from '../components/DemoImportStatus'
 import type { ImportState, ReadyImportState } from '#/demo/session'
@@ -10,12 +10,8 @@ import type { MapDefinition } from '#/replay/maps'
 import { DemoPlayerCards } from '#/components/DemoPlayerCards'
 import { DemoRoundControl } from '#/components/DemoRoundControl'
 
-export const Route = createFileRoute('/demo')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  const { replay } = Route.useRouteContext()
+export function DemoWorkspace() {
+  const { replay } = RootRoute.useRouteContext()
   const { state } = React.useSyncExternalStore(replay.subscribe, replay.getSnapshot)
 
   function upload(evt: React.ChangeEvent<HTMLInputElement>) {
@@ -105,7 +101,7 @@ function ExampleDemos() {
 }
 
 function Demo({ state }: { state: ReadyImportState }) {
-  const { replay } = Route.useRouteContext()
+  const { replay } = RootRoute.useRouteContext()
   const map = mapDefinition(state.metadata.mapName)
   const round = state.rounds.find((round) => round.startTick === state.selectedStartTick)
 

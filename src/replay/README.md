@@ -7,10 +7,11 @@ publishing them. Playback holds the preceding sample. It does not interpolate th
 deaths or gaps.
 
 Pixi owns the playback clock and marker updates. React receives snapshots at most four
-times per second and when playback changes. The HTML player list exposes the recorded
-coordinates, teams and alive state without relying on canvas or colour.
+times per second and when playback changes. `DemoWorkspace` renders the home and replay
+routes. `DemoMap` draws the recorded positions, and `DemoPlayerCards` shows player health,
+equipment, and match statistics.
 
-The native Replay position range seeks directly into the recorded buffers. Seeking
+The native Round timeline range seeks directly into the recorded buffers. Seeking
 updates the canvas immediately and preserves playback or pause. Seeking to the end
 pauses. Arrow keys, Home and End work without custom keyboard handlers.
 

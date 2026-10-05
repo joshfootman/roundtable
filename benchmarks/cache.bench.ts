@@ -12,14 +12,14 @@ test('compares optional Dexie caching with warm HTTP replay loading', async ({
     { file: string }
   >
   const harness = build['benchmarks/cache-harness.ts']!
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Load example match' }).click()
-  await expect(page.getByRole('button', { name: /Round 23/ })).toBeVisible({ timeout: 90_000 })
-  await expect(page.getByRole('status')).toContainText('Parsing complete')
-  await page.getByRole('button', { name: 'Play', exact: true }).click()
-  const before = await page.getByRole('slider', { name: 'Replay position' }).inputValue()
-  const positions = page.getByLabel('Player inspection').getByText(/^X /)
-  const beforePositions = await positions.allTextContents()
+  await page.goto('/replay?source=example&round=2')
+  await expect(page.locator('[data-state="success"]')).toBeAttached({ timeout: 90_000 })
+  await expect(page.getByRole('navigation', { name: 'Round navigation' })).toContainText('Round 2')
+  const play = page.getByRole('button', { name: 'Play round', exact: true })
+  await expect(play).toBeEnabled()
+  await play.click()
+  const timeline = page.getByRole('slider', { name: 'Round timeline' })
+  const before = await timeline.inputValue()
   const result = await page.evaluate(async (url) => {
     const gaps: number[] = []
     let previous = performance.now()
@@ -44,8 +44,7 @@ test('compares optional Dexie caching with warm HTTP replay loading', async ({
     expect(pair.indexedDB.rounds).toBe(23)
   }
   await expect(page.locator('canvas')).toHaveCount(1)
-  expect(await page.getByRole('slider', { name: 'Replay position' }).inputValue()).not.toBe(before)
-  expect(await positions.allTextContents()).not.toEqual(beforePositions)
+  expect(await timeline.inputValue()).not.toBe(before)
   const manifest = JSON.parse(await readFile('public/example/manifest.json', 'utf8')) as {
     source: { sha256: string }
   }

@@ -45,7 +45,7 @@ test('releases previous replay resources across repeated import cycles', async (
     mimeType: 'application/octet-stream',
     buffer: gunzipSync(await readFile('fixtures/replay/dust2-first-round.dem.gz')),
   }
-  const input = page.getByLabel('Choose a .dem file')
+  const input = page.locator('input[type="file"]')
   const workers = () => page.evaluate(() => ({ ...Reflect.get(window, 'replayWorkerCounts') }))
   const memory = async () => {
     await page.evaluate(
@@ -60,47 +60,47 @@ test('releases previous replay resources across repeated import cycles', async (
   const baseline = await memory()
   const cycles = []
   for (let cycle = 1; cycle <= importCycles; cycle++) {
-    await page.getByRole('button', { name: 'Load example match', exact: true }).click()
-    await expect(page.getByRole('status')).toContainText('23 rounds available. Parsing complete.', {
-      timeout: 30_000,
+    await page.evaluate(() => {
+      history.pushState({}, '', '/replay?source=example&round=2')
+      dispatchEvent(new PopStateEvent('popstate'))
     })
-    await expect(page.getByRole('button', { name: /^Round \d+ · Ready$/ })).toHaveCount(23)
+    await expect(page.locator('[data-state="success"]')).toBeAttached({ timeout: 30_000 })
+    await expect(page.getByRole('navigation', { name: 'Round navigation' })).toContainText(
+      'Round 2',
+    )
     await expect(page.locator('canvas')).toHaveCount(1)
-    await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeEnabled()
+    await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled()
     const example = await memory()
     await input.setInputFiles(fixture)
-    await page.getByRole('button', { name: 'Import demo', exact: true }).click()
-    await expect(page.getByRole('status')).toContainText('1 rounds available. Parsing stopped.', {
-      timeout: 30_000,
-    })
-    await expect(page.getByRole('button', { name: /^Round \d+ · Ready$/ })).toHaveCount(1)
+    await expect(page.locator('[data-state="error"]')).toBeAttached({ timeout: 30_000 })
+    await expect(page.getByRole('navigation', { name: 'Round navigation' })).toContainText(
+      'Round 1',
+    )
+    await expect(page.getByRole('button', { name: 'Next round', exact: true })).toBeDisabled()
     await expect(page.locator('canvas')).toHaveCount(1)
     await expect
       .poll(workers)
       .toEqual({ created: cycle * 2 - 1, terminated: cycle * 2 - 1, active: 0 })
     const local = await memory()
-    await page.getByRole('button', { name: 'Import demo', exact: true }).evaluate(
-      (button: HTMLButtonElement) =>
-        new Promise<void>((resolve) => {
-          const observer = new MutationObserver(() => {
-            const cancel = [...document.querySelectorAll<HTMLButtonElement>('button')].find(
-              (candidate) => candidate.textContent?.trim() === 'Cancel import',
-            )
-            if (cancel) {
-              observer.disconnect()
-              cancel.click()
-              resolve()
-            }
-          })
-          observer.observe(document.body, { childList: true, subtree: true })
-          button.click()
-        }),
+    await input.setInputFiles([])
+    await page.route(/\/demo\.worker-[^/]+\.js(?:\?.*)?$/, (route) =>
+      route.fulfill({ contentType: 'text/javascript', body: 'self.onmessage = () => {}' }),
     )
-    await expect(page.getByRole('status')).toContainText('Import cancelled.')
+    await input.setInputFiles(fixture)
+    await expect(page.locator('[data-state="loading"]')).toBeAttached()
+    await expect.poll(workers).toEqual({ created: cycle * 2, terminated: cycle * 2 - 1, active: 1 })
+    await input.setInputFiles([])
+    await page.unroute(/\/demo\.worker-[^/]+\.js(?:\?.*)?$/)
+    await expect(page.locator('[data-state="idle"]')).toBeAttached()
     await expect(page.locator('canvas')).toHaveCount(0)
-    await expect(page.getByRole('button', { name: /^Round \d+ · Ready$/ })).toHaveCount(0)
+    await expect(page.getByRole('navigation', { name: 'Round navigation' })).toHaveCount(0)
     await expect.poll(workers).toEqual({ created: cycle * 2, terminated: cycle * 2, active: 0 })
     cycles.push({ cycle, example, local, cleared: await memory(), workers: await workers() })
+    await page.evaluate(() => {
+      history.pushState({}, '', '/')
+      dispatchEvent(new PopStateEvent('popstate'))
+    })
+    await expect(page).toHaveURL(/\/$/)
     if (
       process.env.HEAP_SNAPSHOTS === '1' &&
       (cycle === Math.min(5, importCycles - 1) || cycle === importCycles)
@@ -134,7 +134,7 @@ test('releases previous replay resources across repeated import cycles', async (
     build: {
       mode: 'production Vite build, no CPU/network throttling',
       replaySourceSha256: createHash('sha256')
-        .update(await readFile('src/replay/TacticalReplay.tsx'))
+        .update(await readFile('src/components/DemoMap.tsx'))
         .digest('hex'),
       indexSha256: createHash('sha256')
         .update(await readFile('dist/index.html'))
@@ -146,7 +146,7 @@ test('releases previous replay resources across repeated import cycles', async (
     baseline,
     cycles,
     limitations:
-      'Forced-GC main-renderer V8 heap and reported backing/embedder storage only. Excludes worker process, GPU and browser RSS. Native workers run normally; counters record explicit ownership termination without retaining worker references. A finite repeated-import run cannot prove every long-session leak absent.',
+      'Forced-GC main-renderer V8 heap and reported backing/embedder storage only. Excludes worker process, GPU and browser RSS. Fixture imports use native parsing; pending-import resets hold a controlled worker idle. Counters record explicit ownership termination without retaining worker references. Example navigation stays in one document to retain session and memory history. A finite repeated-import run cannot prove every long-session leak absent.',
   }
   const path = testInfo.outputPath('repeated-imports.json')
   await writeFile(path, JSON.stringify(result, null, 2))

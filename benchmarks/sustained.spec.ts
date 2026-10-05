@@ -19,28 +19,19 @@ test('measures a minute of recorded playback and retained browser memory', async
     new Uint8Array(gunzipSync(await readFile('public/example/round-2.rpl'))).buffer,
   )
   const tickInterval = recordedRound.tickInterval
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Load example match' }).click()
-  await expect(page.getByRole('status')).toContainText('23 rounds available. Parsing complete.', {
-    timeout: 30_000,
-  })
-  await page.getByRole('button', { name: 'Round 2 · Ready', exact: true }).click()
-  const replay = page.getByRole('region', { name: 'Dust II · Round 2', exact: true })
-  const play = replay.getByRole('button', { name: 'Play', exact: true })
+  await page.goto('/replay?source=example&round=2')
+  await expect(page.locator('[data-state="success"]')).toBeAttached({ timeout: 30_000 })
+  await expect(page.getByRole('navigation', { name: 'Round navigation' })).toContainText('Round 2')
+  const play = page.getByRole('button', { name: 'Play round', exact: true })
   await expect(play).toBeEnabled()
-  const slider = replay.getByRole('slider', { name: 'Replay position' })
+  const slider = page.getByRole('slider', { name: 'Round timeline' })
   await slider.press('End')
   await slider.press('Home')
-  const tick = replay.getByTestId('replay-tick')
   const initialTick = Number(await slider.getAttribute('min'))
-  await expect(tick).toHaveAttribute('data-tick', String(initialTick))
+  await expect(slider).toHaveValue(String(initialTick))
   const maxTick = Number(await slider.getAttribute('max'))
   expect((maxTick - initialTick) * tickInterval).toBeGreaterThan(60)
-  const players = replay.getByLabel('Player inspection').getByText(/^X /)
-  const initialPositions = (await players.allTextContents()).map(
-    (position) => position.split(' · Z')[0],
-  )
-  await replay.locator('canvas').scrollIntoViewIfNeeded()
+  await page.locator('canvas').scrollIntoViewIfNeeded()
   const cdp = await page.context().newCDPSession(page)
   await cdp.send('HeapProfiler.collectGarbage')
   const memory = [{ elapsedMs: 0, ...(await cdp.send('Runtime.getHeapUsage')) }]
@@ -69,32 +60,18 @@ test('measures a minute of recorded playback and retained browser memory', async
     })
   }
   const { elapsedMs, gaps } = await frames
-  await expect(replay.getByRole('button', { name: 'Pause', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Pause round', exact: true })).toBeEnabled()
   await expect
-    .poll(async () => Number(await tick.getAttribute('data-tick')) - initialTick)
+    .poll(async () => Number(await slider.inputValue()) - initialTick)
     .toBeGreaterThanOrEqual(Math.floor(elapsedMs / (tickInterval * 1000)))
-  const finalTick = Number(await tick.getAttribute('data-tick'))
-  expect(
-    (await players.allTextContents()).map((position) => position.split(' · Z')[0]),
-  ).not.toEqual(initialPositions)
-  await replay.getByRole('button', { name: 'Pause', exact: true }).click()
+  const finalTick = Number(await slider.inputValue())
+  await page.getByRole('button', { name: 'Pause round', exact: true }).click()
   const seeks = []
   for (const key of ['End', 'Home']) {
     const start = performance.now()
     await slider.press(key)
-    await expect(tick).toHaveAttribute(
-      'data-tick',
-      key === 'End' ? String(maxTick) : String(initialTick),
-    )
+    await expect(slider).toHaveValue(key === 'End' ? String(maxTick) : String(initialTick))
     seeks.push({ key, responseMs: performance.now() - start })
-  }
-  await replay.getByText('Utility overlays', { exact: true }).click()
-  const overlays = replay.getByRole('group', { name: 'Visible overlays' }).getByRole('checkbox')
-  for (const overlay of await overlays.all()) {
-    await overlay.uncheck()
-    await expect(overlay).not.toBeChecked()
-    await overlay.check()
-    await expect(overlay).toBeChecked()
   }
   await cdp.send('HeapProfiler.collectGarbage')
   const afterGC = await cdp.send('Runtime.getHeapUsage')
@@ -134,7 +111,7 @@ test('measures a minute of recorded playback and retained browser memory', async
       frameGapP95Ms: percentile(gaps, 0.95),
       frameGapMaxMs: Math.max(...gaps),
     },
-    controls: { seeks, utilityToggles: await overlays.count() },
+    controls: { seeks },
     memory: {
       sampleCadenceMs: 5_000,
       samples: memory,

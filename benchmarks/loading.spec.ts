@@ -37,35 +37,33 @@ test('compares cold example loading with the same live-parsed recording', async 
     const modes: LoadingMode[] =
       run % 2 ? ['pre-parsed', 'live-parsed'] : ['live-parsed', 'pre-parsed']
     for (const mode of modes) {
-      const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+      const context = await browser.newContext({
+        baseURL: 'http://127.0.0.1:4176',
+        viewport: { width: 1440, height: 900 },
+      })
       try {
         const page = await context.newPage()
-        await page.goto('http://127.0.0.1:4176')
-        await page.evaluate(() => {
-          performance.clearResourceTimings()
+        await page.addInitScript(() => {
+          if (new URL(location.href).searchParams.get('source') === 'example')
+            performance.mark('loading-start')
           const observer = new MutationObserver(() => {
-            const canvas = document.querySelector('canvas')
-            const play = canvas
-              ?.closest('section')
-              ?.querySelector<HTMLButtonElement>('button[aria-pressed]')
-            if (play && !play.disabled && !performance.getEntriesByName('loading-first').length) {
+            const play = document.querySelector<HTMLButtonElement>(
+              'button[aria-label="Play round"]',
+            )
+            if (play && !play.disabled && !performance.getEntriesByName('loading-first').length)
               performance.mark('loading-first')
-            }
             if (
-              document
-                .querySelector('output')
-                ?.textContent?.includes('23 rounds available. Parsing complete.') &&
+              document.querySelector('[data-state="success"]') &&
               !performance.getEntriesByName('loading-complete').length
-            ) {
+            )
               performance.mark('loading-complete')
-            }
             if (
               performance.getEntriesByName('loading-first').length &&
               performance.getEntriesByName('loading-complete').length
             )
               observer.disconnect()
           })
-          observer.observe(document.body, {
+          observer.observe(document, {
             subtree: true,
             childList: true,
             attributes: true,
@@ -73,14 +71,10 @@ test('compares cold example loading with the same live-parsed recording', async 
           })
         })
         if (mode === 'pre-parsed') {
-          const example = page.getByRole('button', { name: 'Load example match', exact: true })
-          await example.evaluate((button) => {
-            button.addEventListener('click', () => performance.mark('loading-start'), {
-              once: true,
-            })
-          })
-          await example.click()
+          await page.goto('/replay?source=example&round=1')
         } else {
+          await page.goto('/')
+          await page.locator('input[type="file"]').waitFor({ state: 'attached' })
           await page.evaluate(async () => {
             performance.mark('loading-start')
             const response = await fetch('http://127.0.0.1:4177/demo.dem')
@@ -93,16 +87,10 @@ test('compares cold example loading with the same live-parsed recording', async 
             input.files = transfer.files
             input.dispatchEvent(new Event('change', { bubbles: true }))
           })
-          await page.getByRole('button', { name: 'Import demo', exact: true }).click()
         }
-        await expect(page.getByRole('status')).toHaveText(
-          'First round loaded. 23 rounds available. Parsing complete.',
-          { timeout: 180_000 },
-        )
-        await expect(
-          page.getByRole('region', { name: 'Dust II · Round 1', exact: true }).locator('canvas'),
-        ).toBeVisible()
-        await expect(page.getByRole('button', { name: /^Round \d+ · Ready$/ })).toHaveCount(23)
+        await expect(page.locator('[data-state="success"]')).toBeAttached({ timeout: 180_000 })
+        await expect(page.locator('canvas')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled()
         await expect
           .poll(() => page.evaluate(() => performance.getEntriesByName('loading-complete').length))
           .toBe(1)
@@ -141,6 +129,13 @@ test('compares cold example loading with the same live-parsed recording', async 
             resourceBytes: replayResources.reduce((sum, entry) => sum + entry.encodedBodySize, 0),
           }
         })
+        for (let round = 2; round <= 23; round++) {
+          await page.getByRole('button', { name: 'Next round', exact: true }).click()
+          await expect(page.getByRole('navigation', { name: 'Round navigation' })).toContainText(
+            `Round ${round}`,
+          )
+        }
+        await expect(page.getByRole('button', { name: 'Next round', exact: true })).toBeDisabled()
         observations.push({ mode, run, ...observation })
       } finally {
         await context.close()
@@ -162,7 +157,7 @@ test('compares cold example loading with the same live-parsed recording', async 
     source: { path: demoPath, bytes: (await stat(demoPath)).size, sha256: sourceSha256 },
     archiveCompressedBytes: manifest.rounds.reduce((sum, round) => sum + round.compressedBytes, 0),
     build: {
-      mode: 'vite build and vite preview; fresh browser context per observation; no CPU or network throttling',
+      mode: 'vite build and vite preview; fresh browser context per observation; no CPU or network throttling; example timing starts at document initialization, live timing includes fixture download',
       indexSha256: createHash('sha256')
         .update(await readFile('dist/index.html'))
         .digest('hex'),

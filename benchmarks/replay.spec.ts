@@ -26,29 +26,22 @@ test('records import, playback and seek timings', async ({ page, browser }, test
   const runs = []
   for (let run = 0; run < 3; run++) {
     await page.goto('/')
-    await page
-      .getByLabel('Choose a .dem file')
-      .setInputFiles(
-        compact
-          ? { name: 'dust2-first-round.dem', mimeType: 'application/octet-stream', buffer: compact }
-          : demoPath,
-      )
+    await page.locator('input[type="file"]').waitFor({ state: 'attached' })
     await page.evaluate(() => {
-      document.querySelector('form')!.addEventListener(
-        'submit',
+      document.querySelector('input[type="file"]')!.addEventListener(
+        'change',
         () => {
-          performance.mark('benchmark-submit')
+          performance.mark('benchmark-import')
           function ready() {
-            const button = document
-              .querySelector<HTMLCanvasElement>('canvas')
-              ?.closest('section')
-              ?.querySelector<HTMLButtonElement>('button[aria-pressed]')
-            if (!button || button.disabled) {
+            const button = document.querySelector<HTMLButtonElement>(
+              'button[aria-label="Play round"]',
+            )
+            if (!document.querySelector('canvas') || !button || button.disabled) {
               requestAnimationFrame(ready)
               return
             }
             requestAnimationFrame(() => {
-              performance.measure('benchmark-first-round', 'benchmark-submit')
+              performance.measure('benchmark-first-round', 'benchmark-import')
             })
           }
           requestAnimationFrame(ready)
@@ -56,9 +49,15 @@ test('records import, playback and seek timings', async ({ page, browser }, test
         { once: true },
       )
     })
-    await page.getByRole('button', { name: 'Import demo' }).click()
-    const replay = page.getByRole('region', { name: /· Round 1$/ })
-    await expect(replay.getByRole('button', { name: 'Play', exact: true })).toBeEnabled({
+    await page
+      .locator('input[type="file"]')
+      .setInputFiles(
+        compact
+          ? { name: 'dust2-first-round.dem', mimeType: 'application/octet-stream', buffer: compact }
+          : demoPath,
+      )
+    const replay = page.getByRole('region', { name: 'Playback controls' })
+    await expect(replay.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled({
       timeout: 60_000,
     })
     await expect
@@ -67,15 +66,17 @@ test('records import, playback and seek timings', async ({ page, browser }, test
     const firstRoundMs = await page.evaluate(
       () => performance.getEntriesByName('benchmark-first-round')[0].duration,
     )
-    const slider = replay.getByRole('slider', { name: 'Replay position' })
+    const slider = replay.getByRole('slider', { name: 'Round timeline' })
     await slider.press('Home')
-    await replay.locator('canvas').scrollIntoViewIfNeeded()
-    const players = replay.getByLabel('Player inspection').getByText(/^X /)
-    const startingPosition = await players.allTextContents()
-    const parsingDuringPlayback = (await page.getByRole('status').textContent())!.includes(
-      'Parsing continues',
-    )
-    await replay.getByRole('button', { name: 'Play', exact: true }).click()
+    const canvas = page.locator('canvas[role="img"]')
+    await expect(canvas).toBeVisible()
+    await page.mouse.move(0, 0)
+    const initialFrame = await canvas.screenshot({ animations: 'disabled' })
+    const startingTick = Number(await slider.inputValue())
+    const endTick = Number(await slider.getAttribute('max'))
+    expect(startingTick).toBe(Number(await slider.getAttribute('min')))
+    const parsingDuringPlayback = (await page.locator('[data-state="loading"]').count()) > 0
+    await replay.getByRole('button', { name: 'Play round', exact: true }).click()
     const gaps = await page.evaluate(
       () =>
         new Promise<number[]>((resolve) => {
@@ -91,8 +92,10 @@ test('records import, playback and seek timings', async ({ page, browser }, test
           requestAnimationFrame(frame)
         }),
     )
-    await replay.getByRole('button', { name: 'Pause', exact: true }).click()
-    expect(await players.allTextContents()).not.toEqual(startingPosition)
+    await replay.getByRole('button', { name: 'Pause round', exact: true }).click()
+    expect(Number(await slider.inputValue())).toBeGreaterThan(startingTick)
+    await page.mouse.move(0, 0)
+    expect((await canvas.screenshot({ animations: 'disabled' })).equals(initialFrame)).toBe(false)
     const seekMs = []
     const seekTicks = []
     for (const key of ['End', 'Home']) {
@@ -118,8 +121,20 @@ test('records import, playback and seek timings', async ({ page, browser }, test
       seekMs.push(
         await page.evaluate(() => performance.getEntriesByName('benchmark-seek')[0].duration),
       )
-      seekTicks.push(Number(await replay.getByTestId('replay-tick').getAttribute('data-tick')))
-      if (key === 'Home') await expect(players).toHaveText(startingPosition)
+      const expectedTick = key === 'End' ? endTick : startingTick
+      await expect(slider).toHaveValue(String(expectedTick))
+      seekTicks.push(Number(await slider.inputValue()))
+      if (key === 'Home') {
+        await page.mouse.move(0, 0)
+        const restoredFrame = await canvas.screenshot({ animations: 'disabled' })
+        if (!restoredFrame.equals(initialFrame)) {
+          await testInfo.attach('initial-frame', { body: initialFrame, contentType: 'image/png' })
+          await testInfo.attach('restored-frame', { body: restoredFrame, contentType: 'image/png' })
+        }
+        expect(restoredFrame.equals(initialFrame), 'Home restores the rendered opening frame').toBe(
+          true,
+        )
+      }
     }
     expect(seekTicks[0]).toBeGreaterThan(seekTicks[1])
     runs.push({

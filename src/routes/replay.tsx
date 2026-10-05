@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { DemoWorkspace } from '../components/DemoWorkspace'
 
 export const Route = createFileRoute('/replay')({
+  component: DemoWorkspace,
   validateSearch: (
     search: Record<string, unknown>,
   ): { source: 'local' | 'example'; round?: number } => ({

@@ -1,14 +1,16 @@
 # Sustained laptop playback
 
-Run `npm run benchmark:sustained` on the laptop being assessed. Set `BENCHMARK_CONTEXT` to describe other workloads. The opt-in Chromium benchmark builds the production app and serves it on port 4188. It imports the complete 23-round example before sampling. It selects Dust II round 2, whose live interval exceeds a minute, then plays at normal speed for at least 60 seconds without fake clocks or CPU/network throttling.
+Run `npm run benchmark:sustained` on the laptop being assessed. Set `BENCHMARK_CONTEXT` to describe other workloads. The opt-in Chromium benchmark builds the production app and serves it on port 4188. It opens `/replay?source=example&round=2` and waits for the successful import indicator before sampling. Dust II round 2 has a live interval exceeding a minute. The benchmark then plays at normal speed for at least 60 seconds without fake clocks or CPU/network throttling.
 
-The attached `sustained-playback.json` records source SHA-256, application commit, hardware, browser, viewport, native requestAnimationFrame gaps, recorded tick advancement and memory samples. The check also requires changed recorded player positions, working forward/backward seeks and all utility overlay checkboxes responding after playback. Control response timings include Playwright transport and polling overhead. They are observations, not frame-render latency.
+The attached `sustained-playback.json` records source SHA-256, application commit, hardware, browser, viewport, native requestAnimationFrame gaps, recorded tick advancement and memory samples. The check requires the **Round timeline** value to advance by at least the recorded ticks expected for the measured elapsed time. It verifies forward and backward seeks through End and Home after playback. Control response timings include Playwright transport and polling overhead. They are observations, not frame-render latency.
 
 Memory is sampled through Chromium CDP `Runtime.getHeapUsage` every five seconds. A forced collection precedes the baseline and follows the control checks. Reported backing storage and embedder memory are retained when Chromium supplies those fields. These measurements cover the main renderer, not workers, GPU allocations or whole-browser/process memory. Forced collection changes normal GC behaviour. A minute of playback does not prove absence of long-session leaks.
 
 This benchmark records observations rather than imposing hardware-dependent thresholds. Run with other benchmark processes stopped when collecting an isolated baseline. Headless desktop Chromium on a laptop does not establish physical phone or other-browser performance.
 
-## Recorded laptop check
+## Historical laptop check
+
+These results describe the earlier home interface, including its player inspector and utility switches. The current benchmark measures timeline advancement and seeks in the promoted demo interface.
 
 On 1 October 2026, the Apple M2 laptop with 16 GiB RAM and Chromium
 153.0.8010.12 played round 2 for 60,008.2 ms. The observer recorded 3,550 frames.
