@@ -6,6 +6,7 @@ const map: MapDefinition = {
   floors: 'single',
   image: 'radar.png',
   imageSize: 1024,
+  defaultZoom: 1,
   origin: { x: -100, y: 200 },
   scale: 2,
   rotation: 0,
@@ -18,8 +19,8 @@ test('projects positions and facing through the same radar rotation', () => {
   expect(inferno.x).toBeCloseTo(380.41429, 3)
   expect(inferno.y).toBeCloseTo(93.52044, 3)
   const mirage = worldToMap(mapDefinition('de_mirage')!, -253.96875, -2154.4375)
-  expect(mirage.x).toBeCloseTo(250.5125, 3)
-  expect(mirage.y).toBeCloseTo(595.20625, 3)
+  expect(mirage.x).toBeCloseTo(595.20625, 3)
+  expect(mirage.y).toBeCloseTo(773.4875, 3)
   expect(mapDefinition('__proto__')).toBeUndefined()
   expect(mapDefinition('de_unknown')).toBeUndefined()
   expect(worldToMap(map, 300, 100)).toEqual({ x: 200, y: 50 })

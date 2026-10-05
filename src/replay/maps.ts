@@ -17,6 +17,7 @@ export type MapFloor = 'upper' | 'lower'
 export type MapDefinition = {
   name: string
   imageSize: number
+  defaultZoom: number
   origin: { x: number; y: number }
   scale: number
   rotation: 0 | 90 | 180 | 270
@@ -32,15 +33,17 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     rotation: 0,
     image: dust2,
     imageSize: 1024,
+    defaultZoom: 1,
     origin: { x: -2476, y: 3239 },
     scale: 4.4,
   },
   de_mirage: {
     name: 'Mirage',
     floors: 'single',
-    rotation: 90,
+    rotation: 0,
     image: mirage,
     imageSize: 1024,
+    defaultZoom: 1.25,
     origin: { x: -3230, y: 1713 },
     scale: 5,
   },
@@ -50,6 +53,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     rotation: 0,
     image: ancient,
     imageSize: 1024,
+    defaultZoom: 1.15,
     origin: { x: -2953, y: 2164 },
     scale: 5,
   },
@@ -59,6 +63,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     rotation: 0,
     image: anubis,
     imageSize: 1024,
+    defaultZoom: 1,
     origin: { x: -2796, y: 3328 },
     scale: 5.22,
   },
@@ -68,6 +73,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     rotation: 270,
     image: inferno,
     imageSize: 1024,
+    defaultZoom: 1.15,
     origin: { x: -2087, y: 3870 },
     scale: 4.9,
   },
@@ -77,6 +83,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     rotation: 0,
     image: overpass,
     imageSize: 1024,
+    defaultZoom: 1,
     origin: { x: -4831, y: 1781 },
     scale: 5.2,
   },
@@ -85,8 +92,9 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     floors: 'split',
     images: { upper: nuke, lower: nukeLower },
     imageSize: 1024,
+    defaultZoom: 1.25,
     origin: { x: -3453, y: 2887 },
-    scale: 7,
+    scale: 5,
     rotation: 0,
     boundaryZ: -495,
     initialFloor: 'upper',
@@ -96,6 +104,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     floors: 'split',
     images: { upper: vertigo, lower: vertigoLower },
     imageSize: 1024,
+    defaultZoom: 1.25,
     origin: { x: -3168, y: 1762 },
     scale: 4,
     rotation: 0,
@@ -107,6 +116,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     floors: 'single',
     image: cache,
     imageSize: 1024,
+    defaultZoom: 1.25,
     origin: { x: -2000, y: 3250 },
     scale: 5.5,
     rotation: 0,
@@ -116,6 +126,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
     floors: 'split',
     images: { upper: train, lower: trainLower },
     imageSize: 1024,
+    defaultZoom: 1,
     origin: { x: -2308, y: 2078 },
     scale: 4.082077,
     rotation: 0,
