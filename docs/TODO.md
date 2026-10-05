@@ -1,6 +1,19 @@
 - vision cones?
-- work on UI /demo
-- cut down 80 odd unit tests
+- cut down 80+ unit tests
 - drawing
 - multiplayer / invite friends to watch / draw
 - zoom / pan controls
+- who won round UI at end
+- flame on 5+ rounds etc
+- merge upper / lower floors
+- hotkeys (k to play, j / l to jump +5)
+- settings modal
+  - color blind mode
+  - change hotkeys
+  - etc
+- click player to highlight / apply filters
+- filter panel
+- rounds popover
+- example demo UI
+- read clan name and replace CT / T
+- MOBILE! / responsiveness
