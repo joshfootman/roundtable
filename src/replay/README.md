@@ -38,9 +38,11 @@ Ladders occupy bottom-right while the recorded pawn movement type is `MOVETYPE_L
 (9), as defined by the [CS2 movement enum](https://github.com/SteamTracking/GameTracking-CS2/blob/master/DumpSource2/schemas/client/MoveType_t.h).
 Active indicators disappear on death and derive from the current tick when seeking.
 
-Split-floor controls live in a compact shared toolbar, with both Upper and Lower
-visible for one-click switching. Switching keeps the current tick and playback state.
-The toolbar uses the same translucent surface as the player cards and playback controls.
+Split-floor maps show a single stacked-floors icon in a compact row of map controls.
+The highlighted layer shows the current floor; clicking toggles Upper and Lower.
+Its tooltip and accessible label name the current floor and the next action.
+Switching keeps the current tick and playback state. The icon uses the same
+translucent surface as the player cards and playback controls.
 
 Other-floor players remain visible as quieter, hollow markers behind players on the
 selected floor. Double chevrons above them point up or down relative to that floor.

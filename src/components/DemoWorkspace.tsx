@@ -242,9 +242,12 @@ function DemoRound({
         onSelectRound={onSelectRound}
       />
       {map.floors !== 'single' && (
-        <div className="demo-map-controls flex min-w-0 flex-col gap-3 replay-desktop:absolute replay-desktop:top-28 replay-desktop:left-4 replay-desktop:z-20 min-[1600px]:replay-desktop:top-4 replay-landscape:contents">
+        <fieldset
+          aria-label="Map controls"
+          className="demo-map-controls z-20 flex w-fit min-w-0 items-center gap-2 replay-desktop:absolute replay-desktop:top-28 replay-desktop:left-4 min-[1600px]:replay-desktop:top-4 replay-landscape:col-start-1 replay-landscape:row-start-2"
+        >
           <DemoFloorControl map={map} playback={playback} />
-        </div>
+        </fieldset>
       )}
       <div className="demo-map-viewport relative aspect-square w-[min(100%,max(240px,70dvh))] self-center replay-desktop:aspect-auto replay-desktop:size-full replay-desktop:min-h-0 replay-landscape:col-start-2 replay-landscape:row-span-5 replay-landscape:row-start-1 replay-landscape:w-[clamp(240px,40vw,70dvh)] replay-landscape:self-start">
         <DemoMap map={map} round={round} onPlayback={setPlayback} onResult={setOutcome} />
