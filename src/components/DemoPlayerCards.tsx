@@ -13,13 +13,13 @@ export function DemoPlayerCards({
   return (
     <div
       aria-label="Player cards"
-      className={`demo-player-cards demo-player-cards-${presentation}`}
+      className={`demo-player-cards ${presentation === 'inline' ? 'demo-player-cards-inline grid grid-cols-1 gap-4 px-2 pb-2 sm:grid-cols-2 replay-landscape:grid-cols-1' : 'demo-player-cards-overlay replay-desktop:pointer-events-none replay-desktop:absolute replay-desktop:inset-4 replay-desktop:bottom-24 replay-desktop:grid replay-desktop:grid-cols-2 replay-desktop:items-end replay-desktop:gap-4'}`}
     >
       {([3, 2] as const).map((team) => (
         <ul
           key={team}
           aria-label={team === 3 ? 'Counter-Terrorist players' : 'Terrorist players'}
-          className="demo-player-team flex min-h-0 flex-col gap-1"
+          className={`demo-player-team flex min-h-0 min-w-0 flex-col gap-1 ${presentation === 'overlay' ? 'replay-desktop:pointer-events-auto replay-desktop:max-h-[calc(100%-200px)] replay-desktop:w-[min(100%,27vw,320px)] replay-desktop:overflow-y-auto replay-desktop:group-data-[multifloor=true]/round:max-h-[calc(100%-256px)] replay-desktop:last:justify-self-end' : ''}`}
         >
           {players
             .filter((player) => player.team === team)

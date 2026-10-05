@@ -190,15 +190,21 @@ test('keeps the phone map clear and preserves playback while inspecting players'
     await page.setViewportSize(viewport)
     await expect(players).toBeVisible()
     await expect(ctPlayers).toBeHidden()
-    const mapBounds = await canvas.boundingBox()
-    const playbackBounds = await page
-      .getByRole('region', { name: 'Playback controls' })
-      .boundingBox()
-    expect(mapBounds!.height).toBeGreaterThanOrEqual(240)
-    expect(
-      playbackBounds!.x + playbackBounds!.width <= mapBounds!.x + 1 ||
-        playbackBounds!.y >= mapBounds!.y + mapBounds!.height - 1,
-    ).toBe(true)
+    await expect
+      .poll(async () => {
+        const mapBounds = await canvas.boundingBox()
+        const playbackBounds = await page
+          .getByRole('region', { name: 'Playback controls' })
+          .boundingBox()
+        return Boolean(
+          mapBounds &&
+          playbackBounds &&
+          mapBounds.height >= 240 &&
+          (playbackBounds.x + playbackBounds.width <= mapBounds.x + 1 ||
+            playbackBounds.y >= mapBounds.y + mapBounds.height - 1),
+        )
+      })
+      .toBe(true)
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
       viewport.width,
     )

@@ -21,7 +21,7 @@ export function ExampleDemos({
     state.status === 'reading' || (state.status === 'ready' && state.parsing.status === 'active')
 
   return (
-    <div className="demo-content min-h-0 flex-1 overflow-y-auto">
+    <div className="demo-content min-h-0 flex-1 overflow-y-auto px-2 pb-2 replay-desktop:px-4 replay-desktop:pb-4">
       <section
         aria-labelledby="example-demos-heading"
         className="rounded-2xl bg-neutral-900/50 px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-6"

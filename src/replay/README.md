@@ -11,9 +11,51 @@ times per second and when playback changes. `DemoWorkspace` renders the home and
 routes. `DemoMap` draws the recorded positions, and `DemoPlayerCards` shows player health,
 equipment, and match statistics.
 
+Recorded round outcomes retain the winning side, reason, team name when available,
+and MVP name when awarded in the demo. MVP comes from a recorded event or an increase
+in the player's recorded MVP count, rather than a kill-count estimate. The score
+updates at `resultTick`. A natural playback crossing shows the winner for two wall-clock
+seconds; seeking only updates the score, and seeking backward clears the celebration.
+
+The centred HUD retains both clan names per round, including side swaps. Bundled
+matches use their curated team logos; local imports keep recorded names without
+guessing logos. Missing names fall back to CT/T. Its centre shows the elapsed round
+clock and opens a round picker with recorded winners and final scores. Previous/next
+chevrons remain available. The picker uses Radix Popover for dismissal and focus
+management; selecting a round closes it and focuses the new round's centre control.
+HUD and picker layout use Tailwind, including container queries for compact widths.
+
 The native Round timeline range seeks directly into the recorded buffers. Seeking
 updates the canvas immediately and preserves playback or pause. Seeking to the end
 pauses. Arrow keys, Home and End work without custom keyboard handlers.
+
+## Player indicators
+
+Player colour, number and facing remain the marker's core. A 10px carried C4 occupies
+the fixed top-right slot. Planting turns the 12px C4 orange. Defusing uses a blue
+defuse icon in that same slot. Flash occupies bottom-left.
+Ladders occupy bottom-right while the recorded pawn movement type is `MOVETYPE_LADDER`
+(9), as defined by the [CS2 movement enum](https://github.com/SteamTracking/GameTracking-CS2/blob/master/DumpSource2/schemas/client/MoveType_t.h).
+Active indicators disappear on death and derive from the current tick when seeking.
+
+Split-floor controls live in a compact shared toolbar, with both Upper and Lower
+visible for one-click switching. Switching keeps the current tick and playback state.
+The toolbar uses the same translucent surface as the player cards and playback controls.
+
+Other-floor players remain visible as quieter, hollow markers behind players on the
+selected floor. Double chevrons above them point up or down relative to that floor.
+Dropped and planted bombs retain their 18px world marker on the selected floor.
+The planted C4 stays orange and pulses gently from replay time, turning blue while
+defusing and orange again if the defuse is aborted. A recorded explosion consumes
+the icon and shows an 850ms core flash, shockwave and sparks at its planted position.
+Pausing freezes these effects; seeking reconstructs their state at the requested tick.
+Reduced motion keeps the planted icon steady and replaces the expanding blast with
+a stationary fading ring. No countdown duration is inferred from a defused round.
+
+The outer rim is reserved for fire exposure. This future indicator needs recorded state
+or a separately agreed geometric approximation; it is not currently inferred from
+proximity to a rendered fire area. Older replay assets without movement data remain
+readable, but must be regenerated to display ladders.
 
 ## Radar calibration
 
@@ -37,9 +79,10 @@ radars; game radar inset/zoom settings do not crop these textures.
 
 Dust II is verified against the supplied 2024 demo and independent world-coordinate
 samples. Other registered maps have overview-based calibration, but no real demo
-verification in this repository yet. Nuke and Vertigo imagery is retained for the
-later floor-selection tasks rather than drawing lower-floor players on an upper-floor
-image. Missing map definitions produce an explicit unavailable-map message.
+verification in this repository yet. Split-floor maps show the selected radar image
+and distinguish players on the other floor with hollow markers and chevrons. Utility
+areas and world bomb markers follow the selected floor. Missing map definitions
+produce an explicit unavailable-map message.
 
 This first completed round includes recorded freeze time and post-round activity.
 The initial view shows starting positions. Play begins at `liveStartTick`, taken from

@@ -3,10 +3,11 @@
 ## Checklist
 
 - [x] Responsive phone experience, first pass.
-- [ ] Clear round outcomes.
+- [x] Clear round outcomes.
 - [ ] Combined floor view.
 - [ ] Player selection.
-- [ ] Direct round selection.
+- [x] Direct round selection.
+- [ ] Dropped weapons / utility
 - [ ] Display filters.
 - [ ] Team identity.
 - [ ] Manual zoom and pan.
@@ -29,10 +30,12 @@ The responsive first pass uses controls around the map and an initially expanded
 
 This is a value ranking, not an implementation sequence. Accessibility applies to the complete experience, including the tactical view; it is not conditional on adding a palette setting.
 
+Floor switching now uses a compact shared toolbar with Upper and Lower always visible. Keep this action one click when adding the future filter panel. The combined radar overlay and the other display filters remain outstanding.
+
 ## Core experience, ranked
 
 1. **Responsive phone experience.** Build a map-first layout for quick watching and exploration. Keep player details and filters available on demand rather than permanently occupying map space. Preserve desktop, tablet and phone support across touch and keyboard-accessible controls. This has the broadest effect on the first impression.
-2. **Clear round outcomes.** Briefly announce the winner in the centre at the recorded round result and immediately update the score. Use the recorded team name, such as "FAZE WIN", when available; otherwise use "COUNTER TERRORISTS WIN" or "TERRORISTS WIN". Seeking before the result restores the earlier score. This addresses the reported unclear outcome and unchanged score.
+2. **Clear round outcomes.** Briefly announce the winner in the centre at the recorded round result and immediately update the score. Use the recorded team name, such as "FAZE WON", when available; otherwise use "COUNTER-TERRORISTS WON" or "TERRORISTS WON". Show the recorded MVP below the headline when available. Seeking before the result restores the earlier score. This addresses the reported unclear outcome and unchanged score.
 3. **Combined floor view.** Define the primary floor in map reference data by largest surface area. Nuke and Vertigo use upper. Overlay both floors and keep all players visible. Primary-floor players have no chevron; players above or below it have an up or down chevron. Treatment of utility and the bomb remains open. This addresses the reported difficulty following action with split floors.
 4. **Player selection.** Clicking players builds a visible group, such as the two AWPers. Highlight selected players and hide unselected players; preserve dimming for deaths. Clicking a selected player removes them. Zero selections shows everyone. Include a "Show all" reset. Revisit after testing. This gives visitors a direct way to focus on players they care about.
 5. **Direct round selection.** Clicking the round number opens a compact picker with each available round's number, winner and score. Reveal results without preserving suspense. Grow the list as completed rounds arrive during parsing. Selecting a round jumps directly to it. This removes repeated next-round clicks.
@@ -63,3 +66,8 @@ This is a value ranking, not an implementation sequence. Accessibility applies t
 - **Custom key remapping.** Use familiar YouTube-style defaults for the first release.
 
 The refreshed example-demo UI is complete per the scope review and has been removed from outstanding work.
+
+The central HUD now shows recorded clan names with curated example logos, CT/T
+fallbacks, the clock, round number and previous/next controls. Its round picker shows
+available completed rounds and grows as parsing progresses. Team identity remains
+partially complete: the player-column name treatment is still outstanding.
