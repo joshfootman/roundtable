@@ -1,9 +1,21 @@
 import { Application, Assets, Container, Sprite, type Texture } from 'pixi.js'
 import type { MapDefinition, MapFloor } from './maps'
 import { orientRadar } from './radar'
+import {
+  cameraTransform,
+  constrainCamera,
+  focusedCamera,
+  panCamera,
+  zoomCamera,
+  type CameraState,
+  type CameraViewport,
+} from './map-camera'
 
 /** Shared map layer; replay callers add recorded objects to its container. */
-export function createMapScene(map: MapDefinition) {
+export function createMapScene(
+  map: MapDefinition,
+  camera: CameraState = { current: focusedCamera(map.focusCenter) },
+) {
   const app = new Application()
   const container = new Container()
   let initialized = false
@@ -12,10 +24,53 @@ export function createMapScene(map: MapDefinition) {
   let observer: ResizeObserver | undefined
   let radar: Sprite
   let textures: Record<MapFloor, Texture>
+  let viewport: CameraViewport
+  let onCamera: ((scale: number, zoom: number) => void) | undefined
+  let previousScale = 0
+  const pointers = new Map<number, { x: number; y: number }>()
+  const listeners = new AbortController()
+
+  function updateCamera() {
+    if (disposed || !viewport) return
+    camera.current = constrainCamera(camera.current, viewport)
+    const transform = cameraTransform(camera.current, viewport)
+    container.scale.set(transform.scale)
+    container.position.set(transform.x, transform.y)
+    if (previousScale !== transform.scale) {
+      previousScale = transform.scale
+      onCamera?.(transform.scale, camera.current.zoom)
+    }
+    app.render()
+  }
+
+  function zoomBy(factor: number, anchor?: { x: number; y: number }) {
+    if (disposed || !viewport) return
+    camera.current = zoomCamera(
+      camera.current,
+      viewport,
+      factor,
+      anchor ?? { x: viewport.width / 2, y: viewport.height / 2 },
+    )
+    updateCamera()
+  }
+
+  function panBy(delta: { x: number; y: number }) {
+    if (disposed || !viewport) return
+    camera.current = panCamera(camera.current, viewport, delta)
+    updateCamera()
+  }
+
+  function focus() {
+    if (disposed || !viewport) return
+    camera.current = focusedCamera(map.focusCenter)
+    updateCamera()
+  }
 
   function destroy() {
     disposed = true
     observer?.disconnect()
+    listeners.abort()
+    pointers.clear()
     if (initialized) {
       app.destroy(true, { children: true })
       initialized = false
@@ -50,25 +105,125 @@ export function createMapScene(map: MapDefinition) {
     orientRadar(radar, map)
     container.addChild(radar)
     app.stage.eventMode = 'none'
-    app.canvas.className = 'absolute inset-0 block'
+    app.canvas.className = 'absolute inset-0 block touch-none cursor-grab outline-none'
+    app.canvas.tabIndex = -1
+    app.canvas.setAttribute(
+      'aria-description',
+      'Drag to pan. Scroll or press plus and minus to zoom. Shift + arrow keys pan. Home focuses the map.',
+    )
     app.canvas.setAttribute('role', 'img')
     app.canvas.setAttribute('aria-label', `${map.name} map`)
-    host.appendChild(app.canvas)
+    const canvas = app.canvas
+    const options = { signal: listeners.signal }
+    function point(event: PointerEvent | WheelEvent) {
+      const rect = canvas.getBoundingClientRect()
+      return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+    }
+    canvas.addEventListener(
+      'wheel',
+      (event) => {
+        if (disposed || !viewport) return
+        event.preventDefault()
+        const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.height : 1
+        zoomBy(
+          Math.exp(Math.max(-Math.log(1.5), Math.min(Math.log(1.5), -event.deltaY * unit * 0.002))),
+          point(event),
+        )
+      },
+      { ...options, passive: false },
+    )
+    canvas.addEventListener(
+      'pointerdown',
+      (event) => {
+        if (disposed || !viewport) return
+        if (event.pointerType === 'mouse' && event.button !== 0) return
+        canvas.setPointerCapture(event.pointerId)
+        pointers.set(event.pointerId, point(event))
+        canvas.classList.replace('cursor-grab', 'cursor-grabbing')
+        canvas.focus({ preventScroll: true })
+      },
+      options,
+    )
+    canvas.addEventListener(
+      'pointermove',
+      (event) => {
+        const old = pointers.get(event.pointerId)
+        if (!old || !viewport) return
+        const next = point(event)
+        const before = [...pointers.values()]
+        pointers.set(event.pointerId, next)
+        const after = [...pointers.values()]
+        if (pointers.size === 1) {
+          panBy({ x: next.x - old.x, y: next.y - old.y })
+        } else if (pointers.size === 2) {
+          const distance = (points: { x: number; y: number }[]) =>
+            Math.hypot(points[1]!.x - points[0]!.x, points[1]!.y - points[0]!.y)
+          const midpoint = (points: { x: number; y: number }[]) => ({
+            x: (points[0]!.x + points[1]!.x) / 2,
+            y: (points[0]!.y + points[1]!.y) / 2,
+          })
+          const from = midpoint(before)
+          const to = midpoint(after)
+          const oldDistance = distance(before)
+          if (oldDistance > 0)
+            camera.current = zoomCamera(
+              camera.current,
+              viewport,
+              distance(after) / oldDistance,
+              from,
+            )
+          camera.current = panCamera(camera.current, viewport, {
+            x: to.x - from.x,
+            y: to.y - from.y,
+          })
+          updateCamera()
+        }
+      },
+      options,
+    )
+    function endPointer(event: PointerEvent) {
+      pointers.delete(event.pointerId)
+      if (!pointers.size) canvas.classList.replace('cursor-grabbing', 'cursor-grab')
+    }
+    canvas.addEventListener('pointerup', endPointer, options)
+    canvas.addEventListener('pointercancel', endPointer, options)
+    canvas.addEventListener('lostpointercapture', endPointer, options)
+    canvas.addEventListener(
+      'keydown',
+      (event) => {
+        if (disposed || !viewport || event.ctrlKey || event.metaKey || event.altKey) return
+        const delta = {
+          ArrowLeft: { x: 48, y: 0 },
+          ArrowRight: { x: -48, y: 0 },
+          ArrowUp: { x: 0, y: 48 },
+          ArrowDown: { x: 0, y: -48 },
+        }[event.key]
+        if (delta && event.shiftKey) {
+          event.preventDefault()
+          panBy(delta)
+        } else if (['+', '=', '-', 'Home'].includes(event.key)) {
+          event.preventDefault()
+          if (event.key === 'Home') focus()
+          else zoomBy(event.key === '-' ? 1 / 1.25 : 1.25)
+        }
+      },
+      options,
+    )
+    host.appendChild(canvas)
     return true
   }
 
-  function observeResize(onResize?: (scale: number) => void) {
+  function observeCamera(callback?: (scale: number, zoom: number) => void) {
+    onCamera = callback
+    previousScale = 0
     function resize() {
+      if (disposed) return
       const width = host.clientWidth
       const height = host.clientHeight
       if (width === 0 || height === 0) return
-      const size = Math.min(width, height) * map.defaultZoom
-      const scale = size / map.imageSize
+      viewport = { width, height, imageSize: map.imageSize, defaultZoom: map.defaultZoom }
       app.renderer.resize(width, height)
-      container.scale.set(scale)
-      container.position.set((width - size) / 2, (height - size) / 2)
-      onResize?.(scale)
-      app.render()
+      updateCamera()
     }
     observer?.disconnect()
     observer = new ResizeObserver(resize)
@@ -81,5 +236,5 @@ export function createMapScene(map: MapDefinition) {
     orientRadar(radar, map)
   }
 
-  return { app, container, mount, observeResize, setFloor, destroy }
+  return { app, container, mount, observeCamera, zoomBy, panBy, focus, setFloor, destroy }
 }

@@ -6,20 +6,21 @@
 - [x] Clear round outcomes.
 - [x] Combined floor view.
 - [x] Direct round selection.
-- [ ] Dropped weapons / utility
-- [ ] Team identity.
-- [ ] Manual zoom and pan.
-- [ ] Display filters.
-- [ ] Player selection.
-- [ ] Playback shortcuts.
+- [x] Dropped weapons / utility
+- [x] Team identity.
+- [x] Change side / halftime UI
+- [x] Manual zoom and pan.
+- [x] Playback shortcuts.
 - [ ] Team winning streaks, optional polish.
 - [ ] Rapid multi-kill feedback, optional polish.
-- [ ] Optional colour palettes, conditional.
 - [ ] Client-side drawing, conditional.
 - [ ] Settings UI, conditional.
 - [ ] Reduce test maintenance burden.
 - [ ] Shared viewing and drawing, deferred.
 - [ ] Accurate player visibility, deferred.
+- [ ] Optional colour palettes, conditional.
+- [ ] Display filters.
+- [ ] Player selection.
 - [ ] Custom key remapping, deferred.
 
 ## Scope and priorities
@@ -40,9 +41,9 @@ Floor switching now uses a compact map-controls row with a stacked-floors icon t
 4. **Player selection.** Clicking players builds a visible group, such as the two AWPers. Highlight selected players and hide unselected players; preserve dimming for deaths. Clicking a selected player removes them. Zero selections shows everyone. Include a "Show all" reset. Revisit after testing. This gives visitors a direct way to focus on players they care about.
 5. **Direct round selection.** Clicking the round number opens a compact picker with each available round's number, winner and score. Reveal results without preserving suspense. Grow the list as completed rounds arrive during parsing. Selecting a round jumps directly to it. This removes repeated next-round clicks.
 6. **Display filters.** Add a compact panel for team visibility, smoke, fire, grenade paths and shot traces. Player selection uses the click-to-select filter. Define how team toggles combine with player selection before implementation. This lets visitors reduce clutter.
-7. **Team identity.** Read recorded team names. Proposed layout puts the full name above the first player card in each team column. Curated example logos replace CT/T in the score display, with accessible team-name labels. Local imports retain compact CT/T score labels and use recorded names in team headers, with CT/T fallbacks. Do not infer logos from clan names. Check long names and phone placement. This adds match context without squeezing names into the score display.
+7. **Team identity, complete.** The central HUD shows recorded team names and curated example logos. Names follow the active round's sides and fall back to CT/T. Local imports use recorded names without inferred logos. Player cards omit team-name headers because the HUD already provides that context.
 8. **Manual zoom and pan.** Use geospatial map interactions. Drag to pan; wheel or pinch to zoom. Include visible zoom controls, keyboard access and a full-map reset. No automatic player following in the first draft. This helps inspect local action.
-9. **Playback shortcuts.** Use YouTube-style defaults. K toggles play/pause. J/L seek backward/forward 10 seconds. Left/right arrows on the seek bar seek 5 seconds. Space toggles play/pause when the seek bar has focus. Preserve native control behaviour and make shortcuts discoverable. This adds keyboard convenience. [YouTube reference](https://support.google.com/youtube/answer/7631406?hl=en).
+9. **Playback shortcuts.** Use YouTube-style defaults. K/Space toggle play/pause. J/L seek backward/forward 10 seconds. Left/right arrows select previous/next round; the focused seek bar keeps native arrow behaviour. F changes floor, R recentres, +/- zoom, and 0–9 seek to 0–90% of the round. Shift+arrows pan. ? opens shortcut help. Preserve native control behaviour and make shortcuts discoverable. This adds keyboard convenience. [YouTube reference](https://support.google.com/youtube/answer/7631406?hl=en).
 
 ## Optional polish, ranked
 
@@ -69,5 +70,6 @@ The refreshed example-demo UI is complete per the scope review and has been remo
 
 The central HUD now shows recorded clan names with curated example logos, CT/T
 fallbacks, the clock, round number and previous/next controls. Its round picker shows
-available completed rounds and grows as parsing progresses. Team identity remains
-partially complete: the player-column name treatment is still outstanding.
+available completed rounds and grows as parsing progresses. A small Halftime divider
+marks the recorded regulation side swap. Team identity stays
+in the HUD without repeated names above the player cards.

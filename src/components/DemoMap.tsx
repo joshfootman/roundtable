@@ -7,6 +7,7 @@ import { createDroppedItemRenderer } from '../replay/dropped-item-renderer'
 import { equipmentIconForDefinition } from '../replay/icons'
 import type { MapDefinition, MapFloor } from '../replay/maps'
 import { createMapScene } from '../replay/map-scene'
+import { focusedCamera, type CameraState } from '../replay/map-camera'
 import {
   createPlaybackClock,
   type PlaybackClock,
@@ -18,6 +19,17 @@ import { createUtilityRenderer } from '../replay/utility-renderer'
 import { initialUtilityVisibility } from '../replay/utility'
 
 export type DemoPlaybackController = PlaybackClock & { setFloor(floor: MapFloor): void }
+
+export type DemoCameraState =
+  | { status: 'loading' | 'error' }
+  | {
+      status: 'ready'
+      zoom: number
+      zoomIn(): void
+      zoomOut(): void
+      panBy(delta: { x: number; y: number }): void
+      focus(): void
+    }
 
 export type DemoPlaybackState =
   | { status: 'loading' }
@@ -34,12 +46,17 @@ export function DemoMap({
   round,
   onPlayback,
   onResult,
+  camera,
+  onCamera,
 }: {
   map: MapDefinition
   round?: ReplayRound
   onPlayback?: (state: DemoPlaybackState) => void
   onResult?: (outcome: ReplayRound['outcome'] | null) => void
+  camera?: CameraState
+  onCamera?: (state: DemoCameraState) => void
 }) {
+  const ownCamera = useRef<CameraState>({ current: focusedCamera(map.focusCenter) })
   const host = useRef<HTMLDivElement>(null)
   const [failedMap, setFailedMap] = useState<MapDefinition>()
 
@@ -47,12 +64,26 @@ export function DemoMap({
 
   useEffect(() => {
     const element = host.current!
-    const mapScene = createMapScene(map)
+    const mapScene = createMapScene(map, camera ?? ownCamera.current)
     let cancelled = false
     let clock: PlaybackClock | undefined
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let updateMotion: (() => void) | undefined
     onPlayback?.({ status: 'loading' })
+    onCamera?.({ status: 'loading' })
+    let publishedZoom: number | undefined
+    function publishCamera(zoom: number) {
+      if (cancelled || publishedZoom === zoom) return
+      publishedZoom = zoom
+      onCamera?.({
+        status: 'ready',
+        zoom,
+        zoomIn: () => mapScene.zoomBy(1.25),
+        zoomOut: () => mapScene.zoomBy(1 / 1.25),
+        focus: mapScene.focus,
+        panBy: mapScene.panBy,
+      })
+    }
 
     async function mount() {
       if (!(await mapScene.mount(element))) return
@@ -128,9 +159,10 @@ export function DemoMap({
           mapScene.app.render()
         }
         reducedMotion.addEventListener('change', updateMotion)
-        mapScene.observeResize((scale) => {
+        mapScene.observeCamera((scale, zoom) => {
           symbolScale = 1 / scale
           draw()
+          publishCamera(zoom)
         })
         clock = createPlaybackClock({
           initialTick: round.liveStartTick,
@@ -172,7 +204,7 @@ export function DemoMap({
         mapScene.app.ticker.add((ticker) => clock!.advance(ticker.elapsedMS))
         clock.pause()
       } else {
-        mapScene.observeResize()
+        mapScene.observeCamera((_scale, zoom) => publishCamera(zoom))
       }
     }
 
@@ -181,6 +213,7 @@ export function DemoMap({
       mapScene.destroy()
       setFailedMap(map)
       onPlayback?.({ status: 'error' })
+      onCamera?.({ status: 'error' })
     })
 
     return () => {
@@ -188,7 +221,7 @@ export function DemoMap({
       if (updateMotion) reducedMotion.removeEventListener('change', updateMotion)
       mapScene.destroy()
     }
-  }, [map, round, onPlayback, onResult])
+  }, [map, round, onPlayback, onResult, camera, onCamera])
 
   return (
     <div ref={host} className="relative size-full min-h-0">

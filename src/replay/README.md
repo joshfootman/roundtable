@@ -22,9 +22,13 @@ matches use their curated team logos; local imports keep recorded names without
 guessing logos. Missing names fall back to CT/T. Its centre shows the elapsed round
 clock and opens a round picker with recorded winners and final scores. Previous/next
 chevrons remain available. A naturally played outcome gives the enabled next-round
-button two soft blue border pulses over 1.2 seconds. Reduced motion uses a static
-border during the two-second outcome window. Seeking does not trigger this cue. The picker uses Radix Popover for dismissal and focus
-management; selecting a round closes it and focuses the new round's centre control.
+button five soft blue border pulses over three seconds. Reduced motion uses a static
+border during the same three-second cue window. Seeking does not trigger this cue. The picker uses Base UI Popover for dismissal and focus
+management. Round cards form a single scrollable column, with the current round
+visible when opened. A Halftime divider marks a recorded regulation side swap between
+consecutive rounds. Local demos without clan names use matching players' live-start
+sides. Overtime side swaps do not add halftime dividers. Selecting a round closes it
+and focuses the new round's centre control.
 HUD and picker layout use Tailwind, including container queries for compact widths.
 
 The native Round timeline range seeks directly into the recorded buffers. Seeking
@@ -93,3 +97,34 @@ The initial view shows starting positions. Play begins at `liveStartTick`, taken
 the recorded freeze-end event, so a long freeze does not conceal movement. The clock
 measures time since freeze end. Playback continues through post-round activity and
 stops before the next round.
+
+## Dropped equipment
+
+`ReplayRound.droppedItems` stores complete ground-item snapshots only when their state
+changes. Items retain the recorded entity, serial, equipment definition, and XYZ
+position. An empty snapshot records pickups or removal. Seeking uses the latest
+snapshot at the requested tick, so rewinding restores earlier drops.
+
+`DemoMap` loads SVG textures only for definitions present in that round. The renderer
+reuses a sprite pool sized to the largest snapshot and draws beneath utility effects
+and players. Items follow the selected floor. Guns fit within 18 × 8 screen pixels,
+and utility fits within 10 × 10 pixels. Both preserve their SVG proportions and use
+the existing foreground colour at 55% opacity, without labels or backgrounds.
+C4 keeps its separate bomb marker and recorded bomb state.
+
+## Manual map camera
+
+The top-left Zoom in, Zoom out and Focus map controls operate independently of playback.
+Drag the radar to pan. The scroll wheel zooms around the cursor. Touch supports dragging
+and two-finger pinch. With the map focused, Shift+arrow keys pan, plus and minus zoom, and Home
+restores the default view. The opening view starts at 90% of the map's default framing, with zoom bounded from 60% to 400%.
+Panning allows a gutter of 10% of the shorter viewport dimension beyond the image edges.
+This gives every map room to move in all four directions immediately, including on square and phone viewports.
+Camera position survives round and floor changes. Loading another map or example resets
+it. Player markers and equipment retain their screen sizes while the radar scales.
+
+Default camera framing uses a visually tuned `focusCenter` in the oriented radar coordinates. Both floors share this point; Focus restores it within the camera bounds. World coordinates and radar origins are independent of this framing.
+
+## Replay shortcuts
+
+K or Space toggles playback. J/L seek by ten seconds. Left/right select adjacent rounds. F switches floors, R recentres, and +/- zoom. Digits 0–9 seek to evenly spaced positions from 0% to 90% of the playable round, beginning at live start. Shift+arrows pan the focused map; Home also resets it. The keyboard button or ? opens shortcut help. Typing, sliders, open popovers and modified browser shortcuts keep their native behaviour. Space on a focused button activates that button.

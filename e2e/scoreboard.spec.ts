@@ -57,6 +57,57 @@ test('centres the HUD and supports keyboard round selection with restored focus'
   await page.screenshot({ path: '.audit/round-outcomes/scoreboard-long-clan.png' })
 })
 
+test('lists rounds in one scrollable column and reopens at the selected round', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/replay?source=example&round=1')
+  await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled({ timeout: 30_000 })
+  const firstTrigger = page.getByRole('button', { name: 'Choose round, current round 1' })
+  await firstTrigger.click()
+  const picker = page.getByRole('dialog', { name: 'Select round' })
+  await expect(picker).toBeVisible()
+  await expect(picker.getByRole('heading')).toHaveCount(0)
+  await expect(picker.getByRole('button', { name: 'Close round picker' })).toHaveCount(0)
+  const cards = picker.getByRole('button')
+  await expect(cards).toHaveCount(23)
+  const first = (await cards.nth(0).boundingBox())!
+  const second = (await cards.nth(1).boundingBox())!
+  expect(second.x).toBe(first.x)
+  expect(second.width).toBe(first.width)
+  expect(second.y).toBeGreaterThanOrEqual(first.y + first.height)
+  expect(await picker.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true)
+  const last = cards.last()
+  const lastNumber = 23
+  await last.scrollIntoViewIfNeeded()
+  const viewport = (await picker.boundingBox())!
+  const lastBounds = (await last.boundingBox())!
+  expect(lastBounds.y).toBeGreaterThanOrEqual(viewport.y)
+  expect(lastBounds.y + lastBounds.height).toBeLessThanOrEqual(viewport.y + viewport.height)
+  await last.click()
+  const trigger = page.getByRole('button', { name: `Choose round, current round ${lastNumber}` })
+  await expect(trigger).toBeFocused()
+  await expect(picker).toBeHidden()
+  await trigger.click()
+  const current = picker.locator('[aria-current="step"]')
+  await expect(current).toBeFocused()
+  const reopened = (await picker.boundingBox())!
+  const selected = (await current.boundingBox())!
+  expect(selected.y).toBeGreaterThanOrEqual(reopened.y)
+  expect(selected.y + selected.height).toBeLessThanOrEqual(reopened.y + reopened.height)
+  await page.screenshot({ path: '.audit/round-outcomes/round-picker-late-round.png' })
+  await current.click()
+  await expect(picker).toBeHidden()
+  await expect(trigger).toBeFocused()
+  await trigger.click()
+  await page.keyboard.press('Escape')
+  await expect(picker).toBeHidden()
+  await expect(trigger).toBeFocused()
+  await trigger.click()
+  await page.locator('header').click({ position: { x: 2, y: 2 } })
+  await expect(picker).toBeHidden()
+})
+
 test('fits the HUD and round picker on a narrow phone', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 })
   await page.goto('/replay?source=example&round=1')

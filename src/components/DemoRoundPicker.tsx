@@ -9,19 +9,21 @@ export function DemoRoundPicker({
   round,
   time,
   previousRound,
+  focusOnMount = false,
   onSelectRound,
 }: {
   rounds: readonly ReplayRound[]
   round: ReplayRound
   time: string
   previousRound?: number
-  onSelectRound: (number: number) => void
+  focusOnMount?: boolean
+  onSelectRound: (number: number, focusPicker?: boolean) => void
 }) {
   const trigger = useRef<HTMLButtonElement>(null)
   const currentRound = useRef<HTMLButtonElement>(null)
   useEffect(() => {
-    if (previousRound !== undefined) trigger.current?.focus({ preventScroll: true })
-  }, [previousRound])
+    if (focusOnMount) trigger.current?.focus({ preventScroll: true })
+  }, [focusOnMount])
   return (
     <Popover.Root>
       <Popover.Trigger
@@ -74,7 +76,7 @@ export function DemoRoundPicker({
                       type="button"
                       aria-current={candidate.number === round.number ? 'step' : undefined}
                       aria-label={`Round ${candidate.number}${winner ? `, ${winner} won` : ''}${score ? `, score ${score}` : ''}`}
-                      onClick={() => onSelectRound(candidate.number)}
+                      onClick={() => onSelectRound(candidate.number, true)}
                       className={`flex min-h-15 min-w-0 shrink-0 cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left text-sm tabular-nums outline-offset-2 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 ${candidate.number === round.number ? 'bg-neutral-600/50 ring-1 ring-mauve-300/30 ring-inset' : 'bg-neutral-700/40'}`}
                     >
                       <span className="flex min-w-0 flex-col gap-0.5">

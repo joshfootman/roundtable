@@ -11,6 +11,7 @@ export function DemoRoundControl({
   tick,
   onSelectRound,
   previousRound,
+  focusRoundPicker = false,
   example,
   highlightNextRound = false,
 }: {
@@ -18,9 +19,10 @@ export function DemoRoundControl({
   round: ReplayRound
   tick: number
   previousRound?: number
+  focusRoundPicker?: boolean
   example?: ExampleId
   highlightNextRound?: boolean
-  onSelectRound: (number: number) => void
+  onSelectRound: (number: number, focusPicker?: boolean) => void
 }) {
   const winner = tick >= round.resultTick ? round.outcome?.winner : undefined
   const score = round.score && {
@@ -48,6 +50,8 @@ export function DemoRoundControl({
         <button
           type="button"
           aria-label="Previous round"
+          aria-keyshortcuts="ArrowLeft"
+          title="Previous round (←)"
           disabled={!previous}
           onClick={() => previous && onSelectRound(previous.number)}
           className={`${button} h-14 w-8 shrink-0 bg-neutral-700/50 @min-[560px]:w-14`}
@@ -58,28 +62,35 @@ export function DemoRoundControl({
           <Team identity={teams.ct} />
           <div
             aria-label="Counter-Terrorist score"
-            className="flex h-18 items-center justify-center self-start rounded-b-xl bg-ct/80 text-3xl font-bold text-neutral-800 @min-[560px]:text-3xl"
+            className="relative isolate flex h-18 items-center justify-center self-start overflow-hidden rounded-b-xl bg-ct/80 text-3xl font-bold text-neutral-800 @min-[560px]:text-3xl"
           >
-            <RollingNumber value={score?.ct} />
+            <span className="relative z-10">
+              <RollingNumber value={score?.ct} />
+            </span>
           </div>
           <DemoRoundPicker
             rounds={rounds}
             round={round}
             time={time}
             previousRound={previousRound}
+            focusOnMount={focusRoundPicker}
             onSelectRound={onSelectRound}
           />
           <div
             aria-label="Terrorist score"
-            className="flex h-18 items-center justify-center self-start rounded-b-xl bg-t/80 text-3xl font-bold text-neutral-800 @min-[560px]:text-3xl"
+            className="relative isolate flex h-18 items-center justify-center self-start overflow-hidden rounded-b-xl bg-t/80 text-3xl font-bold text-neutral-800 @min-[560px]:text-3xl"
           >
-            <RollingNumber value={score?.t} />
+            <span className="relative z-10">
+              <RollingNumber value={score?.t} />
+            </span>
           </div>
           <Team identity={teams.t} reverse />
         </div>
         <button
           type="button"
           aria-label="Next round"
+          aria-keyshortcuts="ArrowRight"
+          title="Next round (→)"
           disabled={!next}
           onClick={() => next && onSelectRound(next.number)}
           className={`${button} relative h-14 w-8 shrink-0 bg-neutral-700/50 @min-[560px]:w-14`}

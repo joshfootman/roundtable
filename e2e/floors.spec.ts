@@ -7,9 +7,9 @@ test('switches Nuke floors directly without changing the paused replay tick', as
     timeout: 30_000,
   })
   const floors = page.getByRole('group', { name: 'Map controls' })
-  const toggle = floors.getByRole('button')
+  const toggle = floors.getByRole('button', { name: /floor — switch/ })
   await expect(toggle).toHaveAccessibleName('Upper floor — switch to lower floor')
-  await expect(toggle).toHaveAttribute('title', 'Upper floor — switch to lower floor')
+  await expect(toggle).toHaveAttribute('title', 'Upper floor — switch to lower floor (F)')
   await expect(toggle).toHaveText('')
   const timeline = page.getByRole('slider', { name: 'Round timeline' })
   const bounds = (await timeline.boundingBox())!

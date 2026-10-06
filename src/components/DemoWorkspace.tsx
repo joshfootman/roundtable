@@ -3,11 +3,13 @@ import React from 'react'
 import { DemoImportStatus } from '../components/DemoImportStatus'
 import type { ImportState, ReadyImportState } from '#/demo/session'
 import { mapDefinition } from '#/replay/maps'
-import { DemoMap, type DemoPlaybackState } from '#/components/DemoMap'
+import { DemoMap, type DemoPlaybackState, type DemoCameraState } from '#/components/DemoMap'
 import { DemoPlaybackControl } from '#/components/DemoPlaybackControl'
 import type { ReplayRound } from '#/replay/types'
 import type { MapDefinition } from '#/replay/maps'
 import { DemoPlayerCards } from '#/components/DemoPlayerCards'
+import { DemoCameraControls } from '#/components/DemoCameraControls'
+import { focusedCamera, type CameraState } from '#/replay/map-camera'
 import { DemoFloorControl } from '#/components/DemoFloorControl'
 import { DemoRoundControl } from '#/components/DemoRoundControl'
 import { ExampleDemos } from '#/components/ExampleDemos'
@@ -15,6 +17,8 @@ import type { ExampleId } from '#/demo/examples'
 import { playerCardsAtTick } from '#/replay/player-cards'
 import { DemoKillFeed } from '#/components/DemoKillFeed'
 import { DemoRoundWin } from '#/components/DemoRoundWin'
+import { DemoShortcutHelp } from './DemoShortcutHelp'
+import { useReplayShortcuts } from './useReplayShortcuts'
 
 export function DemoWorkspace() {
   const { replay } = RootRoute.useRouteContext()
@@ -156,6 +160,15 @@ function Demo({
   const map = mapDefinition(state.metadata.mapName)
   const round = state.rounds.find((round) => round.startTick === state.selectedStartTick)
 
+  const [camera, setCamera] = React.useState(() => ({
+    mapName: state.metadata.mapName,
+    current: focusedCamera(map?.focusCenter),
+  }))
+  if (camera.mapName !== state.metadata.mapName) {
+    setCamera({ mapName: state.metadata.mapName, current: focusedCamera(map?.focusCenter) })
+  }
+
+  const [pickerFocusRound, setPickerFocusRound] = React.useState<number>()
   const [selection, setSelection] = React.useState({
     number: round?.number,
     previous: undefined as number | undefined,
@@ -179,7 +192,12 @@ function Demo({
             rounds={state.rounds}
             example={example}
             previousRound={selection.previous}
-            onSelectRound={(number) => replay.selectRound(number)}
+            focusRoundPicker={pickerFocusRound === round.number}
+            camera={camera}
+            onSelectRound={(number, focusPicker = false) => {
+              setPickerFocusRound(focusPicker ? number : undefined)
+              replay.selectRound(number)
+            }}
             autoPlay={autoPlay}
             onAutoPlay={onAutoPlay}
           />
@@ -198,25 +216,54 @@ function DemoRound({
   rounds,
   onSelectRound,
   previousRound,
+  focusRoundPicker,
   autoPlay,
   onAutoPlay,
+  camera,
 }: {
+  camera: CameraState
   map: MapDefinition
   example?: ExampleId
   round: ReplayRound
   rounds: readonly ReplayRound[]
-  onSelectRound: (number: number) => void
+  onSelectRound: (number: number, focusPicker?: boolean) => void
   previousRound?: number
+  focusRoundPicker: boolean
   autoPlay: boolean
   onAutoPlay: () => void
 }) {
   const [playback, setPlayback] = React.useState<DemoPlaybackState>({ status: 'loading' })
+  const [cameraState, setCameraState] = React.useState<DemoCameraState>({ status: 'loading' })
+  const [shortcutsOpen, setShortcutsOpen] = React.useState(false)
+  const showShortcuts = React.useCallback(() => setShortcutsOpen(true), [])
+  useReplayShortcuts({
+    playback,
+    camera: cameraState,
+    map,
+    round,
+    rounds,
+    onSelectRound,
+    onShowHelp: showShortcuts,
+  })
   const [outcome, setOutcome] = React.useState<ReplayRound['outcome'] | null>(null)
+  const [highlightNextRound, setHighlightNextRound] = React.useState(false)
+  const onResult = React.useCallback((result: ReplayRound['outcome'] | null) => {
+    setOutcome(result)
+    setHighlightNextRound(Boolean(result))
+  }, [])
+
   React.useEffect(() => {
     if (!outcome) return
     const timeout = window.setTimeout(() => setOutcome(null), 2000)
     return () => window.clearTimeout(timeout)
   }, [outcome])
+
+  React.useEffect(() => {
+    if (!highlightNextRound) return
+    const timeout = window.setTimeout(() => setHighlightNextRound(false), 3000)
+    return () => window.clearTimeout(timeout)
+  }, [highlightNextRound])
+
   const tick = playback.status === 'ready' ? playback.snapshot.tick : round.liveStartTick
   const started = React.useRef(false)
   const players = playerCardsAtTick(rounds, round, tick)
@@ -233,25 +280,33 @@ function DemoRound({
       data-multifloor={map.floors !== 'single'}
       className="demo-round group/round flex flex-col gap-3 replay-desktop:h-full replay-landscape:grid replay-landscape:grid-cols-[minmax(0,1fr)_auto] replay-landscape:grid-rows-5 replay-landscape:items-start replay-landscape:gap-2"
     >
+      <fieldset
+        aria-label="Map controls"
+        className="demo-map-controls z-20 flex w-fit min-w-0 items-center gap-2 replay-desktop:absolute replay-desktop:top-28 replay-desktop:left-4 min-[1600px]:replay-desktop:top-4 replay-landscape:col-start-1 replay-landscape:row-start-2"
+      >
+        <DemoCameraControls camera={cameraState} />
+        {map.floors !== 'single' && <DemoFloorControl map={map} playback={playback} />}
+        <DemoShortcutHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+      </fieldset>
       <DemoRoundControl
         rounds={rounds}
         round={round}
         example={example}
         previousRound={previousRound}
+        focusRoundPicker={focusRoundPicker}
         tick={tick}
-        highlightNextRound={Boolean(outcome)}
+        highlightNextRound={highlightNextRound}
         onSelectRound={onSelectRound}
       />
-      {map.floors !== 'single' && (
-        <fieldset
-          aria-label="Map controls"
-          className="demo-map-controls z-20 flex w-fit min-w-0 items-center gap-2 replay-desktop:absolute replay-desktop:top-28 replay-desktop:left-4 min-[1600px]:replay-desktop:top-4 replay-landscape:col-start-1 replay-landscape:row-start-2"
-        >
-          <DemoFloorControl map={map} playback={playback} />
-        </fieldset>
-      )}
       <div className="demo-map-viewport relative aspect-square w-[min(100%,max(240px,70dvh))] self-center replay-desktop:aspect-auto replay-desktop:size-full replay-desktop:min-h-0 replay-landscape:col-start-2 replay-landscape:row-span-5 replay-landscape:row-start-1 replay-landscape:w-[clamp(240px,40vw,70dvh)] replay-landscape:self-start">
-        <DemoMap map={map} round={round} onPlayback={setPlayback} onResult={setOutcome} />
+        <DemoMap
+          map={map}
+          round={round}
+          camera={camera}
+          onCamera={setCameraState}
+          onPlayback={setPlayback}
+          onResult={onResult}
+        />
         {outcome && <DemoRoundWin outcome={outcome} />}
       </div>
       <DemoPlaybackControl round={round} playback={playback} />

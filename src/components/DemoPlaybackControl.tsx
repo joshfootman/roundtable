@@ -53,6 +53,8 @@ export function DemoPlaybackControl({
         type="button"
         aria-label={playing ? 'Pause round' : 'Play round'}
         aria-pressed={playing}
+        aria-keyshortcuts="k Space"
+        title={playing ? 'Pause (K / Space)' : 'Play (K / Space)'}
         disabled={!ready}
         className="demo-playback-toggle col-start-1 row-start-2 flex size-11 shrink-0 cursor-pointer items-center justify-start rounded-lg outline-offset-2 focus-visible:bg-neutral-800/50 focus-visible:outline-2 focus-visible:outline-mauve-200 enabled:hover:bg-neutral-800/50 disabled:cursor-default disabled:opacity-35 replay-desktop:row-start-1 replay-desktop:justify-center"
         onClick={() => {

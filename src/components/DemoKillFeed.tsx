@@ -1,4 +1,3 @@
-/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- Scrollable history needs keyboard focus for Arrow/Page Up/Page Down navigation. */
 import { useEffect, useRef } from 'react'
 import { killFeedAtTick } from '#/replay/kill-feed'
 import { equipmentIcon, recordedWeaponName } from '#/replay/icons'
@@ -25,8 +24,8 @@ export function DemoKillFeed({ round, tick }: { round: ReplayRound; tick: number
       ) : (
         <ol
           ref={feed}
-          className="demo-kill-feed-list m-0 flex max-h-44 [scrollbar-width:thin] [scrollbar-color:var(--color-neutral-600)_transparent] list-none flex-col items-end gap-1 overflow-y-auto overscroll-contain rounded-[14px] p-0.5 outline-offset-2 focus-visible:outline-2 focus-visible:outline-mauve-200 replay-desktop:max-h-[min(176px,23dvh)]"
-          tabIndex={0}
+          className="demo-kill-feed-list m-0 flex max-h-44 [scrollbar-width:thin] [scrollbar-color:var(--color-neutral-600)_transparent] list-none flex-col items-end gap-1 overflow-y-auto overscroll-contain rounded-[14px] p-0.5 replay-desktop:max-h-[min(176px,23dvh)]"
+          tabIndex={-1}
           aria-label="Round kills, latest first"
         >
           {entries.map((entry) => {

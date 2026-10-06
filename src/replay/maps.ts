@@ -18,6 +18,7 @@ export type MapDefinition = {
   name: string
   imageSize: number
   defaultZoom: number
+  focusCenter: { x: number; y: number }
   origin: { x: number; y: number }
   scale: number
   rotation: 0 | 90 | 180 | 270
@@ -29,6 +30,7 @@ export type MapDefinition = {
 const maps: Readonly<Record<string, MapDefinition>> = {
   de_dust2: {
     name: 'Dust II',
+    focusCenter: { x: 0.49, y: 0.5 },
     floors: 'single',
     rotation: 0,
     image: dust2,
@@ -39,6 +41,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_mirage: {
     name: 'Mirage',
+    focusCenter: { x: 0.53, y: 0.51 },
     floors: 'single',
     rotation: 0,
     image: mirage,
@@ -49,6 +52,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_ancient: {
     name: 'Ancient',
+    focusCenter: { x: 0.49, y: 0.48 },
     floors: 'single',
     rotation: 0,
     image: ancient,
@@ -59,6 +63,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_anubis: {
     name: 'Anubis',
+    focusCenter: { x: 0.51, y: 0.49 },
     floors: 'single',
     rotation: 0,
     image: anubis,
@@ -69,6 +74,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_inferno: {
     name: 'Inferno',
+    focusCenter: { x: 0.52, y: 0.48 },
     floors: 'single',
     rotation: 270,
     image: inferno,
@@ -79,6 +85,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_overpass: {
     name: 'Overpass',
+    focusCenter: { x: 0.53, y: 0.51 },
     floors: 'single',
     rotation: 0,
     image: overpass,
@@ -89,6 +96,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_nuke: {
     name: 'Nuke',
+    focusCenter: { x: 0.54, y: 0.52 },
     floors: 'split',
     images: { upper: nuke, lower: nukeLower },
     imageSize: 1024,
@@ -101,6 +109,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_vertigo: {
     name: 'Vertigo',
+    focusCenter: { x: 0.445, y: 0.505 },
     floors: 'split',
     images: { upper: vertigo, lower: vertigoLower },
     imageSize: 1024,
@@ -113,6 +122,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_cache: {
     name: 'Cache',
+    focusCenter: { x: 0.47, y: 0.52 },
     floors: 'single',
     image: cache,
     imageSize: 1024,
@@ -123,6 +133,7 @@ const maps: Readonly<Record<string, MapDefinition>> = {
   },
   de_train: {
     name: 'Train',
+    focusCenter: { x: 0.54, y: 0.51 },
     floors: 'split',
     images: { upper: train, lower: trainLower },
     imageSize: 1024,

@@ -17,7 +17,8 @@ export function DemoFloorControl({
     <button
       type="button"
       aria-label={label}
-      title={label}
+      title={`${label} (F)`}
+      aria-keyshortcuts="f"
       disabled={playback.status !== 'ready'}
       onClick={() => playback.status === 'ready' && playback.controller.setFloor(nextFloor)}
       className="demo-floor-controls flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-neutral-700/50 text-mauve-200 outline-offset-2 focus-visible:outline-2 focus-visible:outline-mauve-200 enabled:hover:bg-neutral-700 disabled:cursor-default disabled:opacity-35"
