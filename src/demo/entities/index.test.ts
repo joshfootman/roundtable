@@ -48,6 +48,13 @@ const definitions: Record<string, [string, WireType][]> = {
     ['m_iItemDefinitionIndex', 'uint32'],
     ['m_iClip1', 'uint32'],
     ['m_pReserveAmmo.0', 'uint32'],
+    ['m_hOwnerEntity', 'uint32'],
+    ...coordinates,
+  ],
+  CCSGO_TeamIntroTerroristPosition: [
+    ['m_iItemDefinitionIndex', 'uint32'],
+    ['m_hOwnerEntity', 'uint32'],
+    ...coordinates,
   ],
   CC4: [['m_hOwnerEntity', 'uint32'], ['m_bStartedArming', 'bool'], ...coordinates],
   CPlantedC4: [
@@ -62,7 +69,12 @@ const definitions: Record<string, [string, WireType][]> = {
     ['m_bDidSmokeEffect', 'bool'],
     ...coordinates,
   ],
-  CUnknownProjectile: [['m_hThrower', 'uint32']],
+  CUnknownProjectile: [
+    ['m_hThrower', 'uint32'],
+    ['m_iItemDefinitionIndex', 'uint32'],
+    ['m_hOwnerEntity', 'uint32'],
+    ...coordinates,
+  ],
   CInferno: [
     ['m_fireCount', 'uint32'],
     ['m_bFireIsBurning.0', 'bool'],
@@ -466,5 +478,66 @@ test('reads the full owned inventory while a knife is active and preserves grena
     { type: 'gun', definition: 4, magazine: 20, reserve: 120 },
     { type: 'item', definition: 42 },
     { type: 'item', definition: 43 },
+  ])
+})
+
+test('projects ground equipment from recorded owner, definition, position and active entity state', () => {
+  const { decoder, packet } = recording()
+  const dropped = (definition: number, owner = 0xffffff) => [
+    definition,
+    0,
+    0,
+    owner,
+    32,
+    10,
+    32,
+    20,
+    32,
+    30,
+  ]
+  packet([
+    { id: 1, className: 'CWeapon', serial: 5, values: dropped(7) },
+    { id: 2, className: 'CWeapon', values: dropped(45, 0xffffffff) },
+    { id: 3, className: 'CWeapon', values: dropped(31) },
+    { id: 4, className: 'CWeapon', values: dropped(49) },
+    { id: 5, className: 'CWeapon', values: dropped(42) },
+    { id: 6, className: 'CWeapon', values: dropped(9, 16384) },
+    { id: 7, className: 'CUnknownProjectile', values: [1, 44, 0xffffff, 32, 10, 32, 20, 32, 30] },
+  ])
+  packet([
+    {
+      id: 8,
+      className: 'CCSGO_TeamIntroTerroristPosition',
+      values: [7, 0xffffff, 32, 10, 32, 20, 32, 30],
+    },
+  ])
+  expect(decoder.droppedItems()).toEqual([
+    { entity: 1, serial: 5, definition: 7, x: 10, y: 20, z: 30 },
+    { entity: 2, serial: 0, definition: 45, x: 10, y: 20, z: 30 },
+    { entity: 3, serial: 0, definition: 31, x: 10, y: 20, z: 30 },
+  ])
+  packet([
+    { id: 1, values: dropped(7, 16384) },
+    { id: 2, remove: 'inactive' },
+    { id: 3, remove: 'delete' },
+  ])
+  expect(decoder.droppedItems()).toEqual([])
+  packet([
+    { id: 1, values: dropped(7) },
+    { id: 3, className: 'CWeapon', serial: 8, values: dropped(9) },
+  ])
+  expect(decoder.droppedItems()).toEqual([
+    { entity: 1, serial: 5, definition: 7, x: 10, y: 20, z: 30 },
+    { entity: 3, serial: 8, definition: 9, x: 10, y: 20, z: 30 },
+  ])
+})
+
+test('rejects supported equipment with missing recorded ownership', () => {
+  const { decoder, packet } = recording()
+  packet([{ id: 1, className: 'CWeapon', values: [7, 30, 90] }])
+  expect(() => decoder.droppedItems()).toThrow('Missing recorded dropped item owner')
+  packet([{ id: 1, values: [7, 30, 90, 0xffffff, 32, 10, 32, 20, 32, 30] }])
+  expect(decoder.droppedItems()).toEqual([
+    { entity: 1, serial: 0, definition: 7, x: 10, y: 20, z: 30 },
   ])
 })

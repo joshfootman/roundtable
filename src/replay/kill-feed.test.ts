@@ -11,6 +11,7 @@ function round(): ReplayRound {
     resultTick: 120,
     endTick: 130,
     tickInterval: 1 / 64,
+    droppedItems: [],
     shots: [],
     fires: [],
     smokes: [],

@@ -1,4 +1,5 @@
 import { Schema } from 'effect'
+import { firearms } from '../replay/equipment.ts'
 import type { ReplayRound } from '../replay/types'
 
 const number = Schema.Finite
@@ -65,6 +66,20 @@ const Header = Schema.mutable(
           pitch: number,
           yaw: number,
         }),
+      ),
+    ),
+    droppedItems: Schema.optional(
+      Schema.mutable(
+        Schema.Array(
+          Schema.Struct({
+            tick: integer,
+            items: Schema.mutable(
+              Schema.Array(
+                Schema.Struct({ entity: integer, serial: integer, definition: integer, ...point }),
+              ),
+            ),
+          }),
+        ),
       ),
     ),
     fires: Schema.mutable(
@@ -242,7 +257,12 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
     offset += bytes
     return result
   }
-  const { frames, projectiles, ...metadata } = header
+  const {
+    frames,
+    projectiles,
+    droppedItems = [{ tick: header.startTick, items: [] }],
+    ...metadata
+  } = header
   const states = frames * header.players.length
   const ticks = track(Uint32Array, frames)
   const positions = track(Float32Array, states * 3)
@@ -294,6 +314,22 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
       throw new Error('Invalid replay asset event order.')
   }
   if (
+    droppedItems.length === 0 ||
+    droppedItems[0]!.tick !== header.startTick ||
+    droppedItems.some(
+      (record, index) =>
+        record.tick < header.startTick ||
+        record.tick > header.endTick ||
+        (index > 0 && record.tick <= droppedItems[index - 1]!.tick) ||
+        new Set(record.items.map((item) => item.entity)).size !== record.items.length ||
+        record.items.some(
+          (item) =>
+            !(item.definition in firearms || (item.definition >= 43 && item.definition <= 48)),
+        ),
+    )
+  )
+    throw new Error('Invalid replay asset dropped item data.')
+  if (
     header.bomb.length === 0 ||
     header.inspection.some((records) => records.length === 0) ||
     header.fires.some((record) => record.fires.some((fire) => fire.positions.length % 3 !== 0))
@@ -307,6 +343,7 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
     throw new Error('Invalid replay asset coordinates.')
   return {
     ...metadata,
+    droppedItems,
     ticks,
     positions,
     alive,

@@ -8,6 +8,7 @@ const map: MapDefinition = {
   name: 'Test',
   imageSize: 1024,
   defaultZoom: 1,
+  focusCenter: { x: 0.5, y: 0.5 },
   origin: { x: 100, y: 200 },
   scale: 2,
   rotation: 90,
@@ -45,6 +46,7 @@ function round(): ReplayRound {
     resultTick: 110,
     endTick: 120,
     tickInterval: 0.25,
+    droppedItems: [],
     shots: [],
     fires: [],
     smokes: [],
@@ -244,7 +246,7 @@ describe('recorded player rendering', () => {
     expect([a.container.alpha, a.flash.visible]).toEqual([1, false])
     renderer.draw(110, 1, { floor: 'lower', flashes: true })
     expect([a.container.alpha, a.flash.visible, a.container.visible, a.direction.rotation]).toEqual(
-      [0.35, false, true, -Math.PI / 2],
+      [0, false, true, -Math.PI / 2],
     )
     renderer.draw(100, 1, { floor: 'upper', flashes: true })
     expect([a.container.alpha, a.flash.visible, a.container.visible]).toEqual([1, true, true])

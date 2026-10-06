@@ -132,6 +132,7 @@ export function readReplay(
         tracker.bomb(tick, entities.bomb())
         tracker.projectiles(tick, entities.projectiles())
         tracker.fires(tick, entities.fires())
+        tracker.droppedItems(tick, entities.droppedItems())
         for (const message of messages)
           if (message.id === FIRE_BULLETS) {
             const shot = fromBinary(CMsgTEFireBulletsSchema, message.bytes)

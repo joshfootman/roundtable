@@ -24,6 +24,7 @@ function round(startTick: number, deaths: ReplayDeath[] = []): ReplayRound {
     resultTick: startTick + 10,
     endTick: startTick + 10,
     tickInterval: 1 / 64,
+    droppedItems: [],
     shots: [],
     fires: [],
     smokes: [],

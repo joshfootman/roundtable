@@ -103,3 +103,49 @@ test('matches independently decoded ladder entry and exit in the bundled Nuke re
     )
   }
 })
+
+test('preserves dropped item lifetimes and normalizes legacy rounds to an empty opening snapshot', () => {
+  const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
+  const round = decodeRound(new Uint8Array(raw).buffer)
+  round.droppedItems = [
+    { tick: 537, items: [] },
+    { tick: 6000, items: [{ entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }] },
+    { tick: 6010, items: [] },
+  ]
+  expect(decodeRound(encodeRound(round)).droppedItems).toEqual([
+    { tick: 537, items: [] },
+    { tick: 6000, items: [{ entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }] },
+    { tick: 6010, items: [] },
+  ])
+  Reflect.deleteProperty(round, 'droppedItems')
+  expect(decodeRound(encodeRound(round)).droppedItems).toEqual([{ tick: 537, items: [] }])
+})
+
+test('rejects malformed dropped item snapshots at the replay asset boundary', () => {
+  const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
+  const round = decodeRound(new Uint8Array(raw).buffer)
+  const item = { entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }
+  for (const records of [
+    [],
+    [{ tick: 538, items: [item] }],
+    [
+      { tick: 537, items: [] },
+      { tick: 9000, items: [item] },
+    ],
+    [
+      { tick: 537, items: [] },
+      { tick: 537, items: [item] },
+    ],
+    [{ tick: 537, items: [item, item] }],
+    [{ tick: 537, items: [{ ...item, definition: 49 }] }],
+    [{ tick: 537, items: [{ ...item, definition: 42 }] }],
+    [{ tick: 537, items: [{ ...item, x: Infinity }] }],
+  ]) {
+    round.droppedItems = records
+    expect(() => decodeRound(encodeRound(round))).toThrow()
+  }
+  round.droppedItems = [{ tick: 537, items: [item] }]
+  expect(decodeRound(encodeRound(round)).droppedItems).toEqual([
+    { tick: 537, items: [{ entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }] },
+  ])
+})

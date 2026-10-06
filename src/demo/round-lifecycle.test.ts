@@ -97,6 +97,7 @@ test('discards knife stages and completed match attempts when recorded rules res
         ],
       ],
       bomb: [{ tick: 30, state: { type: 'inactive' as const } }],
+      droppedItems: [{ tick: 30, items: [] }],
       fires: [{ tick: 30, fires: [] }],
       shots: [],
       smokes: [],
@@ -189,6 +190,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
       ],
     ],
     bomb: [{ tick: 100, state: { type: 'inactive' as const } }],
+    droppedItems: [{ tick: 100, items: [] }],
     fires: [{ tick: 100, fires: [] }],
     shots: [],
     smokes: [],
@@ -354,5 +356,61 @@ test('records inventory and ladder changes while the held knife stays unchanged'
     { tick: 102, onLadder: false },
     { tick: 103, onLadder: true },
     { tick: 104, onLadder: false },
+  ])
+})
+
+test('records movement, pickup, re-drop and entity reuse with one final snapshot per tick', () => {
+  const tracker = createRoundTracker()
+  tracker.update(10, rules, ['round_start'], 1 / 64)
+  tracker.sample(10, [
+    {
+      steamId: '11',
+      name: 'Player',
+      team: 3,
+      x: 1,
+      y: 2,
+      z: 3,
+      alive: true,
+      health: 100,
+      yaw: 0,
+      money: 800,
+      armour: 0,
+      helmet: false,
+      flash: { type: 'none' },
+      grenades: [],
+      weapons: [],
+      weapon: { type: 'none' },
+    },
+  ])
+  tracker.bomb(10, { type: 'inactive' })
+  const item = { entity: 3, serial: 5, definition: 7, x: 10, y: 20, z: 30 }
+  tracker.droppedItems(10, [])
+  tracker.droppedItems(11, [item])
+  tracker.droppedItems(12, [item])
+  tracker.droppedItems(13, [{ ...item, x: 11 }])
+  tracker.droppedItems(14, [])
+  tracker.droppedItems(15, [item])
+  tracker.droppedItems(16, [{ ...item, serial: 6, definition: 9 }])
+  tracker.droppedItems(16, [])
+  tracker.droppedItems(17, [{ ...item, serial: 6, definition: 9 }])
+  tracker.droppedItems(18, [item])
+  tracker.droppedItems(18, [{ ...item, serial: 6, definition: 9 }])
+  tracker.update(19, { ...rules, freezePeriod: false }, ['round_freeze_end'], 1 / 64)
+  tracker.update(
+    20,
+    { ...rules, freezePeriod: false, reason: 8, totalRoundsPlayed: 1 },
+    ['round_end'],
+    1 / 64,
+  )
+  const [event] = tracker.end(21)
+  if (event?.type !== 'round') throw new Error('Missing round')
+  expect(event.round.droppedItems).toEqual([
+    { tick: 10, items: [] },
+    { tick: 11, items: [{ entity: 3, serial: 5, definition: 7, x: 10, y: 20, z: 30 }] },
+    { tick: 13, items: [{ entity: 3, serial: 5, definition: 7, x: 11, y: 20, z: 30 }] },
+    { tick: 14, items: [] },
+    { tick: 15, items: [{ entity: 3, serial: 5, definition: 7, x: 10, y: 20, z: 30 }] },
+    { tick: 16, items: [] },
+    { tick: 17, items: [{ entity: 3, serial: 6, definition: 9, x: 10, y: 20, z: 30 }] },
   ])
 })

@@ -13,6 +13,15 @@ export interface ReplayShot {
   yaw: number
 }
 
+export interface DroppedItem {
+  entity: number
+  serial: number
+  definition: number
+  x: number
+  y: number
+  z: number
+}
+
 export interface FireArea {
   entity: number
   serial: number
@@ -104,6 +113,7 @@ export interface ReplayRound {
   resultTick: number
   endTick: number
   tickInterval: number
+  droppedItems: { tick: number; items: DroppedItem[] }[]
   shots: ReplayShot[]
   fires: { tick: number; fires: FireArea[] }[]
   smokes: ReplaySmoke[]

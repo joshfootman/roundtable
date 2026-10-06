@@ -6,6 +6,7 @@ import type {
   GrenadeKind,
   FireArea,
   ReplayDeath,
+  DroppedItem,
 } from '../../replay/types.ts'
 import { fromBinary } from '@bufbuild/protobuf'
 import { CMsgPlayerInfoSchema } from '../generated/roster_pb.ts'
@@ -53,6 +54,7 @@ interface EntityProjection {
   controllersByPawn: Map<number, Entity>
   plantedBombs: Entity[]
   carriedBomb?: Entity
+  equipment: [number, Entity][]
   projectileCandidates: [number, Entity][]
   infernos: [number, Entity][]
   smokeIds: Set<number>
@@ -150,6 +152,7 @@ export function createEntityDecoder() {
       controllers: [],
       controllersByPawn: new Map(),
       plantedBombs: [],
+      equipment: [],
       projectileCandidates: [],
       infernos: [],
       smokeIds: new Set(),
@@ -164,6 +167,8 @@ export function createEntityDecoder() {
         if (typeof handle === 'number' && !result.controllersByPawn.has(handle))
           result.controllersByPawn.set(handle, entity)
       }
+      if (entity.values.has('m_iItemDefinitionIndex') && entity.values.has('m_iClip1'))
+        result.equipment.push([id, entity])
       if (entity.className === 'CPlantedC4') result.plantedBombs.push(entity)
       if (entity.className === 'CC4') result.carriedBomb ??= entity
       if (entity.values.has('m_hThrower')) result.projectileCandidates.push([id, entity])
@@ -343,6 +348,23 @@ export function createEntityDecoder() {
     const planting = c4.values.get('m_bStartedArming')
     if (typeof planting !== 'boolean') throw new Error('Missing recorded bomb arming state.')
     return { type: 'carried', carrier: playerByPawnHandle(owner), planting }
+  }
+  function droppedItems(): DroppedItem[] {
+    const result: DroppedItem[] = []
+    for (const [id, entity] of view().equipment) {
+      if (entity.className.endsWith('Projectile')) continue
+      const definition = entity.values.get('m_iItemDefinitionIndex')
+      if (
+        typeof definition !== 'number' ||
+        !(definition in firearms || (definition >= 43 && definition <= 48))
+      )
+        continue
+      const owner = entity.values.get('m_hOwnerEntity')
+      if (typeof owner !== 'number') throw new Error('Missing recorded dropped item owner.')
+      if (owner !== 0xffffff && owner !== 0xffffffff) continue
+      result.push({ entity: id, serial: entity.serial, definition, ...position(entity) })
+    }
+    return result.sort((a, b) => a.entity - b.entity)
   }
   function projectiles(): ProjectileSnapshot[] {
     const result: ProjectileSnapshot[] = []
@@ -562,6 +584,7 @@ export function createEntityDecoder() {
     snapshots,
     bomb,
     playerByPawnHandle,
+    droppedItems,
     projectiles,
     fires(): FireArea[] {
       const fires: FireArea[] = []

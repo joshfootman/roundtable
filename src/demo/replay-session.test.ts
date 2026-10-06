@@ -36,6 +36,7 @@ const round: ReplayRound = {
   inspection: [],
   bomb: [],
   fires: [],
+  droppedItems: [],
   shots: [],
   smokes: [],
   projectiles: [],

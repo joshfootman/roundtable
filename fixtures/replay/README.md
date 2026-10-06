@@ -164,3 +164,23 @@ round beginning at 367, its result at 14136 and the next round beginning at 1458
 uses attacker 65535. The fixture exercises newer animation enums, 64-bit resource
 identifiers, binary blocks and global symbols before the asserted movement.
 The older v4.5.1 reference cannot decode these 2026 recordings reliably.
+
+## Dropped equipment oracle
+
+`dropped-items.json` records unowned equipment identities and XYZ positions at nine
+sample ticks in the first four Dust II rounds. demoinfocs-golang v4.5.1 supplies the
+reference through its equipment collection, independently of the TypeScript decoder.
+C4 and knives are excluded. Team introduction and selection actors are not equipment.
+
+Regenerate from the verified full source recording:
+
+```sh
+cd scripts/replay-reference
+go run ./dropped-items > ../../fixtures/replay/dropped-items.json
+```
+
+Compare the replay capture from the repository root:
+
+```sh
+node --experimental-transform-types scripts/verify-dropped-items.ts
+```

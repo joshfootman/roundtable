@@ -9,6 +9,7 @@ const map: MapDefinition = {
   name: 'Test',
   imageSize: 1024,
   defaultZoom: 1,
+  focusCenter: { x: 0.5, y: 0.5 },
   origin: { x: 100, y: 200 },
   scale: 2,
   rotation: 90,
@@ -27,6 +28,7 @@ function round(): ReplayRound {
     resultTick: 140,
     endTick: 150,
     tickInterval: 0.1,
+    droppedItems: [],
     shots: [{ tick: 100, player: 'a', weapon: 7, x: 100, y: 200, z: 1, pitch: 0, yaw: 0 }],
     fires: [
       { tick: 90, fires: [] },

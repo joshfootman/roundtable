@@ -7,6 +7,7 @@ const map: MapDefinition = {
   image: 'radar.png',
   imageSize: 1024,
   defaultZoom: 1,
+  focusCenter: { x: 0.5, y: 0.5 },
   origin: { x: -100, y: 200 },
   scale: 2,
   rotation: 0,

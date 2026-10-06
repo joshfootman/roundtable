@@ -79,6 +79,11 @@ export function equipmentIcon(key: string): string | undefined {
   return assets[`../assets/cs2/equipment/${key}.svg`]
 }
 
+export function equipmentIconForDefinition(definition: number): string | undefined {
+  const key = equipmentKeys[definition]
+  return key ? equipmentIcon(key) : undefined
+}
+
 export function recordedWeaponName(key: string): string {
   if (key === 'planted_c4') return 'C4'
   const entry = Object.entries(equipmentKeys).find(([, value]) => value === key)
@@ -86,7 +91,7 @@ export function recordedWeaponName(key: string): string {
 }
 
 export function EquipmentIcon({ definition }: { definition: number }) {
-  return <GameIcon src={equipmentIcon(equipmentKeys[definition]!)} wide={definition in firearms} />
+  return <GameIcon src={equipmentIconForDefinition(definition)} wide={definition in firearms} />
 }
 
 export function GameIcon({ src, wide = false }: { src: string | undefined; wide?: boolean }) {

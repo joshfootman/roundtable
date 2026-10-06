@@ -12,6 +12,7 @@ test.each([0, 90, 180, 270] as const)(
       image: 'radar.png',
       imageSize: 1024,
       defaultZoom: 1,
+      focusCenter: { x: 0.5, y: 0.5 },
       origin: { x: 0, y: 0 },
       scale: 1,
       rotation,

@@ -11,6 +11,7 @@ import type {
   ReplaySmoke,
   FireArea,
   ReplayShot,
+  DroppedItem,
 } from '../replay/types.ts'
 
 export interface RoundRules {
@@ -47,6 +48,7 @@ type Capture = {
   teams: number[]
   projectiles: ReturnType<typeof createProjectileCapture>
   shots: ReplayShot[]
+  droppedItems: ReplayRound['droppedItems']
   fires: ReplayRound['fires']
   smokes: ReplaySmoke[]
   detonations: GrenadeDetonation[]
@@ -126,6 +128,7 @@ export function createRoundTracker() {
       bombEvents: round.bombEvents,
       projectiles: round.projectiles.finish(endTick),
       detonations: round.detonations,
+      droppedItems: round.droppedItems,
       shots: round.shots,
       fires: round.fires,
       smokes: round.smokes
@@ -237,6 +240,7 @@ export function createRoundTracker() {
           yaw: [],
           teams: [],
           projectiles: createProjectileCapture(),
+          droppedItems: [{ tick, items: [] }],
           shots: [],
           fires: [{ tick, fires: [] }],
           smokes: [...activeSmokes.values()],
@@ -271,6 +275,28 @@ export function createRoundTracker() {
       if (!capture.players.some((player) => player.steamId === shot.player))
         throw new Error('A recorded shooter is outside the round roster.')
       capture.shots.push(shot)
+    },
+    droppedItems(tick: number, items: DroppedItem[]) {
+      if (!capture) return
+      const track = capture.droppedItems
+      if (track.at(-1)?.tick === tick) track.pop()
+      const previous = track.at(-1)?.items
+      if (
+        !previous ||
+        previous.length !== items.length ||
+        items.some((item, index) => {
+          const old = previous[index]!
+          return (
+            item.entity !== old.entity ||
+            item.serial !== old.serial ||
+            item.definition !== old.definition ||
+            item.x !== old.x ||
+            item.y !== old.y ||
+            item.z !== old.z
+          )
+        })
+      )
+        track.push({ tick, items })
     },
     fires(tick: number, fires: FireArea[]) {
       if (!capture) return

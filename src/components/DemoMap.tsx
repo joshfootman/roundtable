@@ -3,6 +3,8 @@ import { Assets, Sprite, type Texture } from 'pixi.js'
 import c4Icon from '../assets/cs2/equipment/c4.svg?url&no-inline'
 import defuseIcon from '../assets/cs2/equipment/defuser.svg?url&no-inline'
 import { createBombRenderer } from '../replay/bomb-renderer'
+import { createDroppedItemRenderer } from '../replay/dropped-item-renderer'
+import { equipmentIconForDefinition } from '../replay/icons'
 import type { MapDefinition, MapFloor } from '../replay/maps'
 import { createMapScene } from '../replay/map-scene'
 import {
@@ -55,9 +57,20 @@ export function DemoMap({
     async function mount() {
       if (!(await mapScene.mount(element))) return
       if (round) {
-        const [bombTexture, defuseTexture] = await Promise.all([
+        const definitions = new Set(
+          round.droppedItems.flatMap(({ items }) => items.map((item) => item.definition)),
+        )
+        const [bombTexture, defuseTexture, droppedTextures] = await Promise.all([
           Assets.load<Texture>(c4Icon),
           Assets.load<Texture>(defuseIcon),
+          Promise.all(
+            [...definitions].flatMap((definition) => {
+              const src = equipmentIconForDefinition(definition)
+              return src
+                ? [Assets.load<Texture>(src).then((texture) => [definition, texture] as const)]
+                : []
+            }),
+          ),
         ])
         if (cancelled) return
         const styles = getComputedStyle(element)
@@ -79,6 +92,9 @@ export function DemoMap({
           armed: color('--color-bomb'),
           fontSize: 14,
         }
+        const dropped = createDroppedItemRenderer(round, map, new Map(droppedTextures))
+        dropped.container.tint = appearance.foreground
+        mapScene.container.addChild(dropped.container)
         const utilities = createUtilityRenderer(round, map)
         mapScene.container.addChild(utilities.container)
         const players = createPlayerRenderer(round, map, appearance, {
@@ -102,6 +118,7 @@ export function DemoMap({
         let symbolScale = 1
         let controller: DemoPlaybackController
         function draw() {
+          dropped.draw(tick, symbolScale, floor)
           utilities.draw(tick, symbolScale, visibility, floor)
           players.draw(tick, symbolScale, { floor, flashes: visibility.flashes })
           bomb.draw(tick, symbolScale, floor, reducedMotion.matches)
