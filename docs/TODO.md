@@ -11,7 +11,7 @@
 - [x] Change side / halftime UI
 - [x] Manual zoom and pan.
 - [x] Playback shortcuts.
-- [ ] Team winning streaks, optional polish.
+- [x] Team winning streaks, optional polish.
 - [ ] Rapid multi-kill feedback, optional polish.
 - [ ] Client-side drawing, conditional.
 - [ ] Settings UI, conditional.
@@ -47,7 +47,7 @@ Floor switching now uses a compact map-controls row with a stacked-floors icon t
 
 ## Optional polish, ranked
 
-1. **Team winning streaks.** Add a flame for consecutive round wins. Five or more wins is the initial threshold idea, pending confirmation. Clear round outcomes take priority.
+1. **Team winning streaks.** Add a flame for consecutive round wins. Five consecutive recorded wins activate blue CT or orange T score flames. Streaks follow teams across side swaps and reconstruct when seeking. Reduced motion and unavailable WebGL use static flames.
 2. **Rapid multi-kill feedback.** Consider separate player feedback for several kills in quick succession. Appearance and timing threshold remain open. Do not use a flame.
 
 ## Conditional additions

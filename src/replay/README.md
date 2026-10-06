@@ -31,6 +31,15 @@ sides. Overtime side swaps do not add halftime dividers. Selecting a round close
 and focuses the new round's centre control.
 HUD and picker layout use Tailwind, including container queries for compact widths.
 
+Five consecutive recorded wins activate animated blue CT or orange T flames inside
+that team's score tile. The streak follows player rosters across side swaps, with
+unique clan names as a fallback when roster evidence is unavailable. Seeking derives
+it from the visible round history and includes the current result only at resultTick.
+A loss, missing result or round gap stops the streak. The bounded WebGL layer draws
+at most 30 frames per second, suspends while the page is hidden, and releases its
+resources on removal. Reduced motion keeps a static flame frame. WebGL failure uses
+static SVG flames instead. Score geometry, keyboard order and rolling digits stay intact.
+
 The native Round timeline range seeks directly into the recorded buffers. Seeking
 updates the canvas immediately and preserves playback or pause. Seeking to the end
 pauses. Arrow keys, Home and End work without custom keyboard handlers.

@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { ReplayRound } from '#/replay/types'
 import type { ExampleId } from '#/demo/examples'
 import { roundTeams, type TeamIdentity } from '#/replay/team-identity'
 import { RollingNumber } from '#/components/RollingNumber'
 import { DemoRoundPicker } from './DemoRoundPicker'
+import { ScoreFlames } from './ScoreFlames'
+import { roundWinningStreaks, winningStreakThreshold } from '#/replay/winning-streaks'
 
 export function DemoRoundControl({
   rounds,
@@ -24,6 +26,7 @@ export function DemoRoundControl({
   highlightNextRound?: boolean
   onSelectRound: (number: number, focusPicker?: boolean) => void
 }) {
+  const streakDescription = useId()
   const winner = tick >= round.resultTick ? round.outcome?.winner : undefined
   const score = round.score && {
     ct: round.score.ct + Number(winner === 'ct'),
@@ -38,6 +41,7 @@ export function DemoRoundControl({
     .toString()
     .padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`
   const teams = roundTeams(round, example)
+  const streaks = roundWinningStreaks(rounds, round, tick)
   const button =
     'flex cursor-pointer items-center justify-center rounded-xl outline-offset-2 enabled:hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 disabled:cursor-default disabled:opacity-35'
 
@@ -62,11 +66,20 @@ export function DemoRoundControl({
           <Team identity={teams.ct} />
           <div
             aria-label="Counter-Terrorist score"
+            aria-describedby={
+              streaks.ct >= winningStreakThreshold ? `${streakDescription}-ct` : undefined
+            }
             className="relative isolate flex h-18 items-center justify-center self-start overflow-hidden rounded-b-xl bg-ct/80 text-3xl font-bold text-neutral-800 @min-[560px]:text-3xl"
           >
+            {streaks.ct >= winningStreakThreshold && <ScoreFlames side="ct" />}
             <span className="relative z-10">
               <RollingNumber value={score?.ct} />
             </span>
+            {streaks.ct >= winningStreakThreshold && (
+              <span id={`${streakDescription}-ct`} className="sr-only">
+                {streaks.ct} consecutive round wins
+              </span>
+            )}
           </div>
           <DemoRoundPicker
             rounds={rounds}
@@ -78,11 +91,20 @@ export function DemoRoundControl({
           />
           <div
             aria-label="Terrorist score"
+            aria-describedby={
+              streaks.t >= winningStreakThreshold ? `${streakDescription}-t` : undefined
+            }
             className="relative isolate flex h-18 items-center justify-center self-start overflow-hidden rounded-b-xl bg-t/80 text-3xl font-bold text-neutral-800 @min-[560px]:text-3xl"
           >
+            {streaks.t >= winningStreakThreshold && <ScoreFlames side="t" />}
             <span className="relative z-10">
               <RollingNumber value={score?.t} />
             </span>
+            {streaks.t >= winningStreakThreshold && (
+              <span id={`${streakDescription}-t`} className="sr-only">
+                {streaks.t} consecutive round wins
+              </span>
+            )}
           </div>
           <Team identity={teams.t} reverse />
         </div>
