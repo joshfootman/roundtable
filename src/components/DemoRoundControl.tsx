@@ -12,12 +12,14 @@ export function DemoRoundControl({
   onSelectRound,
   previousRound,
   example,
+  highlightNextRound = false,
 }: {
   rounds: readonly ReplayRound[]
   round: ReplayRound
   tick: number
   previousRound?: number
   example?: ExampleId
+  highlightNextRound?: boolean
   onSelectRound: (number: number) => void
 }) {
   const winner = tick >= round.resultTick ? round.outcome?.winner : undefined
@@ -80,9 +82,15 @@ export function DemoRoundControl({
           aria-label="Next round"
           disabled={!next}
           onClick={() => next && onSelectRound(next.number)}
-          className={`${button} h-14 w-8 shrink-0 bg-neutral-700/50 @min-[560px]:w-14`}
+          className={`${button} relative h-14 w-8 shrink-0 bg-neutral-700/50 @min-[560px]:w-14`}
         >
           <Chevron direction="right" />
+          {highlightNextRound && next && (
+            <span
+              aria-hidden="true"
+              className="demo-next-round-hint pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 ring-2 ring-ct motion-safe:animate-demo-next-round-hint motion-reduce:opacity-70"
+            />
+          )}
         </button>
       </nav>
     </section>

@@ -23,6 +23,22 @@
   --animate-demo-win-edge: demo-win-edge 2s both;
   --animate-demo-win-title: demo-win-title 2s both;
   --animate-demo-win-reduced: demo-win-reduced 2s both;
+  --animate-demo-next-round-hint: demo-next-round-hint 1.2s cubic-bezier(0.645, 0.045, 0.355, 1)
+    both;
+  @keyframes demo-next-round-hint {
+    0%,
+    50%,
+    100% {
+      opacity: 0;
+    }
+    25% {
+      opacity: 0.85;
+    }
+    75% {
+      opacity: 0.65;
+    }
+  }
+
   @keyframes demo-number-up {
     to {
       transform: translateY(-100%);

@@ -239,6 +239,7 @@ function DemoRound({
         example={example}
         previousRound={previousRound}
         tick={tick}
+        highlightNextRound={Boolean(outcome)}
         onSelectRound={onSelectRound}
       />
       {map.floors !== 'single' && (

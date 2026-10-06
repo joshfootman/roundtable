@@ -76,3 +76,44 @@ test('fits the HUD and round picker on a narrow phone', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Choose round, current round 5' })).toBeFocused()
   await expect(picker).toBeHidden()
 })
+
+test('briefly highlights the next round only after a played outcome, with a static reduced-motion cue', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+    await page.emulateMedia({ reducedMotion })
+    await page.goto('/replay?source=example&round=1')
+    const play = page.getByRole('button', { name: 'Play round', exact: true })
+    await expect(play).toBeEnabled({ timeout: 30_000 })
+    const timeline = page.getByRole('slider', { name: 'Round timeline' })
+    const next = page.getByRole('button', { name: 'Next round', exact: true })
+    const hint = next.locator('.demo-next-round-hint')
+    await timeline.press('End')
+    await expect(hint).toHaveCount(0)
+    // The independent Dust II reference records round one's result at tick 7834.
+    const minimum = Number(await timeline.getAttribute('min'))
+    const maximum = Number(await timeline.getAttribute('max'))
+    const bounds = (await timeline.boundingBox())!
+    await timeline.click({
+      position: {
+        x: 5 + ((7834 - 128 - minimum) / (maximum - minimum)) * (bounds.width - 10),
+        y: bounds.height / 2,
+      },
+    })
+    await expect(hint).toHaveCount(0)
+    await play.click()
+    await expect(hint).toHaveCount(1, { timeout: 10_000 })
+    await expect(hint).toHaveCSS(
+      'animation-name',
+      reducedMotion === 'reduce' ? 'none' : 'demo-next-round-hint',
+    )
+    if (reducedMotion === 'reduce') {
+      await expect(hint).toHaveCSS('opacity', '0.7')
+      await page.screenshot({ path: '.audit/round-outcomes/next-round-reduced-motion.png' })
+    }
+    await expect(hint).toHaveCount(0, { timeout: 5_000 })
+    await next.click()
+    await expect(page.getByRole('button', { name: 'Choose round, current round 2' })).toBeVisible()
+  }
+})

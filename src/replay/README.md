@@ -21,7 +21,9 @@ The centred HUD retains both clan names per round, including side swaps. Bundled
 matches use their curated team logos; local imports keep recorded names without
 guessing logos. Missing names fall back to CT/T. Its centre shows the elapsed round
 clock and opens a round picker with recorded winners and final scores. Previous/next
-chevrons remain available. The picker uses Radix Popover for dismissal and focus
+chevrons remain available. A naturally played outcome gives the enabled next-round
+button two soft blue border pulses over 1.2 seconds. Reduced motion uses a static
+border during the two-second outcome window. Seeking does not trigger this cue. The picker uses Radix Popover for dismissal and focus
 management; selecting a round closes it and focuses the new round's centre control.
 HUD and picker layout use Tailwind, including container queries for compact widths.
 
