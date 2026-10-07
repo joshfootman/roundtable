@@ -23,6 +23,8 @@ for (const viewport of [
       page.getByRole('button', { name: 'Zoom out', exact: true }),
       page.getByRole('button', { name: 'Focus map', exact: true }),
       page.getByRole('button', { name: /Upper floor.*switch to lower/ }),
+      page.getByRole('button', { name: 'Draw on map', exact: true }),
+      page.getByRole('button', { name: 'Clear map drawings', exact: true }),
       page.getByRole('button', { name: 'Keyboard shortcuts', exact: true }),
       page.getByRole('button', { name: 'Previous round', exact: true }),
       page.getByRole('button', { name: 'Choose round, current round 2', exact: true }),
@@ -44,7 +46,7 @@ for (const viewport of [
           .locator('.demo-round')
           .evaluate((round) => round.contains(document.activeElement)),
       ).toBe(false)
-    await controls[9]!.focus()
+    await controls[11]!.focus()
     for (const control of controls.slice(0, -1).reverse()) {
       await page.keyboard.press('Shift+Tab')
       await expect(control).toBeFocused()
@@ -63,13 +65,13 @@ for (const viewport of [
     await expect(controls[0]!).toHaveCSS('outline-style', 'solid')
     await expect(controls[0]!).toHaveCSS('outline-width', '2px')
     await page.keyboard.press('0')
-    const tick = await controls[9]!.inputValue()
+    const tick = await controls[11]!.inputValue()
     const before = await map.screenshot()
     await page.keyboard.press('Shift+ArrowRight')
     const after = await map.screenshot()
     expect(after.equals(before), 'Shift + arrow pans from a map control').toBe(false)
-    await expect(controls[9]!).toHaveValue(tick)
+    await expect(controls[11]!).toHaveValue(tick)
     await expect(play).toBeVisible()
-    await expect(controls[6]!).toBeVisible()
+    await expect(controls[8]!).toBeVisible()
   })
 }

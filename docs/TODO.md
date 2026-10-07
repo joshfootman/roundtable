@@ -13,7 +13,7 @@
 - [x] Playback shortcuts.
 - [x] Team winning streaks, optional polish.
 - [ ] Rapid multi-kill feedback, optional polish.
-- [ ] Client-side drawing, conditional.
+- [x] Client-side drawing.
 - [ ] Settings UI, conditional.
 - [ ] Reduce test maintenance burden.
 - [ ] Shared viewing and drawing, deferred.
@@ -53,7 +53,7 @@ Floor switching now uses a compact map-controls row with a stacked-floors icon t
 ## Conditional additions
 
 - **Optional colour palettes.** Offer game-style team palettes only if testing shows value over the default CT/T colours, #96c8fa and #eabe54. Check map backgrounds and death dimming with colour-vision simulations and user testing where available. Do not assume CS2-style colours establish accessibility. Preserve non-colour identification.
-- **Client-side drawing.** Trial integration before committing. Assess tldraw licensing, a minimal toolbar, touch input, map alignment and playback control conflicts. Annotations remain excluded by PROJECT.md until this decision changes. [tldraw licensing](https://tldraw.dev/community/license).
+- **Client-side drawing, complete.** Use perfect-freehand for white strokes with subtle pressure variation. Draw toggles drawing mode and Clear map removes drawings. Colour settings are deferred. D toggles drawing; Shift+D clears the current round and floor. Drawings follow map pan and zoom, survive seeking and round navigation, and reset on a new demo. They stay in memory without export or shared editing.
 - **Settings UI.** Its scope depends on which optional settings earn a place. No additional settings are defined yet. Key remapping is deferred.
 
 ## Maintenance

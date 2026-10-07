@@ -12,6 +12,8 @@ export function useReplayShortcuts({
   rounds,
   onSelectRound,
   onShowHelp,
+  onToggleDrawing,
+  onClearDrawing,
 }: {
   playback: DemoPlaybackState
   camera: DemoCameraState
@@ -20,6 +22,8 @@ export function useReplayShortcuts({
   rounds: readonly ReplayRound[]
   onSelectRound: (number: number) => void
   onShowHelp: () => void
+  onToggleDrawing: () => void
+  onClearDrawing: () => void
 }) {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -34,6 +38,12 @@ export function useReplayShortcuts({
       if (playback.status !== 'ready') return
       const controller = playback.controller
       switch (shortcut.action) {
+        case 'drawing-toggle':
+          onToggleDrawing()
+          break
+        case 'drawing-clear':
+          onClearDrawing()
+          break
         case 'toggle':
           if (controller.getSnapshot().playing) controller.pause()
           else controller.play()
@@ -74,5 +84,15 @@ export function useReplayShortcuts({
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [playback, camera, map, round, rounds, onSelectRound, onShowHelp])
+  }, [
+    playback,
+    camera,
+    map,
+    round,
+    rounds,
+    onSelectRound,
+    onShowHelp,
+    onToggleDrawing,
+    onClearDrawing,
+  ])
 }

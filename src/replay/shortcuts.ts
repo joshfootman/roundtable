@@ -2,6 +2,8 @@ export const replayShortcuts = [
   { keys: 'K / Space', action: 'Play / pause' },
   { keys: 'J / L', action: 'Back / forward 10 seconds' },
   { keys: '← / →', action: 'Previous / next round' },
+  { keys: 'D', action: 'Toggle drawing' },
+  { keys: 'Shift + D', action: 'Clear drawings on this floor' },
   { keys: 'F', action: 'Change floor' },
   { keys: 'R', action: 'Recentre map' },
   { keys: '+ / −', action: 'Zoom in / out' },
@@ -11,7 +13,7 @@ export const replayShortcuts = [
 ] as const
 
 export type ReplayShortcut =
-  | { action: 'toggle' | 'floor' | 'focus' | 'help' }
+  | { action: 'toggle' | 'floor' | 'focus' | 'help' | 'drawing-toggle' | 'drawing-clear' }
   | { action: 'pan'; delta: { x: number; y: number } }
   | { action: 'seek'; seconds: number }
   | { action: 'section'; fraction: number }
@@ -27,6 +29,8 @@ export function replayShortcut(event: {
 }): ReplayShortcut | undefined {
   if (event.altKey || event.ctrlKey || event.metaKey) return
   const key = event.key.toLowerCase()
+  if (!event.repeat && key === 'd')
+    return { action: event.shiftKey ? 'drawing-clear' : 'drawing-toggle' }
   if (!event.shiftKey) {
     if (!event.repeat && (key === 'k' || key === ' ')) return { action: 'toggle' }
     if (key === 'j' || key === 'l') return { action: 'seek', seconds: key === 'j' ? -10 : 10 }

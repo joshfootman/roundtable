@@ -16,6 +16,7 @@ import {
 import type { ReplayRound } from '../replay/types'
 import { createPlayerRenderer, type PlayerAppearance } from '../replay/player-renderer'
 import { createUtilityRenderer } from '../replay/utility-renderer'
+import type { DrawingConfiguration } from '../replay/drawing'
 import { initialUtilityVisibility } from '../replay/utility'
 
 export type DemoPlaybackController = PlaybackClock & { setFloor(floor: MapFloor): void }
@@ -48,6 +49,7 @@ export function DemoMap({
   onResult,
   camera,
   onCamera,
+  drawing,
 }: {
   map: MapDefinition
   round?: ReplayRound
@@ -55,7 +57,14 @@ export function DemoMap({
   onResult?: (outcome: ReplayRound['outcome'] | null) => void
   camera?: CameraState
   onCamera?: (state: DemoCameraState) => void
+  drawing?: DrawingConfiguration
 }) {
+  const drawingRef = useRef(drawing)
+  const sceneRef = useRef<ReturnType<typeof createMapScene>>(null)
+  useEffect(() => {
+    drawingRef.current = drawing
+    if (drawing) sceneRef.current?.setDrawing(drawing)
+  }, [drawing])
   const ownCamera = useRef<CameraState>({ current: focusedCamera(map.focusCenter) })
   const host = useRef<HTMLDivElement>(null)
   const [failedMap, setFailedMap] = useState<MapDefinition>()
@@ -65,6 +74,7 @@ export function DemoMap({
   useEffect(() => {
     const element = host.current!
     const mapScene = createMapScene(map, camera ?? ownCamera.current)
+    sceneRef.current = mapScene
     let cancelled = false
     let clock: PlaybackClock | undefined
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -202,6 +212,7 @@ export function DemoMap({
           },
         }
         mapScene.app.ticker.add((ticker) => clock!.advance(ticker.elapsedMS))
+        if (drawingRef.current) mapScene.setDrawing(drawingRef.current)
         clock.pause()
       } else {
         mapScene.observeCamera((_scale, zoom) => publishCamera(zoom))
@@ -218,6 +229,7 @@ export function DemoMap({
 
     return () => {
       cancelled = true
+      sceneRef.current = null
       if (updateMotion) reducedMotion.removeEventListener('change', updateMotion)
       mapScene.destroy()
     }

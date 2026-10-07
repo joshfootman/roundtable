@@ -43,6 +43,7 @@
     "@tanstack/react-router-devtools": "latest",
     "dexie": "^4.4.6",
     "effect": "^3.22.2",
+    "perfect-freehand": "^1.2.3",
     "pixi.js": "^8.21.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

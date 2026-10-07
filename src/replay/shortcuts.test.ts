@@ -52,3 +52,12 @@ it('leaves browser modifiers and held toggles alone', () => {
     expect(key(value, { repeat: true })).toBeUndefined()
   expect(key('j', { repeat: true })).toEqual({ action: 'seek', seconds: -10 })
 })
+
+it('toggles and clears drawing without held-key or browser-modifier activation', () => {
+  expect(key('d')).toEqual({ action: 'drawing-toggle' })
+  expect(key('D', { shiftKey: true })).toEqual({ action: 'drawing-clear' })
+  expect(key('d', { repeat: true })).toBeUndefined()
+  expect(key('D', { shiftKey: true, repeat: true })).toBeUndefined()
+  for (const modifier of ['altKey', 'ctrlKey', 'metaKey'])
+    expect(key('d', { [modifier]: true })).toBeUndefined()
+})

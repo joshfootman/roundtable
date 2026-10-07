@@ -1,6 +1,8 @@
 import { Application, Assets, Container, Sprite, type Texture } from 'pixi.js'
 import type { MapDefinition, MapFloor } from './maps'
 import { orientRadar } from './radar'
+import type { DrawingConfiguration, DrawingStroke } from './drawing'
+import { createDrawingLayer } from './drawing-layer'
 import {
   cameraTransform,
   constrainCamera,
@@ -18,6 +20,45 @@ export function createMapScene(
 ) {
   const app = new Application()
   const container = new Container()
+  const annotations = createDrawingLayer()
+  let renderedStrokes: DrawingConfiguration['strokes'] | undefined
+  let drawing: DrawingConfiguration | undefined
+  let draft: { pointerId: number; stroke: DrawingStroke } | undefined
+  let drawingInterrupted = false
+
+  function cancelDraft() {
+    if (!draft) return
+    draft = undefined
+    annotations.clearDraft()
+  }
+
+  function setDrawing(next: DrawingConfiguration) {
+    const scopeChanged = drawing?.scope !== next.scope
+    const strokesReplaced =
+      drawing &&
+      drawing.strokes !== next.strokes &&
+      !(
+        next.strokes.length > drawing.strokes.length &&
+        drawing.strokes.every((stroke, index) => next.strokes[index] === stroke)
+      )
+    if (scopeChanged || !next.enabled || strokesReplaced) cancelDraft()
+    const changed = renderedStrokes !== next.strokes
+    const toolChanged = drawing?.enabled !== next.enabled || drawing?.scope !== next.scope
+    drawing = next
+    if (!initialized || disposed) return
+    if (!changed && !toolChanged) return
+    if (scopeChanged) annotations.clear()
+    if (changed) {
+      renderedStrokes = next.strokes
+      annotations.setStrokes(next.strokes)
+    }
+    app.canvas.classList.remove('cursor-grab', 'cursor-grabbing', 'cursor-crosshair')
+    app.canvas.classList.add(
+      next.enabled ? 'cursor-crosshair' : pointers.size ? 'cursor-grabbing' : 'cursor-grab',
+    )
+    app.render()
+  }
+
   let initialized = false
   let disposed = false
   let host: HTMLElement
@@ -36,6 +77,7 @@ export function createMapScene(
     const transform = cameraTransform(camera.current, viewport)
     container.scale.set(transform.scale)
     container.position.set(transform.x, transform.y)
+    annotations.setCamera(transform.x, transform.y, transform.scale)
     if (previousScale !== transform.scale) {
       previousScale = transform.scale
       onCamera?.(transform.scale, camera.current.zoom)
@@ -75,6 +117,7 @@ export function createMapScene(
       app.destroy(true, { children: true })
       initialized = false
     }
+    annotations.destroy()
   }
 
   async function mount(element: HTMLElement) {
@@ -109,7 +152,7 @@ export function createMapScene(
     app.canvas.tabIndex = -1
     app.canvas.setAttribute(
       'aria-description',
-      'Drag to pan. Scroll or press plus and minus to zoom. Shift + arrow keys pan. Home focuses the map.',
+      'Press D to draw, Shift + D to clear. Drag to pan. Scroll or press plus and minus to zoom. Shift + arrow keys pan. Home focuses the map.',
     )
     app.canvas.setAttribute('role', 'img')
     app.canvas.setAttribute('aria-label', `${map.name} map`)
@@ -118,6 +161,13 @@ export function createMapScene(
     function point(event: PointerEvent | WheelEvent) {
       const rect = canvas.getBoundingClientRect()
       return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+    }
+    function sample(event: PointerEvent) {
+      if (!draft) return
+      const local = container.toLocal(point(event))
+      const previous = draft.stroke.points.at(-1)
+      if (event.type === 'pointerup' && previous?.[0] === local.x && previous[1] === local.y) return
+      draft.stroke.points.push([local.x, local.y, event.pressure])
     }
     canvas.addEventListener(
       'wheel',
@@ -139,7 +189,21 @@ export function createMapScene(
         if (event.pointerType === 'mouse' && event.button !== 0) return
         canvas.setPointerCapture(event.pointerId)
         pointers.set(event.pointerId, point(event))
-        canvas.classList.replace('cursor-grab', 'cursor-grabbing')
+        if (pointers.size > 1) {
+          cancelDraft()
+          drawingInterrupted = true
+        } else if (drawing?.enabled && !drawingInterrupted) {
+          draft = {
+            pointerId: event.pointerId,
+            stroke: {
+              color: drawing.color,
+              points: [],
+              simulatePressure: event.pointerType !== 'pen',
+            },
+          }
+          sample(event)
+          annotations.setDraft(draft.stroke)
+        } else if (!drawing?.enabled) canvas.classList.replace('cursor-grab', 'cursor-grabbing')
         canvas.focus({ preventScroll: true })
       },
       options,
@@ -153,7 +217,11 @@ export function createMapScene(
         const before = [...pointers.values()]
         pointers.set(event.pointerId, next)
         const after = [...pointers.values()]
-        if (pointers.size === 1) {
+        if (draft?.pointerId === event.pointerId) {
+          const samples = event.getCoalescedEvents?.() ?? []
+          for (const entry of samples.length ? samples : [event]) sample(entry)
+          annotations.setDraft(draft.stroke)
+        } else if (pointers.size === 1 && !drawing?.enabled) {
           panBy({ x: next.x - old.x, y: next.y - old.y })
         } else if (pointers.size === 2) {
           const distance = (points: { x: number; y: number }[]) =>
@@ -182,7 +250,17 @@ export function createMapScene(
       options,
     )
     function endPointer(event: PointerEvent) {
+      if (draft?.pointerId === event.pointerId) {
+        if (event.type === 'pointerup') {
+          sample(event)
+          const stroke = draft.stroke
+          draft = undefined
+          annotations.commit(stroke)
+          drawing?.onStroke(stroke)
+        } else cancelDraft()
+      }
       pointers.delete(event.pointerId)
+      if (!pointers.size) drawingInterrupted = false
       if (!pointers.size) canvas.classList.replace('cursor-grabbing', 'cursor-grab')
     }
     canvas.addEventListener('pointerup', endPointer, options)
@@ -209,7 +287,7 @@ export function createMapScene(
       },
       options,
     )
-    host.appendChild(canvas)
+    host.append(canvas, annotations.svg)
     return true
   }
 
@@ -232,9 +310,21 @@ export function createMapScene(
   }
 
   function setFloor(floor: MapFloor) {
+    cancelDraft()
     radar.texture = textures[floor]
     orientRadar(radar, map)
   }
 
-  return { app, container, mount, observeCamera, zoomBy, panBy, focus, setFloor, destroy }
+  return {
+    app,
+    container,
+    mount,
+    observeCamera,
+    zoomBy,
+    panBy,
+    focus,
+    setFloor,
+    setDrawing,
+    destroy,
+  }
 }

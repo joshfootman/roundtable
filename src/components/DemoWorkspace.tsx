@@ -19,6 +19,15 @@ import { DemoKillFeed } from '#/components/DemoKillFeed'
 import { DemoRoundWin } from '#/components/DemoRoundWin'
 import { DemoShortcutHelp } from './DemoShortcutHelp'
 import { useReplayShortcuts } from './useReplayShortcuts'
+import { DemoDrawingControl } from './DemoDrawingControl'
+import {
+  emptyFloorDrawings,
+  type DrawingColor,
+  type DrawingStroke,
+  type FloorDrawings,
+  type RoundDrawings,
+} from '../replay/drawing'
+import type { MapFloor } from '../replay/maps'
 
 export function DemoWorkspace() {
   const { replay } = RootRoute.useRouteContext()
@@ -168,6 +177,11 @@ function Demo({
     setCamera({ mapName: state.metadata.mapName, current: focusedCamera(map?.focusCenter) })
   }
 
+  const [drawings, setDrawings] = React.useState<RoundDrawings>({})
+  const [pen, setPen] = React.useState<{ enabled: boolean; color: DrawingColor }>({
+    enabled: false,
+    color: '#ffffff',
+  })
   const [pickerFocusRound, setPickerFocusRound] = React.useState<number>()
   const [selection, setSelection] = React.useState({
     number: round?.number,
@@ -194,6 +208,27 @@ function Demo({
             previousRound={selection.previous}
             focusRoundPicker={pickerFocusRound === round.number}
             camera={camera}
+            drawings={drawings[round.startTick] ?? emptyFloorDrawings}
+            pen={pen}
+            onPenChange={setPen}
+            onStroke={(floor, stroke) =>
+              setDrawings((previous) => {
+                const floors = previous[round.startTick] ?? emptyFloorDrawings
+                return {
+                  ...previous,
+                  [round.startTick]: { ...floors, [floor]: [...floors[floor], stroke] },
+                }
+              })
+            }
+            onClear={(floor) =>
+              setDrawings((previous) => ({
+                ...previous,
+                [round.startTick]: {
+                  ...(previous[round.startTick] ?? emptyFloorDrawings),
+                  [floor]: [],
+                },
+              }))
+            }
             onSelectRound={(number, focusPicker = false) => {
               setPickerFocusRound(focusPicker ? number : undefined)
               replay.selectRound(number)
@@ -220,7 +255,17 @@ function DemoRound({
   autoPlay,
   onAutoPlay,
   camera,
+  drawings,
+  pen,
+  onPenChange,
+  onStroke,
+  onClear,
 }: {
+  drawings: FloorDrawings
+  pen: { enabled: boolean; color: DrawingColor }
+  onPenChange(pen: { enabled: boolean; color: DrawingColor }): void
+  onStroke(floor: MapFloor, stroke: DrawingStroke): void
+  onClear(floor: MapFloor): void
   camera: CameraState
   map: MapDefinition
   example?: ExampleId
@@ -236,6 +281,15 @@ function DemoRound({
   const [cameraState, setCameraState] = React.useState<DemoCameraState>({ status: 'loading' })
   const [shortcutsOpen, setShortcutsOpen] = React.useState(false)
   const showShortcuts = React.useCallback(() => setShortcutsOpen(true), [])
+  const floor =
+    playback.status === 'ready'
+      ? playback.floor
+      : map.floors === 'split'
+        ? map.initialFloor
+        : 'upper'
+  function toggleDrawing() {
+    onPenChange({ ...pen, enabled: !pen.enabled })
+  }
   useReplayShortcuts({
     playback,
     camera: cameraState,
@@ -244,6 +298,8 @@ function DemoRound({
     rounds,
     onSelectRound,
     onShowHelp: showShortcuts,
+    onToggleDrawing: toggleDrawing,
+    onClearDrawing: () => onClear(floor),
   })
   const [outcome, setOutcome] = React.useState<ReplayRound['outcome'] | null>(null)
   const [highlightNextRound, setHighlightNextRound] = React.useState(false)
@@ -278,15 +334,26 @@ function DemoRound({
   return (
     <div
       data-multifloor={map.floors !== 'single'}
-      className="demo-round group/round flex flex-col gap-3 replay-desktop:h-full replay-landscape:grid replay-landscape:grid-cols-[minmax(0,1fr)_auto] replay-landscape:grid-rows-5 replay-landscape:items-start replay-landscape:gap-2"
+      className="demo-round group/round flex flex-col gap-3 replay-desktop:h-full replay-landscape:grid replay-landscape:grid-cols-[minmax(0,1fr)_auto] replay-landscape:grid-rows-[repeat(5,auto)] replay-landscape:items-start replay-landscape:gap-2"
     >
       <fieldset
         aria-label="Map controls"
-        className="demo-map-controls z-20 flex w-fit min-w-0 items-center gap-2 replay-desktop:absolute replay-desktop:top-28 replay-desktop:left-4 min-[1600px]:replay-desktop:top-4 replay-landscape:col-start-1 replay-landscape:row-start-2"
+        className="demo-map-controls z-20 flex w-fit max-w-full min-w-0 flex-wrap items-start gap-3 replay-desktop:absolute replay-desktop:top-28 replay-desktop:left-4 min-[1600px]:replay-desktop:top-4 replay-landscape:col-start-1 replay-landscape:row-start-2"
       >
-        <DemoCameraControls camera={cameraState} />
-        {map.floors !== 'single' && <DemoFloorControl map={map} playback={playback} />}
-        <DemoShortcutHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+        <fieldset aria-label="Map navigation" className="flex shrink-0 items-center gap-2">
+          <DemoCameraControls camera={cameraState} />
+          {map.floors !== 'single' && <DemoFloorControl map={map} playback={playback} />}
+        </fieldset>
+        <fieldset aria-label="Drawing and shortcuts" className="flex shrink-0 items-center gap-2">
+          <DemoDrawingControl
+            enabled={pen.enabled}
+            count={drawings[floor].length}
+            ready={playback.status === 'ready'}
+            onToggle={toggleDrawing}
+            onClear={() => onClear(floor)}
+          />
+          <DemoShortcutHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+        </fieldset>
       </fieldset>
       <DemoRoundControl
         rounds={rounds}
@@ -306,6 +373,13 @@ function DemoRound({
           onCamera={setCameraState}
           onPlayback={setPlayback}
           onResult={onResult}
+          drawing={{
+            scope: `${round.startTick}:${floor}`,
+            enabled: pen.enabled,
+            color: pen.color,
+            strokes: drawings[floor],
+            onStroke: (stroke) => onStroke(floor, stroke),
+          }}
         />
         {outcome && <DemoRoundWin outcome={outcome} />}
       </div>
