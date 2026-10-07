@@ -34,14 +34,14 @@ export function DemoRoundPicker({
       >
         <time
           aria-label="Elapsed round time"
-          className="text-xl leading-none font-semibold @min-[560px]:text-2xl"
+          className="text-lg leading-none font-semibold @min-[560px]:text-2xl"
         >
           {time}
         </time>
         <span
           aria-live="polite"
           aria-atomic="true"
-          className="flex items-center gap-1 text-xs font-semibold text-mauve-300 uppercase"
+          className="flex items-center gap-1 text-[10px] font-semibold text-mauve-300 uppercase replay-desktop:text-xs"
         >
           Round <RollingNumber value={round.number} previous={previousRound} />
         </span>

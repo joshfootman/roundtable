@@ -19,6 +19,10 @@ test('map controls keep navigation and drawing together across viewport sizes', 
   ]) {
     await page.setViewportSize(viewport)
     const controls = page.getByRole('group', { name: 'Map controls', exact: true })
+    if (viewport.width < 1024 || viewport.height < 700) {
+      await expect(controls).toBeHidden()
+      continue
+    }
     const navigation = controls.getByRole('group', { name: 'Map navigation', exact: true })
     const drawing = controls.getByRole('group', { name: 'Drawing and shortcuts', exact: true })
     for (const group of [navigation, drawing]) {

@@ -107,7 +107,9 @@ test('shortcuts preserve focused controls and popovers and provide help', async 
     page.getByRole('button', { name: 'Choose round, current round 1', exact: true }),
   ).toBeVisible()
   await page.keyboard.press('Escape')
+  await expect(picker).toBeHidden()
   await map.focus()
+  await expect(map).toBeFocused()
   await page.keyboard.press('?')
   const help = page.getByRole('dialog', { name: 'Keyboard shortcuts' })
   await expect(help).toBeVisible()

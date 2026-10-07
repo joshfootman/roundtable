@@ -44,7 +44,7 @@ function PlayerCard({ player }: { player: PlayerCardData }) {
   return (
     <li
       aria-label={`${player.name}, ${player.alive ? `${health} health` : 'dead'}`}
-      className={`shrink-0 rounded-lg bg-neutral-700/50 px-2 py-1.5 text-base leading-tight text-mauve-200 tabular-nums ${player.alive ? '' : 'opacity-55'}`}
+      className={`shrink-0 rounded-lg bg-neutral-700/50 px-2 py-1.5 text-sm leading-tight text-mauve-200 tabular-nums replay-desktop:text-base ${player.alive ? '' : 'opacity-55'}`}
     >
       <div className={`flex flex-wrap items-center gap-2 py-1 ${direction}`}>
         <div className={`flex min-w-16 flex-1 items-center gap-2 ${direction}`}>

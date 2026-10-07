@@ -47,7 +47,7 @@ export function DemoPlaybackControl({
   return (
     <section
       aria-label="Playback controls"
-      className="demo-playback-controls z-20 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 rounded-2xl bg-neutral-700/25 px-4 py-2 text-base text-mauve-200 tabular-nums sm:w-[min(100%,640px)] sm:self-center replay-desktop:absolute replay-desktop:right-4 replay-desktop:bottom-4 replay-desktop:left-4 replay-desktop:w-auto replay-desktop:grid-cols-[auto_minmax(0,1fr)_auto] replay-desktop:p-2 replay-landscape:col-start-1 replay-landscape:row-start-3 replay-landscape:w-full"
+      className="demo-playback-controls z-20 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 rounded-2xl bg-neutral-700/25 px-4 py-2 text-base text-mauve-200 tabular-nums sm:w-[min(100%,640px)] sm:self-center replay-desktop:absolute replay-desktop:right-4 replay-desktop:bottom-4 replay-desktop:left-4 replay-desktop:w-auto replay-desktop:grid-cols-[auto_minmax(0,1fr)_auto] replay-desktop:p-2 replay-landscape:col-start-1 replay-landscape:row-start-2 replay-landscape:w-full"
     >
       <button
         type="button"
@@ -97,7 +97,7 @@ export function DemoPlaybackControl({
         onBlur={finishScrub}
       />
       <div
-        className="demo-playback-time col-start-2 row-start-2 flex shrink-0 items-center gap-1 justify-self-end px-2 text-xs whitespace-nowrap sm:text-base replay-desktop:col-start-3 replay-desktop:row-start-1"
+        className="demo-playback-time col-start-2 row-start-2 flex shrink-0 items-center gap-1 justify-self-end px-2 text-xs whitespace-nowrap replay-desktop:col-start-3 replay-desktop:row-start-1 replay-desktop:text-base"
         aria-label="Playback time"
       >
         <time>{elapsed}</time>

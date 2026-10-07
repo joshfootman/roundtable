@@ -22,7 +22,7 @@ Requirements below settled unless marked **proposed**, **optional** or **open**.
 - Selectable rounds: competitive + overtime; freeze time + post-round activity included.
 - Exclude warmup, knife rounds, abandoned restart attempts. Terms: [CONTEXT.md](CONTEXT.md).
 - Play/pause, bidirectional scrubbing, player inspection.
-- Local white freehand drawing with subtle pressure variation and clear-all, scoped to the current round and floor. Drawings follow the map camera and stay in memory for the current demo.
+- Desktop white freehand drawing with subtle pressure variation and clear-all, scoped to the current round and floor. Drawings follow the map camera and stay in memory for the current demo.
 - Playback speed/event jumps: proposed controls.
 - Players: identity, name, team, XYZ, facing, health, alive/dead.
 - Initial roster: human identities with recorded pawn positions in the first completed competitive round. Exclude TV clients, fake players and clients who only spectate. Preserve Steam IDs as exact decimal strings; do not infer team names from the download source.

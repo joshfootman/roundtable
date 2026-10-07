@@ -53,7 +53,7 @@ Floor switching now uses a compact map-controls row with a stacked-floors icon t
 ## Conditional additions
 
 - **Optional colour palettes.** Offer game-style team palettes only if testing shows value over the default CT/T colours, #96c8fa and #eabe54. Check map backgrounds and death dimming with colour-vision simulations and user testing where available. Do not assume CS2-style colours establish accessibility. Preserve non-colour identification.
-- **Client-side drawing, complete.** Use perfect-freehand for white strokes with subtle pressure variation. Draw toggles drawing mode and Clear map removes drawings. Colour settings are deferred. D toggles drawing; Shift+D clears the current round and floor. Drawings follow map pan and zoom, survive seeking and round navigation, and reset on a new demo. They stay in memory without export or shared editing.
+- **Client-side drawing, complete.** Use perfect-freehand for desktop white strokes with subtle pressure variation. Draw toggles drawing mode and Clear map removes drawings. Colour settings are deferred. D toggles drawing; Shift+D clears the current round and floor. Drawings follow map pan and zoom, survive seeking and round navigation, and reset on a new demo. They stay in memory without export or shared editing.
 - **Settings UI.** Its scope depends on which optional settings earn a place. No additional settings are defined yet. Key remapping is deferred.
 
 ## Maintenance

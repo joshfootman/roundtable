@@ -153,7 +153,7 @@ test('keeps the phone map clear and preserves playback while inspecting players'
   await timeline.focus()
   await timeline.press('End')
   const selectedTick = await timeline.inputValue()
-  const players = page.locator('summary').filter({ hasText: /^Players$/ })
+  const players = page.getByRole('button', { name: 'Players', exact: true })
   const ctPlayers = page.getByRole('list', { name: 'Counter-Terrorist players' })
   const tPlayers = page.getByRole('list', { name: 'Terrorist players', exact: true })
   await expect(ctPlayers).toBeVisible()

@@ -66,7 +66,7 @@ test('pinches on touch screens without changing playback or overflowing the phon
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/replay?source=example&example=faze-vs-vitality-m2-dust2&round=1')
   const zoom = page.getByLabel('Map zoom', { exact: true })
-  await expect(page.getByRole('button', { name: 'Zoom in', exact: true })).toBeEnabled({
+  await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled({
     timeout: 30_000,
   })
   const timeline = page.getByRole('slider', { name: 'Round timeline' })
@@ -102,7 +102,8 @@ test('pinches on touch screens without changing playback or overflowing the phon
   await expect(zoom).toHaveText('180%')
   await expect(timeline).toHaveValue(tick)
   await expect(map).toHaveClass(/cursor-grab(?:\s|$)/)
-  await page.getByRole('button', { name: 'Focus map', exact: true }).click()
+  await map.focus()
+  await page.keyboard.press('r')
   await expect(zoom).toHaveText('90%')
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
 })
