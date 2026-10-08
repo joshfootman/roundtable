@@ -117,7 +117,7 @@ export function DemoMap({
         const styles = getComputedStyle(element)
         const canvas = document.createElement('canvas')
         canvas.width = canvas.height = 1
-        const context = canvas.getContext('2d')!
+        const context = canvas.getContext('2d', { willReadFrequently: true })!
         function color(token: string) {
           context.clearRect(0, 0, 1, 1)
           context.fillStyle = styles.getPropertyValue(token).trim()
