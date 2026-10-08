@@ -9,12 +9,12 @@ function width(pressure: number) {
 }
 
 describe('freehand pressure', () => {
-  it('keeps light and firm pen strokes visible with subtle width variation', () => {
+  it('keeps light pen strokes visible with noticeable weight under firm pressure', () => {
     const light = width(0.1)
     const firm = width(0.9)
     expect(light).toBeGreaterThan(4)
-    expect(firm).toBeGreaterThan(light + 0.5)
-    expect(firm - light).toBeLessThan(4.5)
-    expect(firm).toBeLessThan(10)
+    expect(firm).toBeGreaterThan(light + 5)
+    expect(firm - light).toBeLessThan(10)
+    expect(firm).toBeLessThan(14)
   })
 })

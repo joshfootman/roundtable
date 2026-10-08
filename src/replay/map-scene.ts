@@ -23,7 +23,13 @@ export function createMapScene(
   const annotations = createDrawingLayer()
   let renderedStrokes: DrawingConfiguration['strokes'] | undefined
   let drawing: DrawingConfiguration | undefined
-  let draft: { pointerId: number; stroke: DrawingStroke } | undefined
+  let draft:
+    | {
+        pointerId: number
+        stroke: DrawingStroke
+        previousSample?: { x: number; y: number; time: number; pressure: number }
+      }
+    | undefined
   let drawingInterrupted = false
 
   function cancelDraft() {
@@ -164,10 +170,24 @@ export function createMapScene(
     }
     function sample(event: PointerEvent) {
       if (!draft) return
-      const local = container.toLocal(point(event))
-      const previous = draft.stroke.points.at(-1)
-      if (event.type === 'pointerup' && previous?.[0] === local.x && previous[1] === local.y) return
-      draft.stroke.points.push([local.x, local.y, event.pressure])
+      const position = point(event)
+      const previous = draft.previousSample
+      if (previous?.x === position.x && previous.y === position.y) return
+      let pressure =
+        event.pointerType === 'pen' && event.type !== 'pointerup'
+          ? event.pressure
+          : (previous?.pressure ?? 0.5)
+      if (event.pointerType !== 'pen' && previous && event.type !== 'pointerup') {
+        const elapsed = event.timeStamp - previous.time
+        if (elapsed > 0) {
+          const speed = Math.hypot(position.x - previous.x, position.y - previous.y) / elapsed
+          const target = 0.85 - 0.7 * Math.min(1, speed / 1.5)
+          pressure += (target - pressure) * (1 - Math.exp(-elapsed / 24))
+        }
+      }
+      draft.previousSample = { ...position, time: event.timeStamp, pressure }
+      const local = container.toLocal(position)
+      draft.stroke.points.push([local.x, local.y, pressure])
     }
     canvas.addEventListener(
       'wheel',
@@ -198,7 +218,7 @@ export function createMapScene(
             stroke: {
               color: drawing.color,
               points: [],
-              simulatePressure: event.pointerType !== 'pen',
+              simulatePressure: false,
             },
           }
           sample(event)
@@ -251,13 +271,11 @@ export function createMapScene(
     )
     function endPointer(event: PointerEvent) {
       if (draft?.pointerId === event.pointerId) {
-        if (event.type === 'pointerup') {
-          sample(event)
-          const stroke = draft.stroke
-          draft = undefined
-          annotations.commit(stroke)
-          drawing?.onStroke(stroke)
-        } else cancelDraft()
+        if (event.type === 'pointerup') sample(event)
+        const stroke = draft.stroke
+        draft = undefined
+        annotations.commit(stroke)
+        drawing?.onStroke(stroke)
       }
       pointers.delete(event.pointerId)
       if (!pointers.size) drawingInterrupted = false

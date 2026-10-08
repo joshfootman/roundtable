@@ -21,8 +21,8 @@ export type DrawingConfiguration = {
 
 export function strokeOutline(stroke: DrawingStroke, complete: boolean) {
   return getStroke(stroke.points, {
-    size: 7,
-    thinning: 0.35,
+    size: 9,
+    thinning: 0.65,
     smoothing: 0.6,
     streamline: 0.5,
     simulatePressure: stroke.simulatePressure,
