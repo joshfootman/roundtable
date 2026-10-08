@@ -52,7 +52,7 @@ export function DemoRoundControl({
   const scoreboard = (
     <div
       key="scoreboard"
-      className="col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_40px_64px_40px_minmax(0,1fr)] grid-rows-1 items-center rounded-xl bg-neutral-700/50 @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
+      className="col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_44px_80px_44px_minmax(0,1fr)] grid-rows-1 items-center rounded-xl bg-neutral-700/50 @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
     >
       <Team identity={teams.ct} />
       <div
@@ -60,7 +60,7 @@ export function DemoRoundControl({
         aria-describedby={
           streaks.ct >= winningStreakThreshold ? `${streakDescription}-ct` : undefined
         }
-        className="relative isolate flex h-15 items-center justify-center self-start overflow-hidden rounded-b-xl bg-ct/80 text-2xl font-bold text-neutral-800 @min-[560px]:text-3xl replay-desktop:h-18"
+        className="relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-xl bg-ct/80 text-xl font-bold text-neutral-800 @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
       >
         {streaks.ct >= winningStreakThreshold && <ScoreFlames side="ct" />}
         <span className="relative z-10">
@@ -85,7 +85,7 @@ export function DemoRoundControl({
         aria-describedby={
           streaks.t >= winningStreakThreshold ? `${streakDescription}-t` : undefined
         }
-        className="relative isolate flex h-15 items-center justify-center self-start overflow-hidden rounded-b-xl bg-t/80 text-2xl font-bold text-neutral-800 @min-[560px]:text-3xl replay-desktop:h-18"
+        className="relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-xl bg-t/80 text-xl font-bold text-neutral-800 @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
       >
         {streaks.t >= winningStreakThreshold && <ScoreFlames side="t" />}
         <span className="relative z-10">
@@ -104,11 +104,11 @@ export function DemoRoundControl({
   return (
     <section
       aria-label="Round controls"
-      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-mauve-200 tabular-nums sm:w-[min(100%,840px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(840px,calc(100%-32px))] replay-desktop:-translate-x-1/2 replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
+      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-mauve-200 tabular-nums sm:w-[min(100%,840px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(840px,calc(100%-256px))] replay-desktop:-translate-x-1/2 min-[1728px]:replay-desktop:w-[min(840px,calc(100%-32px))] replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
     >
       <nav
         aria-label="Round navigation"
-        className="grid grid-cols-[minmax(44px,1fr)_auto_minmax(44px,1fr)] items-center gap-2 pb-4 replay-desktop:grid-cols-[56px_minmax(0,1fr)_56px]"
+        className="grid grid-cols-[minmax(44px,1fr)_auto_minmax(44px,1fr)] items-center gap-3 pb-4 replay-desktop:grid-cols-[56px_minmax(0,1fr)_56px] replay-desktop:gap-2"
       >
         <button
           type="button"

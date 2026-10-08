@@ -92,7 +92,7 @@ test('reconstructs blue and orange score flames from recorded wins and seeks', a
     })
     .toBe(true)
   await page.setViewportSize({ width: 390, height: 844 })
-  expect((await t.boundingBox())!.width).toBe(40)
+  expect((await t.boundingBox())!.width).toBe(44)
   await page.screenshot({ path: '.audit/winning-streaks/t-mobile-reduced.png', fullPage: true })
   await t.locator('canvas').evaluate((canvas) => {
     const gl = (canvas as HTMLCanvasElement).getContext('webgl')!

@@ -30,11 +30,11 @@ export function DemoRoundPicker({
         ref={trigger}
         type="button"
         aria-label={`Choose round, current round ${round.number}`}
-        className="flex h-full w-full min-w-0 cursor-pointer flex-col items-center justify-center gap-0 outline-offset-2 hover:bg-neutral-800/50 focus-visible:bg-neutral-800/50 focus-visible:outline-2 focus-visible:outline-mauve-200"
+        className="flex h-full w-full min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg outline-offset-2 hover:bg-neutral-800/50 focus-visible:bg-neutral-800/50 focus-visible:outline-2 focus-visible:outline-mauve-200 replay-desktop:gap-0"
       >
         <time
           aria-label="Elapsed round time"
-          className="text-lg leading-none font-semibold @min-[560px]:text-2xl"
+          className="text-sm leading-none font-semibold @min-[560px]:text-base replay-desktop:text-2xl"
         >
           {time}
         </time>
