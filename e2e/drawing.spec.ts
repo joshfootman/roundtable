@@ -31,7 +31,7 @@ test('drawings follow the map and remain scoped to their round and floor', async
   await page.keyboard.press('f')
   await expect(page.getByRole('button', { name: /Lower floor.*switch to upper/ })).toBeVisible()
   await expect(count).toHaveText('0 drawings on this floor')
-  await clear.click()
+  await expect(clear).toBeHidden()
   await map.focus()
   await page.keyboard.press('f')
   await expect(count).toHaveText('1 drawing on this floor')
@@ -62,7 +62,8 @@ test('drawing shortcuts preserve sliders and other popovers', async ({ page }) =
   const clear = page.getByRole('button', { name: 'Clear map drawings', exact: true })
   await expect(pen).toBeEnabled({ timeout: 30_000 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280)
-  for (const control of [pen, clear]) {
+  await expect(clear).toBeHidden()
+  for (const control of [pen]) {
     const bounds = (await control.boundingBox())!
     expect(bounds.x).toBeGreaterThanOrEqual(0)
     expect(bounds.x + bounds.width).toBeLessThanOrEqual(1280)
@@ -142,3 +143,42 @@ test('clear cancels an unfinished stroke and pinch cancels touch drawing', async
   await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   await expect(count).toHaveText('1 drawing on this floor')
 })
+
+for (const width of [1280, 1920]) {
+  test(`drawing controls stay fixed when drawings appear and clear at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=1')
+    const pen = page.getByRole('button', { name: 'Draw on map', exact: true })
+    const clear = page.getByRole('button', { name: 'Clear map drawings', exact: true })
+    const shortcuts = page.getByRole('button', { name: 'Keyboard shortcuts', exact: true })
+    const count = page.getByLabel('Drawing count', { exact: true })
+    await expect(pen).toBeEnabled({ timeout: 30_000 })
+    await expect(clear).toBeHidden()
+    const penBounds = await pen.boundingBox()
+    const shortcutsBounds = await shortcuts.boundingBox()
+    await pen.click()
+    await expect(clear).toBeHidden()
+    const bounds = (await page.getByRole('img', { name: 'Nuke map', exact: true }).boundingBox())!
+    const x = bounds.x + bounds.width / 2
+    const y = bounds.y + bounds.height / 2
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.mouse.move(x + 50, y + 20, { steps: 10 })
+    await page.mouse.up()
+    await expect(count).toHaveText('1 drawing on this floor')
+    await expect(clear).toBeVisible()
+    expect(await pen.boundingBox()).toEqual(penBounds)
+    expect(await shortcuts.boundingBox()).toEqual(shortcutsBounds)
+    await clear.focus()
+    await page.keyboard.press('Enter')
+    await expect(count).toHaveText('0 drawings on this floor')
+    await expect(clear).toBeHidden()
+    await expect(pen).toBeFocused()
+    expect(await pen.boundingBox()).toEqual(penBounds)
+    expect(await shortcuts.boundingBox()).toEqual(shortcutsBounds)
+    await shortcuts.click()
+    await expect(page.getByText('Toggle drawing', { exact: true })).toBeVisible()
+  })
+}
