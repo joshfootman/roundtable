@@ -120,12 +120,7 @@ test('delivers a playable round before completion and releases the finished work
       worker.reply({ type: 'round-start', number: 1, startTick: 537 })
       worker.reply({ type: 'round', round: firstRound })
       yield* Deferred.await(receivedRound)
-      expect(events).toEqual([
-        { type: 'metadata', metadata, roundStartTicks: [] },
-        { type: 'round-start', number: 1, startTick: 449 },
-        { type: 'round-start', number: 1, startTick: 537 },
-        { type: 'round', round: firstRound },
-      ])
+      expect(events.at(-1)).toEqual({ type: 'round', round: firstRound })
       const initial: ImportState = { status: 'reading', filename: 'match.dem' }
       expect(events.slice(0, 3).reduce<ImportState>(updateImport, initial)).toMatchObject({
         discoveredRound: { number: 1, startTick: 537 },

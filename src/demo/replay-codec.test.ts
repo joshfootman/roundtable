@@ -62,29 +62,31 @@ test('decodes recorded binary tracks and rejects incompatible or truncated asset
   expect(() => decodeRound(bytes.slice(0, -1))).toThrow('Truncated replay asset tracks')
 })
 
-test('preserves recorded outcomes and decodes legacy rounds without inventing a winner', () => {
+test('preserves optional outcomes, names and ladder states while accepting legacy rounds', () => {
   const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
   const round = decodeRound(new Uint8Array(raw).buffer)
   round.outcome = { winner: 't', reason: 1, teamName: 'FaZe', mvp: { name: 'broky' } }
   round.teamNames = { ct: 'Vitality', t: 'FaZe Clan' }
-  expect(decodeRound(encodeRound(round)).outcome).toEqual(round.outcome)
-  expect(decodeRound(encodeRound(round)).teamNames).toEqual(round.teamNames)
-  delete round.outcome
-  delete round.teamNames
-  expect(decodeRound(encodeRound(round)).outcome).toBeUndefined()
-  expect(decodeRound(encodeRound(round)).teamNames).toBeUndefined()
-})
-
-test('preserves recorded ladder states while accepting older assets without movement data', () => {
-  const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
-  const round = decodeRound(new Uint8Array(raw).buffer)
   const inspection = round.inspection[0]![0]!
   inspection.onLadder = true
-  expect(decodeRound(encodeRound(round)).inspection[0]![0]!.onLadder).toBe(true)
+  const restored = decodeRound(encodeRound(round))
+  expect(restored.outcome).toEqual({
+    winner: 't',
+    reason: 1,
+    teamName: 'FaZe',
+    mvp: { name: 'broky' },
+  })
+  expect(restored.teamNames).toEqual({ ct: 'Vitality', t: 'FaZe Clan' })
+  expect(restored.inspection[0]![0]!.onLadder).toBe(true)
   inspection.onLadder = false
   expect(decodeRound(encodeRound(round)).inspection[0]![0]!.onLadder).toBe(false)
+  delete round.outcome
+  delete round.teamNames
   delete inspection.onLadder
-  expect(decodeRound(encodeRound(round)).inspection[0]![0]!.onLadder).toBeUndefined()
+  const legacy = decodeRound(encodeRound(round))
+  expect(legacy.outcome).toBeUndefined()
+  expect(legacy.teamNames).toBeUndefined()
+  expect(legacy.inspection[0]![0]!.onLadder).toBeUndefined()
 })
 
 test('matches independently decoded ladder entry and exit in the bundled Nuke recording', () => {

@@ -54,16 +54,22 @@ describe('kill feed', () => {
   it('reveals only elapsed kills, latest first, and removes future kills on backward seeks', () => {
     const replay = round()
     expect(killFeedAtTick(replay, 100)).toEqual([])
-    expect(killFeedAtTick(replay, 130).map((entry) => entry.tick)).toEqual([125, 115, 105])
+    expect(
+      killFeedAtTick(replay, 130).map(({ tick, attacker, target, weapon, headshot }) => [
+        tick,
+        attacker?.name,
+        attacker?.team,
+        target.name,
+        target.team,
+        weapon,
+        headshot,
+      ]),
+    ).toEqual([
+      [125, 'Terror', 3, 'Terror', 3, 'hegrenade', false],
+      [115, undefined, undefined, 'Counter', 3, 'world', false],
+      [105, 'Counter', 3, 'Terror', 2, 'ak47', true],
+    ])
     expect(killFeedAtTick(replay, 105).map((entry) => entry.tick)).toEqual([105])
-  })
-
-  it('keeps names, headshots and team colours from the time of the kill', () => {
-    const entry = killFeedAtTick(round(), 130).at(-1)!
-    expect(entry.attacker).toEqual({ name: 'Counter', team: 3 })
-    expect(entry.target).toEqual({ name: 'Terror', team: 2 })
-    expect(entry.weapon).toBe('ak47')
-    expect(entry.headshot).toBe(true)
   })
 
   it('distinguishes world deaths and suicides and handles an unknown player', () => {

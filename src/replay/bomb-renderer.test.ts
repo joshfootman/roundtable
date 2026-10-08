@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Container, Graphics, Sprite, Texture } from 'pixi.js'
+import { Container, Sprite, Texture } from 'pixi.js'
 import { createBombRenderer } from './bomb-renderer'
 import type { MapDefinition } from './maps'
 import type { ReplayRound } from './types'
@@ -63,15 +63,6 @@ function round(): ReplayRound {
   }
 }
 
-function renderer() {
-  return createBombRenderer(
-    round(),
-    map,
-    new Graphics().rect(-9, -9, 18, 18).fill(0xffffff),
-    appearance,
-  )
-}
-
 describe('recorded bomb rendering', () => {
   it('keeps the planted C4 visible, pulses from replay time and turns blue only while defusing', () => {
     const replay = round()
@@ -88,8 +79,17 @@ describe('recorded bomb rendering', () => {
     marker.width = marker.height = 18
     const bomb = createBombRenderer(replay, map, marker, appearance)
     const icon = bomb.container.getChildByLabel('bomb-icon')!
+    const scene = new Container()
+    scene.addChild(bomb.container)
+    bomb.draw(100, 1, 'upper')
+    expect(bomb.container.visible).toBe(false)
+    bomb.draw(120, 1, 'upper')
+    expect([bomb.container.x, bomb.container.y, bomb.container.visible]).toEqual([984, 40, false])
+    bomb.draw(129, 1, 'lower')
+    expect([bomb.container.x, bomb.container.y, bomb.container.visible]).toEqual([984, 40, true])
     bomb.draw(130, 1, 'upper')
-    expect([icon.visible, marker.tint, marker.width]).toEqual([true, appearance.armed, 18])
+    expect([bomb.container.x, bomb.container.y, bomb.container.visible]).toEqual([974, 50, true])
+    expect([icon.visible, marker.tint]).toEqual([true, appearance.armed])
     bomb.draw(132, 1, 'upper')
     expect([icon.visible, marker.tint]).toEqual([true, appearance.defusing])
     expect(icon.scale.x).toBeGreaterThan(1)
@@ -104,7 +104,19 @@ describe('recorded bomb rendering', () => {
     expect([marker.tint, icon.scale.x, icon.alpha]).toEqual([appearance.defusing, 1, 1])
     bomb.draw(134, 1, 'upper', true)
     expect([icon.scale.x, icon.alpha]).toEqual([1, 1])
-    bomb.container.destroy({ children: true })
+    scene.scale.set(0.5)
+    bomb.draw(134, 2, 'upper', true)
+    const screenSize = marker.getBounds().width
+    scene.scale.set(2)
+    bomb.draw(134, 0.5, 'upper', true)
+    expect(marker.getBounds().width).toBeCloseTo(screenSize)
+    bomb.draw(150, 1, 'upper')
+    expect(bomb.container.visible).toBe(false)
+    bomb.draw(130, 1, 'upper')
+    expect(bomb.container.visible).toBe(true)
+    bomb.draw(130, 1, 'lower')
+    expect(bomb.container.visible).toBe(false)
+    scene.destroy({ children: true })
   })
 
   it('bursts at the recorded explosion position, expires and restores the planted icon on rewind', () => {
@@ -153,68 +165,5 @@ describe('recorded bomb rendering', () => {
     defused.draw(140, 1, 'upper')
     expect(defused.container.visible).toBe(false)
     defused.container.destroy({ children: true })
-  })
-
-  it('leaves carried objectives to the player marker', () => {
-    const bomb = renderer()
-    bomb.draw(109, 2, 'upper')
-    expect(bomb.container.visible).toBe(false)
-    bomb.draw(110, 0.5, 'lower')
-    expect(bomb.container.visible).toBe(false)
-    bomb.container.destroy({ children: true })
-  })
-
-  it('uses dropped and planted world positions without the carried offset and respects floor boundaries', () => {
-    const bomb = renderer()
-    bomb.draw(120, 2, 'upper')
-    expect([bomb.container.x, bomb.container.y, bomb.container.visible]).toEqual([984, 40, false])
-    bomb.draw(129, 0.5, 'lower')
-    expect([bomb.container.x, bomb.container.y, bomb.container.visible]).toEqual([984, 40, true])
-    bomb.draw(130, 2, 'upper')
-    expect([bomb.container.x, bomb.container.y, bomb.container.visible]).toEqual([974, 50, true])
-    bomb.draw(130, 2, 'lower')
-    expect(bomb.container.visible).toBe(false)
-    bomb.container.destroy({ children: true })
-  })
-
-  it('hides inactive states and restores the appropriate state after backward seeking', () => {
-    const bomb = renderer()
-    bomb.draw(90, 1, 'upper')
-    expect(bomb.container.visible).toBe(false)
-    bomb.draw(130, 1, 'upper')
-    expect([bomb.container.x, bomb.container.y, bomb.container.visible]).toEqual([974, 50, true])
-    bomb.draw(150, 1, 'upper')
-    expect(bomb.container.visible).toBe(false)
-    bomb.draw(100, 1, 'upper')
-    expect(bomb.container.visible).toBe(false)
-    bomb.draw(90, 1, 'upper')
-    expect(bomb.container.visible).toBe(false)
-    bomb.container.destroy({ children: true })
-  })
-
-  it('keeps the supplied sprite size and screen-space dimensions across map resizing', () => {
-    const marker = new Sprite(Texture.EMPTY)
-    marker.anchor.set(0.5)
-    marker.width = marker.height = 18
-    const bomb = createBombRenderer(round(), map, marker, appearance)
-    const scene = new Container()
-    scene.addChild(bomb.container)
-    scene.scale.set(0.5)
-    bomb.draw(130, 2, 'upper')
-    expect([
-      marker.width,
-      marker.height,
-      marker.getBounds().width,
-      marker.getBounds().height,
-    ]).toEqual([18, 18, 18, 18])
-    scene.scale.set(2)
-    bomb.draw(130, 0.5, 'upper')
-    expect([
-      marker.width,
-      marker.height,
-      marker.getBounds().width,
-      marker.getBounds().height,
-    ]).toEqual([18, 18, 18, 18])
-    scene.destroy({ children: true })
   })
 })

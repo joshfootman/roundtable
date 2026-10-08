@@ -97,7 +97,7 @@ test('clears parsed results and notifies existing subscribers during the next im
 
     expect(replay.getSnapshot()).toEqual({ state: { status: 'empty' }, source: undefined })
     expect(snapshots.at(-1)).toEqual({ state: { status: 'empty' }, source: undefined })
-    expect(replay.openFile(new File(['next demo'], 'next.dem'))).toBeUndefined()
+    replay.openFile(new File(['next demo'], 'next.dem'))
     expect(snapshots.at(-1)).toEqual({
       state: { status: 'reading', filename: 'next.dem' },
       source: { kind: 'local' },

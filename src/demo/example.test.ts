@@ -65,12 +65,9 @@ test.each([
   },
 )
 
-test.each([undefined, 123, '', 'missing-example', '__proto__', 'toString', 'constructor'])(
-  'rejects unknown example identity %s',
-  (value) => {
-    expect(parseExampleId(value)).toBeUndefined()
-  },
-)
+test.each([123, 'missing-example', '__proto__'])('rejects unknown example identity %s', (value) => {
+  expect(parseExampleId(value)).toBeUndefined()
+})
 
 test('accepts a supported example identity', () => {
   expect(parseExampleId('faze-vs-vitality-m2-dust2')).toBe('faze-vs-vitality-m2-dust2')

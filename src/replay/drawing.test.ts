@@ -17,19 +17,4 @@ describe('freehand pressure', () => {
     expect(firm - light).toBeLessThan(4.5)
     expect(firm).toBeLessThan(10)
   })
-
-  it('gives mouse strokes a visible width difference between slow and fast movement', () => {
-    function width(step: number) {
-      const points: DrawingPoint[] = Array.from({ length: 70 }, (_, index) => [
-        index * step,
-        0,
-        0.5,
-      ])
-      const outline = strokeOutline({ color: '#ffffff', points, simulatePressure: true }, true)
-      const heights = outline.filter((_, index) => index % 2 === 1)
-      return Math.max(...heights) - Math.min(...heights)
-    }
-    expect(width(1)).toBeGreaterThan(width(10) + 3)
-    expect(width(10)).toBeGreaterThan(4)
-  })
 })

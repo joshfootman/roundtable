@@ -91,7 +91,6 @@ describe('recorded player rendering', () => {
   it('restores overlapping player draw order after deaths and backward seeking', () => {
     const replay = round()
     for (let offset = 2; offset < replay.positions.length; offset += 3) replay.positions[offset] = 1
-    // B dies while A survives; both return alive when seeking back to the opening frame.
     replay.alive[6] = 1
     replay.alive[7] = 0
     const renderer = createPlayerRenderer(replay, map, appearance, textures)
@@ -107,7 +106,7 @@ describe('recorded player rendering', () => {
     renderer.container.destroy({ children: true })
   })
 
-  it('shows the fixed ladder slot during recorded climbing and clears it on exit, death and rewind', () => {
+  it('shows climbing alongside flash and elevation, then clears it on exit, death and rewind', () => {
     const replay = round()
     const initial = replay.inspection[0]![0]!
     replay.inspection[0] = [
@@ -118,13 +117,7 @@ describe('recorded player rendering', () => {
     const renderer = createPlayerRenderer(replay, map, appearance, textures)
     const a = marker(renderer, 0)
     renderer.draw(100, 2, { floor: 'lower', flashes: true })
-    expect([
-      a.ladder.visible,
-      a.ladder.x,
-      a.ladder.y,
-      a.flash.visible,
-      a.elevation.visible,
-    ]).toEqual([true, 12, 12, true, true])
+    expect([a.ladder.visible, a.flash.visible, a.elevation.visible]).toEqual([true, true, true])
     renderer.draw(104, 1, { floor: 'upper', flashes: true })
     expect(a.ladder.visible).toBe(false)
     renderer.draw(100, 1, { floor: 'upper', flashes: true })
@@ -134,33 +127,6 @@ describe('recorded player rendering', () => {
     expect(a.ladder.visible).toBe(false)
     renderer.draw(90, 1, { floor: 'upper', flashes: true })
     expect(a.ladder.visible).toBe(false)
-    renderer.container.destroy({ children: true })
-  })
-
-  it('anchors floor direction above the marker and restores filled markers when floors switch', () => {
-    const renderer = createPlayerRenderer(round(), map, appearance, textures)
-    const a = marker(renderer, 0)
-    const b = marker(renderer, 1)
-    renderer.draw(100, 1, { floor: 'upper', flashes: true })
-    expect([a.elevation.visible, b.elevation.visible, b.elevation.scale.y]).toEqual([
-      false,
-      true,
-      -1,
-    ])
-    expect([b.container.alpha, b.label.style.fill, a.label.style.fill]).toEqual([
-      0.6,
-      appearance.foreground,
-      appearance.background,
-    ])
-    expect(b.container.zIndex).toBeLessThan(a.container.zIndex)
-    renderer.draw(100, 1, { floor: 'lower', flashes: true })
-    expect([a.elevation.visible, a.elevation.scale.y, a.elevation.y, b.elevation.visible]).toEqual([
-      true,
-      1,
-      -20,
-      false,
-    ])
-    expect([b.container.alpha, b.label.style.fill]).toEqual([1, appearance.background])
     renderer.container.destroy({ children: true })
   })
 
@@ -179,23 +145,20 @@ describe('recorded player rendering', () => {
     const renderer = createPlayerRenderer(replay, map, appearance, textures)
     const a = marker(renderer, 0)
     renderer.draw(100, 2, { floor: 'upper', flashes: true })
-    expect([
-      a.objective.visible,
-      a.objective.width,
-      a.objective.height,
-      a.objective.x,
-      a.objective.y,
-      a.objective.tint,
-      a.flash.visible,
-    ]).toEqual([true, 10, 10, 12, -12, appearance.foreground, true])
+    expect([a.objective.visible, a.objective.texture, a.flash.visible]).toEqual([
+      true,
+      textures.bomb,
+      true,
+    ])
+    const carriedSize = a.objective.width
     renderer.draw(102, 1, { floor: 'upper', flashes: true })
-    expect([
-      a.objective.visible,
-      a.objective.texture,
-      a.objective.width,
-      a.objective.tint,
-      a.flash.visible,
-    ]).toEqual([true, textures.bomb, 12, appearance.armed, true])
+    expect([a.objective.visible, a.objective.texture, a.objective.tint, a.flash.visible]).toEqual([
+      true,
+      textures.bomb,
+      appearance.armed,
+      true,
+    ])
+    expect(a.objective.width).toBeGreaterThan(carriedSize)
     renderer.draw(104, 1, { floor: 'upper', flashes: true })
     expect([a.objective.visible, a.objective.texture, a.objective.tint, a.flash.visible]).toEqual([
       true,
@@ -213,27 +176,45 @@ describe('recorded player rendering', () => {
     renderer.container.destroy({ children: true })
   })
 
-  it('calibrates the preceding sample and facing while keeping live-start numbers and screen scaling', () => {
+  it('samples positions and facing while preserving numbers, floor indicators and filters', () => {
     const renderer = createPlayerRenderer(round(), map, appearance, textures)
     renderer.draw(109, 2, { floor: 'upper', flashes: true })
     const a = marker(renderer, 0)
     const b = marker(renderer, 1)
     expect([a.container.x, a.container.y, a.direction.rotation]).toEqual([1014, 10, 0])
-    expect([a.container.scale.x, a.container.scale.y, a.body.tint]).toEqual([2, 2, 0x96c8fa])
-    expect([a.label.text, b.label.text, a.label.style.fontSize]).toEqual(['1', '6', 16])
+    expect([a.container.scale.x, a.container.scale.y, a.body.tint]).toEqual([2, 2, appearance.ct])
+    expect([a.label.text, b.label.text]).toEqual(['1', '6'])
     expect([
       a.container.visible,
       b.container.visible,
       marker(renderer, 2).container.visible,
     ]).toEqual([true, true, false])
+    expect([a.elevation.visible, b.elevation.visible, b.elevation.scale.y]).toEqual([
+      false,
+      true,
+      -1,
+    ])
+    expect(b.container.zIndex).toBeLessThan(a.container.zIndex)
+    renderer.draw(109, 2, { floor: 'lower', flashes: true })
+    expect([a.elevation.visible, a.elevation.scale.y, b.elevation.visible]).toEqual([
+      true,
+      1,
+      false,
+    ])
+    expect([a.container.visible, b.container.visible]).toEqual([true, true])
+    renderer.draw(109, 2, { floor: 'lower', flashes: true, hiddenPlayers: new Set(['a']) })
+    expect([a.container.visible, b.container.visible]).toEqual([false, true])
+    renderer.draw(109, 2, { floor: 'lower', flashes: true, hiddenTeams: new Set([3]) })
+    expect([a.container.visible, b.container.visible]).toEqual([false, true])
     renderer.draw(90, 0.5, { floor: 'upper', flashes: true })
     expect([a.container.x, a.container.y, a.label.text, a.body.tint, a.container.scale.x]).toEqual([
       1024,
       0,
       '1',
-      0xeabe54,
+      appearance.t,
       0.5,
     ])
+    expect([a.container.visible, b.container.visible]).toEqual([true, true])
     renderer.container.destroy({ children: true })
   })
 
@@ -252,21 +233,6 @@ describe('recorded player rendering', () => {
     expect([a.container.alpha, a.flash.visible, a.container.visible]).toEqual([1, true, true])
     renderer.draw(100, 1, { floor: 'upper', flashes: false })
     expect([a.container.alpha, a.flash.visible]).toEqual([1, false])
-    renderer.container.destroy({ children: true })
-  })
-
-  it('keeps other-floor players visible while respecting player and team filters', () => {
-    const renderer = createPlayerRenderer(round(), map, appearance, textures)
-    const a = marker(renderer, 0)
-    const b = marker(renderer, 1)
-    renderer.draw(100, 1, { floor: 'lower', flashes: true })
-    expect([a.container.visible, b.container.visible]).toEqual([true, true])
-    renderer.draw(100, 1, { floor: 'upper', flashes: true, hiddenPlayers: new Set(['a']) })
-    expect([a.container.visible, b.container.visible]).toEqual([false, true])
-    renderer.draw(100, 1, { floor: 'upper', flashes: true, hiddenTeams: new Set([3]) })
-    expect([a.container.visible, b.container.visible]).toEqual([false, true])
-    renderer.draw(100, 1, { floor: 'upper', flashes: true })
-    expect([a.container.visible, b.container.visible]).toEqual([true, true])
     renderer.container.destroy({ children: true })
   })
 })

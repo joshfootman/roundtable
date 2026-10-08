@@ -29,35 +29,6 @@ function polymorphicSerializer(): Serializer {
   }
 }
 
-test('decodes repeated scalar and nested table paths', () => {
-  const child: Serializer = {
-    name: 'Child',
-    fields: [{ name: 'health', model: 'scalar', value: unsigned }],
-  }
-  const serializer: Serializer = {
-    name: 'Root',
-    fields: [
-      { name: 'score', model: 'scalar', value: signed },
-      { name: 'pawn', model: 'table', value: present, child, choices: [] },
-    ],
-  }
-  const selections = new Map<string, Serializer>()
-  for (const byte of [8, 12]) {
-    const field = resolveField(serializer, [0], selections)
-    expect({ name: field.name, value: field.decode(new BitReader(Uint8Array.of(byte))) }).toEqual({
-      name: 'score',
-      value: byte === 8 ? 4 : 6,
-    })
-  }
-  for (const byte of [75, 100]) {
-    const field = resolveField(serializer, [1, 0], selections)
-    expect({ name: field.name, value: field.decode(new BitReader(Uint8Array.of(byte))) }).toEqual({
-      name: 'pawn.health',
-      value: byte === 75 ? 75 : 100,
-    })
-  }
-})
-
 test('distinguishes array, vector, and table-list indices on repeated reads', () => {
   const child: Serializer = {
     name: 'Child',
@@ -126,21 +97,6 @@ test('resolves the current polymorphic choice and retains it when the choice ind
   expect(selector.decode(new BitReader(Uint8Array.of(3)))).toBe(true)
   const restored = resolveField(serializer, [0, 0], selections)
   expect(restored.decode(new BitReader(Uint8Array.of(9)))).toBe(9)
-})
-
-test('changing a cloned baseline selection leaves the baseline and other entity unchanged', () => {
-  const serializer = polymorphicSerializer()
-  const baseline = new Map<string, Serializer>()
-  const baselineSelector = resolveField(serializer, [0], baseline)
-  expect(baselineSelector.decode(new BitReader(Uint8Array.of(5)))).toBe(true)
-  const first = new Map(baseline)
-  const second = new Map(baseline)
-  const firstSelector = resolveField(serializer, [0], first)
-  expect(firstSelector.decode(new BitReader(Uint8Array.of(3)))).toBe(true)
-  const results = [baseline, first, second].map((selections) =>
-    resolveField(serializer, [0, 0], selections).decode(new BitReader(Uint8Array.of(7))),
-  )
-  expect(results).toEqual([-4, 7, -4])
 })
 
 test('keeps different serializer objects independent even when their names match', () => {

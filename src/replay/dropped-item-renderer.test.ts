@@ -67,88 +67,79 @@ function textures() {
 }
 
 describe('dropped equipment rendering', () => {
-  it('shows drops at their recorded world positions and restores them after pickup and rewind', () => {
-    const dropped = createDroppedItemRenderer(round(), map, textures())
-    const [gun, utility] = dropped.container.children as Sprite[]
+  it('renders drop, pickup, floor and rewind transitions with the correct item texture', () => {
+    const replay = round()
+    replay.droppedItems[2]!.items.push({
+      entity: 12,
+      serial: 1,
+      definition: 999,
+      x: 200,
+      y: 100,
+      z: 0,
+    })
+    const textureMap = textures()
+    const dropped = createDroppedItemRenderer(replay, map, textureMap)
+    const [gun, utility, unsupported] = dropped.container.children as Sprite[]
     dropped.draw(100, 1, 'upper')
-    expect([gun!.visible, utility!.visible]).toEqual([false, false])
+    expect(dropped.container.children.every((sprite) => !sprite.visible)).toBe(true)
     dropped.draw(110, 1, 'upper')
-    expect([gun!.visible, gun!.x, gun!.y, gun!.label, utility!.visible]).toEqual([
+    expect([gun!.visible, gun!.x, gun!.y, gun!.texture, utility!.visible]).toEqual([
       true,
       974,
       50,
-      'dropped-item-10-1',
+      textureMap.get(7),
       false,
     ])
-    dropped.draw(129, 1, 'upper')
-    expect([gun!.x, gun!.y]).toEqual([964, 60])
-    dropped.draw(130, 1, 'upper')
-    expect(dropped.container.children.every((sprite) => !sprite.visible)).toBe(true)
-    dropped.draw(150, 1, 'lower')
-    expect(dropped.container.children.every((sprite) => !sprite.visible)).toBe(true)
-    dropped.draw(110, 1, 'upper')
-    expect([gun!.visible, gun!.x, gun!.y, utility!.visible]).toEqual([true, 974, 50, false])
-    dropped.container.destroy({ children: true })
-  })
-
-  it('shows only the selected floor and retains subdued opacity', () => {
-    const dropped = createDroppedItemRenderer(round(), map, textures())
-    const [gun, utility] = dropped.container.children as Sprite[]
     dropped.draw(120, 1, 'upper')
-    expect([gun!.visible, utility!.visible, dropped.container.alpha]).toEqual([true, false, 0.55])
+    expect([gun!.visible, gun!.x, gun!.y, utility!.visible, unsupported!.visible]).toEqual([
+      true,
+      964,
+      60,
+      false,
+      false,
+    ])
     dropped.draw(120, 1, 'lower')
     expect([gun!.visible, utility!.visible, utility!.x, utility!.y]).toEqual([false, true, 984, 40])
     dropped.draw(130, 1, 'lower')
-    expect([gun!.visible, gun!.label, utility!.visible]).toEqual([true, 'dropped-item-11-2', false])
+    expect([gun!.visible, gun!.texture, utility!.visible]).toEqual([
+      true,
+      textureMap.get(43),
+      false,
+    ])
+    dropped.draw(150, 1, 'lower')
+    expect(dropped.container.children.every((sprite) => !sprite.visible)).toBe(true)
+    dropped.draw(110, 1, 'upper')
+    expect([gun!.visible, gun!.x, gun!.y, gun!.texture, utility!.visible]).toEqual([
+      true,
+      974,
+      50,
+      textureMap.get(7),
+      false,
+    ])
     dropped.container.destroy({ children: true })
   })
 
-  it('preserves the SVG proportions and small screen-space size across resizing', () => {
+  it('preserves aspect ratio and screen size across zoom levels', () => {
     const singleMap: MapDefinition = { ...map, floors: 'single', image: '' }
     const dropped = createDroppedItemRenderer(round(), singleMap, textures())
     const scene = new Container()
     scene.addChild(dropped.container)
     const [gun, utility] = dropped.container.children as Sprite[]
-    for (const scale of [0.5, 1, 2]) {
+    dropped.draw(120, 1, 'upper')
+    const gunSize = gun!.getBounds().width
+    const utilitySize = utility!.getBounds().height
+    expect(gunSize).toBeGreaterThan(0)
+    expect(utilitySize).toBeGreaterThan(0)
+    for (const scale of [0.5, 2]) {
       scene.scale.set(scale)
       dropped.draw(120, 1 / scale, 'upper')
-      expect(gun!.getBounds().width).toBeCloseTo(18)
-      expect(gun!.getBounds().height).toBeCloseTo(4.5)
-      expect(utility!.getBounds().width).toBeCloseTo(4)
-      expect(utility!.getBounds().height).toBeCloseTo(10)
+      const gunBounds = gun!.getBounds()
+      const utilityBounds = utility!.getBounds()
+      expect(gunBounds.width).toBeCloseTo(gunSize)
+      expect(gunBounds.width / gunBounds.height).toBeCloseTo(4)
+      expect(utilityBounds.height).toBeCloseTo(utilitySize)
+      expect(utilityBounds.width / utilityBounds.height).toBeCloseTo(0.4)
     }
     scene.destroy({ children: true })
-  })
-
-  it('reuses the largest snapshot pool and replaces textures when slots change items', () => {
-    const textureMap = textures()
-    const dropped = createDroppedItemRenderer(round(), map, textureMap)
-    const slots = [...dropped.container.children]
-    expect(slots).toHaveLength(2)
-    for (const tick of [110, 120, 130, 150, 120, 90]) {
-      dropped.draw(tick, 1, 'lower')
-      expect(dropped.container.children).toEqual(slots)
-    }
-    dropped.draw(130, 1, 'lower')
-    expect((slots[0] as Sprite).texture).toBe(textureMap.get(43))
-    expect(slots[1]!.visible).toBe(false)
-    dropped.container.destroy({ children: true })
-  })
-
-  it('leaves empty tracks empty and skips definitions without an available SVG', () => {
-    const replay = round()
-    replay.droppedItems = [{ tick: 90, items: [] }]
-    const empty = createDroppedItemRenderer(replay, map, textures())
-    empty.draw(150, 1, 'upper')
-    expect(empty.container.children).toHaveLength(0)
-    replay.droppedItems.push({
-      tick: 110,
-      items: [{ entity: 12, serial: 1, definition: 999, x: 200, y: 100, z: 0 }],
-    })
-    const unavailable = createDroppedItemRenderer(replay, map, textures())
-    unavailable.draw(110, 1, 'upper')
-    expect(unavailable.container.children[0]!.visible).toBe(false)
-    empty.container.destroy({ children: true })
-    unavailable.container.destroy({ children: true })
   })
 })

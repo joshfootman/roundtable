@@ -77,41 +77,45 @@ describe('recorded utility rendering', () => {
     expect(bounds(smoke!)).toEqual([901.5, -22.5, 1046.5, 122.5])
     expect(bounds(shots!)).toEqual([1023.5, -0.5, 1024.5, 48.5])
     expect(bounds(detonation!)).toEqual([967, 23, 1001, 57])
+    utilities.draw(100, 2, initialUtilityVisibility(), 'upper')
+    expect(bounds(fire!)).toEqual([954, 10, 1014, 70])
+    expect(bounds(smoke!)).toEqual([901, -23, 1047, 123])
+    expect(bounds(shots!)).toEqual([1023, -1, 1025, 97])
+    expect(bounds(detonation!)).toEqual([950, 6, 1018, 74])
     utilities.container.destroy({ children: true })
   })
 
-  it('clears expired effects and restores them after backward seeking', () => {
-    const utilities = createUtilityRenderer(round(), map)
-    const layers = utilities.container.children as Graphics[]
-    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => layer.context.instructions.length)).toEqual([1, 2, 1, 2, 1])
-    utilities.draw(102, 1, initialUtilityVisibility(), 'upper')
-    expect(layers[2]!.context.instructions.length).toBe(0)
-    utilities.draw(120, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => layer.context.instructions.length)).toEqual([0, 0, 0, 0, 0])
-    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => layer.context.instructions.length)).toEqual([1, 2, 1, 2, 1])
-    utilities.container.destroy({ children: true })
-  })
-
-  it('keeps area footprints in world space and trace symbols in screen space', () => {
-    const utilities = createUtilityRenderer(round(), map)
+  it('expires, rewinds and filters effects, including empty utility tracks', () => {
+    const recorded = round()
+    const utilities = createUtilityRenderer(recorded, map)
     const layers = utilities.container.children as Graphics[]
     const visibility = initialUtilityVisibility()
-    utilities.draw(100, 2, visibility, 'upper')
-    expect(bounds(layers[0]!)).toEqual([954, 10, 1014, 70])
-    expect(bounds(layers[1]!)).toEqual([901, -23, 1047, 123])
-    expect(bounds(layers[2]!)).toEqual([1023, -1, 1025, 97])
-    expect(bounds(layers[4]!)).toEqual([950, 6, 1018, 74])
+    utilities.draw(100, 1, visibility, 'upper')
+    const initialBounds = layers.map(bounds)
+    expect(initialBounds[0]).toEqual([954, 10, 1014, 70])
+    expect(initialBounds[2]).toEqual([1023.5, -0.5, 1024.5, 48.5])
+    utilities.draw(102, 1, visibility, 'upper')
+    expect(bounds(layers[2]!)).toEqual([0, 0, 0, 0])
+    utilities.draw(120, 1, visibility, 'upper')
+    expect(layers.map(bounds)).toEqual(Array(5).fill([0, 0, 0, 0]))
+    utilities.draw(100, 1, visibility, 'upper')
+    expect(layers.map(bounds)).toEqual(initialBounds)
     visibility.shots = visibility.smokes = false
-    utilities.draw(100, 2, visibility, 'upper')
-    expect(layers.map((layer) => [layer.visible, layer.context.instructions.length])).toEqual([
-      [true, 1],
-      [false, 0],
-      [false, 0],
-      [true, 2],
-      [true, 1],
+    utilities.draw(100, 1, visibility, 'upper')
+    expect(layers.map((layer) => layer.visible)).toEqual([true, false, false, true, true])
+    expect([bounds(layers[1]!), bounds(layers[2]!)]).toEqual([
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
     ])
+    expect(bounds(layers[0]!)).toEqual(initialBounds[0])
+    recorded.fires = []
+    recorded.smokes = []
+    recorded.shots = []
+    recorded.projectiles = []
+    recorded.detonations = []
+    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
+    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true])
+    expect(layers.map(bounds)).toEqual(Array(5).fill([0, 0, 0, 0]))
     utilities.container.destroy({ children: true })
   })
 
@@ -125,33 +129,13 @@ describe('recorded utility rendering', () => {
       { action: 'lineTo', data: [954, 70] },
     ])
     utilities.draw(103, 1, initialUtilityVisibility(), 'lower')
-    expect(layers.map((layer) => layer.context.instructions.length)).toEqual([0, 0, 0, 1, 0])
+    expect([layers[0]!, layers[1]!, layers[2]!, layers[4]!].map(bounds)).toEqual(
+      Array(4).fill([0, 0, 0, 0]),
+    )
     const lowerTrajectory = layers[3]!.context.instructions[0]!
     expect(
       lowerTrajectory.action === 'stroke' ? lowerTrajectory.data.path.instructions : null,
     ).toEqual([{ action: 'moveTo', data: [974, 50] }])
-    utilities.container.destroy({ children: true })
-  })
-
-  it('supports enabled overlays on rounds with no recorded utility tracks', () => {
-    const recorded = round()
-    const utilities = createUtilityRenderer(recorded, map)
-    const layers = utilities.container.children as Graphics[]
-    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(bounds(layers[0]!)).toEqual([954, 10, 1014, 70])
-    recorded.fires = []
-    recorded.smokes = []
-    recorded.shots = []
-    recorded.projectiles = []
-    recorded.detonations = []
-    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => [layer.visible, layer.context.instructions.length])).toEqual([
-      [true, 0],
-      [true, 0],
-      [true, 0],
-      [true, 0],
-      [true, 0],
-    ])
     utilities.container.destroy({ children: true })
   })
 })

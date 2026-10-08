@@ -12,26 +12,6 @@ const key = (value: string, overrides = {}) =>
     ...overrides,
   })
 
-it('maps playback, round and map shortcuts', () => {
-  expect(key('k')).toEqual({ action: 'toggle' })
-  expect(key(' ')).toEqual({ action: 'toggle' })
-  expect(key('j')).toEqual({ action: 'seek', seconds: -10 })
-  expect(key('l')).toEqual({ action: 'seek', seconds: 10 })
-  expect(key('ArrowLeft')).toEqual({ action: 'round', direction: -1 })
-  expect(key('ArrowRight')).toEqual({ action: 'round', direction: 1 })
-  expect(key('f')).toEqual({ action: 'floor' })
-  expect(key('r')).toEqual({ action: 'focus' })
-  expect(key('+', { shiftKey: true })).toEqual({ action: 'zoom', direction: 1 })
-  expect(key('=')).toEqual({ action: 'zoom', direction: 1 })
-  expect(key('-')).toEqual({ action: 'zoom', direction: -1 })
-  expect(key('?', { shiftKey: true })).toEqual({ action: 'help' })
-})
-
-it('jumps to ten evenly spaced round positions', () => {
-  for (let digit = 0; digit < 10; digit++)
-    expect(key(String(digit))).toEqual({ action: 'section', fraction: digit / 10 })
-})
-
 it('pans with held Shift and arrow keys', () => {
   for (const [direction, delta] of [
     ['ArrowLeft', { x: 48, y: 0 }],
@@ -44,20 +24,17 @@ it('pans with held Shift and arrow keys', () => {
 
 it('leaves browser modifiers and held toggles alone', () => {
   for (const modifier of ['altKey', 'ctrlKey', 'metaKey']) {
-    for (const value of ['k', ' ', 'j', 'l', 'ArrowRight', 'f', 'r', '+', '-', '9', '?'])
+    for (const value of ['k', 'j', 'ArrowRight', '?'])
       expect(key(value, { [modifier]: true })).toBeUndefined()
   }
-  expect(key('ArrowRight', { shiftKey: true })).toEqual({ action: 'pan', delta: { x: -48, y: 0 } })
   for (const value of ['k', ' ', 'f', 'r', 'ArrowRight', '?'])
     expect(key(value, { repeat: true })).toBeUndefined()
   expect(key('j', { repeat: true })).toEqual({ action: 'seek', seconds: -10 })
-})
-
-it('toggles and clears drawing without held-key or browser-modifier activation', () => {
   expect(key('d')).toEqual({ action: 'drawing-toggle' })
   expect(key('D', { shiftKey: true })).toEqual({ action: 'drawing-clear' })
   expect(key('d', { repeat: true })).toBeUndefined()
   expect(key('D', { shiftKey: true, repeat: true })).toBeUndefined()
   for (const modifier of ['altKey', 'ctrlKey', 'metaKey'])
-    expect(key('d', { [modifier]: true })).toBeUndefined()
+    for (const value of ['d', 'D'])
+      expect(key(value, { [modifier]: true, shiftKey: value === 'D' })).toBeUndefined()
 })

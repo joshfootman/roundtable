@@ -47,38 +47,32 @@ const viewports = [
   { width: 800, height: 800 },
   { width: 390, height: 600 },
 ]
-for (const name of mapNames) {
-  for (const dimensions of viewports) {
-    for (const zoom of [1, 1.25, 2, 4]) {
-      it(`${name} bounds both axes at ${dimensions.width}x${dimensions.height}, ${zoom}x`, () => {
-        const map = mapDefinition(name)!
-        const viewport = { ...dimensions, imageSize: map.imageSize, defaultZoom: map.defaultZoom }
-        const initial = { ...focusedCamera(map.focusCenter), zoom }
-        const padding = Math.min(dimensions.width, dimensions.height) * 0.1
-        const size = Math.min(dimensions.width, dimensions.height) * map.defaultZoom * zoom
-        const positive = cameraTransform(
-          panCamera(initial, viewport, { x: 100000, y: 100000 }),
-          viewport,
-        )
-        const negative = cameraTransform(
-          panCamera(initial, viewport, { x: -100000, y: -100000 }),
-          viewport,
-        )
-        expect(positive.x).toBeCloseTo(Math.max(0, dimensions.width - size) + padding)
-        expect(negative.x).toBeCloseTo(Math.min(0, dimensions.width - size) - padding)
-        expect(positive.y).toBeCloseTo(Math.max(0, dimensions.height - size) + padding)
-        expect(negative.y).toBeCloseTo(Math.min(0, dimensions.height - size) - padding)
-        if (zoom === 1 && dimensions.width > size) {
-          expect(positive.x).toBeGreaterThan(negative.x)
-        }
-      })
+it('clamps extreme drags for small, large, wide and tall map views', () => {
+  for (const [viewport, zoom, positive, negative] of [
+    [{ width: 800, height: 800, imageSize: 1000, defaultZoom: 1 }, 0.6, [400, 400], [-80, -80]],
+    [{ width: 800, height: 800, imageSize: 1000, defaultZoom: 1 }, 4, [80, 80], [-2480, -2480]],
+    [{ width: 1440, height: 800, imageSize: 1024, defaultZoom: 1 }, 1, [720, 80], [-80, -80]],
+    [{ width: 390, height: 600, imageSize: 1024, defaultZoom: 1 }, 1, [39, 249], [-39, -39]],
+    [{ width: 800, height: 800, imageSize: 1024, defaultZoom: 1.25 }, 2, [80, 80], [-1280, -1280]],
+  ] as const) {
+    const initial = { ...focusedCamera(), zoom }
+    for (const [distance, expected] of [
+      [100000, positive],
+      [-100000, negative],
+    ] as const) {
+      const actual = cameraTransform(
+        panCamera(initial, viewport, { x: distance, y: distance }),
+        viewport,
+      )
+      expect(actual.x).toBeCloseTo(expected[0])
+      expect(actual.y).toBeCloseTo(expected[1])
     }
   }
-}
+})
 
-for (const name of mapNames) {
-  for (const dimensions of viewports) {
-    it(`${name} can pan in every direction immediately at ${dimensions.width}x${dimensions.height}`, () => {
+it('allows opening movement in all four directions on every map and viewport', () => {
+  for (const name of mapNames) {
+    for (const dimensions of viewports) {
       const map = mapDefinition(name)!
       const viewport = { ...dimensions, imageSize: map.imageSize, defaultZoom: map.defaultZoom }
       const initial = constrainCamera(focusedCamera(map.focusCenter), viewport)
@@ -90,9 +84,15 @@ for (const name of mapNames) {
         { x: 0, y: -24 },
       ]) {
         const after = cameraTransform(panCamera(initial, viewport, delta), viewport)
-        expect(after.x - before.x).toBeCloseTo(delta.x)
-        expect(after.y - before.y).toBeCloseTo(delta.y)
+        expect(
+          after.x - before.x,
+          `${name} ${dimensions.width}x${dimensions.height} x`,
+        ).toBeCloseTo(delta.x)
+        expect(
+          after.y - before.y,
+          `${name} ${dimensions.width}x${dimensions.height} y`,
+        ).toBeCloseTo(delta.y)
       }
-    })
+    }
   }
-}
+})

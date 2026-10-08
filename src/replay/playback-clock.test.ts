@@ -21,7 +21,7 @@ function setup(initialTick = 100) {
 
 describe('playback clock', () => {
   it('reports a playback crossing before a throttled snapshot or final pause', () => {
-    const { clock, movements, published } = setup()
+    const { clock, movements, published, running } = setup()
     clock.play()
     clock.advance(100)
     expect(movements).toEqual([{ from: 100, to: 110, cause: 'advance' }])
@@ -29,10 +29,12 @@ describe('playback clock', () => {
     clock.advance(2000)
     expect(movements.at(-1)).toEqual({ from: 110, to: 200, cause: 'advance' })
     expect(clock.getSnapshot()).toEqual({ playing: false, tick: 200 })
+    expect(published.at(-1)).toEqual({ playing: false, tick: 200 })
+    expect(running.at(-1)).toBe(false)
   })
 
   it('distinguishes seek and restart from a natural result crossing', () => {
-    const { clock, movements } = setup()
+    const { clock, movements, published, running } = setup()
     clock.seek(180)
     clock.play()
     clock.advance(200)
@@ -42,19 +44,17 @@ describe('playback clock', () => {
       { from: 180, to: 200, cause: 'advance' },
       { from: 200, to: 100, cause: 'restart' },
     ])
+    expect(published.at(-1)).toEqual({ playing: true, tick: 100 })
+    expect(running.at(-1)).toBe(true)
     clock.seek(100)
     expect(movements.at(-1)).toEqual({ from: 100, to: 100, cause: 'seek' })
   })
 
-  it('starts paused and ignores advances until playing', () => {
-    const { clock, drawn } = setup()
+  it('retains fractional ticks while publishing whole ticks every 250ms', () => {
+    const { clock, published, drawn } = setup()
     clock.advance(100)
     expect(clock.getSnapshot()).toEqual({ playing: false, tick: 100 })
     expect(drawn).toEqual([])
-  })
-
-  it('retains fractional ticks while publishing whole ticks every 250ms', () => {
-    const { clock, published, drawn } = setup()
     clock.play()
     clock.advance(7)
     clock.advance(7)
@@ -87,16 +87,6 @@ describe('playback clock', () => {
     expect(published.at(-1)).toEqual({ playing: true, tick: 170 })
     clock.seek(300)
     expect(published.at(-1)).toEqual({ playing: false, tick: 200 })
-  })
-
-  it('stops at the end and restarts the round on play', () => {
-    const { clock, running, published } = setup()
-    clock.play()
-    clock.advance(2000)
-    expect(published.at(-1)).toEqual({ playing: false, tick: 200 })
-    expect(running.at(-1)).toBe(false)
-    clock.play()
-    expect(published.at(-1)).toEqual({ playing: true, tick: 100 })
   })
 
   it('preserves legacy freeze start until play or minimum changes', () => {

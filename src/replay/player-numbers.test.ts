@@ -62,17 +62,6 @@ describe('player numbers', () => {
     ])
   })
 
-  it('does not renumber dead players or use later team samples', () => {
-    const replayRound = round()
-    replayRound.alive[11] = 0
-    replayRound.alive[14] = 1
-    const numbers = playerNumbers(replayRound)
-    expect(numbers.get('ct-a')).toBe(1)
-    expect(numbers.get('ct-b')).toBe(2)
-    expect(numbers.get('t-a')).toBe(6)
-    expect(numbers.get('observer')).toBeUndefined()
-  })
-
   it('assigns the side ranges again when teams switch in another round', () => {
     const replayRound = round()
     replayRound.liveStartTick = 120

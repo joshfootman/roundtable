@@ -15,7 +15,7 @@
 - [ ] Rapid multi-kill feedback, optional polish.
 - [x] Client-side drawing.
 - [ ] Settings UI, conditional.
-- [ ] Reduce test maintenance burden.
+- [x] Reduce test maintenance burden.
 - [ ] Shared viewing and drawing, deferred.
 - [ ] Accurate player visibility, deferred.
 - [ ] Optional colour palettes, conditional.
@@ -58,7 +58,7 @@ Floor switching now uses a compact map-controls row with a stacked-floors icon t
 
 ## Maintenance
 
-- **Reduce test maintenance burden.** Audit tests rather than targeting a count. Retain tests that protect consequential regressions. Remove duplicated coverage and brittle implementation assertions. Preserve independent comparisons against real demos. This is separate from the visitor-facing ranking.
+- **Reduce test maintenance burden, complete.** Reduced the unit suite from 333 to 124 cases by removing duplicate matrices, repeated fixtures and implementation assertions, and merging related replay transitions. Independent real-demo comparisons, parser failure boundaries, renderer lifecycles and all-map opening pan checks remain. Both suites detected nine deliberately introduced faults in an isolated copy. Prefer independent expected results and consequential behaviour over allocation details or fixed styling values when adding tests.
 
 ## Deferred
 

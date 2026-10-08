@@ -202,8 +202,6 @@ function recording() {
 }
 
 const pawn = [3, 100, 0, [0, 90, 0], 50, true, 0, 0, 0xffffff, 32, 10, 32, 20, 32, 30]
-const planted = [true, false, 0xffffff, 32, 10, 32, 20, 32, 30]
-
 test('retains ladder entry and exit from the recorded movement type', () => {
   const { decoder, packet } = recording()
   const values = [...pawn, 0, 0, 0, 0, 0, 0, 9]
@@ -294,29 +292,6 @@ test('preserves first controller identity and full pawn-handle serial checks', (
   packet([{ id: 2, remove: 'delete' }])
   packet([{ id: 2, className: 'CCSPlayerController', values: [88n, 32769] }])
   expect(decoder.playerByPawnHandle(32769)).toBe('77')
-})
-
-test('selects bombs in insertion order and prefers a ticking planted bomb', () => {
-  const { decoder, packet } = recording()
-  packet([
-    { id: 1, className: 'CC4', values: [0xffffff, false, 32, 1, 32, 2, 32, 3] },
-    { id: 2, className: 'CC4', values: [0xffffff, false, 32, 4, 32, 5, 32, 6] },
-    { id: 3, className: 'CPlantedC4', values: planted },
-  ])
-  expect(decoder.bomb()).toEqual({
-    type: 'planted',
-    x: 10,
-    y: 20,
-    z: 30,
-    defuser: { type: 'none' },
-  })
-  packet([{ id: 3, values: [false, false] }])
-  expect(decoder.bomb()).toEqual({ type: 'dropped', x: 1, y: 2, z: 3 })
-  packet([{ id: 1, className: 'CC4', serial: 1, values: [0xffffff, false, 32, 7, 32, 8, 32, 9] }])
-  expect(decoder.bomb()).toEqual({ type: 'dropped', x: 7, y: 8, z: 9 })
-  packet([{ id: 1, remove: 'delete' }])
-  packet([{ id: 1, className: 'CC4', values: [0xffffff, false, 32, 10, 32, 11, 32, 12] }])
-  expect(decoder.bomb()).toEqual({ type: 'dropped', x: 4, y: 5, z: 6 })
 })
 
 test('keeps inactive first game rules and delays malformed-field validation until requested', () => {
