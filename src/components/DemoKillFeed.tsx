@@ -89,7 +89,7 @@ function Feed({
             return (
               <li
                 key={entry.id}
-                className="demo-kill-feed-entry flex min-h-8 max-w-full shrink-0 items-center justify-end gap-2.5 rounded-xl bg-neutral-700/50 px-2.5 py-[5px]"
+                className="demo-kill-feed-entry flex min-h-8 max-w-full shrink-0 items-center justify-end gap-2.5 rounded-lg bg-neutral-700/50 px-2.5 py-[5px]"
                 aria-label={description}
                 title={description}
               >
