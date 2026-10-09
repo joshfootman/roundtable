@@ -70,75 +70,6 @@ function floatDecoder(field: Encoding): ValueDecoder {
     }
   return quantized(field)
 }
-const unsignedTypes = new Set([
-  'AnimationAlgorithm_t',
-  'DecalMode_t',
-  'WeaponGameplayAnimState',
-  'EntityPlatformTypes_t',
-  'BloodType',
-  'PlayerConnectedState',
-  'GameTick_t',
-  'EKillTypes_t',
-  'AnimLoopMode_t',
-  'loadout_slot_t',
-  'PlayerAnimEvent_t',
-  'WeaponAttackType_t',
-  'CSWeaponState_t',
-  'WorldGroupId_t',
-  'FixAngleSet_t',
-  'CPlayerSlot',
-  'uint8',
-  'uint16',
-  'uint32',
-  'Color',
-  'CUtlStringToken',
-  'EHandle',
-  'CEntityHandle',
-  'CGameSceneNodeHandle',
-  'AttachmentHandle_t',
-  'MoveCollide_t',
-  'MoveType_t',
-  'RenderMode_t',
-  'RenderFx_t',
-  'SolidType_t',
-  'SurroundingBoundsType_t',
-  'ModelConfigHandle_t',
-  'NPC_STATE',
-  'StanceType_t',
-  'WeaponState_t',
-  'DoorState_t',
-  'RagdollBlendDirection',
-  'BeamType_t',
-  'BeamClipStyle_t',
-  'EntityDisolveType_t',
-  'PointWorldTextJustifyHorizontal_t',
-  'PointWorldTextJustifyVertical_t',
-  'PointWorldTextReorientMode_t',
-  'PoseController_FModType_t',
-  'PrecipitationType_t',
-  'ShardSolid_t',
-  'ShatterPanelMode',
-  'gender_t',
-  'item_definition_index_t',
-  'itemid_t',
-  'style_index_t',
-  'attributeprovidertypes_t',
-  'DamageOptions_t',
-  'ScreenEffectType_t',
-  'TakeDamageFlags_t',
-  'CSWeaponMode',
-  'ESurvivalSpawnTileState',
-  'SpawnStage_t',
-  'ESurvivalGameRuleDecision_t',
-  'RelativeDamagedDirection_t',
-  'CSPlayerState',
-  'MedalRank_t',
-  'CSPlayerBlockingUseAction_t',
-  'MoveMountingAmount_t',
-  'QuestProgress::Reason',
-  'tablet_skin_state_t',
-  'CHandle',
-])
 export function decoder(field: Encoding): ValueDecoder {
   const type = field.type
   if (type === 'float32' || type === 'CNetworkedQuantizedFloat') return floatDecoder(field)
@@ -188,8 +119,7 @@ export function decoder(field: Encoding): ValueDecoder {
     return (reader) => reader.string()
   if (type === 'CUtlBinaryBlock') return (reader) => reader.bytes(reader.varUint())
   if (type === 'GameTime_t') return (reader) => reader.float()
-  if (unsignedTypes.has(type)) return (reader) => reader.varUint()
-  return () => {
-    throw new Error(`Unsupported entity field type ${type} (${field.name}).`)
-  }
+  // Enums, handles and new engine types all encode as varuint; failing on an unlisted name
+  // aborted imports whenever Valve added or renamed a type.
+  return (reader) => reader.varUint()
 }
