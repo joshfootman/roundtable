@@ -47,14 +47,12 @@ test('centres the HUD and supports keyboard round selection with restored focus'
   await expect(picker).toBeHidden()
   await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled()
   await expect(hud.locator('img').first()).toHaveAttribute('src', '/images/teams/faze.svg')
-  await page.screenshot({ path: '.audit/round-outcomes/scoreboard-desktop.png' })
   await page.goto('/replay?source=example&example=faze-vs-natus-vincere-m1-ancient&round=1')
   await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled({ timeout: 30_000 })
   const clan = hud.getByText('Natus Vincere', { exact: true })
   await expect(clan).toBeVisible()
   expect(await clan.evaluate((element) => getComputedStyle(element).whiteSpace)).toBe('nowrap')
   expect(await clan.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true)
-  await page.screenshot({ path: '.audit/round-outcomes/scoreboard-long-clan.png' })
 })
 
 test('lists rounds in one scrollable column and reopens at the selected round', async ({
@@ -95,7 +93,6 @@ test('lists rounds in one scrollable column and reopens at the selected round', 
   const selected = (await current.boundingBox())!
   expect(selected.y).toBeGreaterThanOrEqual(reopened.y)
   expect(selected.y + selected.height).toBeLessThanOrEqual(reopened.y + reopened.height)
-  await page.screenshot({ path: '.audit/round-outcomes/round-picker-late-round.png' })
   await current.click()
   await expect(picker).toBeHidden()
   await expect(trigger).toBeFocused()
@@ -119,10 +116,6 @@ test('fits the HUD and round picker on a narrow phone', async ({ page }) => {
   expect(bounds!.x).toBeGreaterThanOrEqual(0)
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(320)
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
-  await page.screenshot({
-    path: '.audit/round-outcomes/scoreboard-mobile-picker.png',
-    fullPage: true,
-  })
   await picker.getByRole('button', { name: /^Round 5,/ }).click()
   await expect(page.getByRole('button', { name: 'Choose round, current round 5' })).toBeFocused()
   await expect(picker).toBeHidden()
@@ -161,7 +154,6 @@ test('briefly highlights the next round only after a played outcome, with a stat
     )
     if (reducedMotion === 'reduce') {
       await expect(hint).toHaveCSS('opacity', '0.7')
-      await page.screenshot({ path: '.audit/round-outcomes/next-round-reduced-motion.png' })
     }
     await expect(hint).toHaveCount(0, { timeout: 5_000 })
     await next.click()

@@ -9,7 +9,7 @@ CV/portfolio project.
 - Upstream CS2 build (`cs2_version.txt`): `25640462`
 - Retrieved: 2026-10-01
 - `equipment/`: all SVGs from `cs2/panorama/images/icons/equipment/`.
-- `deathnotice/`: all SVGs from `cs2/panorama/images/hud/deathnotice/`.
+- `deathnotice/`: the headshot and suicide SVGs from `cs2/panorama/images/hud/deathnotice/`.
 
 Original filenames are preserved. The headshot icon is
 `deathnotice/icon_headshot.svg`. Weapon filenames use internal game names:

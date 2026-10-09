@@ -15,12 +15,10 @@ test('switches Nuke floors directly without changing the paused replay tick', as
   const bounds = (await timeline.boundingBox())!
   await timeline.click({ position: { x: bounds.width * 0.35, y: bounds.height / 2 } })
   const tick = await timeline.inputValue()
-  await page.screenshot({ path: '.audit/round-outcomes/nuke-upper-controls.png' })
   await toggle.click()
   await expect(toggle).toHaveAccessibleName('Lower floor — switch to upper floor')
   await expect(timeline).toHaveValue(tick)
   await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled()
-  await page.screenshot({ path: '.audit/round-outcomes/nuke-lower-controls.png' })
   await toggle.focus()
   await toggle.press('Enter')
   await expect(toggle).toHaveAccessibleName('Upper floor — switch to lower floor')
@@ -31,5 +29,4 @@ test('switches Nuke floors directly without changing the paused replay tick', as
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
   await mobileToggle.click()
   await expect(timeline).toHaveValue(tick)
-  await page.screenshot({ path: '.audit/round-outcomes/nuke-mobile-controls.png', fullPage: true })
 })

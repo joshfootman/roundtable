@@ -56,7 +56,6 @@ test('reconstructs blue and orange score flames from recorded wins and seeks', a
     .toBeGreaterThan(hiddenDraws)
   const frame = await ct.screenshot()
   await expect.poll(async () => (await ct.screenshot()).equals(frame)).toBe(false)
-  await page.screenshot({ path: '.audit/winning-streaks/ct-desktop.png' })
   await timeline.press('Home')
   await expect(ct.locator('canvas')).toHaveCount(0)
   await expect
@@ -83,7 +82,6 @@ test('reconstructs blue and orange score flames from recorded wins and seeks', a
   await expect(page.getByRole('button', { name: 'Choose round, current round 11' })).toBeVisible()
   await timeline.press('End')
   await expect(t).toContainText('5 consecutive round wins')
-  await page.screenshot({ path: '.audit/winning-streaks/t-desktop.png' })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect
     .poll(async () => {
@@ -93,7 +91,6 @@ test('reconstructs blue and orange score flames from recorded wins and seeks', a
     .toBe(true)
   await page.setViewportSize({ width: 390, height: 844 })
   expect((await t.boundingBox())!.width).toBe(44)
-  await page.screenshot({ path: '.audit/winning-streaks/t-mobile-reduced.png', fullPage: true })
   await t.locator('canvas').evaluate((canvas) => {
     const gl = (canvas as HTMLCanvasElement).getContext('webgl')!
     gl.getExtension('WEBGL_lose_context')!.loseContext()
