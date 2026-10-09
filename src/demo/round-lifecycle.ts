@@ -1,5 +1,11 @@
 import { createProjectileCapture } from './projectiles.ts'
 import type { PlayerSnapshot, ProjectileSnapshot } from './entities/index.ts'
+import {
+  mapPlayerTracks,
+  playerTrackLayout,
+  playerTrackNames,
+  type PlayerTracks,
+} from '../replay/tracks.ts'
 import type {
   ReplayDeath,
   ReplayRound,
@@ -42,11 +48,7 @@ type Capture = {
   overtime: number
   players: ReplayRound['players']
   ticks: number[]
-  positions: number[]
-  alive: number[]
-  health: number[]
-  yaw: number[]
-  teams: number[]
+  tracks: { [K in keyof PlayerTracks]: number[] }
   projectiles: ReturnType<typeof createProjectileCapture>
   shots: ReplayShot[]
   droppedItems: ReplayRound['droppedItems']
@@ -139,11 +141,9 @@ export function createRoundTracker() {
           endTick: Math.min(smoke.endTick, endTick),
         })),
       ticks: Uint32Array.from(round.ticks),
-      positions: Float32Array.from(round.positions),
-      alive: Uint8Array.from(round.alive),
-      health: Int32Array.from(round.health),
-      yaw: Float32Array.from(round.yaw),
-      teams: Uint8Array.from(round.teams),
+      ...(mapPlayerTracks((name) =>
+        playerTrackLayout[name].type.from(round.tracks[name]),
+      ) as PlayerTracks),
     }
   }
 
@@ -236,11 +236,7 @@ export function createRoundTracker() {
           overtime: rules.overtime,
           players: [],
           ticks: [],
-          positions: [],
-          alive: [],
-          health: [],
-          yaw: [],
-          teams: [],
+          tracks: mapPlayerTracks(() => []),
           projectiles: createProjectileCapture(),
           droppedItems: [{ tick, items: [] }],
           shots: [],
@@ -401,7 +397,8 @@ export function createRoundTracker() {
     },
     sample(tick: number, snapshots: PlayerSnapshot[]) {
       if (!capture) return
-      const { ticks, positions, alive, health, yaw, teams, lastSnapshots } = capture
+      const { ticks, tracks, lastSnapshots } = capture
+      const { positions, alive, health, yaw, teams } = tracks
       if (ticks.length && tick < ticks[ticks.length - 1]!)
         throw new Error('The demo contains out-of-order replay ticks.')
       if (!capture.players.length) {
@@ -412,13 +409,10 @@ export function createRoundTracker() {
       }
       const { players } = capture
       const byId = new Map(snapshots.map((player) => [player.steamId, player]))
-      if (ticks.at(-1) === tick) {
-        positions.length -= players.length * 3
-        alive.length -= players.length
-        health.length -= players.length
-        yaw.length -= players.length
-        teams.length -= players.length
-      } else ticks.push(tick)
+      if (ticks.at(-1) === tick)
+        for (const name of playerTrackNames)
+          tracks[name].length -= players.length * playerTrackLayout[name].width
+      else ticks.push(tick)
       for (const [index, player] of players.entries()) {
         const current = byId.get(player.steamId)
         const previousSnapshot = lastSnapshots.get(player.steamId)

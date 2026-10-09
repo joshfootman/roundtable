@@ -1,5 +1,11 @@
 import { Schema } from 'effect'
 import { firearms } from '../replay/equipment.ts'
+import {
+  mapPlayerTracks,
+  playerTrackLayout,
+  playerTrackNames,
+  type PlayerTracks,
+} from '../replay/tracks.ts'
 import type { ReplayRound } from '../replay/types'
 
 const number = Schema.Finite
@@ -189,7 +195,9 @@ const align = (offset: number) => Math.ceil(offset / 4) * 4
 const magic = 0x314c5052
 
 export function encodeRound(round: ReplayRound): ArrayBuffer {
-  const { ticks, positions, alive, health, yaw, teams, projectiles, ...metadata } = round
+  const { ticks, projectiles, ...rest } = round
+  const metadata: Partial<ReplayRound> = { ...rest }
+  for (const name of playerTrackNames) delete metadata[name]
   const header = new TextEncoder().encode(
     JSON.stringify({
       ...metadata,
@@ -202,11 +210,7 @@ export function encodeRound(round: ReplayRound): ArrayBuffer {
   )
   const tracks = [
     ticks,
-    positions,
-    alive,
-    health,
-    yaw,
-    teams,
+    ...playerTrackNames.map((name) => round[name]),
     ...projectiles.flatMap(({ ticks, positions }) => [ticks, positions]),
   ]
   const buffer = new ArrayBuffer(
@@ -265,11 +269,9 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
   } = header
   const states = frames * header.players.length
   const ticks = track(Uint32Array, frames)
-  const positions = track(Float32Array, states * 3)
-  const alive = track(Uint8Array, states)
-  const health = track(Int32Array, states)
-  const yaw = track(Float32Array, states)
-  const teams = track(Uint8Array, states)
+  const playerTracks = mapPlayerTracks((name) =>
+    track(playerTrackLayout[name].type, states * playerTrackLayout[name].width),
+  ) as PlayerTracks
   const decodedProjectiles = projectiles.map(({ frames, ...projectile }) => ({
     ...projectile,
     ticks: track(Uint32Array, frames),
@@ -336,8 +338,8 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
   )
     throw new Error('Invalid replay asset inspection or utility data.')
   if (
-    [positions, yaw, ...decodedProjectiles.map((p) => p.positions)].some((values) =>
-      values.some((value) => !Number.isFinite(value)),
+    [playerTracks.positions, playerTracks.yaw, ...decodedProjectiles.map((p) => p.positions)].some(
+      (values) => values.some((value) => !Number.isFinite(value)),
     )
   )
     throw new Error('Invalid replay asset coordinates.')
@@ -345,11 +347,7 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
     ...metadata,
     droppedItems,
     ticks,
-    positions,
-    alive,
-    health,
-    yaw,
-    teams,
+    ...playerTracks,
     projectiles: decodedProjectiles,
   }
 }

@@ -1,3 +1,5 @@
+import type { PlayerTracks } from './tracks.ts'
+
 export type FlashState =
   | { type: 'none' }
   | { type: 'flashed'; startTick: number; durationSeconds: number }
@@ -102,7 +104,7 @@ export interface ReplayDeath {
   headshot: boolean
 }
 
-export interface ReplayRound {
+export interface ReplayRound extends PlayerTracks {
   number: number
   teamNames?: { ct?: string; t?: string }
   score?: { ct: number; t: number }
@@ -125,9 +127,4 @@ export interface ReplayRound {
   deaths: ReplayDeath[]
   players: { steamId: string; name: string }[]
   ticks: Uint32Array<ArrayBuffer>
-  positions: Float32Array<ArrayBuffer>
-  alive: Uint8Array<ArrayBuffer>
-  health: Int32Array<ArrayBuffer>
-  yaw: Float32Array<ArrayBuffer>
-  teams: Uint8Array<ArrayBuffer>
 }
