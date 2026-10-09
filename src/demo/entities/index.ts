@@ -131,6 +131,13 @@ const replayFields = new Set([
     'm_nOvertimePlaying',
   ].map((name) => `m_pGameRules.${name}`),
 ])
+// view() groups entities by these fields, so only their arrival or a pawn change regroups them.
+const classifyingFields = new Set([
+  'm_hPlayerPawn',
+  'm_iItemDefinitionIndex',
+  'm_iClip1',
+  'm_hThrower',
+])
 export function createEntityDecoder() {
   let serializers = new Map<string, Serializer>()
   const classes = new Map<number, { name: string; serializer: Serializer }>()
@@ -194,8 +201,15 @@ export function createEntityDecoder() {
         replayFields.has(field.name) ||
         field.name.startsWith('m_pWeaponServices.m_hMyWeapons.') ||
         /^(m_bFireIsBurning|m_firePositions)\./.test(field.name)
-      )
+      ) {
+        if (
+          classifyingFields.has(field.name) &&
+          (!values.has(field.name) ||
+            (field.name === 'm_hPlayerPawn' && values.get(field.name) !== value))
+        )
+          projection = undefined
         values.set(field.name, value)
+      }
     }
   }
   function baseline(key: string, value: Uint8Array) {
@@ -526,7 +540,6 @@ export function createEntityDecoder() {
         receivedFullEntities = true
       }
       if (!classBits) throw new Error('Missing entity server information.')
-      projection = undefined
       const reader = new BitReader(message.entityData)
       let index = -1
       for (let i = 0; i < message.updatedEntries; i++) {
@@ -536,6 +549,7 @@ export function createEntityDecoder() {
           const entity = entities.get(index)
           if (!entity) throw new Error('Cannot remove an unknown replay entity.')
           entity.active = false
+          projection = undefined
           if (command & 2) entities.delete(index)
           continue
         }
@@ -568,9 +582,11 @@ export function createEntityDecoder() {
             active: true,
           }
           entities.set(index, entity)
+          projection = undefined
         } else {
           if (message.hasPvsVisBitsDeprecated && reader.bits(2) & 1) continue
           if (!entity) throw new Error('Cannot update an unknown replay entity.')
+          if (!entity.active) projection = undefined
           entity.active = true
         }
         fields(reader, entity.serializer, entity.values, entity.polymorphic, tick)
