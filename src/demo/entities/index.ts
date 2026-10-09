@@ -131,6 +131,18 @@ const replayFields = new Set([
     'm_nOvertimePlaying',
   ].map((name) => `m_pGameRules.${name}`),
 ])
+const retainedNames = new Map<string, boolean>()
+function retained(name: string) {
+  let keep = retainedNames.get(name)
+  if (keep === undefined) {
+    keep =
+      replayFields.has(name) ||
+      name.startsWith('m_pWeaponServices.m_hMyWeapons.') ||
+      /^(m_bFireIsBurning|m_firePositions)\./.test(name)
+    retainedNames.set(name, keep)
+  }
+  return keep
+}
 // view() groups entities by these fields, so only their arrival or a pawn change regroups them.
 const classifyingFields = new Set([
   'm_hPlayerPawn',
@@ -197,11 +209,7 @@ export function createEntityDecoder() {
       const value = field.decode(reader)
       if (field.name === 'm_flFlashDuration' && tick !== undefined)
         values.set('flashStartTick', tick)
-      if (
-        replayFields.has(field.name) ||
-        field.name.startsWith('m_pWeaponServices.m_hMyWeapons.') ||
-        /^(m_bFireIsBurning|m_firePositions)\./.test(field.name)
-      ) {
+      if (retained(field.name)) {
         if (
           classifyingFields.has(field.name) &&
           (!values.has(field.name) ||
