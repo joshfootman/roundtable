@@ -30,7 +30,8 @@ export interface RoundRules {
 export type ReplayEvent =
   | { type: 'round-start'; number: number; startTick: number }
   | { type: 'round'; round: ReplayRound }
-  | { type: 'reset' }
+  // Rounds numbered above `after` were voided by a restart or a backup restore.
+  | { type: 'reset'; after: number }
 
 type Capture = {
   teamNames?: ReplayRound['teamNames']
@@ -211,9 +212,10 @@ export function createRoundTracker() {
       const scoreReset =
         previous !== undefined && rules.totalRoundsPlayed < previous.totalRoundsPlayed
       if (outsideMatch || scoreReset) {
-        if (capture || publishedRounds) output.push({ type: 'reset' })
+        const after = outsideMatch ? 0 : rules.totalRoundsPlayed
+        if (capture || publishedRounds > after) output.push({ type: 'reset', after })
         capture = undefined
-        publishedRounds = 0
+        publishedRounds = Math.min(publishedRounds, after)
         if (outsideMatch) return output
       }
       const startsRound =

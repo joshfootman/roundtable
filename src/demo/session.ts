@@ -59,16 +59,19 @@ export function updateImport(state: ImportState, action: ImportAction): ImportSt
         discoveredRound: undefined,
         parsing: { status: 'active' },
       }
-    case 'reset':
-      return state.status === 'ready'
-        ? {
-            ...state,
-            rounds: [],
-            selectedStartTick: undefined,
-            discoveredRound: undefined,
-            roundStartTicks: [],
-          }
-        : state
+    case 'reset': {
+      if (state.status !== 'ready') return state
+      const rounds = state.rounds.filter((round) => round.number <= action.after)
+      return {
+        ...state,
+        rounds,
+        selectedStartTick: rounds.some((round) => round.startTick === state.selectedStartTick)
+          ? state.selectedStartTick
+          : undefined,
+        discoveredRound: undefined,
+        roundStartTicks: action.after ? state.roundStartTicks : [],
+      }
+    }
     case 'select-round':
       return state.status === 'ready' &&
         state.rounds.some((round) => round.startTick === action.startTick)

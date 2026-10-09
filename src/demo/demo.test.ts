@@ -85,7 +85,7 @@ test('decodes a real competitive round against independent identities and positi
   )
   expect(Array.from(boundaries)).toEqual([
     { type: 'round-start', number: 1, startTick: 449 },
-    { type: 'reset' },
+    { type: 'reset', after: 0 },
     { type: 'round-start', number: 1, startTick: 537 },
     { type: 'round', number: 1, startTick: 537, endTick: 8282 },
     { type: 'round-start', number: 2, startTick: 8282 },

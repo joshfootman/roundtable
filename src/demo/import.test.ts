@@ -212,3 +212,28 @@ test('cancellation retains completed rounds and releases an unfinished import', 
     }),
   )
 })
+
+test('a backup restore drops only the replayed rounds and keeps a surviving selection', () => {
+  const second = { ...firstRound, number: 2, startTick: 600 }
+  const third = { ...firstRound, number: 3, startTick: 700 }
+  const ready: ImportEvent[] = [
+    { type: 'metadata', metadata, roundStartTicks: [537, 600, 700] },
+    { type: 'round', round: firstRound },
+    { type: 'round', round: second },
+    { type: 'round', round: third },
+  ]
+  const state = ready.reduce<ImportState>(updateImport, {
+    status: 'reading',
+    filename: 'match.dem',
+  })
+  expect(updateImport(state, { type: 'reset', after: 1 })).toMatchObject({
+    rounds: [firstRound],
+    selectedStartTick: 537,
+  })
+  expect(
+    updateImport(updateImport(state, { type: 'select-round', startTick: 700 }), {
+      type: 'reset',
+      after: 1,
+    }),
+  ).toMatchObject({ rounds: [firstRound], selectedStartTick: undefined })
+})

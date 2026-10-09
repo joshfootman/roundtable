@@ -50,7 +50,7 @@ test('discards knife stages and completed match attempts when recorded rules res
   packet(11, {}, ['round_freeze_end'])
   packet(12, { reason: 8, totalRoundsPlayed: 1 }, ['round_end'])
   expect(packet(13, { reason: 8, totalRoundsPlayed: 1 }, ['round_officially_ended'])).toEqual([])
-  expect(packet(14, { warmup: true, started: false })).toEqual([{ type: 'reset' }])
+  expect(packet(14, { warmup: true, started: false })).toEqual([{ type: 'reset', after: 0 }])
   expect(retained).toEqual([])
   packet(20, {}, ['round_start'])
   packet(21, {}, ['round_freeze_end'])
@@ -60,7 +60,9 @@ test('discards knife stages and completed match attempts when recorded rules res
     { type: 'round', round: { number: 1, startTick: 20, endTick: 23 } },
   ])
   packet(24, { totalRoundsPlayed: 1 }, ['round_freeze_end'])
-  expect(packet(25, { started: false, totalRoundsPlayed: 1 })).toEqual([{ type: 'reset' }])
+  expect(packet(25, { started: false, totalRoundsPlayed: 1 })).toEqual([
+    { type: 'reset', after: 0 },
+  ])
   expect(retained).toEqual([])
   expect(packet(30, {}, ['round_start'])).toEqual([
     { type: 'round-start', number: 1, startTick: 30 },
@@ -111,7 +113,7 @@ test('discards knife stages and completed match attempts when recorded rules res
     },
   })
   expect(packet(34, {}, ['round_start'])).toEqual([
-    { type: 'reset' },
+    { type: 'reset', after: 0 },
     { type: 'round-start', number: 1, startTick: 34 },
   ])
   expect(retained).toEqual([])
@@ -413,4 +415,54 @@ test('records movement, pickup, re-drop and entity reuse with one final snapshot
     { tick: 16, items: [] },
     { tick: 17, items: [{ entity: 3, serial: 6, definition: 9, x: 10, y: 20, z: 30 }] },
   ])
+})
+
+test('keeps rounds before a backup restore and voids only the replayed ones', () => {
+  const tracker = createRoundTracker()
+  const published: number[] = []
+  function packet(tick: number, changes: Partial<RoundRules>, events: string[] = []) {
+    const output = tracker.update(tick, { ...rules, ...changes }, events, 1 / 64)
+    for (const event of output) {
+      if (event.type === 'reset') published.splice(event.after)
+      else if (event.type === 'round') published.push(event.round.number)
+    }
+    if (tracker.recording)
+      tracker.sample(tick, [
+        {
+          steamId: '76561198201620490',
+          name: 'broky',
+          team: 2,
+          x: tick,
+          y: 20,
+          z: 30,
+          alive: true,
+          health: 100,
+          yaw: 90,
+          money: 800,
+          armour: 0,
+          helmet: false,
+          flash: { type: 'none' as const },
+          grenades: [],
+          weapons: [],
+          weapon: { type: 'none' },
+        },
+      ])
+    tracker.bomb(tick, { type: 'inactive' })
+    return output
+  }
+  function playRound(start: number, played: number) {
+    packet(start, { totalRoundsPlayed: played }, ['round_start'])
+    packet(start + 1, { totalRoundsPlayed: played }, ['round_freeze_end'])
+    packet(start + 2, { reason: 8, totalRoundsPlayed: played + 1 }, ['round_end'])
+  }
+  playRound(10, 0)
+  playRound(20, 1)
+  playRound(30, 2)
+  packet(40, { totalRoundsPlayed: 3 }, ['round_start'])
+  expect(published).toEqual([1, 2, 3])
+  expect(packet(50, { totalRoundsPlayed: 1 }, ['round_start'])).toEqual([
+    { type: 'reset', after: 1 },
+    { type: 'round-start', number: 2, startTick: 50 },
+  ])
+  expect(published).toEqual([1])
 })
