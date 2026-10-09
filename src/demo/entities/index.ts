@@ -76,6 +76,7 @@ export interface PlayerSnapshot {
   alive: boolean
   health: number
   yaw: number
+  pitch: number
   money: number
   armour: number
   helmet: boolean
@@ -438,7 +439,7 @@ export function createEntityDecoder() {
       const health = pawn.values.get('m_iHealth')
       const life = pawn.values.get('m_lifeState')
       const angles = pawn.values.get('m_angEyeAngles')
-      if (!Array.isArray(angles) || !Number.isFinite(angles[1]))
+      if (!Array.isArray(angles) || !Number.isFinite(angles[0]) || !Number.isFinite(angles[1]))
         throw new Error('A replay player is missing their recorded facing direction.')
       if (typeof health !== 'number' || typeof life !== 'number')
         throw new Error('A replay player is missing their recorded life state.')
@@ -475,6 +476,7 @@ export function createEntityDecoder() {
         alive: health > 0 && life === 0,
         health,
         yaw: angles[1]!,
+        pitch: angles[0]!,
         money,
         armour,
         helmet,

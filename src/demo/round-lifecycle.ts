@@ -7,6 +7,8 @@ import {
   type PlayerTracks,
 } from '../replay/tracks.ts'
 import type {
+  ReplayActor,
+  ReplayDamage,
   ReplayDeath,
   ReplayRound,
   ReplayWeapon,
@@ -59,12 +61,50 @@ type Capture = {
   bomb: ReplayRound['bomb']
   inspection: ReplayRound['inspection']
   deaths: ReplayDeath[]
+  damage: ReplayDamage[]
   lastSnapshots: Map<string, PlayerSnapshot>
 } & (
   | { phase: 'freeze' }
   | { phase: 'live'; liveStartTick: number }
   | { phase: 'postround'; liveStartTick: number; resultTick: number }
 )
+
+/** Appends a roster column, marking the player absent for the samples recorded before they joined. */
+function addPlayer(capture: Capture, snapshot: PlayerSnapshot, samples: number) {
+  const before = capture.players.length
+  capture.players.push({ steamId: snapshot.steamId, name: snapshot.name })
+  capture.inspection.push([])
+  capture.lastSnapshots.set(snapshot.steamId, snapshot)
+  if (!samples) return
+  const absent: { [K in keyof PlayerTracks]: number[] } = {
+    positions: [snapshot.x, snapshot.y, snapshot.z],
+    alive: [0],
+    health: [0],
+    yaw: [snapshot.yaw],
+    pitch: [snapshot.pitch],
+    teams: [snapshot.team],
+    present: [0],
+  }
+  for (const name of playerTrackNames) {
+    const width = playerTrackLayout[name].width
+    const old = capture.tracks[name]
+    const grown: number[] = []
+    for (let sample = 0; sample < samples; sample++)
+      grown.push(
+        ...old.slice(sample * before * width, (sample + 1) * before * width),
+        ...absent[name],
+      )
+    capture.tracks[name] = grown
+  }
+}
+
+function inRoster(capture: Capture, steamId: string) {
+  return capture.players.some((player) => player.steamId === steamId)
+}
+
+function actorInRoster(capture: Capture, actor: ReplayActor) {
+  return actor.type === 'world' || inRoster(capture, actor.steamId)
+}
 
 function sameWeapon(x: ReplayWeapon, y: ReplayWeapon): boolean {
   return (
@@ -126,6 +166,7 @@ export function createRoundTracker() {
       tickInterval,
       players: round.players,
       deaths: round.deaths,
+      damage: round.damage,
       inspection: round.inspection,
       bomb: round.bomb,
       bombEvents: round.bombEvents,
@@ -247,6 +288,7 @@ export function createRoundTracker() {
           bomb: [],
           inspection: [],
           deaths: [],
+          damage: [],
           lastSnapshots: new Map(),
         }
         output.push({ type: 'round-start', number: capture.number, startTick: tick })
@@ -386,33 +428,37 @@ export function createRoundTracker() {
     },
     death(event: ReplayDeath) {
       if (!capture) return
-      const killer = event.killer
       if (
-        !capture.players.some((player) => player.steamId === event.victim) ||
-        (killer.type === 'player' &&
-          !capture.players.some((player) => player.steamId === killer.steamId))
+        !inRoster(capture, event.victim) ||
+        !actorInRoster(capture, event.killer) ||
+        (event.assister !== undefined && !inRoster(capture, event.assister))
       )
         throw new Error('A death event refers to a player outside the recorded round roster.')
       capture.deaths.push(event)
     },
+    damage(event: ReplayDamage) {
+      if (!capture) return
+      if (!inRoster(capture, event.victim) || !actorInRoster(capture, event.attacker))
+        throw new Error('A damage event refers to a player outside the recorded round roster.')
+      capture.damage.push(event)
+    },
+
     sample(tick: number, snapshots: PlayerSnapshot[]) {
       if (!capture) return
-      const { ticks, tracks, lastSnapshots } = capture
-      const { positions, alive, health, yaw, teams } = tracks
+      const { ticks, lastSnapshots } = capture
       if (ticks.length && tick < ticks[ticks.length - 1]!)
         throw new Error('The demo contains out-of-order replay ticks.')
-      if (!capture.players.length) {
-        if (!snapshots.length)
-          throw new Error('The competitive round has no recorded player positions.')
-        capture.players = snapshots.map(({ steamId, name }) => ({ steamId, name }))
-        capture.inspection = snapshots.map(() => [])
-      }
-      const { players } = capture
-      const byId = new Map(snapshots.map((player) => [player.steamId, player]))
+      if (!capture.players.length && !snapshots.length)
+        throw new Error('The competitive round has no recorded player positions.')
       if (ticks.at(-1) === tick)
         for (const name of playerTrackNames)
-          tracks[name].length -= players.length * playerTrackLayout[name].width
+          capture.tracks[name].length -= capture.players.length * playerTrackLayout[name].width
       else ticks.push(tick)
+      for (const snapshot of snapshots)
+        if (!inRoster(capture, snapshot.steamId)) addPlayer(capture, snapshot, ticks.length - 1)
+      const { positions, alive, health, yaw, pitch, teams, present } = capture.tracks
+      const { players } = capture
+      const byId = new Map(snapshots.map((player) => [player.steamId, player]))
       for (const [index, player] of players.entries()) {
         const current = byId.get(player.steamId)
         const previousSnapshot = lastSnapshots.get(player.steamId)
@@ -424,12 +470,13 @@ export function createRoundTracker() {
         )
           capture.outcome.mvp = { name: player.name }
         if (current) lastSnapshots.set(player.steamId, current)
-        const recorded = current ?? lastSnapshots.get(player.steamId)
-        if (!recorded) throw new Error('A competitive player has no recorded position.')
+        const recorded = current ?? lastSnapshots.get(player.steamId)!
+        present.push(current ? 1 : 0)
         positions.push(recorded.x, recorded.y, recorded.z)
         alive.push(Number(recorded.alive))
         health.push(recorded.health)
         yaw.push(recorded.yaw)
+        pitch.push(recorded.pitch)
         teams.push(recorded.team)
         const track = capture.inspection[index]!
         if (track.at(-1)?.tick === tick) track.pop()

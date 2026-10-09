@@ -118,6 +118,7 @@ export function readReplay(
               'round_mvp',
               'round_end',
               'player_death',
+              'player_hurt',
               'bomb_planted',
               'bomb_defused',
               'bomb_exploded',
@@ -194,12 +195,26 @@ export function readReplay(
           const attacker = key('attacker', 9).valShort
           const weapon = key('weapon', 1).valString
           if (!weapon.trim()) throw new Error('A recorded death is missing its weapon.')
+          const assister = entities.killerByUserId(key('assister', 9).valShort)
           tracker.death({
             tick,
             victim: entities.playerByUserId(key('userid', 9).valShort),
             killer: entities.killerByUserId(attacker),
+            ...(assister.type === 'player' ? { assister: assister.steamId } : {}),
+            flashAssist: key('assistedflash', 6).valBool,
             weapon,
             headshot: key('headshot', 6).valBool,
+          })
+        } else if (descriptor.name === 'player_hurt') {
+          tracker.damage({
+            tick,
+            victim: entities.playerByUserId(key('userid', 9).valShort),
+            attacker: entities.killerByUserId(key('attacker', 9).valShort),
+            weapon: key('weapon', 1).valString,
+            health: key('dmg_health', 4).valShort,
+            armour: key('dmg_armor', 5).valByte,
+            remaining: key('health', 5).valByte,
+            hitgroup: key('hitgroup', 5).valByte,
           })
         } else if (descriptor.name === 'bomb_exploded')
           tracker.bombEvent({ tick, type: 'exploded' })

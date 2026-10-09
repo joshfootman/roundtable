@@ -39,6 +39,7 @@ test('replays a 2026 recording through movement and a world death', async () => 
       victim: '76561198359519930',
       killer: { type: 'world' },
       headshot: false,
+      flashAssist: false,
       weapon: 'planted_c4',
     },
   ])

@@ -5,7 +5,7 @@ import { open, readFile } from 'node:fs/promises'
 import { Effect, Stream } from 'effect'
 import { DemoReadError } from '../src/demo/errors.ts'
 import { readReplay } from '../src/demo/round.ts'
-import type { BombEvent } from '../src/replay/types.ts'
+import type { BombEvent, ReplayActor } from '../src/replay/types.ts'
 
 const path = process.argv[2] ?? 'fixtures/local/faze-vs-vitality-m2-dust2.dem'
 const expected = JSON.parse(
@@ -43,6 +43,23 @@ const expectedSmokes = JSON.parse(
   await readFile(new URL('../fixtures/replay/smokes.json', import.meta.url), 'utf8'),
 )
 
+type CombatOracle = {
+  damage: {
+    tick: number
+    victim: string
+    attacker: string
+    health: number
+    armour: number
+    remaining: number
+    hitgroup: number
+  }[]
+  kills: { tick: number; victim: string; assister: string; flashAssist: boolean }[]
+}
+const combat = JSON.parse(
+  await readFile(new URL('../fixtures/replay/combat.json', import.meta.url), 'utf8'),
+) as CombatOracle
+const actorId = (actor: ReplayActor) => (actor.type === 'player' ? actor.steamId : '')
+
 await Effect.runPromise(
   Effect.scoped(
     Effect.gen(function* () {
@@ -77,6 +94,8 @@ await Effect.runPromise(
       const smokes: unknown[] = []
       const detonations: unknown[] = []
       const projectiles: unknown[] = []
+      const damage: CombatOracle['damage'] = []
+      const kills: CombatOracle['kills'] = []
       const completed: typeof expected = []
       const discovered: { number: number; startTick: number }[] = []
       yield* Stream.runForEach(readReplay(source), (event) =>
@@ -93,6 +112,8 @@ await Effect.runPromise(
             smokes.length = 0
             detonations.length = 0
             projectiles.length = 0
+            damage.length = 0
+            kills.length = 0
           } else {
             const { number, startTick, liveStartTick, resultTick, endTick, overtime } = event.round
             bufferBytes += replayBuffers(event.round).reduce(
@@ -129,6 +150,27 @@ await Effect.runPromise(
                 round: number,
               })),
             )
+            damage.push(
+              ...event.round.damage.map(
+                ({ tick, victim, attacker, health, armour, remaining, hitgroup }) => ({
+                  tick,
+                  victim,
+                  attacker: actorId(attacker),
+                  health,
+                  armour,
+                  remaining,
+                  hitgroup,
+                }),
+              ),
+            )
+            kills.push(
+              ...event.round.deaths.map(({ tick, victim, assister, flashAssist }) => ({
+                tick,
+                victim,
+                assister: assister ?? '',
+                flashAssist,
+              })),
+            )
             bombEvents.push(...event.round.bombEvents.map((event) => ({ ...event, round: number })))
             inspectionRecords += event.round.inspection.reduce(
               (count, track) => count + track.length,
@@ -139,6 +181,10 @@ await Effect.runPromise(
         }),
       )
       assert.deepEqual(completed, expected)
+      const inRound = ({ tick }: { tick: number }) =>
+        completed.some((round) => round.startTick <= tick && tick < round.endTick)
+      assert.deepEqual(damage, combat.damage.filter(inRound), 'damage matches demoinfocs')
+      assert.deepEqual(kills, combat.kills.filter(inRound), 'kill assists match demoinfocs')
       assert.deepEqual(bombEvents, expectedBombEvents)
       assert.deepEqual(shots, expectedShots)
       assert.deepEqual(fires, expectedFires)
@@ -150,7 +196,7 @@ await Effect.runPromise(
         ...expected.map(({ number, startTick }) => ({ number, startTick })),
       ])
       console.log(
-        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes. All ${bombEvents.length} bomb interactions, ${projectiles.length} projectile lifetimes and ${detonations.length} detonations match. Inspection uses ${inspectionRecords.toLocaleString('en-GB')} sparse records.`,
+        `Verified ${completed.length} completed rounds against the independent boundary oracle. Published buffers use ${bufferBytes.toLocaleString('en-GB')} bytes. All ${bombEvents.length} bomb interactions, ${projectiles.length} projectile lifetimes and ${detonations.length} detonations match. ${damage.length} damage events and ${kills.length} kills with their assists match demoinfocs. Inspection uses ${inspectionRecords.toLocaleString('en-GB')} sparse records.`,
       )
     }),
   ),

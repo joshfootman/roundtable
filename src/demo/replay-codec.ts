@@ -12,6 +12,10 @@ const number = Schema.Finite
 const integer = Schema.Int.pipe(Schema.nonNegative())
 const text = Schema.NonEmptyString
 const point = { x: number, y: number, z: number }
+const actor = Schema.Union(
+  Schema.Struct({ type: Schema.Literal('player'), steamId: text }),
+  Schema.Struct({ type: Schema.Literal('world') }),
+)
 const player = Schema.Struct({ steamId: text, name: text })
 const weapon = Schema.Union(
   Schema.Struct({ type: Schema.Literal('none') }),
@@ -74,18 +78,16 @@ const Header = Schema.mutable(
         }),
       ),
     ),
-    droppedItems: Schema.optional(
-      Schema.mutable(
-        Schema.Array(
-          Schema.Struct({
-            tick: integer,
-            items: Schema.mutable(
-              Schema.Array(
-                Schema.Struct({ entity: integer, serial: integer, definition: integer, ...point }),
-              ),
+    droppedItems: Schema.mutable(
+      Schema.Array(
+        Schema.Struct({
+          tick: integer,
+          items: Schema.mutable(
+            Schema.Array(
+              Schema.Struct({ entity: integer, serial: integer, definition: integer, ...point }),
             ),
-          }),
-        ),
+          ),
+        }),
       ),
     ),
     fires: Schema.mutable(
@@ -178,12 +180,26 @@ const Header = Schema.mutable(
         Schema.Struct({
           tick: integer,
           victim: text,
-          killer: Schema.Union(
-            Schema.Struct({ type: Schema.Literal('player'), steamId: text }),
-            Schema.Struct({ type: Schema.Literal('world') }),
-          ),
+          killer: actor,
+          assister: Schema.optional(text),
+          flashAssist: Schema.Boolean,
           weapon: text,
           headshot: Schema.Boolean,
+        }),
+      ),
+    ),
+    damage: Schema.mutable(
+      Schema.Array(
+        Schema.Struct({
+          tick: integer,
+          victim: text,
+          attacker: actor,
+          // World damage such as falling records no weapon.
+          weapon: Schema.String,
+          health: integer,
+          armour: integer,
+          remaining: integer,
+          hitgroup: integer,
         }),
       ),
     ),
@@ -192,7 +208,7 @@ const Header = Schema.mutable(
 )
 
 const align = (offset: number) => Math.ceil(offset / 4) * 4
-const magic = 0x314c5052
+const magic = 0x324c5052
 
 export function encodeRound(round: ReplayRound): ArrayBuffer {
   const { ticks, projectiles, ...rest } = round
@@ -261,12 +277,7 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
     offset += bytes
     return result
   }
-  const {
-    frames,
-    projectiles,
-    droppedItems = [{ tick: header.startTick, items: [] }],
-    ...metadata
-  } = header
+  const { frames, projectiles, droppedItems, ...metadata } = header
   const states = frames * header.players.length
   const ticks = track(Uint32Array, frames)
   const playerTracks = mapPlayerTracks((name) =>
@@ -303,6 +314,7 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
     header.bombEvents,
     header.bomb,
     header.deaths,
+    header.damage,
     ...header.inspection,
   ]) {
     if (

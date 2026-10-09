@@ -1,0 +1,5376 @@
+{
+  "damage": [
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 49,
+      "tick": 163,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 27,
+      "tick": 168,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 5,
+      "tick": 174,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198068422762",
+      "health": 22,
+      "hitgroup": 7,
+      "remaining": 0,
+      "tick": 186,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 78,
+      "tick": 213,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989744167",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 77,
+      "tick": 214,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 55,
+      "tick": 219,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989744167",
+      "health": 22,
+      "hitgroup": 5,
+      "remaining": 55,
+      "tick": 220,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 33,
+      "tick": 226,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989744167",
+      "health": 22,
+      "hitgroup": 5,
+      "remaining": 33,
+      "tick": 233,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561197989744167",
+      "health": 10,
+      "hitgroup": 5,
+      "remaining": 23,
+      "tick": 239,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 12,
+      "attacker": "76561198068422762",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 13,
+      "tick": 246,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 110,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 259,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561198063336407",
+      "health": 78,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 271,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 30,
+      "hitgroup": 2,
+      "remaining": 70,
+      "tick": 7312,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 123,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 7325,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 113,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 7695,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561198201620490",
+      "health": 13,
+      "hitgroup": 2,
+      "remaining": 87,
+      "tick": 7743,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 134,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 7749,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 106,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 7764,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 113,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 7782,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 117,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 7834,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 24,
+      "attacker": "76561197989430253",
+      "health": 280,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 10037,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 66,
+      "tick": 12683,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 12700,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 12723,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197991272318",
+      "health": 19,
+      "hitgroup": 5,
+      "remaining": 81,
+      "tick": 12725,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197989430253",
+      "health": 74,
+      "hitgroup": 2,
+      "remaining": 26,
+      "tick": 12833,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 41,
+      "hitgroup": 3,
+      "remaining": 59,
+      "tick": 12842,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 40,
+      "hitgroup": 3,
+      "remaining": 19,
+      "tick": 12853,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198201620490",
+      "health": 11,
+      "hitgroup": 2,
+      "remaining": 70,
+      "tick": 12859,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 130,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 12859,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 25,
+      "attacker": "76561198201620490",
+      "health": 45,
+      "hitgroup": 1,
+      "remaining": 25,
+      "tick": 12869,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198201620490",
+      "health": 12,
+      "hitgroup": 2,
+      "remaining": 13,
+      "tick": 12878,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 29,
+      "hitgroup": 2,
+      "remaining": 44,
+      "tick": 12878,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 35,
+      "hitgroup": 3,
+      "remaining": 9,
+      "tick": 12884,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 23,
+      "attacker": "76561197991272318",
+      "health": 84,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 12890,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 47,
+      "hitgroup": 3,
+      "remaining": 26,
+      "tick": 13331,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 37,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 13337,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 25,
+      "attacker": "76561197991272318",
+      "health": 91,
+      "hitgroup": 1,
+      "remaining": 9,
+      "tick": 13409,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 37,
+      "hitgroup": 2,
+      "remaining": 63,
+      "tick": 13409,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 36,
+      "hitgroup": 2,
+      "remaining": 27,
+      "tick": 13422,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 37,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 13435,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198201620490",
+      "health": 12,
+      "hitgroup": 5,
+      "remaining": 0,
+      "tick": 13451,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 20,
+      "hitgroup": 2,
+      "remaining": 80,
+      "tick": 13457,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 29,
+      "hitgroup": 2,
+      "remaining": 37,
+      "tick": 13472,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 7,
+      "hitgroup": 3,
+      "remaining": 30,
+      "tick": 13479,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 36,
+      "hitgroup": 5,
+      "remaining": 0,
+      "tick": 13485,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989430253",
+      "health": 48,
+      "hitgroup": 2,
+      "remaining": 52,
+      "tick": 19799,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 110,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 19806,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198201620490",
+      "health": 86,
+      "hitgroup": 1,
+      "remaining": 14,
+      "tick": 19960,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 26,
+      "hitgroup": 6,
+      "remaining": 26,
+      "tick": 20195,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 20201,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561198063336407",
+      "health": 91,
+      "hitgroup": 1,
+      "remaining": 9,
+      "tick": 20588,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561198063336407",
+      "health": 92,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 20594,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198063336407",
+      "health": 86,
+      "hitgroup": 1,
+      "remaining": 14,
+      "tick": 20779,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561198063336407",
+      "health": 10,
+      "hitgroup": 5,
+      "remaining": 4,
+      "tick": 20791,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 8,
+      "attacker": "76561198063336407",
+      "health": 13,
+      "hitgroup": 0,
+      "remaining": 87,
+      "tick": 21674,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561197973140692",
+      "health": 77,
+      "hitgroup": 1,
+      "remaining": 10,
+      "tick": 23444,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 24,
+      "hitgroup": 6,
+      "remaining": 0,
+      "tick": 23457,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561197973140692",
+      "health": 75,
+      "hitgroup": 1,
+      "remaining": 25,
+      "tick": 23813,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561197973140692",
+      "health": 10,
+      "hitgroup": 3,
+      "remaining": 15,
+      "tick": 23866,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561197989744167",
+      "health": 86,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 24244,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 98,
+      "tick": 24245,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 96,
+      "tick": 24258,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 94,
+      "tick": 24271,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 91,
+      "tick": 24297,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 65,
+      "tick": 24733,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 39,
+      "tick": 24752,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198063336407",
+      "health": 84,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 24802,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989430253",
+      "health": 46,
+      "hitgroup": 2,
+      "remaining": 54,
+      "tick": 27109,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 13,
+      "attacker": "76561198113666193",
+      "health": 19,
+      "hitgroup": 0,
+      "remaining": 81,
+      "tick": 29629,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 14,
+      "attacker": "76561198113666193",
+      "health": 21,
+      "hitgroup": 0,
+      "remaining": 79,
+      "tick": 29629,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 27,
+      "hitgroup": 0,
+      "remaining": 73,
+      "tick": 29629,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 109,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 29768,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 65,
+      "tick": 29955,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 140,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 29966,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 92,
+      "tick": 30083,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 448,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 30086,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989744167",
+      "health": 6,
+      "hitgroup": 0,
+      "remaining": 94,
+      "tick": 30115,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197991272318",
+      "health": 123,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 30353,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197989744167",
+      "health": 29,
+      "hitgroup": 3,
+      "remaining": 65,
+      "tick": 30532,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 42,
+      "tick": 30545,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 117,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 30596,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198068422762",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 78,
+      "tick": 30711,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 92,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 30808,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 138,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 34192,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 22,
+      "attacker": "76561197989744167",
+      "health": 34,
+      "hitgroup": 0,
+      "remaining": 66,
+      "tick": 34653,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 92,
+      "tick": 34653,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 66,
+      "tick": 34726,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 39,
+      "tick": 34732,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561198063336407",
+      "health": 90,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 34738,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989430253",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 11,
+      "tick": 34927,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989430253",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 34934,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197978835160",
+      "health": 7,
+      "hitgroup": 0,
+      "remaining": 93,
+      "tick": 35656,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561198113666193",
+      "health": 169,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 36989,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 67,
+      "tick": 37423,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 43,
+      "tick": 37429,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 25,
+      "hitgroup": 5,
+      "remaining": 18,
+      "tick": 37435,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197991272318",
+      "health": 109,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 37436,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 110,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 37690,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 45,
+      "hitgroup": 2,
+      "remaining": 55,
+      "tick": 38118,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198068422762",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 66,
+      "tick": 38128,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 44,
+      "hitgroup": 2,
+      "remaining": 11,
+      "tick": 38135,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561198068422762",
+      "health": 110,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 38147,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561198068422762",
+      "health": 107,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 38294,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197978835160",
+      "health": 32,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 38565,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 98,
+      "tick": 43475,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 4,
+      "hitgroup": 0,
+      "remaining": 94,
+      "tick": 43488,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 4,
+      "hitgroup": 0,
+      "remaining": 96,
+      "tick": 43500,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 4,
+      "hitgroup": 0,
+      "remaining": 90,
+      "tick": 43500,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 7,
+      "remaining": 63,
+      "tick": 43564,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561197973140692",
+      "health": 90,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 43577,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 66,
+      "tick": 43584,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 35,
+      "hitgroup": 2,
+      "remaining": 31,
+      "tick": 43597,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 26,
+      "hitgroup": 5,
+      "remaining": 70,
+      "tick": 43602,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 43604,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561197973140692",
+      "health": 91,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 43634,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198063336407",
+      "health": 10,
+      "hitgroup": 0,
+      "remaining": 90,
+      "tick": 43662,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 22,
+      "attacker": "76561198068422762",
+      "health": 61,
+      "hitgroup": 1,
+      "remaining": 39,
+      "tick": 43689,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 64,
+      "tick": 43689,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 38,
+      "tick": 43702,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198068422762",
+      "health": 15,
+      "hitgroup": 2,
+      "remaining": 24,
+      "tick": 43703,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198068422762",
+      "health": 15,
+      "hitgroup": 2,
+      "remaining": 9,
+      "tick": 43713,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198068422762",
+      "health": 18,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 43722,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 16,
+      "tick": 43765,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198063336407",
+      "health": 88,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 43771,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 77,
+      "tick": 44459,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 54,
+      "tick": 44465,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 78,
+      "tick": 44468,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 117,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 44470,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 77,
+      "tick": 44890,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 21,
+      "hitgroup": 6,
+      "remaining": 56,
+      "tick": 44895,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 52,
+      "tick": 45070,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 27,
+      "tick": 45077,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 26,
+      "hitgroup": 5,
+      "remaining": 1,
+      "tick": 45083,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197978835160",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 0,
+      "tick": 45084,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 12,
+      "attacker": "76561197991272318",
+      "health": 19,
+      "hitgroup": 0,
+      "remaining": 81,
+      "tick": 47536,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 12,
+      "attacker": "76561197991272318",
+      "health": 19,
+      "hitgroup": 0,
+      "remaining": 81,
+      "tick": 47536,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 5,
+      "hitgroup": 0,
+      "remaining": 95,
+      "tick": 47806,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 54,
+      "tick": 48788,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197991272318",
+      "health": 109,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 48801,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 76,
+      "tick": 50041,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 25,
+      "attacker": "76561197989744167",
+      "health": 38,
+      "hitgroup": 0,
+      "remaining": 62,
+      "tick": 50053,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561197989744167",
+      "health": 11,
+      "hitgroup": 0,
+      "remaining": 89,
+      "tick": 50053,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989744167",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 74,
+      "tick": 50053,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197989430253",
+      "health": 108,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 50055,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198063336407",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 51,
+      "tick": 50222,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561198063336407",
+      "health": 83,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 50234,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 39,
+      "tick": 50291,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561198063336407",
+      "health": 81,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 50304,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561198068422762",
+      "health": 52,
+      "hitgroup": 1,
+      "remaining": 48,
+      "tick": 50314,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198068422762",
+      "health": 26,
+      "hitgroup": 7,
+      "remaining": 22,
+      "tick": 50320,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561198063336407",
+      "health": 80,
+      "hitgroup": 1,
+      "remaining": 9,
+      "tick": 50362,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561198063336407",
+      "health": 80,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 50381,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 50605,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 50631,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197978835160",
+      "health": 21,
+      "hitgroup": 2,
+      "remaining": 79,
+      "tick": 50635,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 12,
+      "attacker": "76561197978835160",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 50652,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561197991272318",
+      "health": 110,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 52281,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 46,
+      "tick": 52590,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 27,
+      "hitgroup": 5,
+      "remaining": 19,
+      "tick": 52597,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 27,
+      "hitgroup": 5,
+      "remaining": 0,
+      "tick": 52603,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 140,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 55483,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 78,
+      "tick": 55626,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 56,
+      "tick": 55632,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 77,
+      "tick": 55641,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198063336407",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 55643,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 50,
+      "tick": 55679,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 1,
+      "hitgroup": 0,
+      "remaining": 99,
+      "tick": 55723,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989744167",
+      "health": 1,
+      "hitgroup": 0,
+      "remaining": 99,
+      "tick": 55723,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 77,
+      "tick": 55760,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198063336407",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 55766,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 85,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 56140,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198068422762",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 91,
+      "tick": 57652,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198068422762",
+      "health": 12,
+      "hitgroup": 3,
+      "remaining": 79,
+      "tick": 57684,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198068422762",
+      "health": 10,
+      "hitgroup": 7,
+      "remaining": 69,
+      "tick": 57690,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 91,
+      "tick": 57693,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 82,
+      "tick": 57699,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 8,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 57706,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 65,
+      "tick": 57712,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 56,
+      "tick": 57719,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 9,
+      "hitgroup": 8,
+      "remaining": 47,
+      "tick": 57725,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561197989744167",
+      "health": 91,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 58092,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 12,
+      "hitgroup": 2,
+      "remaining": 57,
+      "tick": 58816,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 25,
+      "hitgroup": 5,
+      "remaining": 75,
+      "tick": 58835,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989430253",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 77,
+      "tick": 58835,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 68,
+      "tick": 58841,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 49,
+      "tick": 58859,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561197989744167",
+      "health": 12,
+      "hitgroup": 5,
+      "remaining": 63,
+      "tick": 58861,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 41,
+      "tick": 58872,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 33,
+      "tick": 58885,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 10,
+      "tick": 58889,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 58897,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 34,
+      "tick": 59224,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 6,
+      "tick": 59231,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 59247,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 10,
+      "hitgroup": 2,
+      "remaining": 90,
+      "tick": 59883,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 11,
+      "hitgroup": 2,
+      "remaining": 79,
+      "tick": 59890,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561198201620490",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 70,
+      "tick": 59893,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561198201620490",
+      "health": 11,
+      "hitgroup": 2,
+      "remaining": 59,
+      "tick": 59912,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561198201620490",
+      "health": 10,
+      "hitgroup": 2,
+      "remaining": 49,
+      "tick": 59919,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 10,
+      "hitgroup": 2,
+      "remaining": 39,
+      "tick": 59922,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 2,
+      "attacker": "76561198201620490",
+      "health": 10,
+      "hitgroup": 2,
+      "remaining": 29,
+      "tick": 59925,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 52,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 59928,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 1,
+      "hitgroup": 0,
+      "remaining": 99,
+      "tick": 61804,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 36,
+      "hitgroup": 2,
+      "remaining": 64,
+      "tick": 62497,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 28,
+      "hitgroup": 5,
+      "remaining": 72,
+      "tick": 62503,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 44,
+      "tick": 62516,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 17,
+      "tick": 62523,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 62529,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 141,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 62535,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 66,
+      "tick": 62859,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 66,
+      "tick": 63015,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 35,
+      "hitgroup": 2,
+      "remaining": 31,
+      "tick": 63236,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 30,
+      "attacker": "76561197978835160",
+      "health": 63,
+      "hitgroup": 1,
+      "remaining": 37,
+      "tick": 63266,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 141,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 63271,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 35,
+      "hitgroup": 2,
+      "remaining": 64,
+      "tick": 63331,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 35,
+      "hitgroup": 5,
+      "remaining": 29,
+      "tick": 63338,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989744167",
+      "health": 40,
+      "hitgroup": 2,
+      "remaining": 60,
+      "tick": 63383,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 5,
+      "tick": 63406,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 63421,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 32,
+      "attacker": "76561197973140692",
+      "health": 66,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 63435,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 31,
+      "attacker": "76561197973140692",
+      "health": 63,
+      "hitgroup": 1,
+      "remaining": 37,
+      "tick": 63481,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 19,
+      "hitgroup": 7,
+      "remaining": 47,
+      "tick": 63489,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 31,
+      "attacker": "76561197973140692",
+      "health": 64,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 63497,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 22,
+      "tick": 63499,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 63528,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198113666193",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 77,
+      "tick": 65805,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198113666193",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 54,
+      "tick": 65812,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198113666193",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 32,
+      "tick": 65818,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198068422762",
+      "health": 14,
+      "hitgroup": 2,
+      "remaining": 86,
+      "tick": 65834,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 53,
+      "tick": 65840,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 65859,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 8,
+      "hitgroup": 2,
+      "remaining": 65,
+      "tick": 65863,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 56,
+      "tick": 65869,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 97,
+      "tick": 65871,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197978835160",
+      "health": 31,
+      "hitgroup": 3,
+      "remaining": 66,
+      "tick": 65878,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 4,
+      "hitgroup": 0,
+      "remaining": 62,
+      "tick": 65883,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 5,
+      "hitgroup": 0,
+      "remaining": 57,
+      "tick": 65896,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 5,
+      "hitgroup": 0,
+      "remaining": 52,
+      "tick": 65909,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198068422762",
+      "health": 26,
+      "hitgroup": 7,
+      "remaining": 30,
+      "tick": 65918,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 7,
+      "hitgroup": 0,
+      "remaining": 45,
+      "tick": 65922,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 7,
+      "hitgroup": 0,
+      "remaining": 38,
+      "tick": 65935,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 65937,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 30,
+      "tick": 65947,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 22,
+      "tick": 65960,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 14,
+      "tick": 65973,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 24,
+      "hitgroup": 5,
+      "remaining": 0,
+      "tick": 65976,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 110,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 66150,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 142,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 66295,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198063336407",
+      "health": 72,
+      "hitgroup": 2,
+      "remaining": 28,
+      "tick": 66359,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989430253",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 66373,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989430253",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 46,
+      "tick": 66534,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989430253",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 12,
+      "tick": 66553,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989430253",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 66559,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 14,
+      "hitgroup": 5,
+      "remaining": 86,
+      "tick": 66816,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 4,
+      "tick": 66818,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989430253",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 59,
+      "tick": 66822,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 66824,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 95,
+      "hitgroup": 3,
+      "remaining": 5,
+      "tick": 74557,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198063336407",
+      "health": 36,
+      "hitgroup": 2,
+      "remaining": 64,
+      "tick": 75238,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 2,
+      "remaining": 92,
+      "tick": 75249,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 2,
+      "remaining": 84,
+      "tick": 75256,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198063336407",
+      "health": 36,
+      "hitgroup": 2,
+      "remaining": 28,
+      "tick": 75438,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989430253",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 57,
+      "tick": 75438,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 138,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 75457,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 35,
+      "hitgroup": 2,
+      "remaining": 65,
+      "tick": 76447,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 35,
+      "hitgroup": 2,
+      "remaining": 30,
+      "tick": 76460,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198113666193",
+      "health": 156,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 76480,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989744167",
+      "health": 56,
+      "hitgroup": 5,
+      "remaining": 44,
+      "tick": 76841,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 36,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 77103,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 7,
+      "hitgroup": 0,
+      "remaining": 93,
+      "tick": 77247,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 112,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 77682,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198113666193",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 77809,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198201620490",
+      "health": 112,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 77840,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198068422762",
+      "health": 139,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 78258,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "",
+      "health": 13,
+      "hitgroup": 0,
+      "remaining": 87,
+      "tick": 79200,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198068422762",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 79353,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 0,
+      "hitgroup": 0,
+      "remaining": 100,
+      "tick": 81572,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 97,
+      "tick": 81659,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 1,
+      "hitgroup": 0,
+      "remaining": 99,
+      "tick": 81733,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197973140692",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 97,
+      "tick": 82108,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "",
+      "health": 16,
+      "hitgroup": 0,
+      "remaining": 84,
+      "tick": 84504,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 24,
+      "hitgroup": 7,
+      "remaining": 60,
+      "tick": 84520,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197973140692",
+      "health": 23,
+      "hitgroup": 5,
+      "remaining": 37,
+      "tick": 84533,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989430253",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 63,
+      "tick": 84535,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197973140692",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 15,
+      "tick": 84540,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 84541,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 86224,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561197973140692",
+      "health": 88,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 86231,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 25,
+      "hitgroup": 4,
+      "remaining": 75,
+      "tick": 86278,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561197973140692",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 86285,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198063336407",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 86373,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198063336407",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 86399,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 141,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 86450,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197997351207",
+      "health": 107,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 87070,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 136,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 87453,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 4,
+      "hitgroup": 2,
+      "remaining": 96,
+      "tick": 103203,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561197989744167",
+      "health": 13,
+      "hitgroup": 2,
+      "remaining": 83,
+      "tick": 103229,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 105,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 103242,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561197997351207",
+      "health": 15,
+      "hitgroup": 2,
+      "remaining": 85,
+      "tick": 104329,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198113666193",
+      "health": 14,
+      "hitgroup": 2,
+      "remaining": 86,
+      "tick": 104939,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989430253",
+      "health": 10,
+      "hitgroup": 2,
+      "remaining": 90,
+      "tick": 104954,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989430253",
+      "health": 9,
+      "hitgroup": 5,
+      "remaining": 81,
+      "tick": 104987,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 91,
+      "tick": 105168,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561197989744167",
+      "health": 15,
+      "hitgroup": 2,
+      "remaining": 71,
+      "tick": 105183,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 9,
+      "hitgroup": 2,
+      "remaining": 82,
+      "tick": 105184,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 77,
+      "hitgroup": 1,
+      "remaining": 5,
+      "tick": 105200,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197989744167",
+      "health": 10,
+      "hitgroup": 2,
+      "remaining": 61,
+      "tick": 105210,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 9,
+      "hitgroup": 4,
+      "remaining": 0,
+      "tick": 105218,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197973140692",
+      "health": 10,
+      "hitgroup": 4,
+      "remaining": 51,
+      "tick": 105301,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 79,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 105315,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 24,
+      "hitgroup": 7,
+      "remaining": 76,
+      "tick": 106710,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 106752,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561197989744167",
+      "health": 16,
+      "hitgroup": 2,
+      "remaining": 60,
+      "tick": 106768,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 9,
+      "attacker": "76561197989744167",
+      "health": 20,
+      "hitgroup": 3,
+      "remaining": 40,
+      "tick": 106779,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 104,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 106779,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 9,
+      "attacker": "76561197989744167",
+      "health": 20,
+      "hitgroup": 3,
+      "remaining": 20,
+      "tick": 106790,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 8,
+      "attacker": "76561197973140692",
+      "health": 17,
+      "hitgroup": 3,
+      "remaining": 3,
+      "tick": 106803,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198113666193",
+      "health": 20,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 106822,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198063336407",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 98,
+      "tick": 110644,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 8,
+      "attacker": "76561197997351207",
+      "health": 17,
+      "hitgroup": 2,
+      "remaining": 83,
+      "tick": 110809,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 8,
+      "attacker": "76561197997351207",
+      "health": 16,
+      "hitgroup": 2,
+      "remaining": 67,
+      "tick": 110819,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989744167",
+      "health": 119,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 110820,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 32,
+      "attacker": "76561197997351207",
+      "health": 66,
+      "hitgroup": 1,
+      "remaining": 1,
+      "tick": 110830,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 32,
+      "attacker": "76561197997351207",
+      "health": 66,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 110841,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561197989430253",
+      "health": 16,
+      "hitgroup": 2,
+      "remaining": 84,
+      "tick": 111121,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 29,
+      "hitgroup": 3,
+      "remaining": 71,
+      "tick": 111131,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 94,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 111136,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 30,
+      "hitgroup": 2,
+      "remaining": 70,
+      "tick": 113773,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 117,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 113779,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198063336407",
+      "health": 10,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 113805,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 21,
+      "hitgroup": 5,
+      "remaining": 79,
+      "tick": 113805,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 94,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 113806,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 52,
+      "tick": 114300,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 29,
+      "tick": 114312,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197991272318",
+      "health": 28,
+      "hitgroup": 3,
+      "remaining": 1,
+      "tick": 114318,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 22,
+      "hitgroup": 5,
+      "remaining": 0,
+      "tick": 114323,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "",
+      "health": 11,
+      "hitgroup": 0,
+      "remaining": 89,
+      "tick": 114498,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561198063336407",
+      "health": 26,
+      "hitgroup": 0,
+      "remaining": 74,
+      "tick": 116927,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 22,
+      "hitgroup": 0,
+      "remaining": 78,
+      "tick": 117208,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 22,
+      "hitgroup": 7,
+      "remaining": 78,
+      "tick": 117290,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197973140692",
+      "health": 107,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 117306,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 53,
+      "tick": 117658,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197978835160",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 72,
+      "tick": 117662,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561197997351207",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 117665,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198201620490",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 52,
+      "tick": 117751,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198201620490",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 27,
+      "tick": 117757,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561198201620490",
+      "health": 90,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 117763,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 75,
+      "tick": 118096,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 51,
+      "tick": 118102,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 26,
+      "tick": 118108,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 24,
+      "hitgroup": 2,
+      "remaining": 2,
+      "tick": 118115,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198201620490",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 118121,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561198201620490",
+      "health": 16,
+      "hitgroup": 2,
+      "remaining": 84,
+      "tick": 118343,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198201620490",
+      "health": 7,
+      "hitgroup": 0,
+      "remaining": 77,
+      "tick": 118382,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561197997351207",
+      "health": 83,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 118388,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 126072,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 46,
+      "tick": 126078,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 19,
+      "tick": 126084,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197997351207",
+      "health": 109,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 126091,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198113666193",
+      "health": 71,
+      "hitgroup": 2,
+      "remaining": 29,
+      "tick": 126141,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 2,
+      "tick": 126141,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561198063336407",
+      "health": 109,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 126147,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197989430253",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 97,
+      "tick": 127372,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197978835160",
+      "health": 71,
+      "hitgroup": 1,
+      "remaining": 29,
+      "tick": 127757,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197991272318",
+      "health": 21,
+      "hitgroup": 5,
+      "remaining": 79,
+      "tick": 127763,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198201620490",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 72,
+      "tick": 127987,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 127987,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561197978835160",
+      "health": 21,
+      "hitgroup": 3,
+      "remaining": 52,
+      "tick": 127989,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197978835160",
+      "health": 16,
+      "hitgroup": 2,
+      "remaining": 36,
+      "tick": 127999,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198201620490",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 45,
+      "tick": 128006,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198201620490",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 11,
+      "tick": 128012,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197978835160",
+      "health": 67,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 128012,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 27,
+      "tick": 130299,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 24,
+      "tick": 130312,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197978835160",
+      "health": 72,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 130373,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989430253",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 54,
+      "tick": 130684,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561197989430253",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 130697,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561198063336407",
+      "health": 106,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 130904,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561198068422762",
+      "health": 106,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 133085,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 106,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 136117,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 6,
+      "hitgroup": 0,
+      "remaining": 94,
+      "tick": 136250,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198068422762",
+      "health": 6,
+      "hitgroup": 0,
+      "remaining": 94,
+      "tick": 137000,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197978835160",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 72,
+      "tick": 138049,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197978835160",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 44,
+      "tick": 138056,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561197978835160",
+      "health": 110,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 138062,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 67,
+      "tick": 139855,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 40,
+      "tick": 139862,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 7,
+      "tick": 139868,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 139875,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 20,
+      "hitgroup": 5,
+      "remaining": 80,
+      "tick": 140350,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 21,
+      "hitgroup": 5,
+      "remaining": 59,
+      "tick": 140356,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 20,
+      "hitgroup": 2,
+      "remaining": 39,
+      "tick": 140362,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 21,
+      "hitgroup": 2,
+      "remaining": 18,
+      "tick": 140368,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 20,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 140373,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 20,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 140424,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561197997351207",
+      "health": 82,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 140430,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 140502,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 45,
+      "tick": 140514,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 17,
+      "tick": 140521,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989430253",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 75,
+      "tick": 140521,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 142,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 140527,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197997351207",
+      "health": 109,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 141682,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 48,
+      "tick": 141962,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 21,
+      "tick": 141968,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 141974,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 2,
+      "hitgroup": 0,
+      "remaining": 98,
+      "tick": 144256,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 95,
+      "tick": 144269,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197989744167",
+      "health": 68,
+      "hitgroup": 2,
+      "remaining": 32,
+      "tick": 144275,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 92,
+      "tick": 144282,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 0,
+      "remaining": 65,
+      "tick": 144767,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 138,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 149399,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561197978835160",
+      "health": 110,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 149401,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 31,
+      "hitgroup": 2,
+      "remaining": 69,
+      "tick": 149679,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 32,
+      "hitgroup": 4,
+      "remaining": 37,
+      "tick": 149684,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 4,
+      "hitgroup": 6,
+      "remaining": 33,
+      "tick": 149702,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 39,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 149713,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198113666193",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 67,
+      "tick": 149839,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197991272318",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 78,
+      "tick": 149908,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 32,
+      "tick": 149912,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 14,
+      "hitgroup": 2,
+      "remaining": 53,
+      "tick": 149918,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 149919,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 14,
+      "hitgroup": 2,
+      "remaining": 39,
+      "tick": 149922,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561198063336407",
+      "health": 56,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 149927,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 67,
+      "tick": 149951,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 32,
+      "hitgroup": 3,
+      "remaining": 35,
+      "tick": 149957,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198113666193",
+      "health": 8,
+      "hitgroup": 3,
+      "remaining": 92,
+      "tick": 149971,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 16,
+      "attacker": "76561198063336407",
+      "health": 50,
+      "hitgroup": 1,
+      "remaining": 42,
+      "tick": 149985,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198113666193",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 16,
+      "tick": 149995,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 13,
+      "hitgroup": 5,
+      "remaining": 65,
+      "tick": 150104,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 14,
+      "hitgroup": 2,
+      "remaining": 51,
+      "tick": 150109,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561198063336407",
+      "health": 52,
+      "hitgroup": 1,
+      "remaining": 48,
+      "tick": 150112,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 13,
+      "hitgroup": 2,
+      "remaining": 35,
+      "tick": 150117,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 13,
+      "hitgroup": 2,
+      "remaining": 38,
+      "tick": 150118,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 14,
+      "hitgroup": 2,
+      "remaining": 21,
+      "tick": 150121,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198063336407",
+      "health": 13,
+      "hitgroup": 5,
+      "remaining": 8,
+      "tick": 150126,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 13,
+      "hitgroup": 2,
+      "remaining": 25,
+      "tick": 150127,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 17,
+      "attacker": "76561198063336407",
+      "health": 52,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 150130,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 109,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 150404,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 150731,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 92,
+      "tick": 153259,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 84,
+      "tick": 153272,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 76,
+      "tick": 153285,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 92,
+      "tick": 153298,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 68,
+      "tick": 153298,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 84,
+      "tick": 153311,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 60,
+      "tick": 153311,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 92,
+      "tick": 153323,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 76,
+      "tick": 153323,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 52,
+      "tick": 153323,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 84,
+      "tick": 153336,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 68,
+      "tick": 153336,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 44,
+      "tick": 153336,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 76,
+      "tick": 153349,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 60,
+      "tick": 153349,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 8,
+      "hitgroup": 0,
+      "remaining": 36,
+      "tick": 153349,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 23,
+      "attacker": "76561198113666193",
+      "health": 42,
+      "hitgroup": 1,
+      "remaining": 58,
+      "tick": 153388,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 34,
+      "hitgroup": 5,
+      "remaining": 42,
+      "tick": 153391,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 8,
+      "tick": 153403,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 7,
+      "hitgroup": 7,
+      "remaining": 29,
+      "tick": 153410,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 42,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 153410,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 46,
+      "hitgroup": 0,
+      "remaining": 54,
+      "tick": 153418,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198063336407",
+      "health": 35,
+      "hitgroup": 2,
+      "remaining": 23,
+      "tick": 153429,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197978835160",
+      "health": 11,
+      "hitgroup": 2,
+      "remaining": 12,
+      "tick": 153441,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 20,
+      "tick": 153442,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 41,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 153448,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197989430253",
+      "health": 15,
+      "hitgroup": 2,
+      "remaining": 14,
+      "tick": 153506,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 34,
+      "hitgroup": 2,
+      "remaining": 26,
+      "tick": 153606,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 43,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 153613,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 43,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 153632,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 28,
+      "attacker": "76561197989744167",
+      "health": 51,
+      "hitgroup": 1,
+      "remaining": 49,
+      "tick": 153771,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 7,
+      "attacker": "76561197989744167",
+      "health": 13,
+      "hitgroup": 2,
+      "remaining": 36,
+      "tick": 153775,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197991272318",
+      "health": 129,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 153778,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 66,
+      "tick": 157187,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989744167",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 157189,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 39,
+      "tick": 157193,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197989744167",
+      "health": 27,
+      "hitgroup": 5,
+      "remaining": 47,
+      "tick": 157202,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197989744167",
+      "health": 107,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 157209,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197978835160",
+      "health": 26,
+      "hitgroup": 8,
+      "remaining": 74,
+      "tick": 158121,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197978835160",
+      "health": 105,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 158147,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198068422762",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 75,
+      "tick": 158409,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197978835160",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 72,
+      "tick": 158410,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198068422762",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 49,
+      "tick": 158415,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198068422762",
+      "health": 25,
+      "hitgroup": 2,
+      "remaining": 24,
+      "tick": 158422,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198068422762",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 158428,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561198068422762",
+      "health": 29,
+      "hitgroup": 3,
+      "remaining": 10,
+      "tick": 158567,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 4,
+      "remaining": 45,
+      "tick": 158569,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561198068422762",
+      "health": 23,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 158573,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 4,
+      "remaining": 18,
+      "tick": 158576,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 4,
+      "hitgroup": 5,
+      "remaining": 14,
+      "tick": 158633,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198068422762",
+      "health": 5,
+      "hitgroup": 2,
+      "remaining": 95,
+      "tick": 158645,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198063336407",
+      "health": 11,
+      "hitgroup": 5,
+      "remaining": 3,
+      "tick": 158646,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198063336407",
+      "health": 27,
+      "hitgroup": 5,
+      "remaining": 0,
+      "tick": 158652,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 23,
+      "attacker": "",
+      "health": 24,
+      "hitgroup": 0,
+      "remaining": 76,
+      "tick": 161750,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 14,
+      "attacker": "",
+      "health": 14,
+      "hitgroup": 0,
+      "remaining": 81,
+      "tick": 161750,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 6,
+      "attacker": "",
+      "health": 6,
+      "hitgroup": 0,
+      "remaining": 94,
+      "tick": 161750,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 166592,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198201620490",
+      "health": 111,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 166959,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561197997351207",
+      "health": 90,
+      "hitgroup": 1,
+      "remaining": 10,
+      "tick": 166997,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198113666193",
+      "health": 27,
+      "hitgroup": 5,
+      "remaining": 73,
+      "tick": 166998,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 167003,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 28,
+      "hitgroup": 3,
+      "remaining": 72,
+      "tick": 167056,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 28,
+      "hitgroup": 3,
+      "remaining": 44,
+      "tick": 167062,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 27,
+      "hitgroup": 3,
+      "remaining": 17,
+      "tick": 167068,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197997351207",
+      "health": 28,
+      "hitgroup": 3,
+      "remaining": 0,
+      "tick": 167073,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197973140692",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 39,
+      "tick": 167102,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197973140692",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 6,
+      "tick": 167108,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 18,
+      "attacker": "76561197997351207",
+      "health": 87,
+      "hitgroup": 1,
+      "remaining": 13,
+      "tick": 167119,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 26,
+      "hitgroup": 7,
+      "remaining": 0,
+      "tick": 167121,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561198063336407",
+      "health": 37,
+      "hitgroup": 1,
+      "remaining": 63,
+      "tick": 167198,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 1,
+      "attacker": "76561198063336407",
+      "health": 8,
+      "hitgroup": 5,
+      "remaining": 55,
+      "tick": 167224,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 8,
+      "attacker": "76561198063336407",
+      "health": 55,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 167790,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197991272318",
+      "health": 110,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 169333,
+      "victim": "76561198063336407"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197973140692",
+      "health": 110,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 172470,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561198201620490",
+      "health": 5,
+      "hitgroup": 0,
+      "remaining": 95,
+      "tick": 180729,
+      "victim": "76561197973140692"
+    },
+    {
+      "armour": 10,
+      "attacker": "76561198068422762",
+      "health": 48,
+      "hitgroup": 1,
+      "remaining": 52,
+      "tick": 180738,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 139,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 180758,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 21,
+      "hitgroup": 4,
+      "remaining": 31,
+      "tick": 181066,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 21,
+      "hitgroup": 2,
+      "remaining": 10,
+      "tick": 181083,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197973140692",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 67,
+      "tick": 181141,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 23,
+      "hitgroup": 6,
+      "remaining": 77,
+      "tick": 181188,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197997351207",
+      "health": 38,
+      "hitgroup": 3,
+      "remaining": 39,
+      "tick": 181194,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197991272318",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 181203,
+      "victim": "76561198113666193"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 181257,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 45,
+      "tick": 181263,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 18,
+      "tick": 181270,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 28,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 181276,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 6,
+      "attacker": "76561197989744167",
+      "health": 69,
+      "hitgroup": 2,
+      "remaining": 31,
+      "tick": 181603,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198063336407",
+      "health": 17,
+      "hitgroup": 2,
+      "remaining": 83,
+      "tick": 184695,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 5,
+      "attacker": "76561197989744167",
+      "health": 26,
+      "hitgroup": 2,
+      "remaining": 74,
+      "tick": 190731,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561197991272318",
+      "health": 91,
+      "hitgroup": 1,
+      "remaining": 9,
+      "tick": 190733,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 19,
+      "attacker": "76561197991272318",
+      "health": 90,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 190739,
+      "victim": "76561197989744167"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561198113666193",
+      "health": 3,
+      "hitgroup": 0,
+      "remaining": 71,
+      "tick": 191116,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197978835160",
+      "health": 34,
+      "hitgroup": 3,
+      "remaining": 37,
+      "tick": 191130,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197978835160",
+      "health": 109,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 191136,
+      "victim": "76561197991272318"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197997351207",
+      "health": 22,
+      "hitgroup": 2,
+      "remaining": 78,
+      "tick": 191248,
+      "victim": "76561197978835160"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561197978835160",
+      "health": 107,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 191259,
+      "victim": "76561197997351207"
+    },
+    {
+      "armour": 15,
+      "attacker": "76561198113666193",
+      "health": 109,
+      "hitgroup": 1,
+      "remaining": 0,
+      "tick": 193408,
+      "victim": "76561197989430253"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 5,
+      "remaining": 73,
+      "tick": 194284,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 5,
+      "remaining": 46,
+      "tick": 194291,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 19,
+      "tick": 194297,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 0,
+      "tick": 194303,
+      "victim": "76561198201620490"
+    },
+    {
+      "armour": 3,
+      "attacker": "76561197973140692",
+      "health": 27,
+      "hitgroup": 2,
+      "remaining": 73,
+      "tick": 194642,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 4,
+      "attacker": "76561197973140692",
+      "health": 33,
+      "hitgroup": 3,
+      "remaining": 40,
+      "tick": 194661,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 26,
+      "hitgroup": 6,
+      "remaining": 14,
+      "tick": 194668,
+      "victim": "76561198068422762"
+    },
+    {
+      "armour": 0,
+      "attacker": "76561197973140692",
+      "health": 25,
+      "hitgroup": 7,
+      "remaining": 0,
+      "tick": 194674,
+      "victim": "76561198068422762"
+    }
+  ],
+  "kills": [
+    { "assister": "", "flashAssist": false, "tick": 186, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 259, "victim": "76561198068422762" },
+    { "assister": "", "flashAssist": false, "tick": 271, "victim": "76561197991272318" },
+    { "assister": "", "flashAssist": false, "tick": 7325, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 7695, "victim": "76561197991272318" },
+    { "assister": "", "flashAssist": false, "tick": 7749, "victim": "76561198201620490" },
+    { "assister": "", "flashAssist": false, "tick": 7764, "victim": "76561197973140692" },
+    { "assister": "", "flashAssist": false, "tick": 7782, "victim": "76561198068422762" },
+    { "assister": "", "flashAssist": false, "tick": 7834, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 10037, "victim": "76561198063336407" },
+    { "assister": "", "flashAssist": false, "tick": 12859, "victim": "76561197989430253" },
+    {
+      "assister": "76561198201620490",
+      "flashAssist": false,
+      "tick": 12890,
+      "victim": "76561197973140692"
+    },
+    {
+      "assister": "76561197973140692",
+      "flashAssist": false,
+      "tick": 13337,
+      "victim": "76561197997351207"
+    },
+    { "assister": "", "flashAssist": false, "tick": 13435, "victim": "76561197991272318" },
+    {
+      "assister": "76561197991272318",
+      "flashAssist": false,
+      "tick": 13451,
+      "victim": "76561197978835160"
+    },
+    {
+      "assister": "76561197973140692",
+      "flashAssist": false,
+      "tick": 13485,
+      "victim": "76561198068422762"
+    },
+    { "assister": "", "flashAssist": false, "tick": 19806, "victim": "76561197989430253" },
+    {
+      "assister": "76561197989430253",
+      "flashAssist": false,
+      "tick": 20201,
+      "victim": "76561198113666193"
+    },
+    { "assister": "", "flashAssist": false, "tick": 20594, "victim": "76561197997351207" },
+    {
+      "assister": "76561198063336407",
+      "flashAssist": true,
+      "tick": 23457,
+      "victim": "76561198201620490"
+    },
+    {
+      "assister": "76561198063336407",
+      "flashAssist": false,
+      "tick": 24244,
+      "victim": "76561197991272318"
+    },
+    {
+      "assister": "76561197973140692",
+      "flashAssist": false,
+      "tick": 24802,
+      "victim": "76561198068422762"
+    },
+    { "assister": "", "flashAssist": false, "tick": 29768, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 29966, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 30086, "victim": "76561198201620490" },
+    { "assister": "", "flashAssist": false, "tick": 30353, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 30596, "victim": "76561197991272318" },
+    { "assister": "", "flashAssist": false, "tick": 30808, "victim": "76561198068422762" },
+    { "assister": "", "flashAssist": false, "tick": 34192, "victim": "76561198201620490" },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": false,
+      "tick": 34738,
+      "victim": "76561197997351207"
+    },
+    {
+      "assister": "76561197997351207",
+      "flashAssist": false,
+      "tick": 34934,
+      "victim": "76561198063336407"
+    },
+    { "assister": "", "flashAssist": false, "tick": 36989, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 37436, "victim": "76561197973140692" },
+    {
+      "assister": "76561197973140692",
+      "flashAssist": false,
+      "tick": 37690,
+      "victim": "76561197991272318"
+    },
+    { "assister": "", "flashAssist": false, "tick": 38147, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 38294, "victim": "76561197989744167" },
+    {
+      "assister": "76561198113666193",
+      "flashAssist": false,
+      "tick": 38565,
+      "victim": "76561198068422762"
+    },
+    { "assister": "", "flashAssist": false, "tick": 43577, "victim": "76561198201620490" },
+    { "assister": "", "flashAssist": false, "tick": 43604, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 43634, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 43722, "victim": "76561197973140692" },
+    {
+      "assister": "76561197973140692",
+      "flashAssist": false,
+      "tick": 43771,
+      "victim": "76561198068422762"
+    },
+    { "assister": "", "flashAssist": false, "tick": 44470, "victim": "76561198063336407" },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": false,
+      "tick": 45084,
+      "victim": "76561197991272318"
+    },
+    { "assister": "", "flashAssist": false, "tick": 48801, "victim": "76561198113666193" },
+    {
+      "assister": "76561198201620490",
+      "flashAssist": true,
+      "tick": 50055,
+      "victim": "76561197989744167"
+    },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": false,
+      "tick": 50234,
+      "victim": "76561197989430253"
+    },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": false,
+      "tick": 50304,
+      "victim": "76561198201620490"
+    },
+    { "assister": "", "flashAssist": false, "tick": 50381, "victim": "76561198068422762" },
+    {
+      "assister": "76561198068422762",
+      "flashAssist": false,
+      "tick": 50605,
+      "victim": "76561198063336407"
+    },
+    { "assister": "", "flashAssist": false, "tick": 50652, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 52281, "victim": "76561197973140692" },
+    {
+      "assister": "76561197997351207",
+      "flashAssist": false,
+      "tick": 52603,
+      "victim": "76561197978835160"
+    },
+    { "assister": "", "flashAssist": false, "tick": 55483, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 55643, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 55766, "victim": "76561197991272318" },
+    {
+      "assister": "76561198068422762",
+      "flashAssist": false,
+      "tick": 56140,
+      "victim": "76561198063336407"
+    },
+    {
+      "assister": "76561197978835160",
+      "flashAssist": false,
+      "tick": 58092,
+      "victim": "76561198068422762"
+    },
+    {
+      "assister": "76561198068422762",
+      "flashAssist": false,
+      "tick": 58897,
+      "victim": "76561197978835160"
+    },
+    {
+      "assister": "76561197989430253",
+      "flashAssist": false,
+      "tick": 59247,
+      "victim": "76561197989744167"
+    },
+    {
+      "assister": "76561198201620490",
+      "flashAssist": false,
+      "tick": 59928,
+      "victim": "76561197973140692"
+    },
+    { "assister": "", "flashAssist": false, "tick": 62529, "victim": "76561198063336407" },
+    { "assister": "", "flashAssist": false, "tick": 62535, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 63271, "victim": "76561197978835160" },
+    {
+      "assister": "76561197989430253",
+      "flashAssist": false,
+      "tick": 63421,
+      "victim": "76561197989744167"
+    },
+    {
+      "assister": "76561197978835160",
+      "flashAssist": false,
+      "tick": 63435,
+      "victim": "76561197997351207"
+    },
+    { "assister": "", "flashAssist": false, "tick": 63497, "victim": "76561198201620490" },
+    {
+      "assister": "76561197991272318",
+      "flashAssist": false,
+      "tick": 63528,
+      "victim": "76561197973140692"
+    },
+    {
+      "assister": "76561197997351207",
+      "flashAssist": true,
+      "tick": 65937,
+      "victim": "76561197978835160"
+    },
+    {
+      "assister": "76561197978835160",
+      "flashAssist": false,
+      "tick": 65976,
+      "victim": "76561198068422762"
+    },
+    {
+      "assister": "76561198068422762",
+      "flashAssist": false,
+      "tick": 66150,
+      "victim": "76561198113666193"
+    },
+    { "assister": "", "flashAssist": false, "tick": 66295, "victim": "76561197989744167" },
+    { "assister": "", "flashAssist": false, "tick": 66559, "victim": "76561198063336407" },
+    {
+      "assister": "76561198063336407",
+      "flashAssist": false,
+      "tick": 66824,
+      "victim": "76561197989430253"
+    },
+    { "assister": "", "flashAssist": false, "tick": 75457, "victim": "76561198063336407" },
+    { "assister": "", "flashAssist": false, "tick": 76480, "victim": "76561197997351207" },
+    {
+      "assister": "76561198063336407",
+      "flashAssist": false,
+      "tick": 77103,
+      "victim": "76561197989430253"
+    },
+    { "assister": "", "flashAssist": false, "tick": 77682, "victim": "76561197978835160" },
+    {
+      "assister": "76561197997351207",
+      "flashAssist": false,
+      "tick": 77840,
+      "victim": "76561198113666193"
+    },
+    { "assister": "", "flashAssist": false, "tick": 78258, "victim": "76561197973140692" },
+    {
+      "assister": "76561198201620490",
+      "flashAssist": false,
+      "tick": 79353,
+      "victim": "76561197989744167"
+    },
+    {
+      "assister": "76561197973140692",
+      "flashAssist": false,
+      "tick": 84541,
+      "victim": "76561197989430253"
+    },
+    { "assister": "", "flashAssist": false, "tick": 86231, "victim": "76561197991272318" },
+    { "assister": "", "flashAssist": false, "tick": 86285, "victim": "76561198068422762" },
+    { "assister": "", "flashAssist": false, "tick": 86399, "victim": "76561198201620490" },
+    {
+      "assister": "76561197989430253",
+      "flashAssist": false,
+      "tick": 86450,
+      "victim": "76561197989744167"
+    },
+    { "assister": "", "flashAssist": false, "tick": 87070, "victim": "76561197973140692" },
+    { "assister": "", "flashAssist": false, "tick": 87453, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 103242, "victim": "76561197991272318" },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": true,
+      "tick": 105218,
+      "victim": "76561198201620490"
+    },
+    { "assister": "", "flashAssist": false, "tick": 105315, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 106779, "victim": "76561197997351207" },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": false,
+      "tick": 106822,
+      "victim": "76561198068422762"
+    },
+    { "assister": "", "flashAssist": false, "tick": 110820, "victim": "76561198068422762" },
+    {
+      "assister": "76561197989430253",
+      "flashAssist": true,
+      "tick": 110841,
+      "victim": "76561197989744167"
+    },
+    { "assister": "", "flashAssist": false, "tick": 111136, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 113779, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 113806, "victim": "76561198201620490" },
+    { "assister": "", "flashAssist": false, "tick": 114323, "victim": "76561197978835160" },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": true,
+      "tick": 117306,
+      "victim": "76561197989430253"
+    },
+    {
+      "assister": "76561198201620490",
+      "flashAssist": true,
+      "tick": 117665,
+      "victim": "76561197978835160"
+    },
+    { "assister": "", "flashAssist": false, "tick": 117763, "victim": "76561197973140692" },
+    {
+      "assister": "76561197997351207",
+      "flashAssist": false,
+      "tick": 118121,
+      "victim": "76561197989744167"
+    },
+    { "assister": "", "flashAssist": false, "tick": 118388, "victim": "76561198113666193" },
+    {
+      "assister": "76561197991272318",
+      "flashAssist": true,
+      "tick": 126091,
+      "victim": "76561197973140692"
+    },
+    {
+      "assister": "76561198113666193",
+      "flashAssist": false,
+      "tick": 126147,
+      "victim": "76561197997351207"
+    },
+    {
+      "assister": "76561198063336407",
+      "flashAssist": false,
+      "tick": 128012,
+      "victim": "76561198201620490"
+    },
+    { "assister": "", "flashAssist": false, "tick": 130373, "victim": "76561197991272318" },
+    { "assister": "", "flashAssist": false, "tick": 130697, "victim": "76561197978835160" },
+    { "assister": "", "flashAssist": false, "tick": 130904, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 133085, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 136117, "victim": "76561197989744167" },
+    { "assister": "", "flashAssist": false, "tick": 138062, "victim": "76561197991272318" },
+    { "assister": "", "flashAssist": false, "tick": 139875, "victim": "76561198068422762" },
+    { "assister": "", "flashAssist": false, "tick": 140373, "victim": "76561197978835160" },
+    { "assister": "", "flashAssist": false, "tick": 140430, "victim": "76561198063336407" },
+    { "assister": "", "flashAssist": false, "tick": 140527, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 141682, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 141974, "victim": "76561197973140692" },
+    { "assister": "", "flashAssist": false, "tick": 149399, "victim": "76561197989744167" },
+    { "assister": "", "flashAssist": false, "tick": 149401, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 149713, "victim": "76561197973140692" },
+    {
+      "assister": "76561198068422762",
+      "flashAssist": true,
+      "tick": 149919,
+      "victim": "76561197978835160"
+    },
+    {
+      "assister": "76561198113666193",
+      "flashAssist": false,
+      "tick": 149927,
+      "victim": "76561197991272318"
+    },
+    { "assister": "", "flashAssist": false, "tick": 150130, "victim": "76561198068422762" },
+    {
+      "assister": "76561197997351207",
+      "flashAssist": false,
+      "tick": 150404,
+      "victim": "76561198113666193"
+    },
+    {
+      "assister": "76561198068422762",
+      "flashAssist": false,
+      "tick": 150731,
+      "victim": "76561198063336407"
+    },
+    { "assister": "", "flashAssist": false, "tick": 153410, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 153448, "victim": "76561198063336407" },
+    {
+      "assister": "76561197989430253",
+      "flashAssist": false,
+      "tick": 153613,
+      "victim": "76561197973140692"
+    },
+    {
+      "assister": "76561197989430253",
+      "flashAssist": false,
+      "tick": 153632,
+      "victim": "76561197978835160"
+    },
+    { "assister": "", "flashAssist": false, "tick": 153778, "victim": "76561197989744167" },
+    { "assister": "", "flashAssist": false, "tick": 157209, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 158147, "victim": "76561197991272318" },
+    { "assister": "", "flashAssist": false, "tick": 158428, "victim": "76561197978835160" },
+    {
+      "assister": "76561197997351207",
+      "flashAssist": false,
+      "tick": 158573,
+      "victim": "76561197989744167"
+    },
+    {
+      "assister": "76561197978835160",
+      "flashAssist": false,
+      "tick": 158652,
+      "victim": "76561198068422762"
+    },
+    { "assister": "", "flashAssist": false, "tick": 166959, "victim": "76561197978835160" },
+    { "assister": "", "flashAssist": false, "tick": 167003, "victim": "76561198113666193" },
+    { "assister": "", "flashAssist": false, "tick": 167073, "victim": "76561197989744167" },
+    {
+      "assister": "76561198113666193",
+      "flashAssist": false,
+      "tick": 167121,
+      "victim": "76561197997351207"
+    },
+    { "assister": "", "flashAssist": false, "tick": 167790, "victim": "76561198201620490" },
+    { "assister": "", "flashAssist": false, "tick": 169333, "victim": "76561198063336407" },
+    { "assister": "", "flashAssist": false, "tick": 172470, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 180758, "victim": "76561198068422762" },
+    {
+      "assister": "76561198068422762",
+      "flashAssist": false,
+      "tick": 181203,
+      "victim": "76561198113666193"
+    },
+    {
+      "assister": "76561197978835160",
+      "flashAssist": true,
+      "tick": 181276,
+      "victim": "76561197991272318"
+    },
+    { "assister": "", "flashAssist": false, "tick": 190739, "victim": "76561197989744167" },
+    {
+      "assister": "76561197989744167",
+      "flashAssist": false,
+      "tick": 191136,
+      "victim": "76561197991272318"
+    },
+    { "assister": "", "flashAssist": false, "tick": 191259, "victim": "76561197997351207" },
+    { "assister": "", "flashAssist": false, "tick": 193408, "victim": "76561197989430253" },
+    { "assister": "", "flashAssist": false, "tick": 194303, "victim": "76561198201620490" },
+    { "assister": "", "flashAssist": false, "tick": 194674, "victim": "76561198068422762" }
+  ]
+}

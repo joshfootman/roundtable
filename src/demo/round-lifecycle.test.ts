@@ -32,6 +32,7 @@ test('discards knife stages and completed match attempts when recorded rules res
           alive: true,
           health: 100,
           yaw: 90,
+          pitch: 0,
           money: 800,
           armour: 0,
           helmet: false,
@@ -110,6 +111,9 @@ test('discards knife stages and completed match attempts when recorded rules res
       health: new Int32Array([100, 100, 100]),
       yaw: new Float32Array([90, 90, 90]),
       teams: new Uint8Array([2, 2, 2]),
+      present: new Uint8Array([1, 1, 1]),
+      pitch: new Float32Array(3),
+      damage: [],
     },
   })
   expect(packet(34, {}, ['round_start'])).toEqual([
@@ -140,6 +144,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
             alive: tick < 105,
             health: tick < 105 ? 100 : 0,
             yaw: 90,
+            pitch: 0,
             money: 800,
             armour: 0,
             helmet: false,
@@ -203,6 +208,9 @@ test('captures overtime freeze time and postmatch activity without a regulation 
     health: new Int32Array([100, 100, 0, 0, 0]),
     yaw: new Float32Array([90, 90, 90, 90, 90]),
     teams: new Uint8Array([3, 3, 3, 3, 3]),
+    present: new Uint8Array([1, 1, 1, 1, 1]),
+    pitch: new Float32Array(5),
+    damage: [],
   }
   expect(completed).toEqual([
     [{ type: 'round', round: { ...expected, number: 25, overtime: 1 } }],
@@ -233,6 +241,7 @@ test('captures an opening freeze checkpoint without inventing a midround start',
         alive: true,
         health: 100,
         yaw: 90,
+        pitch: 0,
         money: 800,
         armour: 0,
         helmet: false,
@@ -296,6 +305,7 @@ test('records inventory and ladder changes while the held knife stays unchanged'
     alive: true,
     health: 100,
     yaw: 0,
+    pitch: 0,
     money: 800,
     armour: 0,
     helmet: false,
@@ -375,6 +385,7 @@ test('records movement, pickup, re-drop and entity reuse with one final snapshot
       alive: true,
       health: 100,
       yaw: 0,
+      pitch: 0,
       money: 800,
       armour: 0,
       helmet: false,
@@ -438,6 +449,7 @@ test('keeps rounds before a backup restore and voids only the replayed ones', ()
           alive: true,
           health: 100,
           yaw: 90,
+          pitch: 0,
           money: 800,
           armour: 0,
           helmet: false,
@@ -465,4 +477,43 @@ test('keeps rounds before a backup restore and voids only the replayed ones', ()
     { type: 'round-start', number: 2, startTick: 50 },
   ])
   expect(published).toEqual([1])
+})
+
+test('adds a mid-round joiner and marks absent samples instead of inventing state', () => {
+  const tracker = createRoundTracker()
+  const player = (steamId: string, x: number) => ({
+    steamId,
+    name: steamId,
+    team: 3 as const,
+    x,
+    y: 0,
+    z: 0,
+    alive: true,
+    health: 100,
+    yaw: 90,
+    pitch: -5,
+    money: 800,
+    armour: 0,
+    helmet: false,
+    flash: { type: 'none' as const },
+    grenades: [],
+    weapons: [],
+    weapon: { type: 'none' as const },
+  })
+  tracker.update(10, rules, ['round_start'], 1 / 64)
+  tracker.sample(10, [player('a', 1)])
+  tracker.update(11, rules, ['round_freeze_end'], 1 / 64)
+  tracker.sample(11, [player('a', 2), player('b', 7)])
+  tracker.update(12, { ...rules, reason: 8, totalRoundsPlayed: 1 }, ['round_end'], 1 / 64)
+  tracker.sample(12, [player('b', 8)])
+  const [event] = tracker.update(13, { ...rules, totalRoundsPlayed: 1 }, ['round_start'], 1 / 64)
+  expect(event?.type).toBe('round')
+  const round = event?.type === 'round' ? event.round : undefined
+  expect(round?.players.map((p) => p.steamId)).toEqual(['a', 'b'])
+  expect(Array.from(round!.present)).toEqual([1, 0, 1, 1, 0, 1])
+  expect(Array.from(round!.positions)).toEqual([
+    1, 0, 0, 7, 0, 0, 2, 0, 0, 7, 0, 0, 2, 0, 0, 8, 0, 0,
+  ])
+  expect(Array.from(round!.pitch)).toEqual([-5, -5, -5, -5, -5, -5])
+  expect(round!.inspection.map((records) => records[0]!.tick)).toEqual([10, 11])
 })

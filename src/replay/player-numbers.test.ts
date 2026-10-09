@@ -39,6 +39,12 @@ function round(): ReplayRound {
       2, 3, 1, 2, 3, 2, 3, 2, 3, 2, 3, 3, 2, 1, 3, 2, 3, 2, 3, 2, 3, 2, 2, 3, 1, 2, 3, 2, 3, 2, 3,
       2, 3,
     ]),
+    present: new Uint8Array([
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1,
+    ]),
+    pitch: new Float32Array(33),
+    damage: [],
     positions: new Float32Array(99),
     alive: new Uint8Array(33),
     health: new Int32Array(33),

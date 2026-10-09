@@ -4,7 +4,7 @@ The example contains all 23 competitive rounds from FaZe versus Vitality on Dust
 
 Run `npm run generate:example` to regenerate the shipped assets from that local demo. Pass another path after `--` when the recording is stored elsewhere. Run `npm run verify:example` to compare every shipped round boundary, death and planted bomb position against the committed independent Go parser reference.
 
-The versioned manifest records source SHA-256, metadata and each round's compressed size, decoded size and decoded SHA-256. Each gzip file contains an RPL1 binary record. A UTF-8 JSON header stores events, player inspection and track dimensions. Four-byte-aligned raw typed arrays store player movement and grenade trajectories. Tracks remain typed arrays in the browser. The loader validates the manifest, checksum, dimensions and ordered ticks before publishing a round.
+The versioned manifest records source SHA-256, metadata and each round's compressed size, decoded size and decoded SHA-256. Each gzip file contains an RPL2 binary record. A UTF-8 JSON header stores events, player inspection and track dimensions. Four-byte-aligned raw typed arrays store player movement and grenade trajectories. Tracks remain typed arrays in the browser. The loader validates the manifest, checksum, dimensions and ordered ticks before publishing a round.
 
 Loading is progressive. Metadata appears first, then completed rounds arrive sequentially through the same import events as a local recording. Users can replay the first round while later rounds load, cancel the download, or replace it with a local demo. Completed rounds remain available after a failed download.
 

@@ -4,7 +4,10 @@ export interface PlayerTracks {
   alive: Uint8Array<ArrayBuffer>
   health: Int32Array<ArrayBuffer>
   yaw: Float32Array<ArrayBuffer>
+  pitch: Float32Array<ArrayBuffer>
   teams: Uint8Array<ArrayBuffer>
+  /** 0 while the player has no recorded pawn: before joining or after disconnecting. */
+  present: Uint8Array<ArrayBuffer>
 }
 
 interface TrackType<T> {
@@ -25,7 +28,9 @@ export const playerTrackLayout: {
   alive: layout(Uint8Array, 1),
   health: layout(Int32Array, 1),
   yaw: layout(Float32Array, 1),
+  pitch: layout(Float32Array, 1),
   teams: layout(Uint8Array, 1),
+  present: layout(Uint8Array, 1),
 }
 
 export const playerTrackNames = Object.keys(playerTrackLayout) as (keyof PlayerTracks)[]

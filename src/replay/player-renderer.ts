@@ -136,6 +136,7 @@ export function createPlayerRenderer(
         visibility.flashes &&
         flashRemaining(inspection.flash, tick, round.tickInterval) > 0
       marker.visible =
+        round.present[state] === 1 &&
         numbers.has(steamId) &&
         !visibility.hiddenPlayers?.has(steamId) &&
         !visibility.hiddenTeams?.has(team)

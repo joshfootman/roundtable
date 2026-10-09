@@ -106,6 +106,7 @@ test('decodes a real competitive round against independent identities and positi
       victim: '76561197989430253',
       killer: { type: 'player', steamId: '76561197978835160' },
       headshot: true,
+      flashAssist: false,
       weapon: 'usp_silencer',
     },
     {
@@ -113,6 +114,7 @@ test('decodes a real competitive round against independent identities and positi
       victim: '76561197991272318',
       killer: { type: 'player', steamId: '76561198063336407' },
       headshot: true,
+      flashAssist: false,
       weapon: 'usp_silencer',
     },
     {
@@ -120,6 +122,7 @@ test('decodes a real competitive round against independent identities and positi
       victim: '76561198201620490',
       killer: { type: 'player', steamId: '76561197973140692' },
       headshot: true,
+      flashAssist: false,
       weapon: 'hkp2000',
     },
     {
@@ -127,6 +130,7 @@ test('decodes a real competitive round against independent identities and positi
       victim: '76561197973140692',
       killer: { type: 'player', steamId: '76561197997351207' },
       headshot: true,
+      flashAssist: false,
       weapon: 'glock',
     },
     {
@@ -134,6 +138,7 @@ test('decodes a real competitive round against independent identities and positi
       victim: '76561198068422762',
       killer: { type: 'player', steamId: '76561198063336407' },
       headshot: true,
+      flashAssist: false,
       weapon: 'usp_silencer',
     },
     {
@@ -141,6 +146,7 @@ test('decodes a real competitive round against independent identities and positi
       victim: '76561197997351207',
       killer: { type: 'player', steamId: '76561198063336407' },
       headshot: true,
+      flashAssist: false,
       weapon: 'usp_silencer',
     },
   ])

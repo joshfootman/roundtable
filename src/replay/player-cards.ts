@@ -62,7 +62,8 @@ export function playerCardsAtTick(
   return round.players.flatMap((player, index): PlayerCardData[] => {
     const team = round.teams[offset + index]
     const number = numbers.get(player.steamId)
-    if ((team !== 2 && team !== 3) || number === undefined) return []
+    if ((team !== 2 && team !== 3) || number === undefined || !round.present[offset + index])
+      return []
     const inspection = recordAtTick(round.inspection[index]!, tick)
     return [
       {

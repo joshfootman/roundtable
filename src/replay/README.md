@@ -1,9 +1,9 @@
 # Tactical replay
 
-`ReplayRound` contains synchronized recorded samples in stable player order. Positions
-are XYZ floats indexed by `(sample * players.length + player) * 3`. Alive flags use
-`sample * players.length + player`. The parser constructs synchronized buffers in this order before
-publishing them. Playback holds the preceding sample. It does not interpolate through
+`ReplayRound` contains synchronized recorded samples in stable player order. The per-player
+tracks are listed once in `tracks.ts` and indexed `(sample * players.length + player) * width`.
+A player who joins mid-round is appended to the roster; `present` is 0 for samples before
+they joined and after they disconnect, and consumers hide them there. Playback holds the preceding sample. It does not interpolate through
 deaths or gaps.
 
 Pixi owns the playback clock and marker updates. React receives snapshots at most four

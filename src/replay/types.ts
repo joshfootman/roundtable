@@ -96,12 +96,29 @@ export interface PlayerInspection {
   weapons: ReplayWeapon[]
 }
 
+export type ReplayActor = { type: 'player'; steamId: string } | { type: 'world' }
+
 export interface ReplayDeath {
   tick: number
   victim: string
-  killer: { type: 'player'; steamId: string } | { type: 'world' }
+  killer: ReplayActor
+  assister?: string
+  flashAssist: boolean
   weapon: string
   headshot: boolean
+}
+
+export interface ReplayDamage {
+  tick: number
+  victim: string
+  attacker: ReplayActor
+  weapon: string
+  /** Recorded damage, which can exceed the health the victim had left. */
+  health: number
+  armour: number
+  /** Victim health after the hit. */
+  remaining: number
+  hitgroup: number
 }
 
 export interface ReplayRound extends PlayerTracks {
@@ -125,6 +142,7 @@ export interface ReplayRound extends PlayerTracks {
   bomb: { tick: number; state: BombState }[]
   inspection: PlayerInspection[][]
   deaths: ReplayDeath[]
+  damage: ReplayDamage[]
   players: { steamId: string; name: string }[]
   ticks: Uint32Array<ArrayBuffer>
 }

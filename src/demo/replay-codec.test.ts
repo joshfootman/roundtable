@@ -24,6 +24,7 @@ test('decodes recorded binary tracks and rejects incompatible or truncated asset
     killer: { type: 'player', steamId: '76561197978835160' },
     weapon: 'usp_silencer',
     headshot: true,
+    flashAssist: false,
   })
   const restored = decodeRound(encodeRound(round))
   expect(round.score).toEqual({ ct: 0, t: 0 })
@@ -62,7 +63,7 @@ test('decodes recorded binary tracks and rejects incompatible or truncated asset
   expect(() => decodeRound(bytes.slice(0, -1))).toThrow('Truncated replay asset tracks')
 })
 
-test('preserves optional outcomes, names and ladder states while accepting legacy rounds', () => {
+test('preserves optional outcomes, names and ladder states, and their absence', () => {
   const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
   const round = decodeRound(new Uint8Array(raw).buffer)
   round.outcome = { winner: 't', reason: 1, teamName: 'FaZe', mvp: { name: 'broky' } }
@@ -83,10 +84,10 @@ test('preserves optional outcomes, names and ladder states while accepting legac
   delete round.outcome
   delete round.teamNames
   delete inspection.onLadder
-  const legacy = decodeRound(encodeRound(round))
-  expect(legacy.outcome).toBeUndefined()
-  expect(legacy.teamNames).toBeUndefined()
-  expect(legacy.inspection[0]![0]!.onLadder).toBeUndefined()
+  const bare = decodeRound(encodeRound(round))
+  expect(bare.outcome).toBeUndefined()
+  expect(bare.teamNames).toBeUndefined()
+  expect(bare.inspection[0]![0]!.onLadder).toBeUndefined()
 })
 
 test('matches independently decoded ladder entry and exit in the bundled Nuke recording', () => {
@@ -106,7 +107,7 @@ test('matches independently decoded ladder entry and exit in the bundled Nuke re
   }
 })
 
-test('preserves dropped item lifetimes and normalizes legacy rounds to an empty opening snapshot', () => {
+test('preserves dropped item lifetimes', () => {
   const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
   const round = decodeRound(new Uint8Array(raw).buffer)
   round.droppedItems = [
@@ -119,8 +120,6 @@ test('preserves dropped item lifetimes and normalizes legacy rounds to an empty 
     { tick: 6000, items: [{ entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }] },
     { tick: 6010, items: [] },
   ])
-  Reflect.deleteProperty(round, 'droppedItems')
-  expect(decodeRound(encodeRound(round)).droppedItems).toEqual([{ tick: 537, items: [] }])
 })
 
 test('rejects malformed dropped item snapshots at the replay asset boundary', () => {

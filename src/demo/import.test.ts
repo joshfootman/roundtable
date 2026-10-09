@@ -55,6 +55,9 @@ const firstRound = {
   health: new Int32Array([100, 100]),
   yaw: new Float32Array([90, 90]),
   teams: new Uint8Array([2, 2]),
+  present: new Uint8Array([1, 1]),
+  pitch: new Float32Array(2),
+  damage: [],
 }
 
 const secondRound = {
