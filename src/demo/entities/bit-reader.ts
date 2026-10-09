@@ -8,20 +8,25 @@ export class BitReader {
   bits(count: number): number {
     if (count < 0 || count > 32 || count > this.remaining)
       throw new Error('The demo contains truncated entity data.')
+    const data = this.data
+    let offset = this.offset
     let value = 0
     let shift = 0
-    while (count > 0) {
-      const available = Math.min(count, 8 - (this.offset & 7))
-      value +=
-        ((this.data[this.offset >> 3]! >> (this.offset & 7)) & (2 ** available - 1)) * 2 ** shift
-      this.offset += available
-      shift += available
-      count -= available
+    while (shift < count) {
+      const bit = offset & 7
+      const take = Math.min(count - shift, 8 - bit)
+      value |= ((data[offset >> 3]! >> bit) & ((1 << take) - 1)) << shift
+      offset += take
+      shift += take
     }
-    return value
+    this.offset = offset
+    return value >>> 0
   }
   boolean() {
-    return this.bits(1) === 1
+    const offset = this.offset
+    if (offset >= this.data.length * 8) throw new Error('The demo contains truncated entity data.')
+    this.offset = offset + 1
+    return ((this.data[offset >> 3]! >> (offset & 7)) & 1) === 1
   }
   skipBytes(count: number) {
     if (count * 8 > this.remaining) throw new Error('The demo contains truncated network data.')
@@ -35,7 +40,12 @@ export class BitReader {
       return this.data.subarray(start, start + count)
     }
     const data = new Uint8Array(count)
-    for (let index = 0; index < count; index++) data[index] = this.bits(8)
+    const source = this.data
+    const shift = this.offset & 7
+    let byte = this.offset >> 3
+    for (let index = 0; index < count; index++, byte++)
+      data[index] = ((source[byte]! >> shift) | (source[byte + 1]! << (8 - shift))) & 0xff
+    this.offset += count * 8
     return data
   }
   varUint(): number {
