@@ -103,6 +103,8 @@ export function readReplay(
             .descriptors)
             descriptors.set(descriptor.eventid, descriptor)
       }
+      // Tables apply before entities and events see post-update state. Recorded demos send
+      // table changes ahead of the single entity message, so grouping matches wire order.
       for (const message of entityMessages)
         entities.packet(fromBinary(CSVCMsg_PacketEntitiesSchema, message.bytes), tick)
       for (const message of messages)
