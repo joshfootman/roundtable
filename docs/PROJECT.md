@@ -1,6 +1,6 @@
 # CS2 replay viewer
 
-Status: local import, progressive round discovery and selection, competitive eligibility, and tactical playback with freeze and post-round phases implemented with Effect and PixiJS. Player inspection, kills, bomb interactions, recorded grenade trajectories, approximate smoke/fire areas, shot-direction traces, flash indicators, player/team filters and utility toggles are implemented. All 23 supplied Dust2 rounds match independent boundary and event oracles. Real overtime fixtures cover Ancient, Cache and Inferno. Ten-map calibration and selectable floors are documented in docs/map-coverage.md; knife fixtures remain compatibility checks. Playback measurements are recorded in docs/playback-benchmark.md.
+Status: local import, progressive round discovery and selection, competitive eligibility, and tactical playback with freeze and post-round phases implemented with Effect and PixiJS. Player inspection, kills, bomb interactions, recorded grenade trajectories, approximate smoke/fire areas, shot-direction traces and flash indicators are implemented. Player/team filters and utility toggles have renderer support but no UI yet. All 23 supplied Dust2 rounds match independent boundary and event oracles. Real overtime fixtures cover Ancient, Cache and Inferno. Ten-map calibration and selectable floors are documented in docs/map-coverage.md; knife fixtures remain compatibility checks.
 Requirements below settled unless marked **proposed**, **optional** or **open**.
 
 ## Product
@@ -63,9 +63,9 @@ Excluded: CS:GO, 3D, heatmaps, advanced economy/pattern analysis, live broadcast
 | Protobuf     | Protobuf-ES; validate schema generation                                   |
 | Compression  | snappyjs initial choice; verify block compatibility/perf                  |
 | Tests        | Vitest + Playwright; real-phone checks                                    |
-| Persistence  | Dexie/IndexedDB optional; measurement-dependent                           |
+| Persistence  | None; HTTP caching for the pre-parsed example                             |
 
-No framework versions selected. WASM only if profiling justifies specific work.
+Versions are pinned in `package.json`. WASM only if profiling justifies specific work.
 
 ## Architecture
 
@@ -75,16 +75,14 @@ Local file → parsing worker → completed round buffers → replay store
                                                  playback engine
                                                    ↙         ↘
                                               PixiJS        React UI
-
-Replay store → optional Dexie cache
 ```
 
-Proposed package boundaries:
+Source layout:
 
 ```text
-apps/web/              routes, UI, worker adapter, Pixi scene
-packages/demo-parser/  byte decoding, CS2 state, round extraction
-packages/replay/       output contract, indexes, playback
+src/demo/     byte decoding, CS2 state, round extraction, worker, import session
+src/replay/   output contract, indexes, playback, Pixi renderers
+src/components/, src/routes/   UI
 ```
 
 - Parser core: Effect API with typed failures and effectful file reads; no React/Pixi/DOM dependencies; usable in CLI benchmarks.
@@ -117,14 +115,14 @@ packages/replay/       output contract, indexes, playback
 - New round arrival never resets playback/selection.
 - One stream: metadata + N round payloads; progress/errors/completion additional.
 
-Proposed protocol:
+Protocol:
 
 ```text
-UI → worker: start, cancel
+UI → worker: the selected File
 worker → UI: metadata, progress, round-ready, complete, error
 ```
 
-- Typed messages + job ID; ignore abandoned-job results.
+- One worker per import; the Effect scope terminates it on cancel or replacement, so abandoned results never arrive.
 - Transfer ArrayBuffers; bounded delivery queue; cheap UI handlers.
 - Published buffers independent of mutable parser state.
 - Validate round finalisation against fixtures; metadata count not authoritative.
@@ -160,13 +158,7 @@ Performance testing:
 
 Parser import measurements and output-equivalence checks are recorded in [parser performance measurements](parser-performance.md).
 
-Dexie conditional:
-
-- Viewer delivery first; bounded cache writes afterwards.
-- Measure write/reload cost, quota, size, playback impact.
-- Version stored data; invalidate incompatible parser/output formats.
-- Storage failure → current session remains usable.
-- No match-library UI commitment.
+No IndexedDB cache. A measured Dexie cache saved 8.5% of whole-match load time for the example, made the first round slower, and did not justify invalidation and quota handling.
 
 ## Verification + first milestone
 
@@ -202,7 +194,6 @@ Implementation choices, not blockers: exact layout, package versions, primitive 
 
 - Parsers: [demoinfocs](https://github.com/markus-wa/demoinfocs-golang), [demoparser](https://github.com/LaihoE/demoparser), [demofile-net](https://github.com/saul/demofile-net), [cs2parser](https://github.com/osztenkurden/cs2parser).
 - Schemas: [SteamTracking](https://github.com/SteamTracking/Protobufs); extracted descriptors, not complete entity-decoding specification.
-- Local snapshot: `cs2-protobuf-reference/` + ZIP; 44 files; provenance README included.
 - Snapshot commit: `14db58bad6e6ac2cb794b441c7b3d0d2a6dd1752`; preserve upstream notices.
 - Unresolved imports: `google/protobuf/descriptor.proto`, `s2/steammessages.proto`; snapshot not compile-ready.
 - [Container metadata offsets](https://docs.rs/pbdems2/latest/pbdems2/guide/file_structure/index.html).

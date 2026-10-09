@@ -24,6 +24,5 @@ Renderer V8 heap was 12.64 MB after the initial forced collection, peaked at
 20.58 MB in the five-second samples and was 13.97 MB after the final collection
 and control checks. Reported backing storage changed from 50.63 MB to 50.76 MB.
 No other application benchmarks were active. Ordinary desktop activity was not
-controlled. [The complete report](sustained-playback-results.json) retains all
-samples, source and build identities. These observations do not establish a
+controlled. These observations do not establish a
 whole-browser memory budget or prove that every resource is released.

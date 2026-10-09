@@ -71,8 +71,7 @@ a stationary fading ring. No countdown duration is inferred from a defused round
 
 The outer rim is reserved for fire exposure. This future indicator needs recorded state
 or a separately agreed geometric approximation; it is not currently inferred from
-proximity to a rendered fire area. Older replay assets without movement data remain
-readable, but must be regenerated to display ladders.
+proximity to a rendered fire area.
 
 ## Radar calibration
 
@@ -90,13 +89,11 @@ rotation and zoom settings configure the game's radar presentation. They do not 
 this transform into the raw image.
 
 The renderer and parser are map-agnostic. `maps.ts` owns image URLs, world origins and
-scales for Dust II, Mirage, Ancient, Anubis, Inferno and Overpass. Those values come
+scales for the ten maps listed in `docs/map-coverage.md`. Those values come
 from the same extracted overview directory. The supplied images are native 1024-pixel
 radars; game radar inset/zoom settings do not crop these textures.
 
-Dust II is verified against the supplied 2024 demo and independent world-coordinate
-samples. Other registered maps have overview-based calibration, but no real demo
-verification in this repository yet. Split-floor maps show the selected radar image
+Every registered map is verified against real demos; see `docs/map-coverage.md`. Split-floor maps show the selected radar image
 and distinguish players on the other floor with hollow markers and chevrons. Utility
 areas and world bomb markers follow the selected floor. Missing map definitions
 produce an explicit unavailable-map message.

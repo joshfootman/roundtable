@@ -12,7 +12,7 @@ The JSON artifact records the machine, browser, app commit, built index hash, so
 
 ## Laptop observation
 
-The recorded follow-up passed 20 cycles on an Apple M2 with 16 GiB RAM and Chromium 153.0.8010.12. The viewport was 1440 × 900. It ran serially, with no concurrent benchmark scheduled. See [the recorded observations](repeated-imports-results.json) for exact environment and build identifiers.
+The recorded follow-up passed 20 cycles on an Apple M2 with 16 GiB RAM and Chromium 153.0.8010.12. The viewport was 1440 × 900. It ran serially, with no concurrent benchmark scheduled.
 
 Forty parser workers were created and terminated. Every cleared state had zero active parser workers, no replay canvas, and no prior round controls. Pixi's separate workers are excluded from parser ownership counts.
 

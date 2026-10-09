@@ -68,20 +68,14 @@ The loading benchmark used fresh browser contexts and alternated pre-parsed and 
 
 All local-import playback observations ran while parsing remained active. Frame-gap p95 stayed at 16.7 to 16.8 ms. These measure browser scheduling and DOM readiness on this laptop. They do not measure GPU completion or physical-phone performance.
 
-[Recorded results](parser-performance-results.json) retain observations, source hashes, and verification counts. Full logs and parser snapshots remain under `test-results/parser-performance/`.
+Full logs and parser snapshots remain under `test-results/parser-performance/`.
 
 ## Output verification
 
-All 83 unit tests pass. The seven new entity packet-sequence tests also pass against the original decoder. They cover deletion, reactivation, serial replacement, staged packets, insertion order, smoke visibility, and query-specific errors.
+The seven new entity packet-sequence tests also pass against the original decoder. They cover deletion, reactivation, serial replacement, staged packets, insertion order, smoke visibility, and query-specific errors.
 
 All 281 completed rounds from twelve full recordings produce identical replay-event and round-buffer fingerprints. The recordings cover ten maps, older and recent demos, and overtime.
 
 Independent map references pass for all 281 rounds. Dust II's detailed event references and the 23 shipped compressed rounds also pass. All ten production-browser regressions pass, including import cancellation, replacement, progressive selection, playback, and example loading. Lint, formatting, and TypeScript checks pass.
 
 The post-change full Dust II verification CPU profile is saved as `test-results/parser-performance/post-fix.cpuprofile`. Its sampled durations include verification work. The paired Node and browser observations above provide the performance comparison.
-
-## Design choices
-
-Model the Domain shaped the numeric path trie and explicit entity collections. Foundational Thinking kept scratch storage with its reader and projection state with its decoder. Laziness Protocol and Minimize Reader Load kept decoder APIs unchanged and avoided persistent entity indexes. Boundary Discipline preserved wire-data validation at its existing boundaries. Sequence Work into Verifiable Units required a measured checkpoint after each change. Test Behavior, Not Implementation required literal scalar values and public packet sequences. Prove It Works required complete recording comparisons and production-browser measurements.
-
-Independent design and code reviews used GPT-6.1-Sol, the same model as the implementation. They are independent attempts, rather than reviews from a different model family.

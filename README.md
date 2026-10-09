@@ -39,7 +39,7 @@ verification commands require the local reference recording described in the
   [MurkyYT/cs2-map-icons](https://github.com/MurkyYT/cs2-map-icons); see the
   [calibration notes](src/replay/README.md) for the supplied images and transforms.
 - [Juknum/counter-strike-icons](https://github.com/Juknum/counter-strike-icons):
-  extracted Valve CS2 equipment and kill-feed SVGs stored for a future UI refresh.
+  extracted Valve CS2 equipment and kill-feed SVGs used by the kill feed and map.
   The pinned source and upstream asset terms are documented in
   [the icon asset guide](src/assets/cs2/README.md).
 - [demoparser](https://github.com/LaihoE/demoparser),

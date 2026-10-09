@@ -12,8 +12,8 @@ The current example demo is `faze-vs-vitality-m2-dust2.dem`.
 Raw `.dem` files in this directory are ignored by Git. A fresh checkout will
 need a local copy of the fixture; CI must not assume it is present. This file is
 for local development and example preparation, and is not served by Vite or
-included in the app bundle. Public example delivery will be decided after the
-pre-parsed versus live-parsing benchmarks described in `docs/PROJECT.md`.
+included in the app bundle. The public example ships as pre-parsed replay files
+under `public/example/`.
 
 ## Verified metadata
 
@@ -105,66 +105,10 @@ Run `npm run verify:demo` to check the full local fixture through the production
 Effect parser and report its read count and byte budget. The command fails if
 the fixture is missing or its metadata differs from the verified values.
 Run `DEMO_PATH=fixtures/local/faze-vs-vitality-m2-dust2.dem npm run test:e2e` to exercise
-the complete file through the browser input and worker. Without `DEMO_PATH`, Playwright uses the roster container below.
+the complete file through the browser input and worker.
 Metadata unit tests continue to use the small metadata container.
 Run `npm run verify:roster` to check all ten player names and exact Steam IDs
 against the independent oracle and report bounded reads from the full demo.
-
-## Small roster fixture for CI
-
-`fixtures/roster/import.dem` is a 45,196-byte sparse test container extracted on
-30 September 2026 from the full demo above. Its SHA-256 is
-`3013628628ab8a000a4e1fbd3ead0d9631f50a01b1a32c4ec308afd3883cbd26`.
-The source SHA-256 was checked again during extraction:
-`0d5a5f00301ea55780f30184b9e257b9d0e742fb5d3e6b4c70878340be6eb7d4`.
-
-The fixture concatenates these unchanged, complete source records in their
-original order. Length includes the command, tick and payload-length varints.
-Commands with bit 64 set retain their original Snappy compression.
-
-| Record                                      | Source offset | Fixture offset |       Tick | Command | Record bytes |
-| ------------------------------------------- | ------------: | -------------: | ---------: | ------: | -----------: |
-| File header                                 |            16 |             16 | 4294967295 |       1 |          166 |
-| String tables                               |         71955 |            182 | 4294967295 |      70 |        16860 |
-| Event descriptors in signon packet          |         88829 |          17042 | 4294967295 |      72 |         8505 |
-| Ten player spawn events in packet           |       1565604 |          25547 |        449 |      71 |        17496 |
-| Freeze-end and match-start events in packet |      13335298 |          43043 |       5732 |      71 |         2135 |
-| File info                                   |     598102484 |          45178 |     197008 |       2 |           18 |
-
-Only the 16-byte container changes: its file-info offset becomes 45178 and its
-unused spawn-groups word becomes zero. Gameplay records and protobuf payloads
-are not rewritten. This is a parser test input, not a playable or complete demo.
-Its playback metadata continues to describe the original recording.
-
-The initial `userinfo` table contains twelve human identities and two SourceTV
-clients. `zw1nc3k` and `COPPET` are spectators. The ten competitors emit
-`player_spawn` events before the first `round_freeze_end`; that event provides a
-natural completion boundary without assuming ten players or particular slots.
-The same boundary packet contains `round_announce_match_start`. The fixture
-preserves the corresponding real event descriptors and complete packets.
-`userinfo` alone does not establish competitive participation or team labels.
-
-As an independent oracle, `github.com/markus-wa/demoinfocs-golang/v4@v4.5.1`
-parsed the full source demo through frame 100. Its participant state reported
-these ten Steam IDs on teams 2 or 3, the two spectators on team 1, and both
-SourceTV clients as bots on team 0. These IDs also match the ten actual spawn
-user IDs in the retained packet. Keep Steam IDs as decimal strings because
-JavaScript numbers cannot represent them exactly.
-
-| Name     | Steam ID          | Spawn user ID |
-| -------- | ----------------- | ------------: |
-| broky    | 76561198201620490 |             6 |
-| ropz     | 76561197991272318 |             7 |
-| frozen   | 76561198068422762 |             8 |
-| mezii    | 76561197973140692 |             9 |
-| rain     | 76561197997351207 |            10 |
-| flameZ   | 76561197978835160 |            11 |
-| apEX     | 76561197989744167 |            12 |
-| ZywOo    | 76561198113666193 |            13 |
-| Spinx    | 76561198063336407 |            14 |
-| karrigan | 76561197989430253 |            15 |
-
-The compact first-round fixture and independent coordinate samples are documented in [replay/README.md](replay/README.md).
 
 ## Additional map recordings
 

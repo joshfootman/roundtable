@@ -23,8 +23,8 @@
 - [x] Display approximate fire areas over time
 - [x] Display bullet traces
 - [x] Display flashed-player indicators
-- [x] Filter visible players and teams
-- [x] Toggle utility overlays
+- [ ] Filter visible players and teams
+- [ ] Toggle utility overlays
 - [x] Replay Dust II fixtures on a calibrated map
 - [x] Replay Ancient fixtures on a calibrated map
 - [x] Replay Anubis fixtures on a calibrated map
@@ -42,20 +42,19 @@
 - [x] Recover gracefully from insufficient browser memory
 - [x] Verify playback against older and recent tournament demos
 
-<!-- - [ ] Control playback and inspect players on a phone -->
-<!-- - [ ] Scrub the timeline accurately with touch -->
-<!-- - [ ] Complete import and replay controls using only a keyboard -->
-<!-- - [ ] Expose meaningful replay information to screen readers -->
-<!-- - [ ] Keep replay controls usable with zoom and narrow layouts -->
-<!-- - [ ] Meet contrast, non-colour cues and flashing requirements -->
+- [ ] Control playback and inspect players on a phone
+- [ ] Scrub the timeline accurately with touch
+- [ ] Complete import and replay controls using only a keyboard
+- [ ] Expose meaningful replay information to screen readers
+- [ ] Keep replay controls usable with zoom and narrow layouts
+- [ ] Meet contrast, non-colour cues and flashing requirements
 
 - [x] Offer an example match without requiring a local demo
 - [x] Benchmark pre-parsed versus live-parsed example loading
-- [x] Benchmark optional cached replay loading with Dexie
 - [x] Prevent performance regressions with Playwright benchmarks
 - [x] Verify sustained playback and memory usage on laptop
 - [x] Verify repeated imports release previous replay resources
 
-<!-- - [ ] Audit the complete replay flow against WCAG 2.1 AA -->
+- [ ] Audit the complete replay flow against WCAG 2.1 AA
 
 - [x] Open and refresh replay routes on static hosting
