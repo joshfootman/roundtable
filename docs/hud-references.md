@@ -20,6 +20,39 @@ broadcast stills.
 FACEIT has no distinct broadcast HUD on YouTube. Its streamer league uses the stock CS2
 HUD with a streamer camera, so it is not compared below.
 
+## IEM, 2023 to 2026
+
+| Event                                         | Source                                                                               |
+| --------------------------------------------- | ------------------------------------------------------------------------------------ |
+| IEM Katowice 2023 grand final (CS:GO)         | [Heroic vs G2, map 1, 0:24:00](https://www.youtube.com/watch?v=fSaqjepLerE&t=1440)   |
+| IEM Katowice 2024 grand final (first CS2 IEM) | [Spirit vs FaZe, map 2, 0:36:00](https://www.youtube.com/watch?v=QVqjF1m-0wE&t=2160) |
+| IEM Katowice 2025 grand final                 | [Vitality vs Spirit, 0:55:00](https://www.youtube.com/watch?v=ykyKLhnX6lw&t=3300)    |
+| IEM Cologne 2025 grand final                  | [Spirit vs MOUZ, 0:45:00](https://www.youtube.com/watch?v=iMGzvyOIPFQ&t=2700)        |
+| IEM Kraków 2026 grand final                   | [FURIA vs Vitality, 0:45:00](https://www.youtube.com/watch?v=GtCt7NdxlOg&t=2700)     |
+| IEM Cologne Major 2026 grand final            | [FURIA vs Falcons, 0:40:00](https://www.youtube.com/watch?v=p6U28DEBn8A&t=2400)      |
+
+**2023–2024: flat bars.** Wide score bar with event and stage above (`IEM Katowice 2023 | Day 10`,
+`Grand Final | Best of 5`), team tags on solid team-colour blocks, `Round 13/30` and timer, and
+stacked round-win pips. A separate `Players Alive 3 VS 4` box top right. `Playing on Nuke |
+Picked by G2` strip above the radar. Player rows are flat colour bars with health and name on
+top, then K/D and utility, then money, and a numbered badge outside the row. Dead rows turn
+dark with a skull and show ADR instead. The observed player gets a wide bottom panel with
+K, assists, D, ADR, a segmented health bar and ammo. The CS2 switch in 2024 kept this design.
+
+**2025–2026: photos and a map strip.** Compact score bar with team logos only, round and
+timer in the centre, and an event and stage tab above. The timer becomes a bomb icon after
+the plant (Cologne 2025). A map veto strip replaces the `Playing on` line
+(`MIRAGE ▶ ANUBIS ▶ NUKE`). A team-name tab sits above each column. Rows add player photos
+and larger condensed type, with health as a big number beside the weapon icon. Dead rows
+fade, overlay a skull on the photo, and keep K/D and money. Alive counts moved from the
+corner box to a small `4 VS 5` under the score bar (Kraków 2026). The observed-player panel
+shrank to a name, health and ammo strip under the player camera.
+
+**What stayed constant across all four years:** player columns low on each side with five rows
+per team, the radar top left with numbered markers, the score bar top centre, health as
+the most prominent per-player number, dead players kept in place but dimmed, and player
+numbers 1–5 and 6–0 shared between the rows and the radar markers.
+
 ## Per organiser
 
 **BLAST (2025–2026).** Score bar top centre: team logos, scores, `ROUND 13 / 24`, timer. The
