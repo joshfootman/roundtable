@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
 import type { DemoPlaybackState } from './DemoMap'
 import type { ReplayRound } from '#/replay/types'
@@ -8,6 +8,11 @@ function playbackTime(seconds: number) {
   return `${Math.floor(whole / 60)
     .toString()
     .padStart(2, '0')}:${(whole % 60).toString().padStart(2, '0')}`
+}
+
+function timelineProgress(round: ReplayRound, tick: number) {
+  const span = round.endTick - round.liveStartTick
+  return span > 0 ? Math.min(100, Math.max(0, ((tick - round.liveStartTick) / span) * 100)) : 0
 }
 
 export function DemoPlaybackControl({
@@ -24,13 +29,21 @@ export function DemoPlaybackControl({
   const elapsed = playbackTime((tick - round.liveStartTick) * round.tickInterval)
   const duration = playbackTime((round.endTick - round.liveStartTick) * round.tickInterval)
 
-  const progress =
-    round.endTick > round.liveStartTick
-      ? Math.min(
-          100,
-          Math.max(0, ((tick - round.liveStartTick) / (round.endTick - round.liveStartTick)) * 100),
-        )
-      : 0
+  const progress = timelineProgress(round, tick)
+  const timeline = useRef<HTMLInputElement>(null)
+  const controller = ready ? playback.controller : undefined
+
+  // The thumb follows every drawn frame; React only republishes the text a few times a second.
+  useEffect(
+    () =>
+      controller?.subscribeFrame((frameTick) => {
+        const input = timeline.current
+        if (!input) return
+        input.value = String(frameTick)
+        input.style.setProperty('--timeline-progress', `${timelineProgress(round, frameTick)}%`)
+      }),
+    [controller, round],
+  )
 
   function finishScrub() {
     const intent = scrub.current
@@ -68,6 +81,7 @@ export function DemoPlaybackControl({
         </svg>
       </button>
       <input
+        ref={timeline}
         type="range"
         aria-label="Round timeline"
         aria-valuetext={`${elapsed} of ${duration}`}

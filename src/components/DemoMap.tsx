@@ -19,7 +19,11 @@ import { createUtilityRenderer } from '../replay/utility-renderer'
 import type { DrawingConfiguration } from '../replay/drawing'
 import { initialUtilityVisibility } from '../replay/utility'
 
-export type DemoPlaybackController = PlaybackClock & { setFloor(floor: MapFloor): void }
+export type DemoPlaybackController = PlaybackClock & {
+  setFloor(floor: MapFloor): void
+  /** Called with the fractional tick on every drawn frame; returns an unsubscribe. */
+  subscribeFrame(listener: (tick: number) => void): () => void
+}
 
 export type DemoCameraState =
   | { status: 'loading' | 'error' }
@@ -172,6 +176,7 @@ export function DemoMap({
           draw()
           publishCamera(zoom)
         })
+        const frameListeners = new Set<(tick: number) => void>()
         clock = createPlaybackClock({
           initialTick: round.liveStartTick,
           minimum: round.liveStartTick,
@@ -180,6 +185,7 @@ export function DemoMap({
           draw(nextTick) {
             tick = nextTick
             draw()
+            for (const listener of frameListeners) listener(tick)
             if (!mapScene.app.ticker.started) mapScene.app.render()
           },
           publish(snapshot) {
@@ -200,6 +206,10 @@ export function DemoMap({
         })
         controller = {
           ...clock,
+          subscribeFrame(listener) {
+            frameListeners.add(listener)
+            return () => frameListeners.delete(listener)
+          },
           setFloor(nextFloor) {
             floor = nextFloor
             mapScene.setFloor(floor)
@@ -209,7 +219,7 @@ export function DemoMap({
               onPlayback?.({ status: 'ready', controller, snapshot: clock!.getSnapshot(), floor })
           },
         }
-        mapScene.app.ticker.add((ticker) => clock!.advance(ticker.elapsedMS))
+        mapScene.app.ticker.add((ticker) => clock!.advance(ticker.deltaMS))
         if (drawingRef.current) mapScene.setDrawing(drawingRef.current)
         clock.pause()
       } else {
