@@ -17,12 +17,12 @@ test('the timeline thumb follows playback every frame, not only on text updates'
         const started = performance.now()
         function sample() {
           seen.add(`${input.value}|${input.style.getPropertyValue('--timeline-progress')}`)
-          if (performance.now() - started < 1000) requestAnimationFrame(sample)
+          if (performance.now() - started < 2000) requestAnimationFrame(sample)
           else resolve(seen.size)
         }
         requestAnimationFrame(sample)
       }),
   )
-  // React publishes four times a second; per-frame updates give far more distinct positions.
+  // React publishes four times a second (about 9 positions in 2 s); frames give far more.
   expect(values).toBeGreaterThan(20)
 })

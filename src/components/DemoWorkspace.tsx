@@ -191,6 +191,33 @@ function Demo({
   if (selection.number !== round?.number) {
     setSelection({ number: round?.number, previous: selection.number })
   }
+  // A new round remounts its controls, so the focused control is found again by its name.
+  const stage = React.useRef<HTMLDivElement>(null)
+  const refocus = React.useRef<{ round: number; label: string }>(undefined)
+  React.useEffect(() => {
+    const pending = refocus.current
+    const root = stage.current
+    if (!pending || pending.round !== round?.number || !root) return
+    refocus.current = undefined
+    function restore() {
+      const matches = [...root!.querySelectorAll<HTMLElement>('[aria-label]')].filter(
+        (element) => element.getAttribute('aria-label') === pending!.label,
+      )
+      if (!matches.length) return false
+      const target =
+        matches.find((element) => !element.matches(':disabled')) ??
+        root!.querySelector<HTMLElement>('[aria-label^="Choose round"]')
+      target?.focus({ preventScroll: true })
+      return true
+    }
+    if (restore()) return
+    // The map canvas appears only after the renderer starts.
+    const observer = new MutationObserver(() => {
+      if (restore()) observer.disconnect()
+    })
+    observer.observe(root, { childList: true, subtree: true })
+    return () => observer.disconnect()
+  }, [round?.number])
 
   if (!map) {
     return <></>
@@ -198,7 +225,10 @@ function Demo({
 
   return (
     <div className="demo-content flex min-h-0 flex-1 flex-col px-2 pb-2 opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none starting:opacity-0 replay-desktop:px-4 replay-desktop:pb-4">
-      <div className="demo-stage relative min-h-0 flex-1 rounded-2xl bg-neutral-900/50 p-3 replay-desktop:overflow-hidden replay-desktop:p-4">
+      <div
+        ref={stage}
+        className="demo-stage relative min-h-0 flex-1 rounded-2xl bg-neutral-900/50 p-3 replay-desktop:overflow-hidden replay-desktop:p-4"
+      >
         {round ? (
           <DemoRound
             key={`${map.name}:${round.startTick}`}
@@ -232,6 +262,12 @@ function Demo({
             }
             onSelectRound={(number, focusPicker = false) => {
               setPickerFocusRound(focusPicker ? number : undefined)
+              const focused = document.activeElement
+              const label = focused?.getAttribute('aria-label')
+              refocus.current =
+                !focusPicker && label && stage.current?.contains(focused!)
+                  ? { round: number, label }
+                  : undefined
               replay.selectRound(number)
             }}
             autoPlay={autoPlay}

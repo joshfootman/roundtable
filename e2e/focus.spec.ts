@@ -92,3 +92,24 @@ for (const viewport of [
     await expect(picker).toBeVisible()
   })
 }
+
+test('round navigation keeps focus on the control that switched rounds', async ({ page }) => {
+  await page.goto('/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=2')
+  await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled({
+    timeout: 30_000,
+  })
+  const next = page.getByRole('button', { name: 'Next round', exact: true })
+  await next.focus()
+  await page.keyboard.press('Enter')
+  await expect(
+    page.getByRole('button', { name: 'Choose round, current round 3', exact: true }),
+  ).toBeVisible()
+  await expect(next).toBeFocused()
+  const previous = page.getByRole('button', { name: 'Previous round', exact: true })
+  await previous.focus()
+  await page.keyboard.press('Enter')
+  await expect(
+    page.getByRole('button', { name: 'Choose round, current round 2', exact: true }),
+  ).toBeVisible()
+  await expect(previous).toBeFocused()
+})
