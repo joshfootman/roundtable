@@ -4,7 +4,7 @@ export const examples = {
     filename: 'faze-vs-vitality-m2-dust2.dem',
     map: 'de_dust2',
     mapName: 'Dust II',
-    mapImage: '/images/maps/dust2.png',
+    mapImage: '/images/maps/dust2.avif',
     assetBase: '/example',
     teams: [
       {
@@ -30,7 +30,7 @@ export const examples = {
     filename: 'faze-vs-natus-vincere-m1-ancient.dem',
     map: 'de_ancient',
     mapName: 'Ancient',
-    mapImage: '/images/maps/ancient.png',
+    mapImage: '/images/maps/ancient.avif',
     assetBase: '/examples/faze-vs-natus-vincere-m1-ancient',
     teams: [
       {
@@ -56,7 +56,7 @@ export const examples = {
     filename: 'faze-vs-vitality-m1-inferno.dem',
     map: 'de_inferno',
     mapName: 'Inferno',
-    mapImage: '/images/maps/inferno.png',
+    mapImage: '/images/maps/inferno.avif',
     assetBase: '/examples/faze-vs-vitality-m1-inferno',
     teams: [
       {
@@ -82,7 +82,7 @@ export const examples = {
     filename: 'faze-vs-vitality-m3-mirage.dem',
     map: 'de_mirage',
     mapName: 'Mirage',
-    mapImage: '/images/maps/mirage.png',
+    mapImage: '/images/maps/mirage.avif',
     assetBase: '/examples/faze-vs-vitality-m3-mirage',
     teams: [
       {
@@ -108,7 +108,7 @@ export const examples = {
     filename: 'vitality-vs-g2-m3-overpass.dem',
     map: 'de_overpass',
     mapName: 'Overpass',
-    mapImage: '/images/maps/overpass.png',
+    mapImage: '/images/maps/overpass.avif',
     assetBase: '/examples/vitality-vs-g2-m3-overpass',
     teams: [
       {
@@ -133,7 +133,7 @@ export const examples = {
     filename: 'vitality-vs-g2-m4-inferno.dem',
     map: 'de_inferno',
     mapName: 'Inferno',
-    mapImage: '/images/maps/inferno.png',
+    mapImage: '/images/maps/inferno.avif',
     assetBase: '/examples/vitality-vs-g2-m4-inferno',
     teams: [
       {
@@ -158,7 +158,7 @@ export const examples = {
     filename: 'vitality-vs-g2-m5-train.dem',
     map: 'de_train',
     mapName: 'Train',
-    mapImage: '/images/maps/train.png',
+    mapImage: '/images/maps/train.avif',
     assetBase: '/examples/vitality-vs-g2-m5-train',
     teams: [
       {
@@ -183,7 +183,7 @@ export const examples = {
     filename: 'vitality-vs-inner-circle-m1-anubis.dem',
     map: 'de_anubis',
     mapName: 'Anubis',
-    mapImage: '/images/maps/anubis.png',
+    mapImage: '/images/maps/anubis.avif',
     assetBase: '/examples/vitality-vs-inner-circle-m1-anubis',
     teams: [
       {
@@ -209,7 +209,7 @@ export const examples = {
     filename: 'vitality-vs-inner-circle-m2-cache.dem',
     map: 'de_cache',
     mapName: 'Cache',
-    mapImage: '/images/maps/cache.png',
+    mapImage: '/images/maps/cache.avif',
     assetBase: '/examples/vitality-vs-inner-circle-m2-cache',
     teams: [
       {
@@ -235,7 +235,7 @@ export const examples = {
     filename: 'natus-vincere-vs-spirit-m2-ancient.dem',
     map: 'de_ancient',
     mapName: 'Ancient',
-    mapImage: '/images/maps/ancient.png',
+    mapImage: '/images/maps/ancient.avif',
     assetBase: '/examples/natus-vincere-vs-spirit-m2-ancient',
     teams: [
       {
@@ -261,7 +261,7 @@ export const examples = {
     filename: 'astralis-vs-mouz-m1-vertigo.dem',
     map: 'de_vertigo',
     mapName: 'Vertigo',
-    mapImage: '/images/maps/vertigo.png',
+    mapImage: '/images/maps/vertigo.avif',
     assetBase: '/examples/astralis-vs-mouz-m1-vertigo',
     teams: [
       {
@@ -287,7 +287,7 @@ export const examples = {
     filename: 'astralis-vs-mouz-m2-nuke.dem',
     map: 'de_nuke',
     mapName: 'Nuke',
-    mapImage: '/images/maps/nuke.png',
+    mapImage: '/images/maps/nuke.avif',
     assetBase: '/examples/astralis-vs-mouz-m2-nuke',
     teams: [
       {

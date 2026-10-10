@@ -1,19 +1,19 @@
 # Example demo image sources
 
-Map screenshots come from Valve's CS2 panorama assets, mirrored by [MurkyYT/cs2-map-icons](https://github.com/MurkyYT/cs2-map-icons). Each PNG is resampled from 1920 × 1080 to 768 × 432 pixels with macOS `sips`. The screenshots keep their original colours.
+Map screenshots come from Valve's CS2 panorama assets, mirrored by [MurkyYT/cs2-map-icons](https://github.com/MurkyYT/cs2-map-icons). Each PNG is resampled from 1920 × 1080 to 768 × 432 pixels and encoded as AVIF (quality 60) with macOS `sips`. The screenshots keep their original colours.
 
-| Local file                        | Source                                                                                                                        |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `public/images/maps/dust2.png`    | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_dust2_1_png.png)    |
-| `public/images/maps/ancient.png`  | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_ancient_1_png.png)  |
-| `public/images/maps/anubis.png`   | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_anubis_1_png.png)   |
-| `public/images/maps/cache.png`    | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_cache_1_png.png)    |
-| `public/images/maps/inferno.png`  | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_inferno_1_png.png)  |
-| `public/images/maps/mirage.png`   | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_mirage_1_png.png)   |
-| `public/images/maps/nuke.png`     | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_nuke_1_png.png)     |
-| `public/images/maps/overpass.png` | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_overpass_1_png.png) |
-| `public/images/maps/train.png`    | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_train_1_png.png)    |
-| `public/images/maps/vertigo.png`  | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_vertigo_1_png.png)  |
+| Local file                         | Source                                                                                                                        |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `public/images/maps/dust2.avif`    | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_dust2_1_png.png)    |
+| `public/images/maps/ancient.avif`  | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_ancient_1_png.png)  |
+| `public/images/maps/anubis.avif`   | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_anubis_1_png.png)   |
+| `public/images/maps/cache.avif`    | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_cache_1_png.png)    |
+| `public/images/maps/inferno.avif`  | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_inferno_1_png.png)  |
+| `public/images/maps/mirage.avif`   | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_mirage_1_png.png)   |
+| `public/images/maps/nuke.avif`     | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_nuke_1_png.png)     |
+| `public/images/maps/overpass.avif` | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_overpass_1_png.png) |
+| `public/images/maps/train.avif`    | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_train_1_png.png)    |
+| `public/images/maps/vertigo.avif`  | [Valve panorama screenshot](https://raw.githubusercontent.com/MurkyYT/cs2-map-icons/main/images/thumbs/de_vertigo_1_png.png)  |
 
 Seven team logos come from the game's tournament SVG assets, mirrored by [Juknum/counter-strike-icons](https://github.com/Juknum/counter-strike-icons). They retain their original colours and transparent backgrounds. Inner Circle uses the inline logo SVG from its official esports website. Its transparent negative spaces and white site colour are retained.
 
