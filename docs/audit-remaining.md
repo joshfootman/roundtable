@@ -4,16 +4,18 @@ Steps 1–5 done. These remain. Short words.
 
 ## Load (first round matter most)
 
-Measured 2026-10-10, Nuke example, round 1, headless Chromium.
+`npm run benchmark:first-round` (Fast 4G, cold, Nuke example; `FIRST_ROUND=12` for mid-match link).
 
-- **First round slow on 4G.** Fast 4G (9 Mbps, 60 ms): Play ready 5.8 s. Round 1 file done at 1.8 s. Rest is waiting on stuff that not round 1.
-- **Catalog images load on replay page.** While replay loads, page shows example catalog. Catalog pull map thumbnails (5.4 MB folder, ~0.5 MB each). They fight round 1 for bandwidth. Biggest waste. Fix: no catalog while replay loads, `loading="lazy"`, smaller WebP/AVIF thumbs.
-- **Later rounds start too soon.** Round 2+ download right after round 1, before Play ready. Fight radar and icons. Fix: wait until first round playable, or low fetch priority.
-- **Pixi waits for round 1.** Pixi init and radar texture start only after round 1 decoded. Could start same time as manifest fetch. Saves round-1 fetch time.
-- **Entry bundle big.** Entry chunk 541 kB (171 kB gzip). Effect loads before first paint, because session built in router context. Workspace chunk 458 kB (144 kB gzip) holds Pixi, loads on catalog page that draw no map. Fix: lazy session, lazy `DemoMap`/Pixi.
-- **Decode on main thread.** Each round gunzip + SHA-256 + decode ~30–60 ms, main thread, one after other. Fine for round 1. Rounds 2+ steal frames from first playback. Fix: decode in worker, or idle time.
-- **GPU wait in test is fake-ish.** Trace show 287 ms `ReadPixels` GPU wait at first draw. Headless uses software GPU (SwiftShader). Measure on real browser before fixing.
-- **Test server no compress.** `serve-static.ts` send JS raw (1.3 MB). Real host gzip it. Throttled numbers here worse than prod for JS.
+Done 2026-10-10: round-1 link 6.7 s → 1.7 s. Round-12 link 7.5 s → 1.6 s. Bytes before Play 7.0 MB → 0.9 MB.
+Shared link show loading state, not catalog. Thumbnails AVIF (5.4 MB → 368 kB). Linked round fetched first, rest wait until it plays. Radar, bomb icons, Pixi modules preload while round 1 downloads.
+
+Still left:
+
+- **Round file is the floor.** Round 1 = 429 kB, ~0.6 s on 4G. Smaller round format (quantised positions, delta ticks) cut this.
+- **Work after round lands.** ~0.5–1 s after round 1 arrives: decode ~40 ms, then first GPU composite (~290 ms in headless software GPU), then React render. Measure on real phone before fixing. Possible fix: mount map scene before round arrives, keep it for the round view.
+- **Entry bundle big.** Entry chunk 541 kB (171 kB gzip). Effect loads before first paint, because session built in router context. Workspace chunk 458 kB (144 kB gzip) holds Pixi, loads on catalog page that draw no map. Fix: lazy session, lazy `DemoMap`/Pixi. Helps catalog more than first round.
+- **Decode on main thread.** Each later round gunzip + SHA-256 + decode ~30–60 ms on main thread. Steals frames while first round plays. Fix: decode in worker, or idle time.
+- **Test server no compress.** `serve-static.ts` send JS raw. Real host gzip it.
 
 ## Speed
 
