@@ -33,7 +33,7 @@ export function DemoPlayerCards({
   )
 }
 
-function PlayerCard({ player }: { player: PlayerCardData }) {
+export function PlayerCard({ player }: { player: PlayerCardData }) {
   const { money, armour, helmet, grenades } = player.inspection
   const weapon = player.inspection.weapon
   const mirrored = player.team === 2

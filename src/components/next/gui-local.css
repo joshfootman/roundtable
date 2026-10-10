@@ -10,6 +10,8 @@
   /* neutral-6 is under 4.5:1 on neutral-2, so muted text uses neutral-7. */
   --text-muted: var(--neutral-7);
   --text-strong: var(--neutral-10);
+  /* The theme's success green is 4.0:1 on neutral-2; money text needs AA, this is 7.0:1. */
+  --money: #3fbf8f;
   --accent: var(--color-1);
   --accent-foreground: var(--neutral-1);
 
