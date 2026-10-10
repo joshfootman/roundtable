@@ -1,26 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { playerNumbers } from './player-numbers'
 import type { ReplayRound } from './types'
+import { testRound } from './test-round'
 
 function round(): ReplayRound {
-  return {
-    number: 1,
-    overtime: 0,
+  return testRound({
     startTick: 100,
     liveStartTick: 115,
     resultTick: 120,
     endTick: 120,
-    tickInterval: 1 / 64,
-    droppedItems: [],
-    shots: [],
-    fires: [],
-    smokes: [],
-    projectiles: [],
-    detonations: [],
-    bombEvents: [],
     bomb: [],
     inspection: [],
-    deaths: [],
     players: [
       { steamId: 'ct-a', name: 'Counter A' },
       { steamId: 't-a', name: 'Terror A' },
@@ -44,12 +34,11 @@ function round(): ReplayRound {
       1, 1,
     ]),
     pitch: new Float32Array(33),
-    damage: [],
     positions: new Float32Array(99),
     alive: new Uint8Array(33),
     health: new Int32Array(33),
     yaw: new Float32Array(33),
-  }
+  })
 }
 
 describe('player numbers', () => {

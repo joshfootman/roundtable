@@ -4,6 +4,7 @@ import { createUtilityRenderer } from './utility-renderer'
 import { initialUtilityVisibility } from './utility'
 import type { MapDefinition } from './maps'
 import type { ReplayRound } from './types'
+import { testRound } from './test-round'
 
 const map: MapDefinition = {
   name: 'Test',
@@ -20,15 +21,12 @@ const map: MapDefinition = {
 }
 
 function round(): ReplayRound {
-  return {
-    number: 1,
-    overtime: 0,
+  return testRound({
     startTick: 90,
     liveStartTick: 100,
     resultTick: 140,
     endTick: 150,
     tickInterval: 0.1,
-    droppedItems: [],
     shots: [{ tick: 100, player: 'a', weapon: 7, x: 100, y: 200, z: 1, pitch: 0, yaw: 0 }],
     fires: [
       { tick: 90, fires: [] },
@@ -49,21 +47,17 @@ function round(): ReplayRound {
       },
     ],
     detonations: [{ tick: 100, kind: 'he', entity: 4, x: 180, y: 120, z: 1 }],
-    bombEvents: [],
     bomb: [],
     inspection: [],
-    deaths: [],
     players: [],
     ticks: new Uint32Array(),
     positions: new Float32Array(),
     teams: new Uint8Array(),
-    present: new Uint8Array().fill(1),
     pitch: new Float32Array(),
-    damage: [],
     alive: new Uint8Array(),
     health: new Int32Array(),
     yaw: new Float32Array(),
-  }
+  })
 }
 
 function bounds(graphics: Graphics) {

@@ -3,6 +3,7 @@ import { afterEach, expect, test, vi } from 'vitest'
 import { importDemo, type ImportEvent, type ImportResult } from './import'
 import type { DemoMetadata } from './metadata'
 import { updateImport, type ImportState } from './session'
+import { testRound } from '../replay/test-round'
 
 const metadata: DemoMetadata = {
   mapName: 'de_dust2',
@@ -17,9 +18,7 @@ const metadata: DemoMetadata = {
   playbackFrames: 197003,
 }
 
-const firstRound = {
-  number: 1,
-  overtime: 0,
+const firstRound = testRound({
   resultTick: 538,
   startTick: 537,
   liveStartTick: 538,
@@ -45,20 +44,11 @@ const firstRound = {
   ],
   bomb: [{ tick: 0, state: { type: 'inactive' as const } }],
   fires: [{ tick: 0, fires: [] }],
-  droppedItems: [],
-  shots: [],
-  smokes: [],
-  projectiles: [],
-  detonations: [],
-  bombEvents: [],
-  deaths: [],
   health: new Int32Array([100, 100]),
   yaw: new Float32Array([90, 90]),
   teams: new Uint8Array([2, 2]),
-  present: new Uint8Array([1, 1]),
   pitch: new Float32Array(2),
-  damage: [],
-}
+})
 
 const secondRound = {
   ...firstRound,

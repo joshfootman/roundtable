@@ -1,23 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { killFeedAtTick } from './kill-feed'
 import type { ReplayRound } from './types'
+import { testRound } from './test-round'
 
 function round(): ReplayRound {
-  return {
-    number: 1,
-    overtime: 0,
+  return testRound({
     startTick: 100,
     liveStartTick: 100,
     resultTick: 120,
     endTick: 130,
-    tickInterval: 1 / 64,
-    droppedItems: [],
-    shots: [],
-    fires: [],
-    smokes: [],
-    projectiles: [],
-    detonations: [],
-    bombEvents: [],
     bomb: [],
     inspection: [],
     players: [
@@ -26,9 +17,7 @@ function round(): ReplayRound {
     ],
     ticks: new Uint32Array([100, 110, 120]),
     teams: new Uint8Array([3, 2, 3, 2, 2, 3]),
-    present: new Uint8Array([1, 1, 1, 1, 1, 1]),
     pitch: new Float32Array(6),
-    damage: [],
     positions: new Float32Array(),
     alive: new Uint8Array(),
     health: new Int32Array(),
@@ -59,7 +48,7 @@ function round(): ReplayRound {
         flashAssist: false,
       },
     ],
-  }
+  })
 }
 
 describe('kill feed', () => {

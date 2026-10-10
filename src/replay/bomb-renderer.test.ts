@@ -3,6 +3,7 @@ import { Container, Sprite, Texture } from 'pixi.js'
 import { createBombRenderer } from './bomb-renderer'
 import type { MapDefinition } from './maps'
 import type { ReplayRound } from './types'
+import { testRound } from './test-round'
 
 const appearance = { neutral: 0xeeeeee, armed: 0xf59e0b, defusing: 0x96c8fa }
 
@@ -21,21 +22,12 @@ const map: MapDefinition = {
 }
 
 function round(): ReplayRound {
-  return {
-    number: 1,
-    overtime: 0,
+  return testRound({
     startTick: 90,
     liveStartTick: 100,
     resultTick: 140,
     endTick: 150,
     tickInterval: 0.25,
-    droppedItems: [],
-    shots: [],
-    fires: [],
-    smokes: [],
-    projectiles: [],
-    detonations: [],
-    bombEvents: [],
     bomb: [
       { tick: 90, state: { type: 'inactive' } },
       { tick: 100, state: { type: 'carried', carrier: 'b', planting: false } },
@@ -47,7 +39,6 @@ function round(): ReplayRound {
       { tick: 140, state: { type: 'inactive' } },
     ],
     inspection: [],
-    deaths: [],
     players: [
       { steamId: 'a', name: 'A' },
       { steamId: 'b', name: 'B' },
@@ -57,13 +48,11 @@ function round(): ReplayRound {
       100, 200, 1, 120, 180, 1, 100, 200, 1, 140, 160, 1, 100, 200, 1, 160, 140, -1,
     ]),
     teams: new Uint8Array(6),
-    present: new Uint8Array(6).fill(1),
     pitch: new Float32Array(6),
-    damage: [],
     alive: new Uint8Array(6),
     health: new Int32Array(6),
     yaw: new Float32Array(6),
-  }
+  })
 }
 
 describe('recorded bomb rendering', () => {

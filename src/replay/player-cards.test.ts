@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { playerCardsAtTick } from './player-cards'
 import type { PlayerInspection, ReplayDeath, ReplayRound, ReplayWeapon } from './types'
+import { testRound } from './test-round'
 
 function inspection(tick: number, money = 800): PlayerInspection {
   return {
@@ -16,21 +17,11 @@ function inspection(tick: number, money = 800): PlayerInspection {
 }
 
 function round(startTick: number, deaths: ReplayDeath[] = []): ReplayRound {
-  return {
-    number: 1,
-    overtime: 0,
+  return testRound({
     startTick,
     liveStartTick: startTick,
     resultTick: startTick + 10,
     endTick: startTick + 10,
-    tickInterval: 1 / 64,
-    droppedItems: [],
-    shots: [],
-    fires: [],
-    smokes: [],
-    projectiles: [],
-    detonations: [],
-    bombEvents: [],
     bomb: [{ tick: startTick, state: { type: 'inactive' } }],
     inspection: [[inspection(startTick)], [inspection(startTick)], [inspection(startTick)]],
     deaths,
@@ -45,10 +36,8 @@ function round(startTick: number, deaths: ReplayDeath[] = []): ReplayRound {
     health: new Int32Array([100, 80, 0, 60, 0, 0]),
     yaw: new Float32Array(6),
     teams: new Uint8Array([3, 2, 1, 3, 2, 1]),
-    present: new Uint8Array([1, 1, 1, 1, 1, 1]),
     pitch: new Float32Array(6),
-    damage: [],
-  }
+  })
 }
 
 function death(tick: number, victim: string, killer?: string): ReplayDeath {

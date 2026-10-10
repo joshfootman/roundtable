@@ -1,14 +1,14 @@
 import { expect, test } from 'vitest'
 import { roundWinningStreaks } from './winning-streaks'
 import type { ReplayRound } from './types'
+import { testRound } from './test-round'
 
 function round(number: number, winner?: 'ct' | 't', swapped = false): ReplayRound {
-  return {
+  return testRound({
     number,
     outcome: winner ? { winner, reason: 1 } : undefined,
     teamNames: swapped ? { ct: 'B', t: 'A' } : { ct: 'A', t: 'B' },
     score: { ct: 0, t: 0 },
-    overtime: 0,
     startTick: 0,
     liveStartTick: 10,
     resultTick: 100,
@@ -20,24 +20,14 @@ function round(number: number, winner?: 'ct' | 't', swapped = false): ReplayRoun
     ],
     ticks: new Uint32Array([0, 10]),
     teams: new Uint8Array([1, 1, ...(swapped ? [2, 3] : [3, 2])]),
-    present: new Uint8Array([1, 1, 1, 1, 1]),
     pitch: new Float32Array(5),
-    damage: [],
     positions: new Float32Array(),
     alive: new Uint8Array(),
     health: new Int32Array(),
     yaw: new Float32Array(),
-    droppedItems: [],
-    shots: [],
-    fires: [],
-    smokes: [],
-    projectiles: [],
-    detonations: [],
-    bombEvents: [],
     bomb: [],
     inspection: [],
-    deaths: [],
-  }
+  })
 }
 
 test('includes only outcomes visible at the result boundary and reconstructs a rewind', () => {

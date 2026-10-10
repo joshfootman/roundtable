@@ -1,5 +1,6 @@
 import { afterEach, expect, test, vi } from 'vitest'
 import type { ReplayRound } from '../replay/types'
+import { testRound } from '../replay/test-round'
 import type { ImportResult } from './import'
 import type { DemoMetadata } from './metadata'
 import { ReplaySession } from './replay-session'
@@ -18,9 +19,7 @@ const metadata: DemoMetadata = {
   playbackFrames: 64,
 }
 
-const round: ReplayRound = {
-  number: 1,
-  overtime: 0,
+const round: ReplayRound = testRound({
   startTick: 1,
   liveStartTick: 2,
   resultTick: 64,
@@ -33,20 +32,10 @@ const round: ReplayRound = {
   health: new Int32Array(),
   yaw: new Float32Array(),
   teams: new Uint8Array(),
-  present: new Uint8Array().fill(1),
   pitch: new Float32Array(),
-  damage: [],
   inspection: [],
   bomb: [],
-  fires: [],
-  droppedItems: [],
-  shots: [],
-  smokes: [],
-  projectiles: [],
-  detonations: [],
-  bombEvents: [],
-  deaths: [],
-}
+})
 
 class ControlledWorker {
   static instances: ControlledWorker[] = []

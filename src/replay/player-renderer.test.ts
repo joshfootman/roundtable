@@ -3,6 +3,7 @@ import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js'
 import { createPlayerRenderer } from './player-renderer'
 import type { MapDefinition } from './maps'
 import type { PlayerInspection, ReplayRound } from './types'
+import { testRound } from './test-round'
 
 const map: MapDefinition = {
   name: 'Test',
@@ -38,24 +39,14 @@ function round(): ReplayRound {
     weapon: { type: 'none' },
     weapons: [],
   }
-  return {
-    number: 1,
-    overtime: 0,
+  return testRound({
     startTick: 90,
     liveStartTick: 100,
     resultTick: 110,
     endTick: 120,
     tickInterval: 0.25,
-    droppedItems: [],
-    shots: [],
-    fires: [],
-    smokes: [],
-    projectiles: [],
-    detonations: [],
-    bombEvents: [],
     bomb: [],
     inspection: [[inspection], [{ ...inspection, flash: { type: 'none' } }], [inspection]],
-    deaths: [],
     players: [
       { steamId: 'a', name: 'A' },
       { steamId: 'b', name: 'B' },
@@ -67,13 +58,11 @@ function round(): ReplayRound {
       180, 120, 1, 100, 200, 1,
     ]),
     teams: new Uint8Array([2, 3, 1, 3, 2, 1, 3, 2, 1]),
-    present: new Uint8Array([1, 1, 1, 1, 1, 1, 1, 1, 1]),
     pitch: new Float32Array(9),
-    damage: [],
     alive: new Uint8Array([1, 1, 1, 1, 1, 1, 0, 1, 1]),
     health: new Int32Array(9),
     yaw: new Float32Array([0, 0, 0, 90, 180, 0, 180, 270, 0]),
-  }
+  })
 }
 
 function marker(renderer: ReturnType<typeof createPlayerRenderer>, index: number) {

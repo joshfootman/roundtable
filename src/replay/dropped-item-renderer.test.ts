@@ -3,6 +3,7 @@ import { Container, Sprite, Texture, TextureSource } from 'pixi.js'
 import { createDroppedItemRenderer } from './dropped-item-renderer'
 import type { MapDefinition } from './maps'
 import type { ReplayRound } from './types'
+import { testRound } from './test-round'
 
 const map: MapDefinition = {
   name: 'Test',
@@ -19,9 +20,7 @@ const map: MapDefinition = {
 }
 
 function round(): ReplayRound {
-  return {
-    number: 1,
-    overtime: 0,
+  return testRound({
     startTick: 90,
     liveStartTick: 100,
     resultTick: 140,
@@ -32,26 +31,17 @@ function round(): ReplayRound {
       { entity: 10, serial: 1, definition: 7, x: 220, y: 80, z: 0, from: 120, to: 130 },
       { entity: 11, serial: 2, definition: 43, x: 180, y: 120, z: -1, from: 120, to: 140 },
     ],
-    shots: [],
-    fires: [],
-    smokes: [],
-    projectiles: [],
-    detonations: [],
-    bombEvents: [],
     bomb: [{ tick: 90, state: { type: 'inactive' } }],
     inspection: [],
-    deaths: [],
     players: [],
     ticks: new Uint32Array([90]),
     positions: new Float32Array(),
     teams: new Uint8Array(),
-    present: new Uint8Array().fill(1),
     pitch: new Float32Array(),
-    damage: [],
     alive: new Uint8Array(),
     health: new Int32Array(),
     yaw: new Float32Array(),
-  }
+  })
 }
 
 function textures() {
