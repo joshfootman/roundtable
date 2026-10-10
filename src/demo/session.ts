@@ -83,7 +83,8 @@ export function updateImport(state: ImportState, action: ImportAction): ImportSt
       return state.status === 'ready'
         ? {
             ...state,
-            rounds: [...state.rounds, action.round],
+            // Rounds can arrive out of order when a linked round is fetched first.
+            rounds: [...state.rounds, action.round].sort((a, b) => a.startTick - b.startTick),
             discoveredRound: undefined,
             selectedStartTick: state.selectedStartTick ?? action.round.startTick,
           }

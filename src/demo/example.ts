@@ -47,6 +47,15 @@ export const ExampleManifest = Schema.Struct({
 
 export function importExample(
   id: ExampleId = defaultExampleId,
+  {
+    first = 1,
+    ready = Promise.resolve(),
+  }: {
+    /** Round fetched before any other, so a link to it plays without waiting on earlier rounds. */
+    first?: number
+    /** Later rounds wait for this, so they do not compete with the first for bandwidth. */
+    ready?: Promise<void>
+  } = {},
 ): Stream.Stream<ImportEvent, DemoImportError> {
   const example = examples[id]
   const fetchAsset = (path: string) =>
@@ -92,7 +101,16 @@ export function importExample(
         metadata: manifest.metadata,
         roundStartTicks: manifest.rounds.map((round) => round.startTick),
       }
-      const rounds = Stream.fromIterable(manifest.rounds).pipe(
+      const firstRound =
+        manifest.rounds.find((round) => round.number === first) ?? manifest.rounds[0]
+      const rounds = Stream.make(firstRound).pipe(
+        Stream.concat(
+          Stream.fromEffect(Effect.promise(() => ready)).pipe(
+            Stream.flatMap(() =>
+              Stream.fromIterable(manifest.rounds.filter((round) => round !== firstRound)),
+            ),
+          ),
+        ),
         Stream.mapEffect((descriptor) =>
           Effect.gen(function* () {
             const response = yield* fetchAsset(descriptor.path)

@@ -4,6 +4,7 @@ import { Collapsible } from '@base-ui/react/collapsible'
 import { DemoImportStatus } from '../components/DemoImportStatus'
 import type { ImportState, ReadyImportState } from '#/demo/session'
 import { mapDefinition } from '#/replay/maps'
+import { preloadMapAssets } from '#/replay/round-layer'
 import { DemoMap, type DemoPlaybackState, type DemoCameraState } from '#/components/DemoMap'
 import { DemoPlaybackControl } from '#/components/DemoPlaybackControl'
 import type { ReplayRound } from '#/replay/types'
@@ -14,7 +15,7 @@ import { focusedCamera, type CameraState } from '#/replay/map-camera'
 import { DemoFloorControl } from '#/components/DemoFloorControl'
 import { DemoRoundControl } from '#/components/DemoRoundControl'
 import { ExampleDemos } from '#/components/ExampleDemos'
-import type { ExampleId } from '#/demo/examples'
+import { examples, type ExampleId } from '#/demo/examples'
 import { playerCardsAtTick } from '#/replay/player-cards'
 import { DemoKillFeed, DemoKillFeedDropdown } from '#/components/DemoKillFeed'
 import { DemoRoundWin } from '#/components/DemoRoundWin'
@@ -72,9 +73,15 @@ export function DemoWorkspace() {
               state.parsing.status === 'active' &&
               mapDefinition(state.metadata.mapName))) ? (
           // A shared replay link: the catalog's images would compete with the first round.
-          <div className="demo-content flex min-h-0 flex-1 items-center justify-center px-2 pb-2">
-            <output className="text-sm text-mauve-200/65">Loading replay…</output>
-          </div>
+          <ReplayLoading
+            map={mapDefinition(
+              source.kind === 'example'
+                ? examples[source.id].map
+                : state.status === 'ready'
+                  ? state.metadata.mapName
+                  : '',
+            )}
+          />
         ) : (
           <ExampleDemos
             state={state}
@@ -87,6 +94,17 @@ export function DemoWorkspace() {
         )}
       </div>
     </main>
+  )
+}
+
+function ReplayLoading({ map }: { map: MapDefinition | undefined }) {
+  React.useEffect(() => {
+    if (map) preloadMapAssets(map)
+  }, [map])
+  return (
+    <div className="demo-content flex min-h-0 flex-1 items-center justify-center px-2 pb-2">
+      <output className="text-sm text-mauve-200/65">Loading replay…</output>
+    </div>
   )
 }
 
@@ -383,6 +401,12 @@ function DemoRound({
     const timeout = window.setTimeout(() => setHighlightNextRound(false), 3000)
     return () => window.clearTimeout(timeout)
   }, [highlightNextRound])
+
+  const { replay } = RootRoute.useRouteContext()
+  const playable = playback.status === 'ready'
+  React.useEffect(() => {
+    if (playable) replay.roundPlayable()
+  }, [playable, replay])
 
   const tick = playback.status === 'ready' ? playback.snapshot.tick : round.liveStartTick
   const started = React.useRef(false)

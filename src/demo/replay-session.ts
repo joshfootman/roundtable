@@ -15,6 +15,7 @@ export class ReplaySession {
   private listeners = new Set<() => void>()
   private controller: AbortController | undefined
   private requestedRound: number | undefined
+  private releaseLaterRounds: (() => void) | undefined
 
   getSnapshot = () => this.snapshot
   subscribe = (listener: () => void) => {
@@ -38,7 +39,7 @@ export class ReplaySession {
     if (source === 'example') {
       if (current?.kind !== 'example' || current.id !== example) {
         const descriptor = examples[example]
-        this.open(descriptor.filename, { kind: 'example', id: example }, importExample(example))
+        this.open(descriptor.filename, { kind: 'example', id: example }, this.example(example))
       } else this.selectRound(round ?? 1)
     } else {
       if (current?.kind !== 'local') {
@@ -52,13 +53,30 @@ export class ReplaySession {
 
   openExample(id: ExampleId = defaultExampleId) {
     this.requestedRound = undefined
-    this.open(examples[id].filename, { kind: 'example', id }, importExample(id))
+    this.open(examples[id].filename, { kind: 'example', id }, this.example(id))
   }
 
   openFile(file: File) {
     if (this.snapshot.state.status !== 'empty') this.requestedRound = undefined
     this.open(file.name, { kind: 'local' }, importDemo(file))
     return this.requestedRound
+  }
+
+  /** The shown round can play; later example rounds may download now. */
+  roundPlayable = () => {
+    this.releaseLaterRounds?.()
+  }
+
+  private example(id: ExampleId) {
+    let resolve!: () => void
+    const promise = new Promise<void>((done) => (resolve = done))
+    // Stream the rest anyway if the view never reports the first round, e.g. a hidden tab.
+    const fallback = setTimeout(resolve, 3000)
+    this.releaseLaterRounds = () => {
+      clearTimeout(fallback)
+      resolve()
+    }
+    return importExample(id, { first: this.requestedRound ?? 1, ready: promise })
   }
 
   selectRound(number: number) {

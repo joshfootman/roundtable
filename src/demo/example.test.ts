@@ -78,3 +78,45 @@ type Manifest = {
   metadata: { mapName: string }
   rounds: unknown[]
 }
+
+test('fetches the linked round first and holds later rounds until released', async () => {
+  const manifest: Manifest = JSON.parse(await readFile('public/example/manifest.json', 'utf8'))
+  const assets = new Map<string, BodyInit>([
+    ['manifest.json', JSON.stringify(manifest)],
+    ...(await Promise.all(
+      (manifest.rounds as { path: string }[]).map(
+        async (round) =>
+          [round.path, new Uint8Array(await readFile(`public/example/${round.path}`))] as const,
+      ),
+    )),
+  ])
+  const requested: string[] = []
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (url: string) => {
+      const path = url.split('/').pop()!
+      requested.push(path)
+      return new Response(assets.get(path)!)
+    }),
+  )
+  let release!: () => void
+  const ready = new Promise<void>((resolve) => (release = resolve))
+  const rounds: number[] = []
+  const run = Effect.runPromise(
+    Stream.runForEach(
+      importExample(defaultExampleId, { first: 2, ready }).pipe(
+        Stream.takeUntil(() => rounds.length === 3),
+      ),
+      (event) =>
+        Effect.sync(() => {
+          if (event.type === 'round') rounds.push(event.round.number)
+        }),
+    ).pipe(Effect.either),
+  )
+  await vi.waitFor(() => expect(rounds).toEqual([2]))
+  await new Promise((resolve) => setTimeout(resolve, 20))
+  expect(requested).toEqual(['manifest.json', 'round-2.rpl'])
+  release()
+  await run
+  expect(rounds.slice(0, 3)).toEqual([2, 1, 3])
+})

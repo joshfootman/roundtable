@@ -1,4 +1,4 @@
-import { Assets, Container, Sprite, type Texture } from 'pixi.js'
+import { Assets, Container, Sprite, loadEnvironmentExtensions, type Texture } from 'pixi.js'
 import c4Icon from '../assets/cs2/equipment/c4.svg?url&no-inline'
 import defuseIcon from '../assets/cs2/equipment/defuser.svg?url&no-inline'
 import { createBombRenderer } from './bomb-renderer'
@@ -9,6 +9,14 @@ import { createPlayerRenderer, type PlayerAppearance } from './player-renderer'
 import type { ReplayRound } from './types'
 import { createUtilityRenderer } from './utility-renderer'
 import { initialUtilityVisibility } from './utility'
+
+/** Start downloading what the first draw of `map` needs, so it is cached when the round arrives. */
+export function preloadMapAssets(map: MapDefinition) {
+  // The renderer's environment modules otherwise load only once the map mounts.
+  void loadEnvironmentExtensions(false).catch(() => {})
+  const images = map.floors === 'split' ? [map.images.upper, map.images.lower] : [map.image]
+  for (const src of [...images, c4Icon, defuseIcon]) void Assets.load<Texture>(src).catch(() => {})
+}
 
 /** Everything one round draws over the map, layered items, utility, players, then the bomb. */
 export async function createRoundLayer(

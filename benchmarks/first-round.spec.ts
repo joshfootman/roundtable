@@ -8,6 +8,8 @@ const network = {
   uploadThroughput: (1.5 * 1024 * 1024) / 8,
 }
 const runs = Number(process.env.FIRST_ROUND_RUNS ?? 5)
+// A shared link can point at any round; FIRST_ROUND=12 measures a mid-match link.
+const round = Number(process.env.FIRST_ROUND ?? 1)
 
 test('first round becomes playable on Fast 4G', async ({ browser }) => {
   const observations = []
@@ -19,7 +21,10 @@ test('first round becomes playable on Fast 4G', async ({ browser }) => {
     await cdp.send('Network.setCacheDisabled', { cacheDisabled: true })
     await cdp.send('Network.emulateNetworkConditions', { offline: false, ...network })
     const started = Date.now()
-    await page.goto('/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=1')
+    await page.goto(`/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=${round}`)
+    await expect(
+      page.getByRole('button', { name: `Choose round, current round ${round}`, exact: true }),
+    ).toBeVisible({ timeout: 60_000 })
     await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled({
       timeout: 60_000,
     })
