@@ -1,4 +1,7 @@
 import type { ComponentType } from 'react'
+import { Skull } from 'lucide-react'
+import { weaponSlot } from '#/replay/equipment'
+import type { ReplayWeapon } from '#/replay/types'
 import type { PlayerCardData } from '#/replay/player-cards'
 import { PlayerCard as CurrentCard } from '../DemoPlayerCards'
 import {
@@ -22,35 +25,66 @@ export interface CardVariant {
   Card: ComponentType<{ player: PlayerCardData }>
 }
 
-export const cardVariants: CardVariant[] = [
-  { id: 'current', label: 'Current', layout: 'columns', Card: CurrentCard },
-  { id: 'iem', label: 'IEM 2026', layout: 'columns', Card: IemCard },
-  { id: 'blast', label: 'BLAST', layout: 'strip', Card: BlastCard },
-  { id: 'pgl', label: 'PGL', layout: 'columns', Card: PglCard },
-  { id: 'starladder', label: 'StarLadder / CCT', layout: 'strip', Card: StarLadderCard },
-]
-
 function label(player: PlayerCardData) {
   return `${player.name}, ${player.alive ? `${health(player)} health` : 'dead'}`
 }
 
+/** The IEM card's adjustable aspects; each IEM page changes one of them from the page before. */
+interface IemOptions {
+  armour: 'small' | 'large'
+  weapons: 'all' | 'primary'
+  dead: 'fade' | 'skull'
+  health: 'number' | 'fill'
+}
+
+const iemBase: IemOptions = { armour: 'small', weapons: 'all', dead: 'fade', health: 'number' }
+const iemSteps: { label: string; change: Partial<IemOptions> }[] = [
+  { label: 'IEM 2026', change: {} },
+  { label: 'IEM · larger armour', change: { armour: 'large' } },
+  { label: 'IEM · primary weapon only', change: { weapons: 'primary' } },
+  { label: 'IEM · skull when dead', change: { dead: 'skull' } },
+  { label: 'IEM · colour shrinks with damage', change: { health: 'fill' } },
+]
+const iemVariants: CardVariant[] = iemSteps.map((step, index) => {
+  const options = Object.assign(
+    {},
+    iemBase,
+    ...iemSteps.slice(0, index + 1).map(({ change }) => change),
+  ) as IemOptions
+  return {
+    id: `iem-${index + 1}`,
+    label: step.label,
+    layout: 'columns',
+    Card: ({ player }) => <IemCard player={player} options={options} />,
+  }
+})
+
 /** IEM: number, name and K/D/money stacked; weapon and utility beside; health as the big number. */
-function IemCard({ player }: { player: PlayerCardData }) {
+function IemCard({ player, options }: { player: PlayerCardData; options: IemOptions }) {
   const t = player.team === 2
+  const skull = !player.alive && options.dead === 'skull'
+  const weapon = options.weapons === 'primary' ? primaryWeapon(player) : player.inspection.weapon
   return (
     <li
       aria-label={label(player)}
-      className={`@container flex rounded-(--radius-xs) bg-(--neutral-2) ${t ? 'flex-row-reverse' : ''} ${player.alive ? '' : 'opacity-50'}`}
+      className={`@container relative flex overflow-hidden rounded-(--radius-xs) bg-(--neutral-2) ${t ? 'flex-row-reverse' : ''} ${player.alive || skull ? '' : 'opacity-50'}`}
     >
+      {options.health === 'fill' && (
+        <span
+          aria-hidden="true"
+          className={`absolute inset-y-0 transition-[width] motion-small ${t ? 'right-0 bg-(--side-t-transparent)' : 'left-0 bg-(--side-ct-transparent)'}`}
+          style={{ width: `${health(player)}%` }}
+        />
+      )}
       <span
-        className={`flex w-(--space-xl) shrink-0 items-start justify-center pt-(--space-xs) data type-s weight-medium text-(--neutral-1) ${sideFill(player)} ${t ? 'rounded-r-(--radius-xs)' : 'rounded-l-(--radius-xs)'}`}
+        className={`relative flex w-(--space-xl) shrink-0 items-start justify-center pt-(--space-xs) data type-s weight-medium ${player.alive || !skull ? `text-(--neutral-1) ${sideFill(player)}` : 'bg-(--neutral-3) text-(--text-muted)'}`}
       >
         {player.number}
       </span>
       <div
-        className={`flex min-w-0 flex-1 items-center gap-(--space-s) px-(--space-s) py-(--space-xs) ${t ? 'flex-row-reverse text-right' : ''}`}
+        className={`relative flex min-w-0 flex-1 items-center gap-(--space-s) px-(--space-s) py-(--space-xs) ${t ? 'flex-row-reverse text-right' : ''}`}
       >
-        <div className="flex min-w-0 flex-col">
+        <div className={`flex min-w-0 flex-col ${skull ? 'text-(--text-muted)' : ''}`}>
           <span className="truncate type-m weight-medium uppercase">{player.name}</span>
           <span className="type-s">
             <KillsDeaths player={player} />
@@ -61,10 +95,10 @@ function IemCard({ player }: { player: PlayerCardData }) {
           className={`flex min-w-0 flex-1 flex-col gap-(--space-xxs) ${t ? 'items-start' : 'items-end'}`}
         >
           <span className={`flex items-center gap-(--space-xs) ${t ? 'flex-row-reverse' : ''}`}>
-            <OwnedWeapons player={player} className="h-(--line-xs) max-w-10 opacity-60" />
-            {player.alive && (
-              <WeaponIcon weapon={player.inspection.weapon} className="h-(--line-m) max-w-24" />
+            {options.weapons === 'all' && (
+              <OwnedWeapons player={player} className="h-(--line-xs) max-w-10 opacity-60" />
             )}
+            {player.alive && <WeaponIcon weapon={weapon} className="h-(--line-m) max-w-24" />}
           </span>
           <span className={`flex items-center gap-(--space-xxs) ${t ? 'flex-row-reverse' : ''}`}>
             {player.alive && <Grenades player={player} className="h-(--line-xs) w-auto" />}
@@ -73,12 +107,29 @@ function IemCard({ player }: { player: PlayerCardData }) {
           </span>
         </div>
         <div className="flex shrink-0 flex-col items-center gap-(--space-xxs)">
-          <span className="data type-l weight-medium">{player.alive ? health(player) : '–'}</span>
-          <Armour player={player} className="size-(--space-m) opacity-70" />
+          {skull ? (
+            <Skull aria-hidden size={22} strokeWidth={2} className="text-(--text-muted)" />
+          ) : (
+            <span className="data type-l weight-medium">{player.alive ? health(player) : '–'}</span>
+          )}
+          <Armour
+            player={player}
+            className={
+              options.armour === 'large' ? 'size-(--space-xl)' : 'size-(--space-m) opacity-70'
+            }
+          />
         </div>
       </div>
     </li>
   )
+}
+
+/** One weapon to show: the primary-slot gun if owned, else the pistol, else what is in hand. */
+function primaryWeapon(player: PlayerCardData): ReplayWeapon {
+  const owned = [player.inspection.weapon, ...player.otherWeapons]
+  const slot = (wanted: 'primary' | 'pistol') =>
+    owned.find((weapon) => weapon.type !== 'none' && weaponSlot(weapon.definition) === wanted)
+  return slot('primary') ?? slot('pistol') ?? player.inspection.weapon
 }
 
 /** BLAST: a tall card in team colour, health large in the corner, weapon along the bottom. */
@@ -220,3 +271,11 @@ function StarLadderCard({ player }: { player: PlayerCardData }) {
     </li>
   )
 }
+
+export const cardVariants: CardVariant[] = [
+  { id: 'current', label: 'Current', layout: 'columns', Card: CurrentCard },
+  ...iemVariants,
+  { id: 'blast', label: 'BLAST', layout: 'strip', Card: BlastCard },
+  { id: 'pgl', label: 'PGL', layout: 'columns', Card: PglCard },
+  { id: 'starladder', label: 'StarLadder / CCT', layout: 'strip', Card: StarLadderCard },
+]

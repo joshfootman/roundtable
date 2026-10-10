@@ -23,8 +23,8 @@ export function PlayerCardsLab() {
   })
 
   return (
-    <main className="gui-roundtable min-h-dvh bg-(--neutral-1) px-(--space-l) pt-(--space-l) pb-[calc(var(--space-xxl)*3)]">
-      <header className="mb-(--space-l) flex items-baseline gap-(--space-m)">
+    <main className="gui-roundtable flex h-dvh flex-col bg-(--neutral-1) p-(--space-l)">
+      <header className="flex items-baseline gap-(--space-m)">
         <Link
           to="/test"
           className="type-s text-(--text-muted) hover:text-(--text-strong) focus-visible:outline-2 focus-visible:outline-(--color-1)"
@@ -33,11 +33,7 @@ export function PlayerCardsLab() {
         </Link>
         <h1 className="type-m weight-medium">{variant.label}</h1>
       </header>
-      <Players variant={variant} />
-      <nav
-        aria-label="Card designs"
-        className="fixed inset-x-0 bottom-(--space-xl) flex justify-center"
-      >
+      <nav aria-label="Card designs" className="flex justify-center">
         <ol className="flex items-center gap-(--space-xs) rounded-(--radius-full) bg-(--neutral-3) px-(--space-m) py-(--space-s)">
           {cardVariants.map((candidate, index) => (
             <li key={candidate.id} className="flex">
@@ -53,6 +49,10 @@ export function PlayerCardsLab() {
           ))}
         </ol>
       </nav>
+      {/* Where the map sits in the replay; the cards keep their in-app place at the bottom. */}
+      <div className="flex min-h-0 flex-1 flex-col justify-end">
+        <Players variant={variant} />
+      </div>
     </main>
   )
 }
