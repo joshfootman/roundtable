@@ -65,6 +65,16 @@ export function DemoWorkspace() {
             autoPlay={source?.kind === 'example' && pendingExample === source.id}
             onAutoPlay={finishAutoPlay}
           />
+        ) : source &&
+          !pendingExample &&
+          (state.status === 'reading' ||
+            (state.status === 'ready' &&
+              state.parsing.status === 'active' &&
+              mapDefinition(state.metadata.mapName))) ? (
+          // A shared replay link: the catalog's images would compete with the first round.
+          <div className="demo-content flex min-h-0 flex-1 items-center justify-center px-2 pb-2">
+            <output className="text-sm text-mauve-200/65">Loading replay…</output>
+          </div>
         ) : (
           <ExampleDemos
             state={state}

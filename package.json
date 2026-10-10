@@ -28,7 +28,8 @@
     "inspect:maps": "node --experimental-transform-types scripts/inspect-maps.ts",
     "generate:example": "node --experimental-transform-types scripts/generate-example.ts",
     "verify:example": "node --experimental-transform-types scripts/verify-example.ts",
-    "benchmark:loading": "playwright test --config playwright.loading.config.ts",
+    "benchmark:loading": "playwright test --config playwright.loading.config.ts loading.spec.ts",
+    "benchmark:first-round": "playwright test --config playwright.loading.config.ts first-round.spec.ts",
     "benchmark:sustained": "playwright test --config playwright.lifecycle.config.ts --grep \"a minute\"",
     "benchmark:imports": "playwright test --config playwright.lifecycle.config.ts --grep \"repeated import cycles\""
   },

@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   testDir: './benchmarks',
-  testMatch: 'loading.spec.ts',
+  testMatch: ['loading.spec.ts', 'first-round.spec.ts'],
   timeout: 600_000,
   workers: 1,
   retries: 0,
