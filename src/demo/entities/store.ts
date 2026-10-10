@@ -18,6 +18,8 @@ export interface Entity {
   className: string
   serializer: Serializer
   values: Map<string, EntityValue>
+  /** Increases whenever a retained field is written, so readers can cache derived state. */
+  revision: number
   active: boolean
   polymorphic: Map<string, Serializer>
 }
@@ -58,7 +60,8 @@ export function createEntityStore(policy: FieldPolicy) {
     values: Map<string, EntityValue>,
     polymorphic: Map<string, Serializer>,
     tick?: number,
-  ) {
+  ): boolean {
+    let written = false
     for (const path of readFieldPaths(reader)) {
       const field = resolveField(serializer, path, polymorphic)
       const value = field.decode(reader)
@@ -71,7 +74,9 @@ export function createEntityStore(policy: FieldPolicy) {
       )
         membership++
       values.set(field.name, value)
+      written = true
     }
+    return written
   }
   function baseline(key: string, value: Uint8Array) {
     const id = Number(key)
@@ -237,6 +242,7 @@ export function createEntityStore(policy: FieldPolicy) {
             serializer: entry.serializer,
             values: new Map(baselineState.values),
             polymorphic: new Map(baselineState.polymorphic),
+            revision: 0,
             active: true,
           }
           entities.set(index, entity)
@@ -247,7 +253,8 @@ export function createEntityStore(policy: FieldPolicy) {
           if (!entity.active) membership++
           entity.active = true
         }
-        fields(reader, entity.serializer, entity.values, entity.polymorphic, tick)
+        if (fields(reader, entity.serializer, entity.values, entity.polymorphic, tick))
+          entity.revision++
       }
     },
   }

@@ -131,6 +131,11 @@ export const cs2Fields: FieldPolicy = {
   stamped: new Map([['m_flFlashDuration', 'flashStartTick']]),
 }
 
+const weaponSlots: string[] = []
+function weaponSlot(index: number) {
+  return (weaponSlots[index] ??= `m_pWeaponServices.m_hMyWeapons.${index}`)
+}
+
 /** CS2 game state read from the live entities of a store built with `cs2Fields`. */
 export function createCs2State(store: ReturnType<typeof createEntityStore>) {
   let projection: EntityProjection | undefined
@@ -169,13 +174,55 @@ export function createCs2State(store: ReturnType<typeof createEntityStore>) {
     projectedAt = store.membership
     return result
   }
+  // Inventory changes far less often than the pawn, so it is cached on its own inputs.
+  const inventories = new WeakMap<
+    Entity,
+    {
+      handles: (EntityValue | undefined)[]
+      ammo: EntityValue | undefined
+      weapons: [handle: number, entity: Entity, revision: number][]
+      inventory: Pick<PlayerInspection, 'grenades' | 'weapons'>
+    }
+  >()
   function inventory(pawn: Entity): Pick<PlayerInspection, 'grenades' | 'weapons'> {
     const length = pawn.values.get('m_pWeaponServices.m_hMyWeapons')
     if (typeof length !== 'number') throw new Error('Missing recorded inventory length.')
+    const ammo = pawn.values.get('m_pWeaponServices.m_iAmmo.14')
+    const previous = inventories.get(pawn)
+    if (
+      previous &&
+      previous.handles.length === length &&
+      previous.ammo === ammo &&
+      previous.handles.every((handle, index) => pawn.values.get(weaponSlot(index)) === handle) &&
+      previous.weapons.every(
+        ([handle, entity, revision]) =>
+          entity.revision === revision && store.entities.get(handle & 0x3fff) === entity,
+      )
+    ) {
+      weaponReads?.push(...previous.weapons)
+      return previous.inventory
+    }
+    const outer = weaponReads
+    weaponReads = []
+    const result = readInventory(pawn, length)
+    inventories.set(pawn, {
+      handles: Array.from({ length }, (_, index) => pawn.values.get(weaponSlot(index))),
+      ammo,
+      weapons: weaponReads,
+      inventory: result,
+    })
+    outer?.push(...weaponReads)
+    weaponReads = outer
+    return result
+  }
+  function readInventory(
+    pawn: Entity,
+    length: number,
+  ): Pick<PlayerInspection, 'grenades' | 'weapons'> {
     const counts = new Map<number, number>()
     const weapons: Exclude<ReplayWeapon, { type: 'none' }>[] = []
     for (let index = 0; index < length; index++) {
-      const handle = pawn.values.get(`m_pWeaponServices.m_hMyWeapons.${index}`)
+      const handle = pawn.values.get(weaponSlot(index))
       if (typeof handle !== 'number') throw new Error('Missing recorded inventory handle.')
       const item = weapon(handle)
       if (item.type === 'none') continue
@@ -198,6 +245,7 @@ export function createCs2State(store: ReturnType<typeof createEntityStore>) {
     if (typeof handle !== 'number') throw new Error('Missing recorded weapon handle.')
     if (handle === 0xffffff || handle === 0xffffffff) return { type: 'none' }
     const entity = store.entityForHandle(handle)
+    weaponReads?.push([handle, entity, entity.revision])
     const definition = entity.values.get('m_iItemDefinitionIndex')
     if (typeof definition !== 'number') throw new Error('Missing recorded weapon definition.')
     equipmentName(definition)
@@ -304,6 +352,18 @@ export function createCs2State(store: ReturnType<typeof createEntityStore>) {
     }
     return result
   }
+  // A snapshot is rebuilt only when its controller, pawn or one of the weapons it read changed.
+  const built = new WeakMap<
+    Entity,
+    {
+      pawn: Entity
+      controllerRevision: number
+      pawnRevision: number
+      weapons: [handle: number, entity: Entity, revision: number][]
+      snapshot: PlayerSnapshot
+    }
+  >()
+  let weaponReads: [number, Entity, number][] | undefined
   function snapshots(): PlayerSnapshot[] {
     const players: PlayerSnapshot[] = []
     for (const controller of view().controllers) {
@@ -318,6 +378,19 @@ export function createCs2State(store: ReturnType<typeof createEntityStore>) {
         continue
       const pawn = store.entities.get(handle & 0x3fff)
       if (!pawn || pawn.serial !== Math.floor(handle / 16384)) continue
+      const previous = built.get(controller)
+      if (
+        previous?.pawn === pawn &&
+        previous.controllerRevision === controller.revision &&
+        previous.pawnRevision === pawn.revision &&
+        previous.weapons.every(
+          ([handle, entity, revision]) =>
+            entity.revision === revision && store.entities.get(handle & 0x3fff) === entity,
+        )
+      ) {
+        players.push(previous.snapshot)
+        continue
+      }
       const team = pawn.values.get('m_iTeamNum')
       if (team !== 2 && team !== 3) continue
       const name = controller.values.get('m_iszPlayerName')
@@ -353,7 +426,8 @@ export function createCs2State(store: ReturnType<typeof createEntityStore>) {
       }
       const mvps = controller.values.get('m_iMVPs')
       const moveType = pawn.values.get('m_MoveType')
-      players.push({
+      weaponReads = []
+      const snapshot: PlayerSnapshot = {
         steamId: steam.toString(),
         name,
         team,
@@ -370,7 +444,16 @@ export function createCs2State(store: ReturnType<typeof createEntityStore>) {
         flash,
         ...inventory(pawn),
         weapon: weapon(pawn.values.get('m_pWeaponServices.m_hActiveWeapon')),
+      }
+      built.set(controller, {
+        pawn,
+        controllerRevision: controller.revision,
+        pawnRevision: pawn.revision,
+        weapons: weaponReads,
+        snapshot,
       })
+      weaponReads = undefined
+      players.push(snapshot)
     }
     if (new Set(players.map((player) => player.steamId)).size !== players.length)
       throw new Error('The replay contains duplicate player identities.')
