@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/geist';
+@import './components/next/gui-theme.css';
+@import './components/next/gui-local.css';
 
 @theme {
   --font-sans: 'Geist Variable', sans-serif;
