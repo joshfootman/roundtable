@@ -231,7 +231,7 @@ function Demo({
       >
         {round ? (
           <DemoRound
-            key={`${map.name}:${round.startTick}`}
+            key={map.name}
             map={map}
             round={round}
             rounds={state.rounds}
@@ -349,6 +349,14 @@ function DemoRound({
   })
   const [outcome, setOutcome] = React.useState<ReplayRound['outcome'] | null>(null)
   const [highlightNextRound, setHighlightNextRound] = React.useState(false)
+  // The round view stays mounted across rounds; a result belongs only to the round that ended.
+  const [shownRound, setShownRound] = React.useState(round)
+  if (shownRound !== round) {
+    setShownRound(round)
+    setPlayback({ status: 'loading' })
+    setOutcome(null)
+    setHighlightNextRound(false)
+  }
   const onResult = React.useCallback((result: ReplayRound['outcome'] | null) => {
     setOutcome(result)
     setHighlightNextRound(Boolean(result))

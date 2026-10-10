@@ -13,8 +13,9 @@ markers and player cards both read it.
 
 Pixi owns the playback clock and marker updates. React receives snapshots at most four
 times per second and when playback changes. `DemoWorkspace` renders the home and replay
-routes. `DemoMap` draws the recorded positions, and `DemoPlayerCards` shows player health,
-equipment, and match statistics.
+routes. `DemoMap` keeps one Pixi scene per map and swaps a round layer from
+`round-layer.ts` on each round switch. Timeline UI subscribes to drawn frames through the
+playback controller. `DemoPlayerCards` shows player health, equipment, and match statistics.
 
 Recorded round outcomes retain the winning side, reason, team name when available,
 and MVP name when awarded in the demo. MVP comes from a recorded event or an increase
@@ -117,7 +118,7 @@ entity, serial, equipment definition and XYZ position, visible for
 a new one. Placements still on the ground close at the round's end tick. Seeking
 tests each placement's range, so rewinding restores earlier drops.
 
-`DemoMap` loads SVG textures only for definitions present in that round. The renderer
+`createRoundLayer` loads SVG textures only for definitions present in that round. The renderer
 keeps one sprite per placement and draws beneath utility effects
 and players. Items follow the selected floor. Guns fit within 18 × 8 screen pixels,
 and utility fits within 10 × 10 pixels. Both preserve their SVG proportions and use
