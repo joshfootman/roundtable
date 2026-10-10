@@ -170,7 +170,7 @@ describe('recorded player rendering', () => {
 
   it('samples positions and facing while preserving numbers, floor indicators and filters', () => {
     const renderer = createPlayerRenderer(round(), map, appearance, textures)
-    renderer.draw(109, 2, { floor: 'upper', flashes: true })
+    renderer.draw(100, 2, { floor: 'upper', flashes: true })
     const a = marker(renderer, 0)
     const b = marker(renderer, 1)
     expect([a.container.x, a.container.y, a.direction.rotation]).toEqual([1014, 10, 0])
@@ -187,16 +187,16 @@ describe('recorded player rendering', () => {
       -1,
     ])
     expect(b.container.zIndex).toBeLessThan(a.container.zIndex)
-    renderer.draw(109, 2, { floor: 'lower', flashes: true })
+    renderer.draw(100, 2, { floor: 'lower', flashes: true })
     expect([a.elevation.visible, a.elevation.scale.y, b.elevation.visible]).toEqual([
       true,
       1,
       false,
     ])
     expect([a.container.visible, b.container.visible]).toEqual([true, true])
-    renderer.draw(109, 2, { floor: 'lower', flashes: true, hiddenPlayers: new Set(['a']) })
+    renderer.draw(100, 2, { floor: 'lower', flashes: true, hiddenPlayers: new Set(['a']) })
     expect([a.container.visible, b.container.visible]).toEqual([false, true])
-    renderer.draw(109, 2, { floor: 'lower', flashes: true, hiddenTeams: new Set([3]) })
+    renderer.draw(100, 2, { floor: 'lower', flashes: true, hiddenTeams: new Set([3]) })
     expect([a.container.visible, b.container.visible]).toEqual([false, true])
     renderer.draw(90, 0.5, { floor: 'upper', flashes: true })
     expect([a.container.x, a.container.y, a.label.text, a.body.tint, a.container.scale.x]).toEqual([

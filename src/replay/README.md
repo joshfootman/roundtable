@@ -3,8 +3,13 @@
 `ReplayRound` contains synchronized recorded samples in stable player order. The per-player
 tracks are listed once in `tracks.ts` and indexed `(sample * players.length + player) * width`.
 A player who joins mid-round is appended to the roster; `present` is 0 for samples before
-they joined and after they disconnect, and consumers hide them there. Playback holds the preceding sample. It does not interpolate through
-deaths or gaps.
+they joined and after they disconnect, and consumers hide them there.
+
+`scenePlayers(round, tick)` in `scene.ts` is the renderer-independent view of the players at a
+fractional tick: world-space position, facing, team, life, flash and bomb role. Position and
+facing blend toward the next sample, with yaw taking the shorter arc. The earlier sample holds
+across a death, respawn, team change, disconnect, or a jump of more than 128 units. The map
+markers and player cards both read it.
 
 Pixi owns the playback clock and marker updates. React receives snapshots at most four
 times per second and when playback changes. `DemoWorkspace` renders the home and replay

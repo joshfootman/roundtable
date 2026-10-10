@@ -1,6 +1,7 @@
 import { weaponSlot } from './equipment'
-import { flashRemaining, recordAtTick, frameAt } from './frames'
+import { frameAt } from './frames'
 import { playerNumbers } from './player-numbers'
+import { scenePlayers } from './scene'
 import type { PlayerInspection, ReplayRound, ReplayWeapon } from './types'
 
 export type PlayerCardData = {
@@ -56,22 +57,19 @@ export function playerCardsAtTick(
     }
   }
 
-  const offset = frameAt(round, tick)
   const numbers = playerNumbers(round)
-  const bomb = recordAtTick(round.bomb, tick)?.state
-  return round.players.flatMap((player, index): PlayerCardData[] => {
-    const team = round.teams[offset + index]
+  return scenePlayers(round, tick).flatMap((scene): PlayerCardData[] => {
+    const { team, inspection } = scene
+    const player = round.players[scene.index]!
     const number = numbers.get(player.steamId)
-    if ((team !== 2 && team !== 3) || number === undefined || !round.present[offset + index])
-      return []
-    const inspection = recordAtTick(round.inspection[index]!, tick)
+    if ((team !== 2 && team !== 3) || number === undefined || !scene.present) return []
     return [
       {
         ...player,
         number,
         team,
-        alive: Boolean(round.alive[offset + index]),
-        health: round.health[offset + index]!,
+        alive: scene.alive,
+        health: scene.health,
         ...score(player.steamId),
         inspection,
         otherWeapons: ['primary', 'pistol', 'knife'].flatMap((slot) => {
@@ -88,8 +86,8 @@ export function playerCardsAtTick(
           }
           return [weapon]
         }),
-        carriesBomb: bomb?.type === 'carried' && bomb.carrier === player.steamId,
-        flashSeconds: flashRemaining(inspection.flash, tick, round.tickInterval),
+        carriesBomb: scene.bomb === 'carrying' || scene.bomb === 'planting',
+        flashSeconds: scene.flashSeconds,
       },
     ]
   })

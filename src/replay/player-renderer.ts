@@ -1,7 +1,7 @@
 import { Container, Graphics, Sprite, Text, TextStyle, type Texture } from 'pixi.js'
-import { flashRemaining, recordAtTick, frameAt } from './frames'
 import { mapFacing, visibleOnFloor, worldToMap, type MapDefinition, type MapFloor } from './maps'
 import { playerNumbers } from './player-numbers'
+import { scenePlayers } from './scene'
 import type { ReplayRound } from './types'
 
 export interface PlayerAppearance {
@@ -101,13 +101,9 @@ export function createPlayerRenderer(
   })
 
   function draw(tick: number, symbolScale: number, visibility: PlayerVisibility) {
-    const frame = frameAt(round, tick)
-    const bomb = recordAtTick(round.bomb, tick)?.state
-    for (let player = 0; player < markers.length; player++) {
-      const state = frame + player
-      const position = state * 3
-      const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
-      const rendered = markers[player]!
+    for (const player of scenePlayers(round, tick)) {
+      const point = worldToMap(map, player.x, player.y)
+      const rendered = markers[player.index]!
       const {
         container: marker,
         body,
@@ -118,27 +114,21 @@ export function createPlayerRenderer(
         objective,
         ladder,
       } = rendered
-      const steamId = round.players[player]!.steamId
-      const team = round.teams[state]!
+      const { alive, team, bomb } = player
       const color = team === 3 ? appearance.ct : appearance.t
-      const alive = Boolean(round.alive[state])
-      const inspection = recordAtTick(round.inspection[player]!, tick)
-      ladder.visible = alive && inspection.onLadder === true
-      const otherFloor = !visibleOnFloor(map, visibility.floor, round.positions[position + 2]!)
+      ladder.visible = alive && player.inspection.onLadder === true
+      const otherFloor = !visibleOnFloor(map, visibility.floor, player.z)
       if (otherFloor !== rendered.otherFloor) {
         body.clear().circle(0, 0, radius)
         if (otherFloor) body.fill(appearance.background).stroke({ color: 0xffffff, width: 1.5 })
         else body.fill(0xffffff)
         rendered.otherFloor = otherFloor
       }
-      flash.visible =
-        alive &&
-        visibility.flashes &&
-        flashRemaining(inspection.flash, tick, round.tickInterval) > 0
+      flash.visible = alive && visibility.flashes && player.flashSeconds > 0
       marker.visible =
-        round.present[state] === 1 &&
-        numbers.has(steamId) &&
-        !visibility.hiddenPlayers?.has(steamId) &&
+        player.present &&
+        numbers.has(player.steamId) &&
+        !visibility.hiddenPlayers?.has(player.steamId) &&
         !visibility.hiddenTeams?.has(team)
       body.tint = color
       direction.tint = color
@@ -147,26 +137,21 @@ export function createPlayerRenderer(
       elevation.visible = otherFloor
       elevation.tint = color
       elevation.scale.y = visibility.floor === 'lower' ? 1 : -1
-      const carrying = bomb?.type === 'carried' && bomb.carrier === steamId
-      const planting = carrying && bomb.planting
-      const defusing =
-        bomb?.type === 'planted' &&
-        bomb.defuser.type === 'player' &&
-        bomb.defuser.steamId === steamId
-      objective.visible = alive && (carrying || defusing)
-      objective.texture = defusing ? textures.defuse : textures.bomb
-      objective.tint = defusing
-        ? appearance.ct
-        : planting
-          ? appearance.armed
-          : appearance.foreground
-      objective.width = objective.height = planting || defusing ? 12 : 10
-      direction.rotation = mapFacing(map, round.yaw[state]!)
+      objective.visible = alive && bomb !== 'none'
+      objective.texture = bomb === 'defusing' ? textures.defuse : textures.bomb
+      objective.tint =
+        bomb === 'defusing'
+          ? appearance.ct
+          : bomb === 'planting'
+            ? appearance.armed
+            : appearance.foreground
+      objective.width = objective.height = bomb === 'planting' || bomb === 'defusing' ? 12 : 10
+      direction.rotation = mapFacing(map, player.yaw)
       marker.position.set(point.x, point.y)
       marker.scale.set(symbolScale)
       marker.alpha = alive ? (otherFloor ? 0.6 : 1) : 0
       // Preserve recorded player order within each layer, including after a backward seek.
-      marker.zIndex = (otherFloor ? 0 : alive ? 2 : 1) * round.players.length + player
+      marker.zIndex = (otherFloor ? 0 : alive ? 2 : 1) * round.players.length + player.index
     }
   }
 
