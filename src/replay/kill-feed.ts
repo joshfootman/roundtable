@@ -1,11 +1,11 @@
-import { sampleAtTick } from './frames'
+import { frameAt } from './frames'
 import type { ReplayRound } from './types'
 
 export function killFeedAtTick(round: ReplayRound, tick: number) {
   return round.deaths
     .flatMap((death, index) => {
       if (death.tick > tick) return []
-      const offset = sampleAtTick(round.ticks, death.tick) * round.players.length
+      const offset = frameAt(round, death.tick)
       function player(steamId: string) {
         const index = round.players.findIndex((player) => player.steamId === steamId)
         return {

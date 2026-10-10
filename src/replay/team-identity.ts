@@ -1,5 +1,5 @@
 import { examples, type ExampleId } from '../demo/examples.ts'
-import { sampleAtTick } from './frames.ts'
+import { frameAt } from './frames.ts'
 import type { ReplayRound } from './types.ts'
 
 export type TeamIdentity = { name: string; logo?: string }
@@ -26,9 +26,8 @@ export function halftimeBefore(
     return names[0] !== names[1] && names[0] === names[3] && names[1] === names[2]
   }
 
-  const previousOffset =
-    sampleAtTick(previous.ticks, previous.liveStartTick) * previous.players.length
-  const currentOffset = sampleAtTick(current.ticks, current.liveStartTick) * current.players.length
+  const previousOffset = frameAt(previous, previous.liveStartTick)
+  const currentOffset = frameAt(current, current.liveStartTick)
   const previousSides = new Map(
     previous.players.map((player, index) => [
       player.steamId,

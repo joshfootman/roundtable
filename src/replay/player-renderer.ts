@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite, Text, TextStyle, type Texture } from 'pixi.js'
-import { flashRemaining, recordAtTick, sampleAtTick } from './frames'
+import { flashRemaining, recordAtTick, frameAt } from './frames'
 import { mapFacing, visibleOnFloor, worldToMap, type MapDefinition, type MapFloor } from './maps'
 import { playerNumbers } from './player-numbers'
 import type { ReplayRound } from './types'
@@ -101,10 +101,10 @@ export function createPlayerRenderer(
   })
 
   function draw(tick: number, symbolScale: number, visibility: PlayerVisibility) {
-    const sample = sampleAtTick(round.ticks, tick)
+    const frame = frameAt(round, tick)
     const bomb = recordAtTick(round.bomb, tick)?.state
     for (let player = 0; player < markers.length; player++) {
-      const state = sample * markers.length + player
+      const state = frame + player
       const position = state * 3
       const point = worldToMap(map, round.positions[position]!, round.positions[position + 1]!)
       const rendered = markers[player]!

@@ -1,10 +1,10 @@
-import { sampleAtTick } from './frames'
+import { frameAt } from './frames'
 import type { ReplayRound } from './types'
 
 export function playerNumbers(round: ReplayRound): ReadonlyMap<string, number> {
   const numbers = new Map<string, number>()
   const next = { 3: 1, 2: 6 }
-  const offset = sampleAtTick(round.ticks, round.liveStartTick) * round.players.length
+  const offset = frameAt(round, round.liveStartTick)
   // Players present when the round goes live number first; later joiners follow on their team.
   const order = round.players
     .map((player, index) => ({ player, index, late: !round.present[offset + index] }))

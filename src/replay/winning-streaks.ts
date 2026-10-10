@@ -1,11 +1,11 @@
-import { sampleAtTick } from './frames'
+import { frameAt } from './frames'
 import type { ReplayRound } from './types'
 
 type Side = 'ct' | 't'
 export const winningStreakThreshold = 5
 
 function roster(round: ReplayRound, side: Side): Set<string> {
-  const offset = sampleAtTick(round.ticks, round.liveStartTick) * round.players.length
+  const offset = frameAt(round, round.liveStartTick)
   return new Set(
     round.players.flatMap((player, index) =>
       player.steamId && round.teams[offset + index] === (side === 'ct' ? 3 : 2)

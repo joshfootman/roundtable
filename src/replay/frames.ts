@@ -1,4 +1,9 @@
-import type { FlashState } from './types.ts'
+import type { FlashState, ReplayRound } from './types.ts'
+
+/** Index of the first player state in the sample at `tick`; add a player index to address one. */
+export function frameAt(round: Pick<ReplayRound, 'ticks' | 'players'>, tick: number): number {
+  return sampleAtTick(round.ticks, tick) * round.players.length
+}
 
 export function sampleAtTick(ticks: Uint32Array, tick: number): number {
   let low = 0

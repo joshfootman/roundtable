@@ -1,5 +1,5 @@
 import { weaponSlot } from './equipment'
-import { flashRemaining, recordAtTick, sampleAtTick } from './frames'
+import { flashRemaining, recordAtTick, frameAt } from './frames'
 import { playerNumbers } from './player-numbers'
 import type { PlayerInspection, ReplayRound, ReplayWeapon } from './types'
 
@@ -43,7 +43,7 @@ export function playerCardsAtTick(
       const killer = replayRound.players.findIndex((player) => player.steamId === killerId)
       const victim = replayRound.players.findIndex((player) => player.steamId === death.victim)
       if (killer < 0 || victim < 0) continue
-      const offset = sampleAtTick(replayRound.ticks, death.tick) * replayRound.players.length
+      const offset = frameAt(replayRound, death.tick)
       const killerTeam = replayRound.teams[offset + killer]
       const victimTeam = replayRound.teams[offset + victim]
       if (
@@ -56,7 +56,7 @@ export function playerCardsAtTick(
     }
   }
 
-  const offset = sampleAtTick(round.ticks, tick) * round.players.length
+  const offset = frameAt(round, tick)
   const numbers = playerNumbers(round)
   const bomb = recordAtTick(round.bomb, tick)?.state
   return round.players.flatMap((player, index): PlayerCardData[] => {
