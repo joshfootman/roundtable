@@ -7,6 +7,7 @@ import {
   type PlayerTracks,
 } from '../replay/tracks.ts'
 import type { ReplayRound } from '../replay/types'
+import { packTrack, unpackTrack, type Packing } from './track-packing.ts'
 
 const number = Schema.Finite
 const integer = Schema.Int.pipe(Schema.nonNegative())
@@ -208,7 +209,15 @@ const Header = Schema.mutable(
 )
 
 const align = (offset: number) => Math.ceil(offset / 4) * 4
-const magic = 0x334c5052
+const magic = 0x344c5052
+
+// Continuous tracks stored as fixed-point time deltas: 1/64 unit and 1/1000 degree.
+const packings: Partial<Record<keyof PlayerTracks, Packing>> = {
+  positions: { scale: 64 },
+  yaw: { scale: 1000, period: 360 },
+  pitch: { scale: 1000 },
+}
+const tickPacking: Packing = { scale: 1 }
 
 export function encodeRound(round: ReplayRound): ArrayBuffer {
   const { ticks, projectiles, ...rest } = round
@@ -224,9 +233,20 @@ export function encodeRound(round: ReplayRound): ArrayBuffer {
       })),
     }),
   )
+  const samples = ticks.length
+  const players = round.players.length
   const tracks = [
-    ticks,
-    ...playerTrackNames.map((name) => round[name]),
+    packTrack(ticks, { samples, players: 1, width: 1 }, tickPacking),
+    ...playerTrackNames.map((name) => {
+      const packing = packings[name]
+      return packing
+        ? packTrack(
+            round[name],
+            { samples, players, width: playerTrackLayout[name].width },
+            packing,
+          )
+        : round[name]
+    }),
     ...projectiles.flatMap(({ ticks, positions }) => [ticks, positions]),
   ]
   const buffer = new ArrayBuffer(
@@ -279,10 +299,24 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
   }
   const { frames, projectiles, droppedItems, ...metadata } = header
   const states = frames * header.players.length
-  const ticks = track(Uint32Array, frames)
-  const playerTracks = mapPlayerTracks((name) =>
-    track(playerTrackLayout[name].type, states * playerTrackLayout[name].width),
-  ) as PlayerTracks
+  const players = header.players.length
+  const ticks = unpackTrack(
+    track(Uint8Array, frames * 4),
+    { samples: frames, players: 1, width: 1 },
+    tickPacking,
+    new Uint32Array(frames),
+  )
+  const playerTracks = mapPlayerTracks((name) => {
+    const { type, width } = playerTrackLayout[name]
+    const packing = packings[name]
+    if (!packing) return track(type, states * width)
+    return unpackTrack(
+      track(Uint8Array, states * width * 4),
+      { samples: frames, players, width },
+      packing,
+      new Float32Array(states * width),
+    )
+  }) as PlayerTracks
   const decodedProjectiles = projectiles.map(({ frames, ...projectile }) => ({
     ...projectile,
     ticks: track(Uint32Array, frames),

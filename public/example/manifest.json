@@ -22,185 +22,185 @@
       "number": 1,
       "startTick": 537,
       "path": "round-1.rpl",
-      "compressedBytes": 328010,
+      "compressedBytes": 102528,
       "decodedBytes": 2365180,
-      "sha256": "8b2d00b6a17a7812ca19f20d62e5707a6d4015a8092e97ef90c9e37e59e9fe1d"
+      "sha256": "c6b745a12b6ef727f26868fd2ba56561fb917274daa4ac3de62e5c021dff0ee1"
     },
     {
       "number": 2,
       "startTick": 8282,
       "path": "round-2.rpl",
-      "compressedBytes": 677337,
+      "compressedBytes": 197632,
       "decodedBytes": 2841916,
-      "sha256": "d767832ddde0a65273c677945978c2e1f333573d345f80779f401286f940fe73"
+      "sha256": "3fabc8eba7ebe72325ec127ba5f4042e5aa4d81e401f4aeef5bc78499dd156a5"
     },
     {
       "number": 3,
       "startTick": 17370,
       "path": "round-3.rpl",
-      "compressedBytes": 677931,
+      "compressedBytes": 217766,
       "decodedBytes": 2680240,
-      "sha256": "74402b75e4e317b7112d917f3414a52097ea38cb368eb91968549b88663098aa"
+      "sha256": "0fba672f82addc07f1bf78cf906550dd2d947c76beebab29c6f6868238e38389"
     },
     {
       "number": 4,
       "startTick": 25250,
       "path": "round-4.rpl",
-      "compressedBytes": 651741,
+      "compressedBytes": 211769,
       "decodedBytes": 2461812,
-      "sha256": "39e18ce22006eef33f751e16ffbfbe5be364060a8941ffed060343d6db0b7563"
+      "sha256": "bdbbbcce09a70d83c634e9e7e78d0f01ad3497c6ac9a82d0b88c92d23280cad0"
     },
     {
       "number": 5,
       "startTick": 32413,
       "path": "round-5.rpl",
-      "compressedBytes": 558028,
+      "compressedBytes": 202432,
       "decodedBytes": 2425920,
-      "sha256": "c9fce645bcf88689b57d4c17eb40b04861ded875c8793b32db7b6e8d6487516b"
+      "sha256": "c640a53a4179329b1c31869e587754d39af6bace894f1aa081e028a8856cb16b"
     },
     {
       "number": 6,
       "startTick": 39013,
       "path": "round-6.rpl",
-      "compressedBytes": 353736,
+      "compressedBytes": 149643,
       "decodedBytes": 2480232,
-      "sha256": "e0d36a0f33e4f17ccb2aee624a7d5dab540a7a6a297a76fb4816e61eaeb9fff6"
+      "sha256": "664f6328d37d1a37080ceec6a8704e411d660c8429bd443c6b877d51e943112f"
     },
     {
       "number": 7,
       "startTick": 45532,
       "path": "round-7.rpl",
-      "compressedBytes": 637565,
+      "compressedBytes": 221923,
       "decodedBytes": 2740968,
-      "sha256": "7b87f3117ed8c3acdfb2a1de3a8b1ba9161069716fddd29128a50453b66c2403"
+      "sha256": "d61c69a2b80a7ec5cf09cda957ba380efc9f6b70e01fc1a68ba8e1281949b6c6"
     },
     {
       "number": 8,
       "startTick": 53051,
       "path": "round-8.rpl",
-      "compressedBytes": 572051,
+      "compressedBytes": 200196,
       "decodedBytes": 2592256,
-      "sha256": "f4eef0689382da4d8ce8a9bd7c527d9e6190dd5382032d1d5b98dc1db0118498"
+      "sha256": "03d1331318f0b878c3ff36b163971f7a2a796661c4d7b6c0f11e00d3c4fe4454"
     },
     {
       "number": 9,
       "startTick": 60376,
       "path": "round-9.rpl",
-      "compressedBytes": 341060,
+      "compressedBytes": 132294,
       "decodedBytes": 1373712,
-      "sha256": "780573fc295e0d0839d0c3d34307efb6686892bd9c6752ffd44b49007e683f09"
+      "sha256": "bbd360ee04c1538ce106de771e22c114b7545417d64de3fbf6c87c3fb86e938d"
     },
     {
       "number": 10,
       "startTick": 63976,
       "path": "round-10.rpl",
-      "compressedBytes": 443507,
+      "compressedBytes": 163648,
       "decodedBytes": 2294256,
-      "sha256": "63534da45f6afcdcfcaee432ce2e506b392444e5581566dca789290c58b72b0e"
+      "sha256": "1ba57e0df5d1df986d2c4f832b91001e8f9ee9c102fa039e8fe6e09890719d44"
     },
     {
       "number": 11,
       "startTick": 70389,
       "path": "round-11.rpl",
-      "compressedBytes": 678125,
+      "compressedBytes": 224193,
       "decodedBytes": 3116964,
-      "sha256": "0044b2c10a4d0a973bcac40f1c3e2b6750fb1a3aa835c74fc4314c9a301770a8"
+      "sha256": "3632d5d4dba635551e4e0b12b4214d1b0d386be42a8877e3122cf30e14c679d3"
     },
     {
       "number": 12,
       "startTick": 79801,
       "path": "round-12.rpl",
-      "compressedBytes": 784959,
+      "compressedBytes": 268520,
       "decodedBytes": 2940572,
-      "sha256": "3cd5b2bab230b5432ccbf35a35da430f18c585b6981e153ec81f42c3d0b7b3da"
+      "sha256": "2ce720d202bc6fc88ea995725e7912e4fb6999b297e56853081434e6e7ec660a"
     },
     {
       "number": 13,
       "startTick": 87997,
       "path": "round-13.rpl",
-      "compressedBytes": 766883,
+      "compressedBytes": 224765,
       "decodedBytes": 5766524,
-      "sha256": "d703819bdaa33980f7be83280f33a0b99840b3d957687088e61c0e23e2c3fcaf"
+      "sha256": "889c159cac32e9e890cd5893ade9253973b4a3bd51888222a955712534c965a9"
     },
     {
       "number": 14,
       "startTick": 107270,
       "path": "round-14.rpl",
-      "compressedBytes": 708057,
+      "compressedBytes": 221272,
       "decodedBytes": 2494976,
-      "sha256": "97995ddefb52424aa68163c52246f9c0e0e5cf1ecd0209d3582cbae7c473725e"
+      "sha256": "5ed8aa61ee3d7e87941276502c6c9725503b56518147d419cf08b03af28d46e2"
     },
     {
       "number": 15,
       "startTick": 114946,
       "path": "round-15.rpl",
-      "compressedBytes": 710040,
+      "compressedBytes": 222792,
       "decodedBytes": 3032336,
-      "sha256": "ac0a681620f1d10f0fd343200415fa409e9a83333757a177989c39a5139a2025"
+      "sha256": "7bcbc0f7d6ec9b364084f7f88078a1ebefe02879c385a5133fc70aa5c64d7871"
     },
     {
       "number": 16,
       "startTick": 124034,
       "path": "round-16.rpl",
-      "compressedBytes": 803311,
+      "compressedBytes": 261772,
       "decodedBytes": 3462764,
-      "sha256": "fe58d9e2e671855929bf0549eca22aad6a2714f2d841ab1d2b4deb0506d7fd8f"
+      "sha256": "9f428d8efcb36e2b018b854b1b6cdb0a03aec0dcf452a8a477244532a915c5e7"
     },
     {
       "number": 17,
       "startTick": 134371,
       "path": "round-17.rpl",
-      "compressedBytes": 654022,
+      "compressedBytes": 211602,
       "decodedBytes": 2679176,
-      "sha256": "ad55b05571ad6053965013d2777134bd3612b9ed84d4ab569930b22f5213d82f"
+      "sha256": "fa5edc09ce757aea95f46bf4ca08d755fcb124d97fdcc8276fe1f98059849d33"
     },
     {
       "number": 18,
       "startTick": 142422,
       "path": "round-18.rpl",
-      "compressedBytes": 862400,
+      "compressedBytes": 256926,
       "decodedBytes": 2885448,
-      "sha256": "601bc0a82ff88c7e4ca01fe08e6dc1a4cde7696498d5b402f737b2865202af39"
+      "sha256": "817702ba1aeccf3397fb2c4e29adfa41df9b31f760652eaf9a4fc435ec8eca86"
     },
     {
       "number": 19,
       "startTick": 151179,
       "path": "round-19.rpl",
-      "compressedBytes": 252305,
+      "compressedBytes": 87709,
       "decodedBytes": 1111952,
-      "sha256": "d55a84769644e728459fb369c923b8c6193e7e9a180ca16505377a2ef7f99d7a"
+      "sha256": "9ebdcb698623ec33a6be76fddd54ef0ae591197a2cc1edb1a5ebdad612891b7d"
     },
     {
       "number": 20,
       "startTick": 154226,
       "path": "round-20.rpl",
-      "compressedBytes": 683051,
+      "compressedBytes": 214623,
       "decodedBytes": 2679000,
-      "sha256": "905bb23298319bd801dbb3b2cc1b58a70bee99dfd43d0ed00bb7df4e7f7c25c8"
+      "sha256": "bd36d634767e2d17781c922540aab6c51107d9ac3088a54e033d8a88c33e6b43"
     },
     {
       "number": 21,
       "startTick": 162198,
       "path": "round-21.rpl",
-      "compressedBytes": 628860,
+      "compressedBytes": 199727,
       "decodedBytes": 3705656,
-      "sha256": "f79638998beda16b4eba0f5b20dfa4c19c178bc18f0f6e8926750e068ba56a57"
+      "sha256": "4364149ab14a771730d1c0477a2a036af270b07f8fc8e6474bee702ff7139717"
     },
     {
       "number": 22,
       "startTick": 173823,
       "path": "round-22.rpl",
-      "compressedBytes": 1090523,
+      "compressedBytes": 314246,
       "decodedBytes": 3488456,
-      "sha256": "5fd5f986e0b834de561cd69be4b27eeeaa4503b004e3a837be6b5b71ebb73218"
+      "sha256": "102fc8e991621622497006501bc884ae716425d5263b7f83a4506dabfd340df7"
     },
     {
       "number": 23,
       "startTick": 184812,
       "path": "round-23.rpl",
-      "compressedBytes": 700495,
+      "compressedBytes": 231988,
       "decodedBytes": 3988544,
-      "sha256": "182cdb17b1c9c1379517d549ad465df8d20cd09d9d238a3d930464c0b8ec0df5"
+      "sha256": "54cbd1953bba7c9de178749332cae7389cc70f82a1881e35935a04a57144fa36"
     }
   ]
 }

@@ -22,137 +22,137 @@
       "number": 1,
       "startTick": 575,
       "path": "round-1.rpl",
-      "compressedBytes": 684301,
+      "compressedBytes": 225897,
       "decodedBytes": 3919732,
-      "sha256": "69b6cd9bb6b18ee837ed5ca899a2a8300a3f3fda212bba69b4583ade42fb73e8"
+      "sha256": "876eb13fc1f25699e1e40ab8c443d787943e79c54d1e820230f81ea1ba4c35d1"
     },
     {
       "number": 2,
       "startTick": 13350,
       "path": "round-2.rpl",
-      "compressedBytes": 384348,
+      "compressedBytes": 144248,
       "decodedBytes": 3297012,
-      "sha256": "dd62368d7608b2a93e266efbac19223935f6106fa9e544a965aded5fe7203c73"
+      "sha256": "1beb1b7ec2832830625111259a48046ff50dbd6e6faac67128fd6ffc2bf0a878"
     },
     {
       "number": 3,
       "startTick": 23430,
       "path": "round-3.rpl",
-      "compressedBytes": 537955,
+      "compressedBytes": 202957,
       "decodedBytes": 2511136,
-      "sha256": "07482c7c7ee88c0c6570848555f82e3d6c621c020082d79a6b45b2d738e14cfc"
+      "sha256": "18576da28cef715f7a464618e63f820d8e762b02b8a0250b55ffa122971f1253"
     },
     {
       "number": 4,
       "startTick": 30283,
       "path": "round-4.rpl",
-      "compressedBytes": 795629,
+      "compressedBytes": 266862,
       "decodedBytes": 3340980,
-      "sha256": "087c555aacafe7320002e33060fdac1745eddb700b2bd42b5a132716d5a141e1"
+      "sha256": "fdec31a7adfb697d61332ffe1d32101cf6ed40b33284afb246731a1d5cd7f95d"
     },
     {
       "number": 5,
       "startTick": 40298,
       "path": "round-5.rpl",
-      "compressedBytes": 562685,
+      "compressedBytes": 198273,
       "decodedBytes": 2061676,
-      "sha256": "bb5d378ca5d7107b800b656285cc80c735298da6a6a81a1826260833d08b8e38"
+      "sha256": "96e1f749f5c40ba65992f930b19f104667f219d94348855e9911fd850e52d725"
     },
     {
       "number": 6,
       "startTick": 46059,
       "path": "round-6.rpl",
-      "compressedBytes": 877086,
+      "compressedBytes": 281733,
       "decodedBytes": 3332056,
-      "sha256": "510dcaf3fc5eeebe5da7d8a1af9ec4559b7720f112418bb3e9bfb936d920c1d7"
+      "sha256": "ace11ee2c67c6d054bc6510fe27b162533000bc675459df80991b73ff61135d0"
     },
     {
       "number": 7,
       "startTick": 56099,
       "path": "round-7.rpl",
-      "compressedBytes": 897414,
+      "compressedBytes": 315085,
       "decodedBytes": 4360644,
-      "sha256": "0ab9dc4850f240d35a8c596ae6faa2f19ad89a839ecad2f514066f4f59743c23"
+      "sha256": "65f9399879585b7aa3a8598bab2fa8503a0b598d26333f4cd815e22493cca44d"
     },
     {
       "number": 8,
       "startTick": 68461,
       "path": "round-8.rpl",
-      "compressedBytes": 528829,
+      "compressedBytes": 184262,
       "decodedBytes": 2083436,
-      "sha256": "66adce871d79a9bdd1b43633c868a4a58c32ff5ddd5c6ce557f0d0168b735e65"
+      "sha256": "e4e0cc883fdc0605a03a3f7c596cf89c946329049626024b7da614d259007f11"
     },
     {
       "number": 9,
       "startTick": 74275,
       "path": "round-9.rpl",
-      "compressedBytes": 690230,
+      "compressedBytes": 247502,
       "decodedBytes": 3202928,
-      "sha256": "ef8895c3dff78cd8df33be5faa922f092445375d637daea5a6577d13c0e5fb1f"
+      "sha256": "d17c831844ed9b969fad971c3314654a2a9929f33eff24a950dc85c210c86a7f"
     },
     {
       "number": 10,
       "startTick": 83527,
       "path": "round-10.rpl",
-      "compressedBytes": 731924,
+      "compressedBytes": 260346,
       "decodedBytes": 3178524,
-      "sha256": "cb7ca4bed03b199e1895d17cbdb258dbdc07ba4ace683aee570f132efb188638"
+      "sha256": "cf6df104f4b2c100675ccb58ece97964c27128c5ef1ee9f54cff80eaecc45467"
     },
     {
       "number": 11,
       "startTick": 92763,
       "path": "round-11.rpl",
-      "compressedBytes": 640498,
+      "compressedBytes": 249315,
       "decodedBytes": 3762608,
-      "sha256": "a6095af9f392c696ed66ab0a28ea6f9bd58c5ff8c3d51cf41eb75dae3da269e2"
+      "sha256": "e4942919e8ffba2e6c457f53e229f25ad57cf659219d8077e4d51e78a9086ecd"
     },
     {
       "number": 12,
       "startTick": 103134,
       "path": "round-12.rpl",
-      "compressedBytes": 559038,
+      "compressedBytes": 211690,
       "decodedBytes": 2773104,
-      "sha256": "efa6fe42dfeb129d71f762eef57f372ea652e8ce9640ea9b457585f8669d4317"
+      "sha256": "0df64ded09d6fe164a6a398c362864b4901c66a6f4045a8b948c43178048d91b"
     },
     {
       "number": 13,
       "startTick": 110959,
       "path": "round-13.rpl",
-      "compressedBytes": 695191,
+      "compressedBytes": 218906,
       "decodedBytes": 6229380,
-      "sha256": "801edb2f2f1bb64729c628b1262f55189a903b48a4971e4c05b8a9e89d96eb07"
+      "sha256": "0e26cf3b77c15e36dd1817400decb2cdc70351ecc32327847e0b5dce6991de6d"
     },
     {
       "number": 14,
       "startTick": 131781,
       "path": "round-14.rpl",
-      "compressedBytes": 784387,
+      "compressedBytes": 253869,
       "decodedBytes": 3033944,
-      "sha256": "297725652e0be818fa458acbcd6cb8a194f02daccd5d1fe6f61ae6ea2b89df52"
+      "sha256": "dcc43c3ca1e2890380ac26cf24b016b0a20a21150d46a76c1675bae73e20b5c2"
     },
     {
       "number": 15,
       "startTick": 140869,
       "path": "round-15.rpl",
-      "compressedBytes": 268647,
+      "compressedBytes": 102885,
       "decodedBytes": 1206928,
-      "sha256": "fe7ca48f7bf908fcca46bfd3a1a41fb74a27fec1ecd331bd29fbfcb1cbb2578c"
+      "sha256": "5b483ea79ca01688a4f260cb86ee8d0df5fc76ead124912def2a7e5d65b11c40"
     },
     {
       "number": 16,
       "startTick": 144080,
       "path": "round-16.rpl",
-      "compressedBytes": 350938,
+      "compressedBytes": 141206,
       "decodedBytes": 2241588,
-      "sha256": "2a2e856d93414e757b5474caf3b46635c01f4610e6fdae3ea28c5485e0586b18"
+      "sha256": "b669901106e5a6242ad0156ddaca2dda16c2612b49b327f063d6d363dd8cce26"
     },
     {
       "number": 17,
       "startTick": 149913,
       "path": "round-17.rpl",
-      "compressedBytes": 364683,
+      "compressedBytes": 148682,
       "decodedBytes": 2168392,
-      "sha256": "d7792a1a75293956bc672f5dad372c8c32bad6955d5d846534da93783e4bd9f9"
+      "sha256": "3146c76300de18dab70c4a741a67448dd2d02bf53c0e376f70bee5932c5e7773"
     }
   ]
 }

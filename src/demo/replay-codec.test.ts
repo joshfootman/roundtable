@@ -16,8 +16,8 @@ test('decodes recorded binary tracks and rejects incompatible or truncated asset
     end: round.endTick,
   }).toEqual({ number: 1, start: 537, live: 5732, end: 8282 })
   expect(round.players[0]).toEqual({ steamId: '76561197973140692', name: 'mezii' })
-  expect(round.positions[0]).toBeCloseTo(182.24991, 5)
-  expect(Array.from(round.positions.subarray(1, 3))).toEqual([2439.01171875, -120.96875])
+  // Recorded 182.24991, 2439.0117, -120.96875; assets keep positions to 1/64 unit.
+  expect(Array.from(round.positions.subarray(0, 3))).toEqual([182.25, 2439.015625, -120.96875])
   expect(round.deaths[0]).toEqual({
     tick: 7325,
     victim: '76561197989430253',

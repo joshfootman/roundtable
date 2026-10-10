@@ -103,7 +103,7 @@ for (const id of ids) {
                 `Missing recorded movement state for ${id} round ${round.number}`,
               )
               assert.deepEqual(decoded.inspection, round.inspection)
-              const compressed = gzipSync(new Uint8Array(buffer))
+              const compressed = gzipSync(new Uint8Array(buffer), { level: 9 })
               const path = `round-${round.number}.rpl`
               await writeFile(`${directory}/${path}.tmp`, compressed)
               await rename(`${directory}/${path}.tmp`, `${directory}/${path}`)

@@ -11,7 +11,7 @@ Shared link show loading state, not catalog. Thumbnails AVIF (5.4 MB → 368 kB)
 
 Still left:
 
-- **Round file is the floor.** Round 1 = 429 kB, ~0.6 s on 4G. Smaller round format (quantised positions, delta ticks) cut this.
+- **Round file smaller (done).** RPL4 packs positions, angles, ticks as fixed-point deltas. Round 1 448 → 158 kB. All shipped rounds 173 → 61 MB. Round-1 link 1.7 → 1.4 s. Decode 10 → 12 ms.
 - **Work after round lands.** ~0.5–1 s after round 1 arrives: decode ~40 ms, then first GPU composite (~290 ms in headless software GPU), then React render. Measure on real phone before fixing. Possible fix: mount map scene before round arrives, keep it for the round view.
 - **Entry bundle big.** Entry chunk 541 kB (171 kB gzip). Effect loads before first paint, because session built in router context. Workspace chunk 458 kB (144 kB gzip) holds Pixi, loads on catalog page that draw no map. Fix: lazy session, lazy `DemoMap`/Pixi. Helps catalog more than first round.
 - **Decode on main thread.** Each later round gunzip + SHA-256 + decode ~30–60 ms on main thread. Steals frames while first round plays. Fix: decode in worker, or idle time.
