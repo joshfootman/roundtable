@@ -11,7 +11,7 @@ facing blend toward the next sample, with yaw taking the shorter arc. The earlie
 across a death, respawn, team change, disconnect, or a jump of more than 128 units. The map
 markers and player cards both read it.
 
-Pixi owns the playback clock and marker updates. React receives snapshots at most four
+A renderer-independent `requestAnimationFrame` loop (`frame-loop.ts`) advances the playback clock; Pixi only draws. React receives snapshots at most four
 times per second and when playback changes. `DemoWorkspace` renders the home and replay
 routes. `DemoMap` keeps one Pixi scene per map and swaps a round layer from
 `round-layer.ts` on each round switch. Timeline UI subscribes to drawn frames through the

@@ -9,6 +9,7 @@ import {
 } from '../replay/playback-clock'
 import type { ReplayRound } from '../replay/types'
 import type { PlayerAppearance } from '../replay/player-renderer'
+import { createFrameLoop } from '../replay/frame-loop'
 import { createRoundLayer } from '../replay/round-layer'
 import type { DrawingConfiguration } from '../replay/drawing'
 
@@ -83,7 +84,7 @@ export function DemoMap({
     const scale = cameraScale.current
     let cancelled = false
     let layer: Awaited<ReturnType<typeof createRoundLayer>> | undefined
-    let advance: ((ticker: { deltaMS: number }) => void) | undefined
+    let loop: ReturnType<typeof createFrameLoop> | undefined
     let updateMotion: (() => void) | undefined
     onPlayback?.({ status: 'loading' })
 
@@ -108,6 +109,7 @@ export function DemoMap({
         }
         reducedMotion.addEventListener('change', updateMotion)
         const frameListeners = new Set<(tick: number) => void>()
+        loop = createFrameLoop((elapsedMS) => clock.advance(elapsedMS))
         const clock: PlaybackClock = createPlaybackClock({
           initialTick: round.liveStartTick,
           minimum: round.liveStartTick,
@@ -117,7 +119,7 @@ export function DemoMap({
             tick = nextTick
             draw()
             for (const listener of frameListeners) listener(tick)
-            if (!mapScene.app.ticker.started) mapScene.app.render()
+            mapScene.app.render()
           },
           publish(snapshot) {
             if (!cancelled) onPlayback?.({ status: 'ready', controller, snapshot, floor })
@@ -131,8 +133,8 @@ export function DemoMap({
             }
           },
           setRunning(running) {
-            if (running) mapScene.app.ticker.start()
-            else mapScene.app.ticker.stop()
+            if (running) loop!.start()
+            else loop!.stop()
           },
         })
         controller = {
@@ -150,8 +152,6 @@ export function DemoMap({
               onPlayback?.({ status: 'ready', controller, snapshot: clock.getSnapshot(), floor })
           },
         }
-        advance = (ticker) => clock.advance(ticker.deltaMS)
-        mapScene.app.ticker.add(advance)
         clock.pause()
       })
       .catch(() => {
@@ -164,10 +164,7 @@ export function DemoMap({
       cancelled = true
       scale.listener = undefined
       if (updateMotion) reducedMotion.removeEventListener('change', updateMotion)
-      if (advance) {
-        mapScene.app.ticker.remove(advance)
-        mapScene.app.ticker.stop()
-      }
+      loop?.stop()
       layer?.destroy()
     }
   }, [map, scene, round, onPlayback, onResult])
