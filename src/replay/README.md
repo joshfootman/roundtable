@@ -106,13 +106,14 @@ stops before the next round.
 
 ## Dropped equipment
 
-`ReplayRound.droppedItems` stores complete ground-item snapshots only when their state
-changes. Items retain the recorded entity, serial, equipment definition, and XYZ
-position. An empty snapshot records pickups or removal. Seeking uses the latest
-snapshot at the requested tick, so rewinding restores earlier drops.
+`ReplayRound.droppedItems` stores one placement per resting ground item: the recorded
+entity, serial, equipment definition and XYZ position, visible for
+`from <= tick < to`. A pickup, removal or move closes the placement, and a move opens
+a new one. Placements still on the ground close at the round's end tick. Seeking
+tests each placement's range, so rewinding restores earlier drops.
 
 `DemoMap` loads SVG textures only for definitions present in that round. The renderer
-reuses a sprite pool sized to the largest snapshot and draws beneath utility effects
+keeps one sprite per placement and draws beneath utility effects
 and players. Items follow the selected floor. Guns fit within 18 × 8 screen pixels,
 and utility fits within 10 × 10 pixels. Both preserve their SVG proportions and use
 the existing foreground colour at 55% opacity, without labels or backgrounds.

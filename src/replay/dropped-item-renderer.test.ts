@@ -28,17 +28,9 @@ function round(): ReplayRound {
     endTick: 150,
     tickInterval: 0.25,
     droppedItems: [
-      { tick: 90, items: [] },
-      { tick: 110, items: [{ entity: 10, serial: 1, definition: 7, x: 200, y: 100, z: 0 }] },
-      {
-        tick: 120,
-        items: [
-          { entity: 10, serial: 1, definition: 7, x: 220, y: 80, z: 0 },
-          { entity: 11, serial: 2, definition: 43, x: 180, y: 120, z: -1 },
-        ],
-      },
-      { tick: 130, items: [{ entity: 11, serial: 2, definition: 43, x: 180, y: 120, z: -1 }] },
-      { tick: 140, items: [] },
+      { entity: 10, serial: 1, definition: 7, x: 200, y: 100, z: 0, from: 110, to: 120 },
+      { entity: 10, serial: 1, definition: 7, x: 220, y: 80, z: 0, from: 120, to: 130 },
+      { entity: 11, serial: 2, definition: 43, x: 180, y: 120, z: -1, from: 120, to: 140 },
     ],
     shots: [],
     fires: [],
@@ -72,53 +64,42 @@ function textures() {
 describe('dropped equipment rendering', () => {
   it('renders drop, pickup, floor and rewind transitions with the correct item texture', () => {
     const replay = round()
-    replay.droppedItems[2]!.items.push({
+    replay.droppedItems.push({
       entity: 12,
       serial: 1,
       definition: 999,
       x: 200,
       y: 100,
       z: 0,
+      from: 120,
+      to: 130,
     })
     const textureMap = textures()
     const dropped = createDroppedItemRenderer(replay, map, textureMap)
-    const [gun, utility, unsupported] = dropped.container.children as Sprite[]
+    const [dropped110, moved, utility, unsupported] = dropped.container.children as Sprite[]
+    const visible = () => dropped.container.children.map((sprite) => sprite.visible)
     dropped.draw(100, 1, 'upper')
-    expect(dropped.container.children.every((sprite) => !sprite.visible)).toBe(true)
+    expect(visible()).toEqual([false, false, false, false])
     dropped.draw(110, 1, 'upper')
-    expect([gun!.visible, gun!.x, gun!.y, gun!.texture, utility!.visible]).toEqual([
-      true,
+    expect(visible()).toEqual([true, false, false, false])
+    expect([dropped110!.x, dropped110!.y, dropped110!.texture]).toEqual([
       974,
       50,
       textureMap.get(7),
-      false,
     ])
     dropped.draw(120, 1, 'upper')
-    expect([gun!.visible, gun!.x, gun!.y, utility!.visible, unsupported!.visible]).toEqual([
-      true,
-      964,
-      60,
-      false,
-      false,
-    ])
+    expect(visible()).toEqual([false, true, false, false])
+    expect([moved!.x, moved!.y]).toEqual([964, 60])
     dropped.draw(120, 1, 'lower')
-    expect([gun!.visible, utility!.visible, utility!.x, utility!.y]).toEqual([false, true, 984, 40])
+    expect(visible()).toEqual([false, false, true, false])
+    expect([utility!.x, utility!.y, utility!.texture]).toEqual([984, 40, textureMap.get(43)])
     dropped.draw(130, 1, 'lower')
-    expect([gun!.visible, gun!.texture, utility!.visible]).toEqual([
-      true,
-      textureMap.get(43),
-      false,
-    ])
+    expect(visible()).toEqual([false, false, true, false])
     dropped.draw(150, 1, 'lower')
-    expect(dropped.container.children.every((sprite) => !sprite.visible)).toBe(true)
+    expect(visible()).toEqual([false, false, false, false])
     dropped.draw(110, 1, 'upper')
-    expect([gun!.visible, gun!.x, gun!.y, gun!.texture, utility!.visible]).toEqual([
-      true,
-      974,
-      50,
-      textureMap.get(7),
-      false,
-    ])
+    expect(visible()).toEqual([true, false, false, false])
+    expect(unsupported!.visible).toBe(false)
     dropped.container.destroy({ children: true })
   })
 
@@ -127,7 +108,7 @@ describe('dropped equipment rendering', () => {
     const dropped = createDroppedItemRenderer(round(), singleMap, textures())
     const scene = new Container()
     scene.addChild(dropped.container)
-    const [gun, utility] = dropped.container.children as Sprite[]
+    const [, gun, utility] = dropped.container.children as Sprite[]
     dropped.draw(120, 1, 'upper')
     const gunSize = gun!.getBounds().width
     const utilitySize = utility!.getBounds().height

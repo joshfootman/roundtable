@@ -24,6 +24,12 @@ export interface DroppedItem {
   z: number
 }
 
+// One resting placement of a ground item, visible for `from <= tick < to`.
+export interface DroppedPlacement extends DroppedItem {
+  from: number
+  to: number
+}
+
 export interface FireArea {
   entity: number
   serial: number
@@ -132,7 +138,7 @@ export interface ReplayRound extends PlayerTracks {
   resultTick: number
   endTick: number
   tickInterval: number
-  droppedItems: { tick: number; items: DroppedItem[] }[]
+  droppedItems: DroppedPlacement[]
   shots: ReplayShot[]
   fires: { tick: number; fires: FireArea[] }[]
   smokes: ReplaySmoke[]

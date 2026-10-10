@@ -3,7 +3,6 @@ import { open, readFile } from 'node:fs/promises'
 import { Effect, Stream } from 'effect'
 import { DemoReadError } from '../src/demo/errors.ts'
 import { readRounds } from '../src/demo/round.ts'
-import { recordAtTick } from '../src/replay/frames.ts'
 import type { DroppedItem } from '../src/replay/types.ts'
 
 const path = process.argv[2] ?? 'fixtures/local/faze-vs-vitality-m2-dust2.dem'
@@ -37,7 +36,9 @@ await Effect.runPromise(
           Effect.sync(() => {
             for (const sample of expected) {
               if (sample.tick < round.startTick || sample.tick >= round.endTick) continue
-              const actual = recordAtTick(round.droppedItems, sample.tick).items
+              const actual = round.droppedItems
+                .filter((item) => item.from <= sample.tick && sample.tick < item.to)
+                .sort((a, b) => a.entity - b.entity)
               assert.equal(actual.length, sample.items.length, `Item count at tick ${sample.tick}`)
               for (const [index, item] of actual.entries()) {
                 const reference = sample.items[index]!

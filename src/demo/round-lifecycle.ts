@@ -20,6 +20,7 @@ import type {
   FireArea,
   ReplayShot,
   DroppedItem,
+  DroppedPlacement,
 } from '../replay/types.ts'
 
 export interface RoundRules {
@@ -54,6 +55,7 @@ type Capture = {
   projectiles: ReturnType<typeof createProjectileCapture>
   shots: ReplayShot[]
   droppedItems: ReplayRound['droppedItems']
+  restingItems: Map<number, DroppedPlacement>
   fires: ReplayRound['fires']
   smokes: ReplaySmoke[]
   detonations: GrenadeDetonation[]
@@ -172,7 +174,12 @@ export function createRoundTracker() {
       bombEvents: round.bombEvents,
       projectiles: round.projectiles.finish(endTick),
       detonations: round.detonations,
-      droppedItems: round.droppedItems,
+      droppedItems: [
+        ...round.droppedItems,
+        ...[...round.restingItems.values()]
+          .filter((item) => item.from < endTick)
+          .map((item) => ({ ...item, to: endTick })),
+      ].sort((a, b) => a.from - b.from || a.entity - b.entity),
       shots: round.shots,
       fires: round.fires,
       smokes: round.smokes
@@ -279,7 +286,8 @@ export function createRoundTracker() {
           ticks: [],
           tracks: mapPlayerTracks(() => []),
           projectiles: createProjectileCapture(),
-          droppedItems: [{ tick, items: [] }],
+          droppedItems: [],
+          restingItems: new Map(),
           shots: [],
           fires: [{ tick, fires: [] }],
           smokes: [...activeSmokes.values()],
@@ -318,25 +326,27 @@ export function createRoundTracker() {
     },
     droppedItems(tick: number, items: DroppedItem[]) {
       if (!capture) return
-      const track = capture.droppedItems
-      if (track.at(-1)?.tick === tick) track.pop()
-      const previous = track.at(-1)?.items
-      if (
-        !previous ||
-        previous.length !== items.length ||
-        items.some((item, index) => {
-          const old = previous[index]!
-          return (
-            item.entity !== old.entity ||
-            item.serial !== old.serial ||
-            item.definition !== old.definition ||
-            item.x !== old.x ||
-            item.y !== old.y ||
-            item.z !== old.z
-          )
-        })
-      )
-        track.push({ tick, items })
+      const resting = capture.restingItems
+      const current = new Map(items.map((item) => [item.entity, item]))
+      for (const [entity, placement] of resting) {
+        const item = current.get(entity)
+        if (
+          item &&
+          item.serial === placement.serial &&
+          item.definition === placement.definition &&
+          item.x === placement.x &&
+          item.y === placement.y &&
+          item.z === placement.z
+        ) {
+          current.delete(entity)
+          continue
+        }
+        resting.delete(entity)
+        // A placement replaced within its own tick never rendered.
+        if (placement.from < tick) capture.droppedItems.push({ ...placement, to: tick })
+      }
+      for (const item of current.values())
+        resting.set(item.entity, { ...item, from: tick, to: tick })
     },
     fires(tick: number, fires: FireArea[]) {
       if (!capture) return

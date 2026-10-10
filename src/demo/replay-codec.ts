@@ -81,12 +81,12 @@ const Header = Schema.mutable(
     droppedItems: Schema.mutable(
       Schema.Array(
         Schema.Struct({
-          tick: integer,
-          items: Schema.mutable(
-            Schema.Array(
-              Schema.Struct({ entity: integer, serial: integer, definition: integer, ...point }),
-            ),
-          ),
+          entity: integer,
+          serial: integer,
+          definition: integer,
+          ...point,
+          from: integer,
+          to: integer,
         }),
       ),
     ),
@@ -208,7 +208,7 @@ const Header = Schema.mutable(
 )
 
 const align = (offset: number) => Math.ceil(offset / 4) * 4
-const magic = 0x324c5052
+const magic = 0x334c5052
 
 export function encodeRound(round: ReplayRound): ArrayBuffer {
   const { ticks, projectiles, ...rest } = round
@@ -328,18 +328,13 @@ export function decodeRound(buffer: ArrayBuffer): ReplayRound {
       throw new Error('Invalid replay asset event order.')
   }
   if (
-    droppedItems.length === 0 ||
-    droppedItems[0]!.tick !== header.startTick ||
     droppedItems.some(
-      (record, index) =>
-        record.tick < header.startTick ||
-        record.tick > header.endTick ||
-        (index > 0 && record.tick <= droppedItems[index - 1]!.tick) ||
-        new Set(record.items.map((item) => item.entity)).size !== record.items.length ||
-        record.items.some(
-          (item) =>
-            !(item.definition in firearms || (item.definition >= 43 && item.definition <= 48)),
-        ),
+      (item, index) =>
+        item.from < header.startTick ||
+        item.to > header.endTick ||
+        item.from >= item.to ||
+        (index > 0 && item.from < droppedItems[index - 1]!.from) ||
+        !(item.definition in firearms || (item.definition >= 43 && item.definition <= 48)),
     )
   )
     throw new Error('Invalid replay asset dropped item data.')

@@ -98,9 +98,7 @@ export function DemoMap({
     async function mount() {
       if (!(await mapScene.mount(element))) return
       if (round) {
-        const definitions = new Set(
-          round.droppedItems.flatMap(({ items }) => items.map((item) => item.definition)),
-        )
+        const definitions = new Set(round.droppedItems.map((item) => item.definition))
         const [bombTexture, defuseTexture, droppedTextures] = await Promise.all([
           Assets.load<Texture>(c4Icon),
           Assets.load<Texture>(defuseIcon),

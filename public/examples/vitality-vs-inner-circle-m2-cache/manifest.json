@@ -22,233 +22,233 @@
       "number": 1,
       "startTick": 368,
       "path": "round-1.rpl",
-      "compressedBytes": 491400,
-      "decodedBytes": 3736932,
-      "sha256": "5424beaa9708fa90e18ba07acac1c55e20f5fd60efa3053e81f97a4acb97948d"
+      "compressedBytes": 490447,
+      "decodedBytes": 3318376,
+      "sha256": "68ff9f7d73cec83523b427a8d225b3ebe8bc94f3659f72a7ae782bba06f219ba"
     },
     {
       "number": 2,
       "startTick": 11231,
       "path": "round-2.rpl",
-      "compressedBytes": 922150,
-      "decodedBytes": 4078692,
-      "sha256": "fb1c6339e88eb73dc1312693da7e0b98a1dac0358fc3be3d86793c695999521c"
+      "compressedBytes": 922858,
+      "decodedBytes": 3759276,
+      "sha256": "ab9c5e0377cec6c4ea2b56cb2857d0354c498eca278686303fd3045e0ee7b1b7"
     },
     {
       "number": 3,
       "startTick": 22805,
       "path": "round-3.rpl",
-      "compressedBytes": 612808,
-      "decodedBytes": 4639784,
-      "sha256": "9808858b23a6711a6a441f31c60496cb4695bac83b13a3547f713b555b51db3b"
+      "compressedBytes": 612363,
+      "decodedBytes": 4031396,
+      "sha256": "aa635011d52b3e617f4bfd399fcb7223b62bb6d571567dba8b1b4a4061a764e0"
     },
     {
       "number": 4,
       "startTick": 35471,
       "path": "round-4.rpl",
-      "compressedBytes": 829332,
-      "decodedBytes": 3873572,
-      "sha256": "779e47bf724559c33cced2925e3c23c214e562de4a803669c3a6f6d67b654e7c"
+      "compressedBytes": 832625,
+      "decodedBytes": 3607580,
+      "sha256": "a338224e81ad66693a7f2d3d0c2c208a4a30fe6bdb9b0d7c37b2d7aa7100abbf"
     },
     {
       "number": 5,
       "startTick": 45494,
       "path": "round-5.rpl",
-      "compressedBytes": 750548,
-      "decodedBytes": 4001988,
-      "sha256": "c4e213adfbf60849036306db9f059e9fbf51d83273ca8e13889257e69cf7c826"
+      "compressedBytes": 751039,
+      "decodedBytes": 3804232,
+      "sha256": "92f9972978f62def231ece773b620900b2997d90838b94982cc2a36fa606ff4b"
     },
     {
       "number": 6,
       "startTick": 56664,
       "path": "round-6.rpl",
-      "compressedBytes": 939324,
-      "decodedBytes": 3830220,
-      "sha256": "d165bdeeca4c36106bc986ba32fc148fb4815bdce0b954d178bc5305768cbd3e"
+      "compressedBytes": 940462,
+      "decodedBytes": 3595856,
+      "sha256": "266cb8eda574e2aecb64d3f76f6ee4f1a03e5755e67941b4e282cb34b0f21c66"
     },
     {
       "number": 7,
       "startTick": 67950,
       "path": "round-7.rpl",
-      "compressedBytes": 628711,
-      "decodedBytes": 3996000,
-      "sha256": "db780651a3c7292a019a5a511a6332248aa882cf25f12b5e92e6a637b617ff5d"
+      "compressedBytes": 627319,
+      "decodedBytes": 3524164,
+      "sha256": "1ff4585437373ba152f8d961fb89444cb8ccebeb6a6942389161ec30e91a5ca0"
     },
     {
       "number": 8,
       "startTick": 78678,
       "path": "round-8.rpl",
-      "compressedBytes": 434612,
-      "decodedBytes": 2357912,
-      "sha256": "9e11a0b04627ce1386e30a75383ff589cccace8823ab05891d68b37c379d8104"
+      "compressedBytes": 434749,
+      "decodedBytes": 2103972,
+      "sha256": "5bbe28924b7e8b6b05e0e9f0b94b0ec1a26e2671a5c0443fa3d16a63856ef0a6"
     },
     {
       "number": 9,
       "startTick": 84491,
       "path": "round-9.rpl",
-      "compressedBytes": 499057,
-      "decodedBytes": 2340996,
-      "sha256": "c151c93d79055991247f7e42ac22d185e484806cfb968d77e47df7309568f8e5"
+      "compressedBytes": 498415,
+      "decodedBytes": 2042536,
+      "sha256": "82c4a0463265503cb23cf530b1f09e8a0c30c80031b708f7828f69906bb08933"
     },
     {
       "number": 10,
       "startTick": 90433,
       "path": "round-10.rpl",
-      "compressedBytes": 577548,
-      "decodedBytes": 4144000,
-      "sha256": "7ee65fed5779369e592b8478b5b5178702832fbaf5282e710852cab249f4d8f6"
+      "compressedBytes": 576291,
+      "decodedBytes": 3530852,
+      "sha256": "70cda343cca641d717491ec96a13b9f2bfea91a4add78b1019a31ba82de7c567"
     },
     {
       "number": 11,
       "startTick": 100789,
       "path": "round-11.rpl",
-      "compressedBytes": 485147,
-      "decodedBytes": 3323060,
-      "sha256": "b61659f97827300596df12eb938a8ada703a0c006f9899c8068ed6bbf6275d50"
+      "compressedBytes": 484336,
+      "decodedBytes": 2640140,
+      "sha256": "1408d01a6a5822fa3aa13f4cb3b4ceee7b93c9d7f3b90d3c4bc48263f27706a4"
     },
     {
       "number": 12,
       "startTick": 108095,
       "path": "round-12.rpl",
-      "compressedBytes": 543342,
-      "decodedBytes": 3992480,
-      "sha256": "6a9253f9ea47ecb80250ebdcdbc9c545cdef197df1e4a4f9ccff271380aa541f"
+      "compressedBytes": 538506,
+      "decodedBytes": 2659784,
+      "sha256": "a44b69ab50a21ea8d4e1aa077aa8f15830e86f14fea986350772a705a11b6b28"
     },
     {
       "number": 13,
       "startTick": 114943,
       "path": "round-13.rpl",
-      "compressedBytes": 345879,
-      "decodedBytes": 4760504,
-      "sha256": "e211939f30fe3b7d3cae2d15b5d61328f195e6a5410761a865a6b37217666a71"
+      "compressedBytes": 346050,
+      "decodedBytes": 4490872,
+      "sha256": "95d698aa0b2586f9eb7e35823699ca7ba6e6401864122aa2c573a5005a6e3a8a"
     },
     {
       "number": 14,
       "startTick": 129613,
       "path": "round-14.rpl",
-      "compressedBytes": 579720,
-      "decodedBytes": 2603132,
-      "sha256": "7df8cda936a7602b1e28f24dfe68587acc9ff611263e0b5b20e4bf78355cd9d7"
+      "compressedBytes": 580396,
+      "decodedBytes": 2385312,
+      "sha256": "103272b2ba21716346fc39ebc6bbcad175159f03df7a51547e02dd131417d873"
     },
     {
       "number": 15,
       "startTick": 136623,
       "path": "round-15.rpl",
-      "compressedBytes": 650481,
-      "decodedBytes": 3788224,
-      "sha256": "103877078280af549eecef95aa2532f7bc4edef94d20a92f1e7db7d0a0670ca3"
+      "compressedBytes": 651890,
+      "decodedBytes": 3249592,
+      "sha256": "6234a40d60b0dda70d7255a77e0e0a0eec72eeced3011b9166757c62eea03f55"
     },
     {
       "number": 16,
       "startTick": 145787,
       "path": "round-16.rpl",
-      "compressedBytes": 726565,
-      "decodedBytes": 4143128,
-      "sha256": "db9a623f7ea55e02ae7dd52789c262659717fdf33046149ed8a757915f31428f"
+      "compressedBytes": 726520,
+      "decodedBytes": 3716356,
+      "sha256": "49d2a8fd82b885b163f2face30e3afb4c3327601acd7eabd95d631b4bdc81f8c"
     },
     {
       "number": 17,
       "startTick": 157015,
       "path": "round-17.rpl",
-      "compressedBytes": 567543,
-      "decodedBytes": 2941904,
-      "sha256": "1cd43ba856e9eb14c9790c7c57a974b6442108d3c713b4064466f45c9a4a846f"
+      "compressedBytes": 567800,
+      "decodedBytes": 2462060,
+      "sha256": "b3a55bc0c976a7ed0076886af8eed8f9b6606ebb1240060cd3fe368991ada4f8"
     },
     {
       "number": 18,
       "startTick": 164359,
       "path": "round-18.rpl",
-      "compressedBytes": 565538,
-      "decodedBytes": 2512500,
-      "sha256": "01089ef484f3b2c4cddf2e51e64d07ea5a2640db94215d636f00afe2b4b596b6"
+      "compressedBytes": 566859,
+      "decodedBytes": 2399368,
+      "sha256": "187a1393fbdc0df31f8119e5e9a9156dc1c03ece028d482848a11c6b27dd3515"
     },
     {
       "number": 19,
       "startTick": 171077,
       "path": "round-19.rpl",
-      "compressedBytes": 297501,
-      "decodedBytes": 1941300,
-      "sha256": "894e60d6c118f97784c864542413036ce2dbee6e56ad3b1e59a2dec68b9688c2"
+      "compressedBytes": 296344,
+      "decodedBytes": 1464524,
+      "sha256": "f50d1ea9c7baa0ded9b3f796a0263fe9cefc7e094a30ffcc312000a1cfd7124d"
     },
     {
       "number": 20,
       "startTick": 174805,
       "path": "round-20.rpl",
-      "compressedBytes": 592772,
-      "decodedBytes": 3266488,
-      "sha256": "579e6a2734c3280c1a7964b72d59591538b91eddcb8fc4c1c52b2112e19cc6d4"
+      "compressedBytes": 591895,
+      "decodedBytes": 2904888,
+      "sha256": "898627d44381b1175e8846a629a1143c17cf8b9a414283418281312a0c4255a7"
     },
     {
       "number": 21,
       "startTick": 183640,
       "path": "round-21.rpl",
-      "compressedBytes": 546671,
-      "decodedBytes": 3146856,
-      "sha256": "d1083c7603ee2a34e9677c318fc76ae676914b16d1d274051455d08e9890b710"
+      "compressedBytes": 547108,
+      "decodedBytes": 2756700,
+      "sha256": "f0e4cb4687fb1e4ff8e53dd953d9eaf0806c7082c0b6f715fac26ed5db67220a"
     },
     {
       "number": 22,
       "startTick": 191112,
       "path": "round-22.rpl",
-      "compressedBytes": 555368,
-      "decodedBytes": 3383692,
-      "sha256": "79eb82987203e60f091ece5b99469adaa739aa481ebe1c888bf6249c82ab4b0c"
+      "compressedBytes": 557294,
+      "decodedBytes": 3241552,
+      "sha256": "296b1c03b31c45ea9184421e6f7eff9c9bec1cc6180e082136f93583375d0955"
     },
     {
       "number": 23,
       "startTick": 200518,
       "path": "round-23.rpl",
-      "compressedBytes": 668872,
-      "decodedBytes": 2650264,
-      "sha256": "6e0d4839589bfe0750a7065d3a6a82080ded6df7d303f20d3e0357ad7dcd665c"
+      "compressedBytes": 670338,
+      "decodedBytes": 2646352,
+      "sha256": "4193639526ba00eb0cc1244524099719f0e14112d795822bd21195641beff672"
     },
     {
       "number": 24,
       "startTick": 207939,
       "path": "round-24.rpl",
-      "compressedBytes": 485764,
-      "decodedBytes": 3527088,
-      "sha256": "420df4e93e9dcfe2b17fa24cde3b426aada094e0cc41a01141e4aa666b9762e9"
+      "compressedBytes": 483713,
+      "decodedBytes": 2508524,
+      "sha256": "559e5ea88b6a30453cea440a820e5a342568df8d480be5dad3ec9db0805aabf3"
     },
     {
       "number": 25,
       "startTick": 214623,
       "path": "round-25.rpl",
-      "compressedBytes": 716610,
-      "decodedBytes": 3033796,
-      "sha256": "7035c6fb05465be6975bb9a0a4b94ad71edea7ca158dab598204aab638aac547"
+      "compressedBytes": 717904,
+      "decodedBytes": 2925412,
+      "sha256": "611a74bcc87972c20a1122cf0da0e70a8e22d0546913b5ae52f69f5259d3178c"
     },
     {
       "number": 26,
       "startTick": 223117,
       "path": "round-26.rpl",
-      "compressedBytes": 463754,
-      "decodedBytes": 3460808,
-      "sha256": "801ed421dc4f0f551e12bfef84f2e08c18707e21e12450b11173831ff0261a59"
+      "compressedBytes": 463605,
+      "decodedBytes": 2984596,
+      "sha256": "c2b410062e694003cf5a249b14c1d78deed455fc1825cf09232bf304c58ef6db"
     },
     {
       "number": 27,
       "startTick": 231378,
       "path": "round-27.rpl",
-      "compressedBytes": 695296,
-      "decodedBytes": 4382516,
-      "sha256": "452ebefc342efe32844db6cdf24449ce20708310478a93b82e96f49cb8be54a1"
+      "compressedBytes": 691597,
+      "decodedBytes": 3320620,
+      "sha256": "0562bc66c6bd84cd7d756150e404dc1b6970cb273a0f5e0accea738927bb6ed5"
     },
     {
       "number": 28,
       "startTick": 240979,
       "path": "round-28.rpl",
-      "compressedBytes": 700861,
-      "decodedBytes": 3714480,
-      "sha256": "329d2ac66cbfde263e7e9ae54306365976a350e4c3aa4b742d2543cec8314d57"
+      "compressedBytes": 700570,
+      "decodedBytes": 3396996,
+      "sha256": "fc7edc7c566478c20ffd2c0f128c6db928a6db8cebb219a547cc47ddf38d0cee"
     },
     {
       "number": 29,
       "startTick": 250979,
       "path": "round-29.rpl",
-      "compressedBytes": 399675,
-      "decodedBytes": 2962388,
-      "sha256": "ff5040adb4d7be0288588f94db9bfe4c980b73590631a8f9287470db18ff5152"
+      "compressedBytes": 399731,
+      "decodedBytes": 2495948,
+      "sha256": "a2b225126a2c9840c011384ac7ceb8b8bf8fbf2d57358d3295fb716abe88b53e"
     }
   ]
 }

@@ -107,46 +107,30 @@ test('matches independently decoded ladder entry and exit in the bundled Nuke re
   }
 })
 
-test('preserves dropped item lifetimes', () => {
+test('preserves dropped item placements', () => {
   const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
   const round = decodeRound(new Uint8Array(raw).buffer)
   round.droppedItems = [
-    { tick: 537, items: [] },
-    { tick: 6000, items: [{ entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }] },
-    { tick: 6010, items: [] },
+    { entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3, from: 6000, to: 6010 },
+    { entity: 5, serial: 1, definition: 43, x: 1, y: 2, z: 3, from: 6005, to: 8282 },
   ]
-  expect(decodeRound(encodeRound(round)).droppedItems).toEqual([
-    { tick: 537, items: [] },
-    { tick: 6000, items: [{ entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }] },
-    { tick: 6010, items: [] },
-  ])
+  expect(decodeRound(encodeRound(round)).droppedItems).toEqual(round.droppedItems)
 })
 
-test('rejects malformed dropped item snapshots at the replay asset boundary', () => {
+test('rejects malformed dropped item placements at the replay asset boundary', () => {
   const raw = gunzipSync(readFileSync('public/example/round-1.rpl'))
   const round = decodeRound(new Uint8Array(raw).buffer)
-  const item = { entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }
+  const item = { entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3, from: 600, to: 700 }
   for (const records of [
-    [],
-    [{ tick: 538, items: [item] }],
-    [
-      { tick: 537, items: [] },
-      { tick: 9000, items: [item] },
-    ],
-    [
-      { tick: 537, items: [] },
-      { tick: 537, items: [item] },
-    ],
-    [{ tick: 537, items: [item, item] }],
-    [{ tick: 537, items: [{ ...item, definition: 49 }] }],
-    [{ tick: 537, items: [{ ...item, definition: 42 }] }],
-    [{ tick: 537, items: [{ ...item, x: Infinity }] }],
+    [{ ...item, from: 536 }],
+    [{ ...item, to: 8283 }],
+    [{ ...item, to: 600 }],
+    [item, { ...item, from: 599 }],
+    [{ ...item, definition: 49 }],
+    [{ ...item, definition: 42 }],
+    [{ ...item, x: Infinity }],
   ]) {
     round.droppedItems = records
     expect(() => decodeRound(encodeRound(round))).toThrow()
   }
-  round.droppedItems = [{ tick: 537, items: [item] }]
-  expect(decodeRound(encodeRound(round)).droppedItems).toEqual([
-    { tick: 537, items: [{ entity: 4, serial: 7, definition: 7, x: 1, y: 2, z: 3 }] },
-  ])
 })

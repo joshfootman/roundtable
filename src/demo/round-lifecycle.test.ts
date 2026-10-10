@@ -100,7 +100,7 @@ test('discards knife stages and completed match attempts when recorded rules res
         ],
       ],
       bomb: [{ tick: 30, state: { type: 'inactive' as const } }],
-      droppedItems: [{ tick: 30, items: [] }],
+      droppedItems: [],
       fires: [{ tick: 30, fires: [] }],
       shots: [],
       smokes: [],
@@ -197,7 +197,7 @@ test('captures overtime freeze time and postmatch activity without a regulation 
       ],
     ],
     bomb: [{ tick: 100, state: { type: 'inactive' as const } }],
-    droppedItems: [{ tick: 100, items: [] }],
+    droppedItems: [],
     fires: [{ tick: 100, fires: [] }],
     shots: [],
     smokes: [],
@@ -417,14 +417,22 @@ test('records movement, pickup, re-drop and entity reuse with one final snapshot
   )
   const [event] = tracker.end(21)
   if (event?.type !== 'round') throw new Error('Missing round')
+  const placed = (x: number, serial: number, definition: number, from: number, to: number) => ({
+    entity: 3,
+    serial,
+    definition,
+    x,
+    y: 20,
+    z: 30,
+    from,
+    to,
+  })
   expect(event.round.droppedItems).toEqual([
-    { tick: 10, items: [] },
-    { tick: 11, items: [{ entity: 3, serial: 5, definition: 7, x: 10, y: 20, z: 30 }] },
-    { tick: 13, items: [{ entity: 3, serial: 5, definition: 7, x: 11, y: 20, z: 30 }] },
-    { tick: 14, items: [] },
-    { tick: 15, items: [{ entity: 3, serial: 5, definition: 7, x: 10, y: 20, z: 30 }] },
-    { tick: 16, items: [] },
-    { tick: 17, items: [{ entity: 3, serial: 6, definition: 9, x: 10, y: 20, z: 30 }] },
+    placed(10, 5, 7, 11, 13),
+    placed(11, 5, 7, 13, 14),
+    placed(10, 5, 7, 15, 16),
+    placed(10, 6, 9, 17, 18),
+    placed(10, 6, 9, 18, 21),
   ])
 })
 
