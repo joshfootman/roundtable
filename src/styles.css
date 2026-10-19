@@ -250,8 +250,8 @@
 }
 
 /*
- * Theatre mode. Once a round is played on desktop, the stage rises over the header and
- * leaves a notch around the logo. --stage-lift drives both the rise and the notch, so
+ * Theatre mode. While a demo is open on desktop, the stage covers the header and leaves
+ * a notch around the logo. --stage-lift drives both the rise and the notch, so
  * they animate as one. Browsers without shape() keep the header.
  */
 @property --stage-lift {

@@ -252,10 +252,13 @@ function Demo({
   }
 
   return (
-    <div className="demo-content flex min-h-0 flex-1 flex-col px-shell pb-shell opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none starting:opacity-0">
+    <div
+      data-theater
+      className="demo-content flex min-h-0 flex-1 flex-col px-shell pb-shell opacity-100 transition-opacity duration-200 ease-out motion-reduce:transition-none starting:opacity-0"
+    >
       <div
         ref={stage}
-        className="demo-stage relative -mt-(--stage-lift) min-h-0 flex-1 rounded-inset-shell bg-inset p-3 transition-[--stage-lift] duration-500 ease-out-expo motion-reduce:transition-none replay-desktop:overflow-hidden replay-desktop:p-4 replay-desktop:clip-stage-notch theater:[--stage-lift:calc(4.75rem-var(--spacing-shell))]"
+        className="demo-stage relative -mt-(--stage-lift) min-h-0 flex-1 rounded-inset-shell bg-inset p-3 transition-[--stage-lift] duration-500 ease-out-expo motion-reduce:transition-none replay-desktop:overflow-hidden replay-desktop:p-4 replay-desktop:clip-stage-notch theater:[--stage-lift:calc(4.75rem-var(--spacing-shell))] theater:starting:[--stage-lift:0px]"
       >
         {round ? (
           <DemoRound
@@ -361,36 +364,6 @@ function DemoRound({
       : map.floors === 'split'
         ? map.initialFloor
         : 'upper'
-  // Theatre mode grows the stage over the header. Scrubbing pauses the clock without
-  // leaving it, so it is tracked apart from the clock's playing state.
-  const [theater, setTheater] = React.useState<'off' | 'entering' | 'on'>('off')
-  function togglePlay() {
-    if (playback.status !== 'ready') return
-    if (playback.snapshot.playing) {
-      playback.controller.pause()
-      setTheater('off')
-    } else if (theater === 'on') playback.controller.play()
-    else setTheater('entering')
-  }
-  React.useEffect(() => {
-    if (theater !== 'entering' || playback.status !== 'ready') return
-    const controller = playback.controller
-    let cancelled = false
-    const rising = document
-      .getAnimations()
-      .filter(
-        (animation) =>
-          animation instanceof CSSTransition && animation.transitionProperty === '--stage-lift',
-      )
-    void Promise.allSettled(rising.map((animation) => animation.finished)).then(() => {
-      if (cancelled) return
-      controller.play()
-      setTheater('on')
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [theater, playback])
   function toggleDrawing() {
     if (desktop) onPenChange({ ...pen, enabled: !pen.enabled })
   }
@@ -404,7 +377,6 @@ function DemoRound({
     onShowHelp: showShortcuts,
     onToggleDrawing: toggleDrawing,
     onClearDrawing: () => onClear(floor),
-    onTogglePlay: togglePlay,
   })
   const [outcome, setOutcome] = React.useState<ReplayRound['outcome'] | null>(null)
   const [highlightNextRound, setHighlightNextRound] = React.useState(false)
@@ -413,7 +385,6 @@ function DemoRound({
   if (shownRound !== round) {
     setShownRound(round)
     setPlayback({ status: 'loading' })
-    setTheater('off')
     setOutcome(null)
     setHighlightNextRound(false)
   }
@@ -442,19 +413,35 @@ function DemoRound({
 
   const tick = playback.status === 'ready' ? playback.snapshot.tick : round.liveStartTick
   const started = React.useRef(false)
+  const mounted = React.useRef(false)
+  React.useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
   const players = playerCardsAtTick(rounds, round, tick)
 
   React.useEffect(() => {
     if (!autoPlay || started.current || playback.status !== 'ready') return
     started.current = true
-    setTheater('entering')
+    const controller = playback.controller
+    // The stage rises over the header as the demo opens; playback starts once it has.
+    const rising = document
+      .getAnimations()
+      .filter(
+        (animation) =>
+          animation instanceof CSSTransition && animation.transitionProperty === '--stage-lift',
+      )
+    void Promise.allSettled(rising.map((animation) => animation.finished)).then(() => {
+      if (mounted.current) controller.play()
+    })
     onAutoPlay()
   }, [autoPlay, playback, onAutoPlay])
 
   return (
     <div
       data-multifloor={map.floors !== 'single'}
-      data-theater={theater !== 'off' || undefined}
       className="demo-round group/round flex flex-col gap-3 replay-desktop:h-full replay-landscape:grid replay-landscape:grid-cols-[minmax(0,1fr)_auto] replay-landscape:grid-rows-[repeat(3,auto)] replay-landscape:items-start replay-landscape:gap-2"
     >
       <fieldset
@@ -519,7 +506,7 @@ function DemoRound({
         />
         {outcome && <DemoRoundWin outcome={outcome} />}
       </div>
-      <DemoPlaybackControl round={round} playback={playback} onTogglePlay={togglePlay} />
+      <DemoPlaybackControl round={round} playback={playback} />
       <DemoKillFeed round={round} tick={tick} />
       <div className="demo-desktop-players hidden replay-desktop:contents">
         <DemoPlayerCards players={players} presentation="overlay" />
