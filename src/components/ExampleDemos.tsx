@@ -9,10 +9,12 @@ const matchDate = new Intl.DateTimeFormat('en-GB', {
 })
 
 export function ExampleDemos({
+  ref,
   state,
   activeExample,
   onSelect,
 }: {
+  ref?: React.Ref<HTMLDivElement>
   state: ImportState
   activeExample: ExampleId | undefined
   onSelect: (id: ExampleId) => void
@@ -21,10 +23,13 @@ export function ExampleDemos({
     state.status === 'reading' || (state.status === 'ready' && state.parsing.status === 'active')
 
   return (
-    <div className="demo-content min-h-0 flex-1 overflow-y-auto px-shell pb-shell">
+    <div
+      ref={ref}
+      className="demo-content relative -mt-(--stage-lift) min-h-0 flex-1 overflow-y-auto px-shell pb-shell"
+    >
       <section
         aria-labelledby="example-demos-heading"
-        className="rounded-inset-shell bg-inset px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-6"
+        className="rounded-inset-shell bg-stage px-4 pt-[calc(--spacing(2)+var(--stage-lift))] pb-4 sm:px-6 sm:pt-[calc(--spacing(4)+var(--stage-lift))] sm:pb-6 replay-desktop:clip-stage-notch"
       >
         <div className="pt-2 pb-5">
           <h1 id="example-demos-heading" className="text-2xl font-medium text-balance">

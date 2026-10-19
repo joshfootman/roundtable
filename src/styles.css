@@ -34,6 +34,8 @@
   --color-canvas: var(--neutral-900);
   --color-surface: var(--neutral-800);
   --color-inset: color-mix(in oklab, var(--neutral-900) 50%, transparent);
+  /* inset composited over surface, opaque so the stage hides the header it rises over. */
+  --color-stage: color-mix(in srgb, var(--neutral-900) 50%, var(--neutral-800));
   --color-field: color-mix(in oklab, var(--neutral-900) 75%, transparent);
   --color-field-hover: var(--neutral-900);
   --color-panel: color-mix(in oklab, var(--neutral-700) 25%, transparent);
