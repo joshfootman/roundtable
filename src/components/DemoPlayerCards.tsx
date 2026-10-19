@@ -44,12 +44,12 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
   return (
     <li
       aria-label={`${player.name}, ${player.alive ? `${health} health` : 'dead'}`}
-      className={`shrink-0 rounded-lg bg-neutral-700/50 px-2 py-1.5 text-sm leading-tight text-mauve-200 tabular-nums replay-desktop:text-base ${player.alive ? '' : 'opacity-55'}`}
+      className={`shrink-0 rounded-control bg-control px-2 py-1.5 text-sm leading-tight text-foreground tabular-nums replay-desktop:text-base ${player.alive ? '' : 'opacity-55'}`}
     >
       <div className={`flex flex-wrap items-center gap-2 py-1 ${direction}`}>
         <div className={`flex min-w-16 flex-1 items-center gap-2 ${direction}`}>
           <span
-            className={`flex size-5 shrink-0 items-center justify-center rounded-md text-xs font-bold text-neutral-800 ${mirrored ? 'bg-t' : 'bg-ct'}`}
+            className={`flex size-5 shrink-0 items-center justify-center rounded-chip text-xs font-bold text-inverse ${mirrored ? 'bg-t' : 'bg-ct'}`}
           >
             <span className="sr-only">Player </span>
             {player.number}
@@ -86,7 +86,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
       <div className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 ${direction}`}>
         <div className="flex flex-wrap items-center gap-x-2 font-semibold">
           {mirrored && (
-            <span className="text-green-400" title="Money">
+            <span className="text-money" title="Money">
               ${money}
             </span>
           )}
@@ -103,7 +103,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             <span className="sr-only">Deaths</span> {player.deaths}
           </span>
           {!mirrored && (
-            <span className="text-green-400" title="Money">
+            <span className="text-money" title="Money">
               ${money}
             </span>
           )}
@@ -148,9 +148,9 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
         </div>
       </div>
       <div className={`flex items-center gap-1.5 ${direction}`}>
-        <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-xs bg-mauve-200/15">
+        <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-bar bg-track">
           <div
-            className={`h-full rounded-xs ${mirrored ? 'ml-auto bg-t' : 'bg-ct'}`}
+            className={`h-full rounded-bar ${mirrored ? 'ml-auto bg-t' : 'bg-ct'}`}
             style={{ width: `${health}%` }}
           />
         </div>

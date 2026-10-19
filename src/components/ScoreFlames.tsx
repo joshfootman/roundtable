@@ -28,7 +28,7 @@ export function ScoreFlames({ side }: { side: 'ct' | 't' }) {
         <svg
           viewBox="0 0 72 72"
           preserveAspectRatio="none"
-          className={`absolute inset-0 size-full opacity-30 ${side === 'ct' ? 'text-blue-500' : 'text-orange-500'}`}
+          className={`absolute inset-0 size-full opacity-30 ${side === 'ct' ? 'text-ct-flame' : 'text-t-flame'}`}
         >
           <defs>
             <linearGradient id={gradient} x1="0" y1="1" x2="0" y2="0">

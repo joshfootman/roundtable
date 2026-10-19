@@ -25,7 +25,7 @@ export function DemoDrawingControl({
         disabled={!ready}
         title="Draw on map (D)"
         onClick={onToggle}
-        className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-neutral-700/50 text-mauve-200 outline-offset-2 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 disabled:cursor-default disabled:opacity-35 aria-pressed:bg-ct/20 aria-pressed:text-ct"
+        className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control bg-control text-foreground outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-default disabled:opacity-35 aria-pressed:bg-ct/20 aria-pressed:text-ct"
       >
         <svg
           aria-hidden="true"
@@ -51,7 +51,7 @@ export function DemoDrawingControl({
             pen.current?.focus()
             onClear()
           }}
-          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-neutral-700/50 text-mauve-200 outline-offset-2 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 disabled:cursor-default disabled:opacity-35"
+          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control bg-control text-foreground outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-default disabled:opacity-35"
         >
           <svg
             aria-hidden="true"

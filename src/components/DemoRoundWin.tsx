@@ -10,7 +10,7 @@ export function DemoRoundWin({ outcome }: { outcome: NonNullable<ReplayRound['ou
     >
       <div
         aria-hidden="true"
-        className="absolute inset-0 animate-demo-win-surface border-t border-b border-t-white/10 border-b-black/40 bg-[radial-gradient(circle,#ffffff0c_0.6px,transparent_0.8px),linear-gradient(90deg,#252b31ed,#30343aea_50%,#252b31ed)] [background-size:3px_3px,100%_100%] motion-reduce:animate-demo-win-reduced"
+        className="absolute inset-0 animate-demo-win-surface border-t border-b border-t-edge border-b-edge-shadow bg-surface motion-reduce:animate-demo-win-reduced"
       />
       <div
         aria-hidden="true"
@@ -43,7 +43,7 @@ export function DemoRoundWin({ outcome }: { outcome: NonNullable<ReplayRound['ou
             </text>
           </svg>
           {outcome.mvp && (
-            <p className="row-start-3 self-center truncate text-[clamp(10px,2.5cqw,13px)] leading-tight font-medium text-mauve-100">
+            <p className="row-start-3 self-center truncate text-[clamp(10px,2.5cqw,13px)] leading-tight font-medium text-foreground">
               MVP: {outcome.mvp.name}
             </p>
           )}

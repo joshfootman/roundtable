@@ -37,7 +37,7 @@ export function DemoCameraControls({ camera }: { camera: DemoCameraState }) {
           aria-keyshortcuts={shortcut}
           disabled={disabled}
           onClick={action}
-          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-neutral-700/50 text-mauve-200 outline-offset-2 focus-visible:outline-2 focus-visible:outline-mauve-200 enabled:hover:bg-neutral-700 disabled:cursor-default disabled:opacity-35"
+          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control bg-control text-foreground outline-offset-2 focus-visible:outline-2 focus-visible:outline-focus enabled:hover:bg-control-hover disabled:cursor-default disabled:opacity-35"
         >
           <svg
             aria-hidden="true"

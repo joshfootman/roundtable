@@ -44,7 +44,7 @@ export function DemoImportStatus({ state }: { state: ImportState }) {
         aria-atomic="true"
       >
         <svg
-          className="block text-blue-400 transition-[color,opacity] duration-240 ease-out group-data-[state=error]/import-status:text-red-400 group-data-[state=idle]/import-status:opacity-0 group-data-[state=success]/import-status:text-green-400 motion-reduce:transition-none"
+          className="block text-info transition-[color,opacity] duration-240 ease-out group-data-[state=error]/import-status:text-danger group-data-[state=idle]/import-status:opacity-0 group-data-[state=success]/import-status:text-success motion-reduce:transition-none"
           width="28"
           height="28"
           viewBox="0 0 32 32"
@@ -64,7 +64,7 @@ export function DemoImportStatus({ state }: { state: ImportState }) {
             rx="11"
           />
           <rect
-            className="animate-demo-import-status-travel stroke-blue-400 opacity-0 transition-opacity duration-240 ease-out [animation-play-state:paused] group-data-[state=loading]/import-status:opacity-100 group-data-[state=loading]/import-status:[animation-play-state:running] motion-reduce:animate-none motion-reduce:transition-none motion-reduce:group-data-[state=loading]/import-status:opacity-0"
+            className="animate-demo-import-status-travel stroke-info opacity-0 transition-opacity duration-240 ease-out [animation-play-state:paused] group-data-[state=loading]/import-status:opacity-100 group-data-[state=loading]/import-status:[animation-play-state:running] motion-reduce:animate-none motion-reduce:transition-none motion-reduce:group-data-[state=loading]/import-status:opacity-0"
             x="1"
             y="1"
             width="30"
@@ -74,11 +74,11 @@ export function DemoImportStatus({ state }: { state: ImportState }) {
             strokeDasharray="20 80"
           />
           <path
-            className="origin-center scale-94 opacity-0 transition-[opacity,scale] duration-240 ease-[cubic-bezier(0.19,1,0.22,1)] transform-fill group-data-[state=success]/import-status:scale-100 group-data-[state=success]/import-status:opacity-100 motion-reduce:scale-100 motion-reduce:transition-none"
+            className="origin-center scale-94 opacity-0 transition-[opacity,scale] duration-240 ease-out-expo transform-fill group-data-[state=success]/import-status:scale-100 group-data-[state=success]/import-status:opacity-100 motion-reduce:scale-100 motion-reduce:transition-none"
             d="m10 16 4 4 8-8"
           />
           <path
-            className="origin-center scale-94 opacity-0 transition-[opacity,scale] duration-240 ease-[cubic-bezier(0.19,1,0.22,1)] transform-fill group-data-[state=error]/import-status:scale-100 group-data-[state=error]/import-status:opacity-100 motion-reduce:scale-100 motion-reduce:transition-none"
+            className="origin-center scale-94 opacity-0 transition-[opacity,scale] duration-240 ease-out-expo transform-fill group-data-[state=error]/import-status:scale-100 group-data-[state=error]/import-status:opacity-100 motion-reduce:scale-100 motion-reduce:transition-none"
             d="m12 12 8 8m0-8-8 8"
           />
         </svg>
@@ -87,7 +87,7 @@ export function DemoImportStatus({ state }: { state: ImportState }) {
       {visual.status === 'error' && (
         <span
           role="alert"
-          className="demo-import-error mt-2 min-w-0 basis-full rounded-xl bg-neutral-800 px-3 py-2 text-xs leading-normal wrap-anywhere text-red-300 replay-desktop:absolute replay-desktop:top-full replay-desktop:right-0 replay-desktop:left-0 replay-desktop:z-50"
+          className="demo-import-error mt-2 min-w-0 basis-full rounded-field bg-surface px-3 py-2 text-xs leading-normal wrap-anywhere text-danger replay-desktop:absolute replay-desktop:top-full replay-desktop:right-0 replay-desktop:left-0 replay-desktop:z-50"
         >
           {visual.message}
         </span>

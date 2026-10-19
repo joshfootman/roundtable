@@ -1,11 +1,96 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/geist';
 
+/*
+ * Palette primitives. Components never use these directly; they use the semantic
+ * tokens in @theme below, so a primitive can change without touching markup.
+ */
+:root {
+  --neutral-600: oklch(43.9% 0 none);
+  --neutral-700: oklch(37.1% 0 none);
+  --neutral-800: oklch(26.9% 0 none);
+  --neutral-900: oklch(20.5% 0 none);
+  --mauve-200: oklch(92.2% 0.005 325.62);
+  --mauve-300: oklch(86.5% 0.012 325.68);
+  --green-400: oklch(79.2% 0.209 151.711);
+  --red-300: oklch(80.8% 0.114 19.571);
+  --blue-400: oklch(70.7% 0.165 254.624);
+  --blue-500: oklch(62.3% 0.214 259.815);
+  --orange-500: oklch(70.5% 0.213 47.604);
+}
+
 @theme {
   --font-sans: 'Geist Variable', sans-serif;
+
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: calc(1 / 0.625);
+
+  /* Only the tokens below exist; Tailwind's default palette and radius scale are removed. */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Backgrounds, from the page inward. */
+  --color-canvas: var(--neutral-900);
+  --color-surface: var(--neutral-800);
+  --color-inset: color-mix(in oklab, var(--neutral-900) 50%, transparent);
+  --color-field: color-mix(in oklab, var(--neutral-900) 75%, transparent);
+  --color-field-hover: var(--neutral-900);
+  --color-panel: color-mix(in oklab, var(--neutral-700) 25%, transparent);
+  --color-panel-hover: color-mix(in oklab, var(--neutral-700) 60%, transparent);
+  --color-control: color-mix(in oklab, var(--neutral-700) 50%, transparent);
+  --color-control-hover: var(--neutral-700);
+  --color-control-selected: color-mix(in oklab, var(--neutral-600) 50%, transparent);
+  --color-control-raised: var(--neutral-600);
+  /* Hover for a borderless button sitting on a control or panel. */
+  --color-ghost-hover: color-mix(in oklab, var(--neutral-800) 50%, transparent);
+  --color-scrim: color-mix(in oklab, var(--neutral-900) 85%, transparent);
+
+  /* Lines and edges. */
+  --color-line: var(--neutral-700);
+  --color-line-strong: var(--neutral-600);
+  --color-edge: color-mix(in oklab, white 10%, transparent);
+  --color-edge-shadow: color-mix(in oklab, black 40%, transparent);
+  --color-track: color-mix(in oklab, var(--mauve-200) 15%, transparent);
+
+  /* Text and icons. */
+  --color-foreground: var(--mauve-200);
+  --color-muted: var(--mauve-300);
+  /* Text on a team fill. */
+  --color-inverse: var(--neutral-800);
+  --color-focus: var(--mauve-200);
+
+  /* Status. */
+  --color-info: var(--blue-400);
+  --color-success: var(--green-400);
+  --color-danger: var(--red-300);
+
+  /* Game data. */
   --color-ct: #96c8fa;
+  --color-ct-flame: var(--blue-500);
   --color-t: #eabe54;
+  --color-t-flame: var(--orange-500);
   --color-bomb: #f59e0b;
+  --color-money: var(--green-400);
+
+  /*
+   * Radii by role. A child inset inside a rounded parent should use rounded-inset-*
+   * (see below) so its corners stay concentric with the parent's.
+   */
+  --radius-*: initial;
+  --radius-shell: 1.5rem;
+  --radius-panel: 1rem;
+  --radius-field: 0.75rem;
+  --radius-control: 0.5rem;
+  --radius-chip: 0.25rem;
+  --radius-bar: 0.125rem;
+
+  /* Gap between the app shell's edge and its content. */
+  --spacing-shell: 0.5rem;
+
+  --shadow-popover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --animate-demo-import-status-travel: demo-import-status-travel 800ms linear infinite;
 
@@ -18,7 +103,7 @@
     }
   }
 
-  --animate-demo-number-up: demo-number-up 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-demo-number-up: demo-number-up 300ms var(--ease-out-expo) both;
   --animate-demo-win-surface: demo-win-surface 2s both;
   --animate-demo-win-edge: demo-win-edge 2s both;
   --animate-demo-win-title: demo-win-title 2s both;
@@ -63,7 +148,7 @@
     0% {
       opacity: 0;
       transform: translateX(var(--edge-offset));
-      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+      animation-timing-function: var(--ease-out-expo);
     }
     11%,
     88.5% {
@@ -80,7 +165,7 @@
     3.25% {
       opacity: 0;
       transform: translateY(4px);
-      animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+      animation-timing-function: var(--ease-out-expo);
     }
     12.25%,
     88.5% {
@@ -126,4 +211,40 @@
   @media (any-pointer: coarse) {
     @slot;
   }
+}
+
+/*
+ * The shell's corner and its content gap grow together on desktop, so content inside
+ * keeps the same concentric radius at both sizes.
+ */
+:root {
+  @variant replay-desktop {
+    --radius-shell: 2rem;
+    --spacing-shell: 0.5rem;
+  }
+}
+
+/*
+ * Concentric corners. A parent with frame-<radius> publishes its radius; a child inset
+ * by N spacing steps uses rounded-inset-N so inner radius = outer radius - inset.
+ * rounded-inset-shell covers content inset by the shell's gap.
+ *
+ *   <div class="frame-panel p-1"><span class="rounded-inset-1">…</span></div>
+ */
+@utility frame-* {
+  --frame-radius: --value(--radius-*);
+  border-radius: var(--frame-radius);
+}
+
+@utility rounded-inset-* {
+  border-radius: max(var(--radius-bar), calc(var(--frame-radius) - --value(--spacing-*)));
+  border-radius: max(var(--radius-bar), calc(var(--frame-radius) - --spacing(--value(number))));
+}
+
+/* The app's outer gap, widened to clear device notches and home indicators. */
+@utility p-safe {
+  padding: max(var(--spacing-shell), env(safe-area-inset-top))
+    max(var(--spacing-shell), env(safe-area-inset-right))
+    max(var(--spacing-shell), env(safe-area-inset-bottom))
+    max(var(--spacing-shell), env(safe-area-inset-left));
 }

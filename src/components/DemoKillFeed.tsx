@@ -22,7 +22,7 @@ export function DemoKillFeedDropdown({ round, tick }: { round: ReplayRound; tick
     <Popover.Root>
       <Popover.Trigger
         aria-label="Kill feed"
-        className="flex h-11 shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-neutral-700/50 px-3 text-xs font-medium text-mauve-200 outline-offset-2 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200"
+        className="flex h-11 shrink-0 cursor-pointer items-center gap-2 rounded-control bg-control px-3 text-xs font-medium text-foreground outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus"
       >
         Kill feed
         <svg
@@ -40,7 +40,7 @@ export function DemoKillFeedDropdown({ round, tick }: { round: ReplayRound; tick
         <Popover.Positioner sideOffset={8} collisionPadding={16} className="z-50">
           <Popover.Popup
             aria-label="Round kill feed"
-            className="max-h-[var(--available-height)] w-[min(320px,calc(100vw-32px))] overflow-y-auto rounded-2xl border border-neutral-700 bg-neutral-800 p-2 text-xs font-medium text-mauve-200 shadow-xl outline-none"
+            className="max-h-[var(--available-height)] w-[min(320px,calc(100vw-32px))] overflow-y-auto frame-panel border border-line bg-surface p-2 text-xs font-medium text-foreground shadow-popover outline-none"
           >
             <Feed round={round} tick={tick} empty />
           </Popover.Popup>
@@ -71,12 +71,12 @@ function Feed({
     <>
       {entries.length === 0 ? (
         empty ? (
-          <p className="px-3 py-4 text-center text-mauve-300">No kills yet this round</p>
+          <p className="px-3 py-4 text-center text-muted">No kills yet this round</p>
         ) : null
       ) : (
         <ol
           ref={feed}
-          className="demo-kill-feed-list m-0 flex max-h-[min(240px,var(--available-height,240px))] [scrollbar-width:thin] [scrollbar-color:var(--color-neutral-600)_transparent] list-none flex-col items-end gap-1 overflow-y-auto overscroll-contain rounded-[14px] p-0.5 replay-desktop:max-h-[min(176px,23dvh)]"
+          className="demo-kill-feed-list m-0 flex max-h-[min(240px,var(--available-height,240px))] [scrollbar-width:thin] [scrollbar-color:var(--color-line-strong)_transparent] list-none flex-col items-end gap-1 overflow-y-auto overscroll-contain rounded-field p-0.5 replay-desktop:max-h-[min(176px,23dvh)]"
           tabIndex={-1}
           aria-label="Round kills, latest first"
         >
@@ -89,7 +89,7 @@ function Feed({
             return (
               <li
                 key={entry.id}
-                className="demo-kill-feed-entry flex min-h-8 max-w-full shrink-0 items-center justify-end gap-2.5 rounded-lg bg-neutral-700/50 px-2.5 py-[5px]"
+                className="demo-kill-feed-entry flex min-h-8 max-w-full shrink-0 items-center justify-end gap-2.5 rounded-control bg-control px-2.5 py-[5px]"
                 aria-label={description}
                 title={description}
               >
@@ -102,7 +102,7 @@ function Feed({
                   </span>
                 )}
                 <span
-                  className="demo-kill-feed-weapon flex shrink-0 items-center gap-1.5 text-white [&_img]:h-[18px] [&_img]:w-[42px] [&_img]:object-contain"
+                  className="demo-kill-feed-weapon flex shrink-0 items-center gap-1.5 text-foreground [&_img]:h-[18px] [&_img]:w-[42px] [&_img]:object-contain"
                   aria-hidden="true"
                 >
                   {icon ? <img src={icon} alt="" /> : <span>{weapon}</span>}

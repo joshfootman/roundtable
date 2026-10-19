@@ -14,7 +14,7 @@ export function DemoShortcutHelp({
         aria-label="Keyboard shortcuts"
         aria-keyshortcuts="Shift+/"
         title="Keyboard shortcuts (?)"
-        className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-neutral-700/50 text-mauve-200 outline-offset-2 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200"
+        className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control bg-control text-foreground outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus"
       >
         <svg
           aria-hidden="true"
@@ -40,15 +40,15 @@ export function DemoShortcutHelp({
         >
           <Popover.Popup
             aria-label="Keyboard shortcuts"
-            className="max-h-[var(--available-height)] w-[min(360px,calc(100vw-32px))] overflow-y-auto rounded-2xl border border-neutral-700 bg-neutral-800 p-4 text-sm text-mauve-200 shadow-xl outline-none"
+            className="max-h-[var(--available-height)] w-[min(360px,calc(100vw-32px))] overflow-y-auto frame-panel border border-line bg-surface p-4 text-sm text-foreground shadow-popover outline-none"
           >
             <Popover.Title className="mb-3 font-semibold">Keyboard shortcuts</Popover.Title>
             <dl className="flex flex-col gap-3">
               {replayShortcuts.map(({ keys, action }) => (
                 <div key={keys} className="flex items-center justify-between gap-4">
-                  <dt className="text-mauve-300">{action}</dt>
+                  <dt className="text-muted">{action}</dt>
                   <dd className="shrink-0">
-                    <kbd className="rounded bg-neutral-700/50 px-2 py-1 font-sans text-xs whitespace-nowrap">
+                    <kbd className="rounded-chip bg-control px-2 py-1 font-sans text-xs whitespace-nowrap">
                       {keys}
                     </kbd>
                   </dd>

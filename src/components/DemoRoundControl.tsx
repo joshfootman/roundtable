@@ -47,12 +47,12 @@ export function DemoRoundControl({
   const teams = roundTeams(round, example)
   const streaks = roundWinningStreaks(rounds, round, tick)
   const button =
-    'flex cursor-pointer items-center justify-center rounded-xl outline-offset-2 enabled:hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 disabled:cursor-default disabled:opacity-35'
+    'flex cursor-pointer items-center justify-center rounded-field outline-offset-2 enabled:hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-default disabled:opacity-35'
 
   const scoreboard = (
     <div
       key="scoreboard"
-      className="col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_44px_80px_44px_minmax(0,1fr)] grid-rows-1 items-center rounded-xl bg-neutral-700/50 @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
+      className="col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_44px_80px_44px_minmax(0,1fr)] grid-rows-1 items-center rounded-field bg-control @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
     >
       <Team identity={teams.ct} />
       <div
@@ -60,7 +60,7 @@ export function DemoRoundControl({
         aria-describedby={
           streaks.ct >= winningStreakThreshold ? `${streakDescription}-ct` : undefined
         }
-        className="relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-xl bg-ct/80 text-xl font-bold text-neutral-800 @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
+        className="relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-field bg-ct/80 text-xl font-bold text-inverse @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
       >
         {streaks.ct >= winningStreakThreshold && <ScoreFlames side="ct" />}
         <span className="relative z-10">
@@ -85,7 +85,7 @@ export function DemoRoundControl({
         aria-describedby={
           streaks.t >= winningStreakThreshold ? `${streakDescription}-t` : undefined
         }
-        className="relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-xl bg-t/80 text-xl font-bold text-neutral-800 @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
+        className="relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-field bg-t/80 text-xl font-bold text-inverse @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
       >
         {streaks.t >= winningStreakThreshold && <ScoreFlames side="t" />}
         <span className="relative z-10">
@@ -104,7 +104,7 @@ export function DemoRoundControl({
   return (
     <section
       aria-label="Round controls"
-      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-mauve-200 tabular-nums sm:w-[min(100%,840px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(840px,calc(100%-256px))] replay-desktop:-translate-x-1/2 min-[1728px]:replay-desktop:w-[min(840px,calc(100%-32px))] replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
+      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-foreground tabular-nums sm:w-[min(100%,840px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(840px,calc(100%-256px))] replay-desktop:-translate-x-1/2 min-[1728px]:replay-desktop:w-[min(840px,calc(100%-32px))] replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
     >
       <nav
         aria-label="Round navigation"
@@ -117,7 +117,7 @@ export function DemoRoundControl({
           title="Previous round (←)"
           disabled={!previous}
           onClick={() => previous && onSelectRound(previous.number)}
-          className={`${button} col-start-1 row-start-1 h-11 w-full min-w-11 shrink-0 bg-neutral-700/50 replay-desktop:h-14 replay-desktop:w-14`}
+          className={`${button} col-start-1 row-start-1 h-11 w-full min-w-11 shrink-0 bg-control replay-desktop:h-14 replay-desktop:w-14`}
         >
           <Chevron direction="left" />
         </button>
@@ -135,7 +135,7 @@ export function DemoRoundControl({
           title="Next round (→)"
           disabled={!next}
           onClick={() => next && onSelectRound(next.number)}
-          className={`${button} relative col-start-3 row-start-1 h-11 w-full min-w-11 shrink-0 bg-neutral-700/50 replay-desktop:h-14 replay-desktop:w-14`}
+          className={`${button} relative col-start-3 row-start-1 h-11 w-full min-w-11 shrink-0 bg-control replay-desktop:h-14 replay-desktop:w-14`}
         >
           <Chevron direction="right" />
           {highlightNextRound && next && (

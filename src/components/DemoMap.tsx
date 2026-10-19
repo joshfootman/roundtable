@@ -219,7 +219,7 @@ export function DemoMap({
       {failedMap === map && (
         <p
           role="alert"
-          className="absolute inset-0 flex items-center justify-center p-4 text-mauve-200"
+          className="absolute inset-0 flex items-center justify-center p-4 text-foreground"
         >
           Unable to display the {map.name} map.
         </p>
@@ -246,8 +246,8 @@ function appearance(element: HTMLElement): PlayerAppearance {
   return {
     ct: color('--color-ct'),
     t: color('--color-t'),
-    foreground: color('--color-mauve-200'),
-    background: color('--color-neutral-800'),
+    foreground: color('--color-foreground'),
+    background: color('--color-surface'),
     armed: color('--color-bomb'),
     fontSize: 14,
   }

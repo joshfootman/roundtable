@@ -30,7 +30,7 @@ export function DemoRoundPicker({
         ref={trigger}
         type="button"
         aria-label={`Choose round, current round ${round.number}`}
-        className="flex h-full w-full min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg outline-offset-2 hover:bg-neutral-800/50 focus-visible:bg-neutral-800/50 focus-visible:outline-2 focus-visible:outline-mauve-200 replay-desktop:gap-0"
+        className="flex h-full w-full min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-control outline-offset-2 hover:bg-ghost-hover focus-visible:bg-ghost-hover focus-visible:outline-2 focus-visible:outline-focus replay-desktop:gap-0"
       >
         <time
           aria-label="Elapsed round time"
@@ -41,7 +41,7 @@ export function DemoRoundPicker({
         <span
           aria-live="polite"
           aria-atomic="true"
-          className="flex items-center gap-1 text-[10px] font-semibold text-mauve-300 uppercase replay-desktop:text-xs"
+          className="flex items-center gap-1 text-2xs font-semibold text-muted uppercase replay-desktop:text-xs"
         >
           Round <RollingNumber value={round.number} previous={previousRound} />
         </span>
@@ -51,7 +51,7 @@ export function DemoRoundPicker({
           <Popover.Popup
             aria-label="Select round"
             initialFocus={currentRound}
-            className="max-h-[min(400px,var(--available-height))] w-[min(320px,calc(100vw-32px))] overflow-y-auto overscroll-contain rounded-2xl border border-neutral-700 bg-neutral-800 p-2 text-mauve-200 shadow-xl outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-neutral-600 [&::-webkit-scrollbar-track]:bg-transparent"
+            className="max-h-[min(400px,var(--available-height))] w-[min(320px,calc(100vw-32px))] overflow-y-auto overscroll-contain frame-panel border border-line bg-surface p-2 text-foreground shadow-popover outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-line-strong [&::-webkit-scrollbar-track]:bg-transparent"
           >
             <div className="flex flex-col gap-2">
               {rounds.map((candidate, index) => {
@@ -65,10 +65,10 @@ export function DemoRoundPicker({
                 return (
                   <Fragment key={candidate.number}>
                     {halftimeBefore(rounds[index - 1], candidate) && (
-                      <div className="flex items-center gap-2 px-3 py-1 text-xs text-mauve-300">
-                        <span className="h-px flex-1 bg-neutral-700" />
+                      <div className="flex items-center gap-2 px-3 py-1 text-xs text-muted">
+                        <span className="h-px flex-1 bg-line" />
                         <span>Halftime</span>
-                        <span className="h-px flex-1 bg-neutral-700" />
+                        <span className="h-px flex-1 bg-line" />
                       </div>
                     )}
                     <Popover.Close
@@ -77,7 +77,7 @@ export function DemoRoundPicker({
                       aria-current={candidate.number === round.number ? 'step' : undefined}
                       aria-label={`Round ${candidate.number}${winner ? `, ${winner} won` : ''}${score ? `, score ${score}` : ''}`}
                       onClick={() => onSelectRound(candidate.number, true)}
-                      className={`flex min-h-15 min-w-0 shrink-0 cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left text-sm tabular-nums outline-offset-2 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-mauve-200 ${candidate.number === round.number ? 'bg-neutral-600/50 ring-1 ring-mauve-300/30 ring-inset' : 'bg-neutral-700/40'}`}
+                      className={`flex min-h-15 min-w-0 shrink-0 cursor-pointer items-center justify-between gap-3 rounded-inset-2 px-3 py-2.5 text-left text-sm tabular-nums outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus ${candidate.number === round.number ? 'bg-control-selected ring-1 ring-edge ring-inset' : 'bg-control'}`}
                     >
                       <span className="flex min-w-0 flex-col gap-0.5">
                         <span className="font-semibold">Round {candidate.number}</span>
@@ -89,9 +89,7 @@ export function DemoRoundPicker({
                           </span>
                         )}
                       </span>
-                      {score && (
-                        <span className="shrink-0 font-semibold text-mauve-300">{score}</span>
-                      )}
+                      {score && <span className="shrink-0 font-semibold text-muted">{score}</span>}
                     </Popover.Close>
                   </Fragment>
                 )
