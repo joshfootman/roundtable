@@ -459,18 +459,18 @@ function DemoRound({
     >
       <fieldset
         aria-label="Map controls"
-        className="demo-map-controls z-20 hidden w-fit max-w-full min-w-0 items-start gap-2 replay-desktop:absolute replay-desktop:top-[calc(--spacing(4)+var(--stage-lift))] replay-desktop:left-4 replay-desktop:flex replay-landscape:col-start-1 replay-landscape:row-start-2"
+        className="demo-map-controls z-20 hidden w-fit max-w-full min-w-0 items-start gap-2 replay-desktop:absolute replay-desktop:top-[calc(--spacing(4)+var(--stage-lift))] replay-desktop:left-4 replay-desktop:flex min-[1728px]:replay-desktop:flex-col replay-landscape:col-start-1 replay-landscape:row-start-2"
       >
         <fieldset
           aria-label="Map navigation"
-          className="flex shrink-0 items-center gap-2 replay-desktop:flex-col min-[1728px]:replay-desktop:flex-row"
+          className="flex shrink-0 items-center gap-2 replay-desktop:flex-col"
         >
           <DemoCameraControls camera={cameraState} />
           {map.floors !== 'single' && <DemoFloorControl map={map} playback={playback} />}
         </fieldset>
         <fieldset
           aria-label="Drawing and shortcuts"
-          className="flex shrink-0 items-center gap-2 replay-desktop:flex-col min-[1728px]:replay-desktop:flex-row"
+          className="flex shrink-0 items-center gap-2 replay-desktop:flex-col"
         >
           <DemoShortcutHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
           <DemoDrawingControl

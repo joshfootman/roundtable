@@ -20,7 +20,7 @@ export function DemoPlayerCards({
           key={team}
           tabIndex={-1}
           aria-label={team === 3 ? 'Counter-Terrorist players' : 'Terrorist players'}
-          className={`demo-player-team flex min-h-0 min-w-0 flex-col gap-1 ${presentation === 'overlay' ? 'replay-desktop:pointer-events-auto replay-desktop:max-h-[calc(100%-200px)] replay-desktop:w-[min(100%,27vw,320px)] replay-desktop:overflow-y-auto replay-desktop:group-data-[multifloor=true]/round:max-h-[calc(100%-256px)] replay-desktop:last:justify-self-end' : ''}`}
+          className={`demo-player-team flex min-h-0 min-w-0 flex-col gap-1 ${presentation === 'overlay' ? 'replay-desktop:pointer-events-auto replay-desktop:max-h-[calc(100%-200px)] replay-desktop:w-[min(100%,27vw,320px)] replay-desktop:overflow-y-auto replay-desktop:group-data-[multifloor=true]/round:max-h-[calc(100%-256px)] replay-desktop:last:justify-self-end min-[1728px]:replay-desktop:max-h-[calc(100%-268px)] min-[1728px]:replay-desktop:group-data-[multifloor=true]/round:max-h-[calc(100%-320px)]' : ''}`}
         >
           {players
             .filter((player) => player.team === team)
