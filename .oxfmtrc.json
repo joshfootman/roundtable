@@ -6,11 +6,5 @@
     "stylesheet": "./src/styles.css",
     "functions": ["cn", "clsx", "cva"]
   },
-  "ignorePatterns": [
-    "src/routeTree.gen.ts",
-    "package-lock.json",
-    "GUI.md",
-    "gui/**",
-    ".agents/skills/graphical-*/**"
-  ]
+  "ignorePatterns": ["src/routeTree.gen.ts", "package-lock.json"]
 }
