@@ -13,7 +13,7 @@ export function DemoPlayerCards({
   return (
     <div
       aria-label="Player cards"
-      className={`demo-player-cards ${presentation === 'inline' ? 'demo-player-cards-inline grid grid-cols-1 gap-4 px-2 pb-2 sm:grid-cols-2 replay-landscape:grid-cols-1' : 'demo-player-cards-overlay replay-desktop:pointer-events-none replay-desktop:absolute replay-desktop:inset-4 replay-desktop:bottom-24 replay-desktop:grid replay-desktop:grid-cols-2 replay-desktop:items-end replay-desktop:gap-4'}`}
+      className={`demo-player-cards ${presentation === 'inline' ? 'demo-player-cards-inline grid grid-cols-1 gap-4 px-2 pb-2 sm:grid-cols-2 replay-landscape:grid-cols-1' : 'demo-player-cards-overlay replay-desktop:pointer-events-none replay-desktop:absolute replay-desktop:inset-4 replay-desktop:top-[calc(--spacing(4)+var(--stage-lift))] replay-desktop:bottom-24 replay-desktop:grid replay-desktop:grid-cols-2 replay-desktop:items-end replay-desktop:gap-4'}`}
     >
       {([3, 2] as const).map((team) => (
         <ul

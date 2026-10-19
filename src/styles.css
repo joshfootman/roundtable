@@ -248,3 +248,47 @@
     max(var(--spacing-shell), env(safe-area-inset-bottom))
     max(var(--spacing-shell), env(safe-area-inset-left));
 }
+
+/*
+ * Theatre mode. Once a round is played on desktop, the stage rises over the header and
+ * leaves a notch around the logo. --stage-lift drives both the rise and the notch, so
+ * they animate as one. Browsers without shape() keep the header.
+ */
+@property --stage-lift {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+@custom-variant theater {
+  @media (min-width: 1024px) and (min-height: 700px) {
+    @supports (clip-path: shape(from 0 0, hline to 0)) {
+      .demo-shell:has([data-theater]) & {
+        @slot;
+      }
+    }
+  }
+}
+
+/* The notch's corners match the stage's, scaled down while the notch is shallower. */
+@utility clip-stage-notch {
+  /* The logo (8rem wide, 2.5rem in from the shell edge) centred across the notch. */
+  --notch-width: calc(8rem + 2 * (2.5rem - var(--spacing-shell)));
+  --notch-r: min(var(--stage-r), var(--stage-lift) / 2);
+  --stage-r: calc(var(--frame-radius) - var(--spacing-shell));
+  clip-path: shape(
+    from 0 calc(var(--stage-lift) + var(--stage-r)),
+    arc to var(--stage-r) var(--stage-lift) of var(--stage-r) cw,
+    hline to calc(var(--notch-width) - var(--notch-r)),
+    arc to var(--notch-width) calc(var(--stage-lift) - var(--notch-r)) of var(--notch-r) ccw,
+    vline to var(--notch-r),
+    arc to calc(var(--notch-width) + var(--notch-r)) 0 of var(--notch-r) cw,
+    hline to calc(100% - var(--stage-r)),
+    arc to 100% var(--stage-r) of var(--stage-r) cw,
+    vline to calc(100% - var(--stage-r)),
+    arc to calc(100% - var(--stage-r)) 100% of var(--stage-r) cw,
+    hline to var(--stage-r),
+    arc to 0 calc(100% - var(--stage-r)) of var(--stage-r) cw,
+    close
+  );
+}

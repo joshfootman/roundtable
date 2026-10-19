@@ -14,6 +14,7 @@ export function useReplayShortcuts({
   onShowHelp,
   onToggleDrawing,
   onClearDrawing,
+  onTogglePlay,
 }: {
   playback: DemoPlaybackState
   camera: DemoCameraState
@@ -24,6 +25,7 @@ export function useReplayShortcuts({
   onShowHelp: () => void
   onToggleDrawing: () => void
   onClearDrawing: () => void
+  onTogglePlay: () => void
 }) {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -45,8 +47,7 @@ export function useReplayShortcuts({
           onClearDrawing()
           break
         case 'toggle':
-          if (controller.getSnapshot().playing) controller.pause()
-          else controller.play()
+          onTogglePlay()
           break
         case 'seek':
           controller.seek(controller.getSnapshot().tick + shortcut.seconds / round.tickInterval)
@@ -94,5 +95,6 @@ export function useReplayShortcuts({
     onShowHelp,
     onToggleDrawing,
     onClearDrawing,
+    onTogglePlay,
   ])
 }

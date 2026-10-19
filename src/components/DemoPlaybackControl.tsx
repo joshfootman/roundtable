@@ -18,9 +18,11 @@ function timelineProgress(round: ReplayRound, tick: number) {
 export function DemoPlaybackControl({
   round,
   playback,
+  onTogglePlay,
 }: {
   round: ReplayRound
   playback: DemoPlaybackState
+  onTogglePlay: () => void
 }) {
   const scrub = useRef<{ pointer: number; resume: boolean } | null>(null)
   const ready = playback.status === 'ready'
@@ -70,11 +72,7 @@ export function DemoPlaybackControl({
         title={playing ? 'Pause (K / Space)' : 'Play (K / Space)'}
         disabled={!ready}
         className="demo-playback-toggle col-start-1 row-start-2 flex size-11 shrink-0 cursor-pointer items-center justify-start rounded-inset-2 outline-offset-2 focus-visible:bg-ghost-hover focus-visible:outline-2 focus-visible:outline-focus enabled:hover:bg-ghost-hover disabled:cursor-default disabled:opacity-35 replay-desktop:row-start-1 replay-desktop:justify-center"
-        onClick={() => {
-          if (playback.status !== 'ready') return
-          if (playing) playback.controller.pause()
-          else playback.controller.play()
-        }}
+        onClick={onTogglePlay}
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="size-5">
           {playing ? <path d="M6 4h4v16H6zm8 0h4v16h-4z" /> : <path d="m7 4 14 8-14 8z" />}
