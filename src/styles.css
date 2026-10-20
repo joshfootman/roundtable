@@ -106,6 +106,7 @@
   }
 
   --animate-demo-number-up: demo-number-up 300ms var(--ease-out-expo) both;
+  --animate-demo-number-down: demo-number-down 300ms var(--ease-out-expo) both;
   --animate-demo-win-surface: demo-win-surface 2s both;
   --animate-demo-win-edge: demo-win-edge 2s both;
   --animate-demo-win-title: demo-win-title 2s both;
@@ -125,6 +126,12 @@
 
   @keyframes demo-number-up {
     to {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes demo-number-down {
+    from {
       transform: translateY(-100%);
     }
   }
