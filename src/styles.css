@@ -14,6 +14,7 @@
   --mauve-300: oklch(86.5% 0.012 325.68);
   --green-400: oklch(79.2% 0.209 151.711);
   --red-300: oklch(80.8% 0.114 19.571);
+  --red-500: oklch(63.7% 0.237 25.331);
   --blue-400: oklch(70.7% 0.165 254.624);
   --blue-500: oklch(62.3% 0.214 259.815);
   --orange-500: oklch(70.5% 0.213 47.604);
@@ -74,6 +75,7 @@
   --color-t-flame: var(--orange-500);
   --color-bomb: #f59e0b;
   --color-money: var(--green-400);
+  --color-damage: var(--red-500);
 
   /*
    * Radii by role. A child inset inside a rounded parent should use rounded-inset-*

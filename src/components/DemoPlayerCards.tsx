@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { RollingNumber } from '#/components/RollingNumber'
 import { equipmentName } from '#/replay/equipment'
 import { EquipmentIcon, GameIcon, equipmentIcon } from '#/replay/icons'
@@ -41,6 +42,8 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
   const direction = mirrored ? 'flex-row-reverse' : ''
   const colour = mirrored ? 'text-t' : 'text-ct'
   const health = player.alive ? Math.max(0, Math.min(100, player.health)) : 0
+  const [shownHealth, setShownHealth] = useState({ health, rising: false })
+  if (shownHealth.health !== health) setShownHealth({ health, rising: health > shownHealth.health })
   const armoured = player.alive && armour > 0
   const armourLabel = armoured
     ? `${armour} armour, ${helmet ? 'helmet equipped' : 'no helmet'}`
@@ -135,9 +138,17 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
         </div>
       </div>
       <div className={`mt-1.25 flex items-center gap-1.5 ${direction}`}>
-        <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-bar bg-track">
+        <div className="relative h-1.5 min-w-0 flex-1 overflow-hidden rounded-bar bg-track">
+          {/*
+            Losses snap the fill and leave the red layer behind; each hit restarts its delayed
+            transition, so a burst drains as one chunk. Gains ease the fill up over the red layer.
+          */}
           <div
-            className={`h-full rounded-bar ${mirrored ? 'ml-auto bg-t' : 'bg-ct'}`}
+            className={`absolute inset-y-0 rounded-bar bg-damage transition-[width] delay-400 duration-500 ease-in-out motion-reduce:transition-none ${mirrored ? 'right-0' : 'left-0'}`}
+            style={{ width: `${health}%` }}
+          />
+          <div
+            className={`absolute inset-y-0 rounded-bar ${mirrored ? 'right-0 bg-t' : 'left-0 bg-ct'} ${shownHealth.rising ? 'transition-[width] duration-300 ease-out-expo motion-reduce:transition-none' : ''}`}
             style={{ width: `${health}%` }}
           />
         </div>
