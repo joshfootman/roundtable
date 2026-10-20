@@ -79,11 +79,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
       </div>
       <div className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 ${direction}`}>
         <div className="flex flex-wrap items-center gap-x-2 font-semibold">
-          {mirrored && (
-            <span className="text-money" title="Money">
-              ${money}
-            </span>
-          )}
+          {mirrored && <Money money={money} />}
           <span>
             <span className={`${colour} text-xs`} aria-hidden="true">
               K
@@ -96,11 +92,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             </span>
             <span className="sr-only">Deaths</span> <RollingNumber value={player.deaths} />
           </span>
-          {!mirrored && (
-            <span className="text-money" title="Money">
-              ${money}
-            </span>
-          )}
+          {!mirrored && <Money money={money} />}
         </div>
         <div
           className={`flex items-center gap-1 ${mirrored ? 'mr-auto flex-row-reverse' : 'ml-auto'}`}
@@ -177,6 +169,21 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
         </span>
       </div>
     </li>
+  )
+}
+
+function Money({ money }: { money: number }) {
+  const [shown, setShown] = useState({ money, rising: false })
+  if (shown.money !== money) setShown({ money, rising: money > shown.money })
+  return (
+    <span className="text-money" title="Money">
+      <span
+        aria-hidden="true"
+        className={`money-counter ${shown.rising ? 'transition-[--money] duration-700 ease-out-expo motion-reduce:transition-none' : ''}`}
+        style={{ '--money': money } as React.CSSProperties}
+      />
+      <span className="sr-only">${money}</span>
+    </span>
   )
 }
 

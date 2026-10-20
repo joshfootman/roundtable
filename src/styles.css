@@ -271,6 +271,24 @@
   initial-value: 0px;
 }
 
+/*
+ * Money that can count between values. --money is an integer, so a transition on it steps
+ * through whole dollars, and the counter prints each step.
+ */
+@property --money {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@utility money-counter {
+  counter-reset: money var(--money);
+
+  &::after {
+    content: '$' counter(money);
+  }
+}
+
 @custom-variant theater {
   @media (min-width: 1024px) and (min-height: 700px) {
     @supports (clip-path: shape(from 0 0, hline to 0)) {
