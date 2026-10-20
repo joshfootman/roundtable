@@ -40,13 +40,13 @@ export function DemoPlayerCards({
   )
 }
 
-// One pattern per team slot, weighted so dense fills and thin line work read equally.
+// One pattern per team slot.
 const textures = [
-  { src: cage, opacity: 0.08 },
-  { src: houndstooth, opacity: 0.065 },
-  { src: hexagons, opacity: 0.1 },
-  { src: endlessClouds, opacity: 0.065 },
-  { src: aztec, opacity: 0.065 },
+  { src: cage, opacity: 0.05 },
+  { src: houndstooth, opacity: 0.05 },
+  { src: hexagons, opacity: 0.05 },
+  { src: endlessClouds, opacity: 0.05 },
+  { src: aztec, opacity: 0.05 },
 ] as const
 
 export function PlayerCard({ player }: { player: PlayerCardData }) {
