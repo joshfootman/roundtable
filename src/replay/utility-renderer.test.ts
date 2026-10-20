@@ -171,7 +171,7 @@ describe('recorded utility rendering', () => {
     utilities.container.destroy({ children: true })
   })
 
-  it('marks each smoke and fire with an opaque badge in its colour, held at the centre of its whole burn', () => {
+  it('marks each smoke and fire with an opaque icon in its colour, held at the centre of its whole burn', () => {
     const recorded = round()
     recorded.fires.splice(2, 0, {
       tick: 110,
@@ -183,13 +183,13 @@ describe('recorded utility rendering', () => {
       (areaIcons.children as Container[])
         .filter((badge) => badge.visible)
         .map((badge) => {
-          const icon = badge.children[1] as Sprite
+          const icon = badge.children.at(-1) as Sprite
           return [badge.x, badge.y, badge.width, icon.width, icon.tint, icon.alpha]
         })
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([
-      [997.3333333333334, 40, 19.5, 11, 0xffb778, 1],
-      [974, 50, 19.5, 10, 0xb8bcc2, 1],
+      [997.3333333333334, 40, 24, 22, 0xffb778, 1],
+      [974, 50, 20, 18, 0xb8bcc2, 1],
     ])
     utilities.draw(110, 1, initialUtilityVisibility(), 'upper')
     expect(placed()[0]!.slice(0, 2)).toEqual([997.3333333333334, 40])

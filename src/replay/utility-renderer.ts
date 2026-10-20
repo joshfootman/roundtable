@@ -13,8 +13,8 @@ import {
 } from './utility.ts'
 
 const PROJECTILE_ICON_SIZE = 10
-const AREA_ICON_SIZE = { cloud: 10, fire: 11 }
-const AREA_BADGE_RADIUS = 9
+const AREA_ICON_SIZE = { cloud: 18, fire: 22 }
+const OUTLINE_STEPS = 8
 const SMOKE_OUTLINE_POINTS = 96
 const SMOKE_SETTLE_TURN = 0.5
 const SMOKE_BLOOM_SECONDS = 0.6
@@ -129,17 +129,23 @@ export function createUtilityRenderer(
   ) {
     let badge = areaIcons.children[areaIconCount++] as Container | undefined
     if (!badge) {
-      const icon = new Sprite()
-      icon.anchor.set(0.5)
       badge = areaIcons.addChild(new Container())
-      badge.addChild(new Graphics(), icon)
+      for (let step = 0; step <= OUTLINE_STEPS; step++) {
+        const sprite = badge.addChild(new Sprite())
+        sprite.anchor.set(0.5)
+        if (step === OUTLINE_STEPS) continue
+        const angle = (step / OUTLINE_STEPS) * Math.PI * 2
+        sprite.position.set(Math.cos(angle), Math.sin(angle))
+      }
     }
-    const [disc, icon] = badge.children as [Graphics, Sprite]
+    const sprites = badge.children as Sprite[]
     const texture = icons[kind]
-    disc.clear().circle(0, 0, AREA_BADGE_RADIUS).fill(background).stroke({ color, width: 1.5 })
-    icon.texture = texture
-    icon.tint = color
-    icon.scale.set(AREA_ICON_SIZE[kind] / Math.max(texture.width, texture.height))
+    const fit = AREA_ICON_SIZE[kind] / Math.max(texture.width, texture.height)
+    for (const [step, sprite] of sprites.entries()) {
+      sprite.texture = texture
+      sprite.tint = step === OUTLINE_STEPS ? color : background
+      sprite.scale.set(fit)
+    }
     badge.visible = true
     badge.position.set(x, y)
     badge.scale.set(scale)
