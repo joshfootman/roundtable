@@ -18,8 +18,32 @@ const OUTLINE_STEPS = 8
 const SMOKE_OUTLINE_POINTS = 96
 const SMOKE_SETTLE_TURN = 0.5
 const SMOKE_BLOOM_SECONDS = 0.6
+/** An HE punches a hole through smoke that refills within about three seconds. */
+const SMOKE_HOLE_RADIUS = 120
+const SMOKE_HOLE_OPEN_SECONDS = 0.2
+const SMOKE_HOLE_HOLD_SECONDS = 1.5
+const SMOKE_HOLE_SECONDS = 3
+const SMOKE_HOLE_REACH_Z = 128
 
 /** The scene's `--ease-out-expo`: most of the burst lands in the first third, then it settles. */
+function easeInOutQuart(progress: number) {
+  return progress < 0.5 ? 8 * progress ** 4 : 1 - (-2 * progress + 2) ** 4 / 2
+}
+
+/** How open an HE's hole in the smoke is, from 0 (filled) to 1, `seconds` after it blew. */
+function smokeHoleOpening(seconds: number, reducedMotion: boolean) {
+  if (seconds < 0 || seconds >= SMOKE_HOLE_SECONDS) return 0
+  if (reducedMotion) return 1
+  if (seconds < SMOKE_HOLE_OPEN_SECONDS) return easeOutExpo(seconds / SMOKE_HOLE_OPEN_SECONDS)
+  if (seconds < SMOKE_HOLE_HOLD_SECONDS) return 1
+  return (
+    1 -
+    easeInOutQuart(
+      (seconds - SMOKE_HOLE_HOLD_SECONDS) / (SMOKE_HOLE_SECONDS - SMOKE_HOLE_HOLD_SECONDS),
+    )
+  )
+}
+
 function easeOutExpo(progress: number) {
   return progress >= 1 ? 1 : 1 - 2 ** (-10 * progress)
 }
@@ -101,7 +125,21 @@ export function createUtilityRenderer(
   const container = new Container()
   const projectileIcons = new Container({ label: 'projectile-icons' })
   const areaIcons = new Container({ label: 'area-icons' })
-  container.addChild(...Object.values(layers), projectileIcons, areaIcons)
+  const smokeHoles = new Graphics({ label: 'smoke-holes' })
+  container.addChild(...Object.values(layers), projectileIcons, areaIcons, smokeHoles)
+  layers.smokes.setMask({ mask: smokeHoles, inverse: true })
+  const smokeBlasts = round.detonations.filter(
+    (event) =>
+      event.kind === 'he' &&
+      round.smokes.some(
+        (smoke) =>
+          event.tick >= smoke.startTick &&
+          event.tick < smoke.endTick &&
+          Math.abs(event.z - smoke.z) <= SMOKE_HOLE_REACH_Z &&
+          Math.hypot(event.x - smoke.x, event.y - smoke.y) <=
+            APPROXIMATE_SMOKE_RADIUS + SMOKE_HOLE_RADIUS,
+      ),
+  )
   const fireCentres = new Map<string, { x: number; y: number }>()
   {
     const sums = new Map<string, { x: number; y: number; cells: number }>()
@@ -169,6 +207,15 @@ export function createUtilityRenderer(
       for (const { key } of utilityOverlays)
         if (key !== 'flashes' && key !== 'detonations') layers[key].visible = visibility[key]
       for (const layer of Object.values(layers)) layer.clear()
+      smokeHoles.clear()
+      for (const blast of smokeBlasts) {
+        const opening = smokeHoleOpening((tick - blast.tick) * round.tickInterval, reducedMotion)
+        if (opening <= 0) continue
+        const point = worldToMap(map, blast.x, blast.y)
+        smokeHoles
+          .circle(point.x, point.y, (SMOKE_HOLE_RADIUS / map.scale) * opening)
+          .fill(0xffffff)
+      }
       for (const sprite of areaIcons.children) sprite.visible = false
       areaIconCount = 0
       if (visibility.shots)

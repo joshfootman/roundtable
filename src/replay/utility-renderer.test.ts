@@ -71,7 +71,7 @@ function round(): ReplayRound {
         positions: new Float32Array([180, 120, 1, 200, 100, -1, 220, 80, 1, 240, 60, 1]),
       },
     ],
-    detonations: [{ tick: 100, kind: 'he', entity: 4, x: 180, y: 120, z: 1 }],
+    detonations: [{ tick: 100, kind: 'he', entity: 4, x: 900, y: 900, z: 1 }],
     bomb: [],
     inspection: [],
     players: [],
@@ -85,8 +85,9 @@ function round(): ReplayRound {
   })
 }
 
-function bounds(graphics: Graphics) {
-  const { minX, minY, maxX, maxY } = graphics.getLocalBounds()
+function bounds(graphics: Graphics | Container) {
+  const { minX, minY, maxX, maxY } =
+    graphics instanceof Graphics ? graphics.context.bounds : graphics.getLocalBounds()
   return [minX, minY, maxX, maxY]
 }
 
@@ -117,12 +118,20 @@ describe('recorded utility rendering', () => {
     utilities.draw(102, 1, visibility, 'upper')
     expect(bounds(layers[2]!)).toEqual([0, 0, 0, 0])
     utilities.draw(120, 1, visibility, 'upper')
-    expect(layers.map(bounds)).toEqual(Array(6).fill([0, 0, 0, 0]))
+    expect(layers.map(bounds)).toEqual(Array(7).fill([0, 0, 0, 0]))
     utilities.draw(100, 1, visibility, 'upper')
     expect(layers.map(bounds)).toEqual(initialBounds)
     visibility.shots = visibility.smokes = false
     utilities.draw(100, 1, visibility, 'upper')
-    expect(layers.map((layer) => layer.visible)).toEqual([true, false, false, true, true, true])
+    expect(layers.map((layer) => layer.visible)).toEqual([
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+    ])
     expect([bounds(layers[1]!), bounds(layers[2]!)]).toEqual([
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -133,8 +142,8 @@ describe('recorded utility rendering', () => {
     recorded.shots = []
     recorded.projectiles = []
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true, true])
-    expect(layers.map(bounds)).toEqual(Array(6).fill([0, 0, 0, 0]))
+    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true, true, true])
+    expect(layers.map(bounds)).toEqual(Array(7).fill([0, 0, 0, 0]))
     utilities.container.destroy({ children: true })
   })
 
@@ -203,11 +212,31 @@ describe('recorded utility rendering', () => {
     const smoke = utilities.container.children[1] as Graphics
     const widths = [100, 101, 102, 106, 118].map((tick) => {
       utilities.draw(tick, 1, initialUtilityVisibility(), 'upper')
-      return Math.round(smoke.getLocalBounds().width)
+      return Math.round(smoke.context.bounds.width)
     })
     expect(widths).toEqual([43, 109, 130, 140, 140])
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper', true)
-    expect(Math.round(smoke.getLocalBounds().width)).toEqual(140)
+    expect(Math.round(smoke.context.bounds.width)).toEqual(140)
+    utilities.container.destroy({ children: true })
+  })
+
+  it('punches a hole through smoke where an HE blows, then lets it refill', () => {
+    const recorded = round()
+    recorded.endTick = 200
+    recorded.smokes[0]!.endTick = 200
+    recorded.detonations = [
+      { tick: 110, kind: 'he', entity: 4, x: 200, y: 100, z: 1 },
+      { tick: 110, kind: 'he', entity: 5, x: 900, y: 900, z: 1 },
+      { tick: 110, kind: 'he', entity: 6, x: 200, y: 100, z: 400 },
+    ]
+    const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
+    const holes = utilities.container.children[6] as Graphics
+    const holeWidths = [109, 110, 111, 120, 130, 135, 140, 120].map((tick) => {
+      utilities.draw(tick, 1, initialUtilityVisibility(), 'upper')
+      return Math.round(holes.context.bounds.width)
+    })
+    expect(holeWidths).toEqual([0, 0, 116, 120, 108, 12, 0, 120])
+    expect(utilities.container.children[1]!.mask).toBe(holes)
     utilities.container.destroy({ children: true })
   })
 })
