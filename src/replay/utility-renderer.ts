@@ -191,10 +191,10 @@ export function createUtilityRenderer(
                 smoke.entity + (1 - bloom),
               ),
             )
-            .fill({ color: utilityAppearance.smoke.color, alpha: 0.16 * bloom })
+            .fill({ color: utilityAppearance.smoke.color, alpha: 0.35 * bloom })
             .stroke({
               color: utilityAppearance.smoke.color,
-              alpha: 0.45 * bloom,
+              alpha: 0.8 * bloom,
               width: symbolScale,
             })
           placeAreaIcon('cloud', utilityAppearance.smoke.color, point.x, point.y, symbolScale)
