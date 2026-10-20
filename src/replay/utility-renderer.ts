@@ -52,10 +52,10 @@ function smokeShape(seed: number) {
       bump = Math.max(bump, puff.height * Math.exp(-(distance ** 2) / (2 * puff.spread ** 2)))
     }
     return (
-      0.95 +
-      0.025 * Math.sin(2 * theta + wobble[0]!) +
-      0.015 * Math.sin(3 * theta + wobble[1]!) +
-      0.04 * bump
+      0.975 +
+      0.012 * Math.sin(2 * theta + wobble[0]!) +
+      0.008 * Math.sin(3 * theta + wobble[1]!) +
+      0.02 * bump
     )
   })
 }
