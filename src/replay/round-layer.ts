@@ -11,6 +11,7 @@ import incendiaryIcon from '../assets/cs2/equipment/incgrenade.svg?url&no-inline
 import molotovIcon from '../assets/cs2/equipment/molotov.svg?url&no-inline'
 import smokeIcon from '../assets/cs2/equipment/smokegrenade.svg?url&no-inline'
 import { createBombRenderer } from './bomb-renderer'
+import { createDetonationRenderer } from './detonation-renderer'
 import { createDroppedItemRenderer } from './dropped-item-renderer'
 import { equipmentIconForDefinition } from './icons'
 import type { MapDefinition, MapFloor } from './maps'
@@ -71,6 +72,7 @@ export async function createRoundLayer(
   const dropped = createDroppedItemRenderer(round, map, new Map(droppedTextures))
   dropped.container.tint = appearance.foreground
   const utilities = createUtilityRenderer(round, map, utilityTextures, appearance.background)
+  const detonations = createDetonationRenderer(round, map)
   const players = createPlayerRenderer(round, map, appearance, {
     bomb: bombTexture,
     defuse: defuseTexture,
@@ -85,7 +87,13 @@ export async function createRoundLayer(
     armed: appearance.armed,
     defusing: appearance.ct,
   })
-  container.addChild(dropped.container, utilities.container, players.container, bomb.container)
+  container.addChild(
+    dropped.container,
+    utilities.container,
+    players.container,
+    detonations.container,
+    bomb.container,
+  )
   const visibility = initialUtilityVisibility()
 
   return {
@@ -94,6 +102,7 @@ export async function createRoundLayer(
       dropped.draw(tick, symbolScale, floor)
       utilities.draw(tick, symbolScale, visibility, floor, reducedMotion)
       players.draw(tick, symbolScale, { floor, flashes: visibility.flashes })
+      detonations.draw(tick, symbolScale, visibility.detonations, floor, reducedMotion)
       bomb.draw(tick, symbolScale, floor, reducedMotion)
     },
     destroy() {

@@ -167,7 +167,7 @@ export function createUtilityRenderer(
       reducedMotion = false,
     ) {
       for (const { key } of utilityOverlays)
-        if (key !== 'flashes') layers[key].visible = visibility[key]
+        if (key !== 'flashes' && key !== 'detonations') layers[key].visible = visibility[key]
       for (const layer of Object.values(layers)) layer.clear()
       for (const sprite of areaIcons.children) sprite.visible = false
       areaIconCount = 0

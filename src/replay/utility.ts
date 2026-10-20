@@ -22,6 +22,7 @@ export const SHOT_TRACE_LENGTH = 48
 
 export const utilityOverlays = [
   { key: 'trajectories', label: 'Grenade trajectories' },
+  { key: 'detonations', label: 'Grenade detonations' },
   { key: 'smokes', label: 'Smoke areas' },
   { key: 'fires', label: 'Fire areas' },
   { key: 'shots', label: 'Bullet traces' },
@@ -31,6 +32,7 @@ export type UtilityVisibility = Record<(typeof utilityOverlays)[number]['key'], 
 export function initialUtilityVisibility(): UtilityVisibility {
   return {
     trajectories: true,
+    detonations: true,
     smokes: true,
     fires: true,
     shots: true,
