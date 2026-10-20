@@ -116,9 +116,9 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
           {!mirrored && <Money money={money} />}
         </div>
         <div
-          className={`flex items-center gap-1 ${mirrored ? 'mr-auto flex-row-reverse' : 'ml-auto'}`}
+          className={`flex items-center gap-1 [&_img]:mr-0 [&_img]:size-4 ${mirrored ? 'mr-auto flex-row-reverse' : 'ml-auto'}`}
         >
-          <span className="flex items-center gap-1 [&_img]:mr-0 [&_img]:h-4 [&_img]:w-3">
+          <span className="flex items-center gap-1">
             {player.carriesBomb && (
               <span title="Carrying C4">
                 <EquipmentIcon definition={49} />
@@ -134,7 +134,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
               </span>
             )}
           </span>
-          <span className="flex items-center gap-0.5 [&_img]:mr-0 [&_img]:size-4">
+          <span className="flex items-center gap-0.5">
             {player.utility.map((slot, index) =>
               slot.owned ? (
                 <span key={index} title={equipmentName(slot.definition)}>
