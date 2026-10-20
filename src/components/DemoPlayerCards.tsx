@@ -40,6 +40,10 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
   const direction = mirrored ? 'flex-row-reverse' : ''
   const colour = mirrored ? 'text-t' : 'text-ct'
   const health = player.alive ? Math.max(0, Math.min(100, player.health)) : 0
+  const armoured = player.alive && armour > 0
+  const armourLabel = armoured
+    ? `${armour} armour, ${helmet ? 'helmet equipped' : 'no helmet'}`
+    : 'No armour'
   const weaponLabel = weaponDescription(weapon)
   return (
     <li
@@ -98,14 +102,6 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
           className={`flex items-center gap-1 ${mirrored ? 'mr-auto flex-row-reverse' : 'ml-auto'}`}
         >
           <span className="flex items-center gap-1 [&_img]:mr-0 [&_img]:h-4 [&_img]:w-3">
-            {armour > 0 && (
-              <span title={`Armour ${armour}${helmet ? ', helmet equipped' : ', no helmet'}`}>
-                <GameIcon src={equipmentIcon(helmet ? 'helmet' : 'kevlar')} />
-                <span className="sr-only">
-                  {armour} armour{helmet ? ', helmet equipped' : ''}
-                </span>
-              </span>
-            )}
             {player.carriesBomb && (
               <span title="Carrying C4">
                 <EquipmentIcon definition={49} />
@@ -137,7 +133,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
           </span>
         </div>
       </div>
-      <div className={`flex items-center gap-1.5 ${direction}`}>
+      <div className={`mt-1.25 flex items-center gap-1.5 ${direction}`}>
         <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-bar bg-track">
           <div
             className={`h-full rounded-bar ${mirrored ? 'ml-auto bg-t' : 'bg-ct'}`}
@@ -149,6 +145,23 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
           title="Health"
         >
           {health}
+        </span>
+        <span
+          title={armourLabel}
+          className="relative flex shrink-0 items-center [&_img]:mr-0 [&_img]:h-4 [&_img]:w-6"
+        >
+          <span className="opacity-20">
+            <GameIcon src={equipmentIcon('armor_helmet')} />
+          </span>
+          {armoured && (
+            // The vest starts at 43% of the icon's width, so clipping there leaves the helmet ghosted.
+            <span
+              className={`absolute inset-0 flex items-center ${helmet ? '' : '[clip-path:inset(0_0_0_43%)]'}`}
+            >
+              <GameIcon src={equipmentIcon('armor_helmet')} />
+            </span>
+          )}
+          <span className="sr-only">{armourLabel}</span>
         </span>
       </div>
     </li>
