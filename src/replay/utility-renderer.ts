@@ -16,7 +16,13 @@ const PROJECTILE_ICON_SIZE = 10
 const AREA_ICON_SIZE = { cloud: 12, fire: 16 }
 const SMOKE_PUFFS = 9
 const SMOKE_PUFF_DEPTH = 0.1
-const SMOKE_BLOOM_SECONDS = 1.2
+const SMOKE_BLOOM_SECONDS = 0.6
+const FIRE_ICON_COLOR = 0xfff1e0
+
+/** The scene's `--ease-out-expo`: most of the burst lands in the first third, then it settles. */
+function easeOutExpo(progress: number) {
+  return progress >= 1 ? 1 : 1 - 2 ** (-10 * progress)
+}
 
 /** A round cloud outline: the edge dips between puffs, rotated per smoke so neighbours differ. */
 function smokeOutline(x: number, y: number, radius: number, seed: number) {
@@ -155,7 +161,7 @@ export function createUtilityRenderer(
           }
           const centre = fireCentres.get(`${fire.entity}:${fire.serial}`)
           if (visible && centre)
-            placeAreaIcon('fire', utilityAppearance.fire.color, centre.x, centre.y, symbolScale)
+            placeAreaIcon('fire', FIRE_ICON_COLOR, centre.x, centre.y, symbolScale)
         }
       if (visibility.smokes)
         for (const smoke of round.smokes) {
@@ -168,26 +174,20 @@ export function createUtilityRenderer(
           const point = worldToMap(map, smoke.x, smoke.y)
           const bloom = reducedMotion
             ? 1
-            : 1 -
-              (1 -
-                Math.min(
-                  1,
-                  ((tick - smoke.startTick) * round.tickInterval) / SMOKE_BLOOM_SECONDS,
-                )) **
-                3
+            : easeOutExpo(((tick - smoke.startTick) * round.tickInterval) / SMOKE_BLOOM_SECONDS)
           layers.smokes
             .poly(
               smokeOutline(
                 point.x,
                 point.y,
-                (APPROXIMATE_SMOKE_RADIUS / map.scale) * (0.15 + 0.85 * bloom),
+                (APPROXIMATE_SMOKE_RADIUS / map.scale) * (0.3 + 0.7 * bloom),
                 smoke.entity + (1 - bloom),
               ),
             )
-            .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 })
+            .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 * bloom })
             .stroke({
               color: utilityAppearance.smoke.color,
-              alpha: 0.7,
+              alpha: 0.7 * bloom,
               width: symbolScale,
             })
           placeAreaIcon('cloud', utilityAppearance.smoke.color, point.x, point.y, symbolScale)

@@ -185,7 +185,7 @@ describe('recorded utility rendering', () => {
         .map((sprite) => [sprite.x, sprite.y, sprite.width, sprite.tint, sprite.alpha])
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([
-      [997.3333333333334, 40, 16, 0xffb778, 1],
+      [997.3333333333334, 40, 16, 0xfff1e0, 1],
       [974, 50, 12, 0xb8bcc2, 1],
     ])
     utilities.draw(110, 1, initialUtilityVisibility(), 'upper')
@@ -198,11 +198,11 @@ describe('recorded utility rendering', () => {
   it('plumes each smoke out from its centre, then holds it still', () => {
     const utilities = createUtilityRenderer(round(), map, icons)
     const smoke = utilities.container.children[1] as Graphics
-    const widths = [100, 106, 112, 118].map((tick) => {
+    const widths = [100, 101, 102, 106, 118].map((tick) => {
       utilities.draw(tick, 1, initialUtilityVisibility(), 'upper')
       return Math.round(smoke.getLocalBounds().width)
     })
-    expect(widths).toEqual([22, 128, 143, 143])
+    expect(widths).toEqual([44, 112, 134, 143, 143])
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper', true)
     expect(Math.round(smoke.getLocalBounds().width)).toEqual(143)
     utilities.container.destroy({ children: true })
