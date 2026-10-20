@@ -34,7 +34,7 @@ function seededRandom(seed: number) {
   }
 }
 
-/** A near-round cloud: faint uneven puffs over a slightly wobbling edge, unique to each seed. */
+/** A near-round cloud: faint uneven puffs over a slightly wobbling edge, so it never reads as a gear. */
 function smokeShape(seed: number) {
   const random = seededRandom(seed)
   const count = 7 + Math.floor(random() * 3)
@@ -59,6 +59,8 @@ function smokeShape(seed: number) {
     )
   })
 }
+
+const SMOKE_SHAPE = smokeShape(3)
 
 function smokeOutline(x: number, y: number, radius: number, shape: number[], turn: number) {
   return shape.flatMap((reach, step) => {
@@ -100,7 +102,6 @@ export function createUtilityRenderer(
   const projectileIcons = new Container({ label: 'projectile-icons' })
   const areaIcons = new Container({ label: 'area-icons' })
   container.addChild(...Object.values(layers), projectileIcons, areaIcons)
-  const smokeShapes = round.smokes.map((smoke) => smokeShape(smoke.entity))
   const fireCentres = new Map<string, { x: number; y: number }>()
   {
     const sums = new Map<string, { x: number; y: number; cells: number }>()
@@ -202,7 +203,7 @@ export function createUtilityRenderer(
             placeAreaIcon('fire', utilityAppearance.fire.color, centre.x, centre.y, symbolScale)
         }
       if (visibility.smokes)
-        for (const [index, smoke] of round.smokes.entries()) {
+        for (const smoke of round.smokes) {
           if (
             !visibleOnFloor(map, floor, smoke.z) ||
             tick < smoke.startTick ||
@@ -219,7 +220,7 @@ export function createUtilityRenderer(
                 point.x,
                 point.y,
                 (APPROXIMATE_SMOKE_RADIUS / map.scale) * (0.3 + 0.7 * bloom),
-                smokeShapes[index]!,
+                SMOKE_SHAPE,
                 SMOKE_SETTLE_TURN * (1 - bloom),
               ),
             )
