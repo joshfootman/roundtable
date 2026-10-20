@@ -4,7 +4,6 @@ import { sampleAtTick, recordAtTick } from './frames.ts'
 import type { GrenadeKind, ReplayProjectile, ReplayRound } from './types.ts'
 import {
   utilityAppearance,
-  utilityOverlays,
   APPROXIMATE_SMOKE_RADIUS,
   APPROXIMATE_FIRE_CELL_RADIUS,
   SHOT_DISPLAY_SECONDS,
@@ -13,7 +12,13 @@ import {
 } from './utility.ts'
 
 const PROJECTILE_ICON_SIZE = 10
-const AREA_ICON_SIZE = { cloud: 18, fire: 22 }
+const AREA_ICON_SIZE = { cloud: 18, fire: 22, decoy: 12 }
+/** CS2 decoys fire for about 15 seconds; the recording marks only when they start. */
+const DECOY_LIVE_SECONDS = 15
+const DECOY_WAVES = [
+  { radius: 9, spread: 0.5 },
+  { radius: 12, spread: 0.45 },
+]
 const OUTLINE_STEPS = 8
 const SMOKE_OUTLINE_POINTS = 96
 const SMOKE_SETTLE_TURN = 0.5
@@ -126,7 +131,9 @@ export function createUtilityRenderer(
   const projectileIcons = new Container({ label: 'projectile-icons' })
   const areaIcons = new Container({ label: 'area-icons' })
   const smokeHoles = new Graphics({ label: 'smoke-holes' })
-  container.addChild(...Object.values(layers), projectileIcons, areaIcons, smokeHoles)
+  const decoyWaves = new Graphics({ label: 'decoy-waves' })
+  container.addChild(...Object.values(layers), projectileIcons, decoyWaves, areaIcons, smokeHoles)
+  const decoys = round.detonations.filter((event) => event.kind === 'decoy')
   layers.smokes.setMask({ mask: smokeHoles, inverse: true })
   const smokeBlasts = round.detonations.filter(
     (event) =>
@@ -204,10 +211,11 @@ export function createUtilityRenderer(
       floor: MapFloor,
       reducedMotion = false,
     ) {
-      for (const { key } of utilityOverlays)
-        if (key !== 'flashes' && key !== 'detonations') layers[key].visible = visibility[key]
+      for (const key of Object.keys(layers) as (keyof typeof layers)[])
+        layers[key].visible = visibility[key]
       for (const layer of Object.values(layers)) layer.clear()
       smokeHoles.clear()
+      decoyWaves.clear()
       for (const blast of smokeBlasts) {
         const opening = smokeHoleOpening((tick - blast.tick) * round.tickInterval, reducedMotion)
         if (opening <= 0) continue
@@ -218,6 +226,30 @@ export function createUtilityRenderer(
       }
       for (const sprite of areaIcons.children) sprite.visible = false
       areaIconCount = 0
+      decoyWaves.visible = visibility.decoys
+      if (visibility.decoys)
+        for (const decoy of decoys) {
+          const seconds = (tick - decoy.tick) * round.tickInterval
+          if (seconds < 0 || seconds >= DECOY_LIVE_SECONDS || !visibleOnFloor(map, floor, decoy.z))
+            continue
+          const point = worldToMap(map, decoy.x, decoy.y)
+          for (const side of [0, Math.PI])
+            for (const { radius, spread } of DECOY_WAVES) {
+              const r = radius * symbolScale
+              decoyWaves
+                .moveTo(
+                  point.x + Math.cos(side - spread) * r,
+                  point.y + Math.sin(side - spread) * r,
+                )
+                .arc(point.x, point.y, r, side - spread, side + spread)
+            }
+          decoyWaves.stroke({
+            color: utilityAppearance.decoy.color,
+            width: 1.25 * symbolScale,
+            cap: 'round',
+          })
+          placeAreaIcon('decoy', utilityAppearance.decoy.color, point.x, point.y, symbolScale)
+        }
       if (visibility.shots)
         for (const shot of round.shots) {
           if (

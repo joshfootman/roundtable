@@ -25,6 +25,7 @@ export const utilityOverlays = [
   { key: 'detonations', label: 'Grenade detonations' },
   { key: 'smokes', label: 'Smoke areas' },
   { key: 'fires', label: 'Fire areas' },
+  { key: 'decoys', label: 'Live decoys' },
   { key: 'shots', label: 'Bullet traces' },
   { key: 'flashes', label: 'Flashed players' },
 ] as const
@@ -35,6 +36,7 @@ export function initialUtilityVisibility(): UtilityVisibility {
     detonations: true,
     smokes: true,
     fires: true,
+    decoys: true,
     shots: true,
     flashes: true,
   }

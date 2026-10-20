@@ -118,7 +118,7 @@ describe('recorded utility rendering', () => {
     utilities.draw(102, 1, visibility, 'upper')
     expect(bounds(layers[2]!)).toEqual([0, 0, 0, 0])
     utilities.draw(120, 1, visibility, 'upper')
-    expect(layers.map(bounds)).toEqual(Array(7).fill([0, 0, 0, 0]))
+    expect(layers.map(bounds)).toEqual(Array(8).fill([0, 0, 0, 0]))
     utilities.draw(100, 1, visibility, 'upper')
     expect(layers.map(bounds)).toEqual(initialBounds)
     visibility.shots = visibility.smokes = false
@@ -127,6 +127,7 @@ describe('recorded utility rendering', () => {
       true,
       false,
       false,
+      true,
       true,
       true,
       true,
@@ -142,8 +143,17 @@ describe('recorded utility rendering', () => {
     recorded.shots = []
     recorded.projectiles = []
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true, true, true])
-    expect(layers.map(bounds)).toEqual(Array(7).fill([0, 0, 0, 0]))
+    expect(layers.map((layer) => layer.visible)).toEqual([
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+    ])
+    expect(layers.map(bounds)).toEqual(Array(8).fill([0, 0, 0, 0]))
     utilities.container.destroy({ children: true })
   })
 
@@ -187,7 +197,7 @@ describe('recorded utility rendering', () => {
       fires: [{ entity: 1, serial: 1, positions: [180, 120, 1, 180, 200, 1] }],
     })
     const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
-    const areaIcons = utilities.container.children[5] as Container
+    const areaIcons = utilities.container.children[6] as Container
     const placed = () =>
       (areaIcons.children as Container[])
         .filter((badge) => badge.visible)
@@ -230,13 +240,43 @@ describe('recorded utility rendering', () => {
       { tick: 110, kind: 'he', entity: 6, x: 200, y: 100, z: 400 },
     ]
     const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
-    const holes = utilities.container.children[6] as Graphics
+    const holes = utilities.container.children[7] as Graphics
     const holeWidths = [109, 110, 111, 120, 130, 135, 140, 120].map((tick) => {
       utilities.draw(tick, 1, initialUtilityVisibility(), 'upper')
       return Math.round(holes.context.bounds.width)
     })
     expect(holeWidths).toEqual([0, 0, 116, 120, 108, 12, 0, 120])
     expect(utilities.container.children[1]!.mask).toBe(holes)
+    utilities.container.destroy({ children: true })
+  })
+
+  it('marks a live decoy with its icon and sound waves either side until it stops', () => {
+    const recorded = round()
+    recorded.tickInterval = 1
+    recorded.endTick = 200
+    recorded.detonations = [{ tick: 100, kind: 'decoy', entity: 7, x: 200, y: 100, z: 1 }]
+    const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
+    const waves = utilities.container.children[5] as Graphics
+    const areaIcons = utilities.container.children[6] as Container
+    const decoyIcon = () => {
+      const badge = (areaIcons.children as Container[]).find((child) => child.visible)
+      const icon = badge?.children.at(-1) as Sprite | undefined
+      return icon && [badge!.x, badge!.y, icon.width, icon.tint]
+    }
+    const visibility = initialUtilityVisibility()
+    visibility.smokes = visibility.fires = false
+    utilities.draw(99, 1, visibility, 'upper')
+    expect([bounds(waves), decoyIcon()]).toEqual([[0, 0, 0, 0], undefined])
+    utilities.draw(100, 1, visibility, 'upper')
+    expect(bounds(waves).map(Math.round)).toEqual([961, 44, 987, 56])
+    expect(decoyIcon()).toEqual([974, 50, 12, 0xaaa9dd])
+    utilities.draw(114, 1, visibility, 'upper')
+    expect(decoyIcon()).toEqual([974, 50, 12, 0xaaa9dd])
+    utilities.draw(115, 1, visibility, 'upper')
+    expect([bounds(waves), decoyIcon()]).toEqual([[0, 0, 0, 0], undefined])
+    visibility.decoys = false
+    utilities.draw(100, 1, visibility, 'upper')
+    expect([waves.visible, decoyIcon()]).toEqual([false, undefined])
     utilities.container.destroy({ children: true })
   })
 })
