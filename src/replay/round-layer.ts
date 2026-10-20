@@ -1,8 +1,10 @@
 import { Assets, Container, Sprite, loadEnvironmentExtensions, type Texture } from 'pixi.js'
 import c4Icon from '../assets/cs2/equipment/c4.svg?url&no-inline'
+import cloudIcon from '../assets/replay/cloud.svg?url&no-inline'
 import decoyIcon from '../assets/cs2/equipment/decoy.svg?url&no-inline'
 import defuseIcon from '../assets/cs2/equipment/defuser.svg?url&no-inline'
 import flashIcon from '../assets/cs2/equipment/flashbang.svg?url&no-inline'
+import fireIcon from '../assets/cs2/equipment/inferno.svg?url&no-inline'
 import heIcon from '../assets/cs2/equipment/hegrenade.svg?url&no-inline'
 import incendiaryIcon from '../assets/cs2/equipment/incgrenade.svg?url&no-inline'
 import molotovIcon from '../assets/cs2/equipment/molotov.svg?url&no-inline'
@@ -17,13 +19,15 @@ import { createUtilityRenderer } from './utility-renderer'
 import { initialUtilityVisibility } from './utility'
 import type { GrenadeKind } from './types'
 
-const grenadeIcons: Record<GrenadeKind, string> = {
+const utilityIcons: Record<GrenadeKind | 'cloud' | 'fire', string> = {
   flash: flashIcon,
   he: heIcon,
   smoke: smokeIcon,
   molotov: molotovIcon,
   incendiary: incendiaryIcon,
   decoy: decoyIcon,
+  cloud: cloudIcon,
+  fire: fireIcon,
 }
 
 /** Start downloading what the first draw of `map` needs, so it is cached when the round arrives. */
@@ -41,14 +45,16 @@ export async function createRoundLayer(
   appearance: PlayerAppearance,
 ) {
   const definitions = new Set(round.droppedItems.map((item) => item.definition))
-  const [bombTexture, defuseTexture, grenadeTextures, droppedTextures] = await Promise.all([
+  const [bombTexture, defuseTexture, utilityTextures, droppedTextures] = await Promise.all([
     Assets.load<Texture>(c4Icon),
     Assets.load<Texture>(defuseIcon),
     Promise.all(
-      Object.entries(grenadeIcons).map(([kind, src]) =>
+      Object.entries(utilityIcons).map(([kind, src]) =>
         Assets.load<Texture>(src).then((texture) => [kind, texture] as const),
       ),
-    ).then((entries) => Object.fromEntries(entries) as Record<GrenadeKind, Texture>),
+    ).then(
+      (entries) => Object.fromEntries(entries) as Record<GrenadeKind | 'cloud' | 'fire', Texture>,
+    ),
     Promise.all(
       [...definitions].flatMap((definition) => {
         const src = equipmentIconForDefinition(definition)
@@ -61,7 +67,7 @@ export async function createRoundLayer(
   const container = new Container({ label: 'round' })
   const dropped = createDroppedItemRenderer(round, map, new Map(droppedTextures))
   dropped.container.tint = appearance.foreground
-  const utilities = createUtilityRenderer(round, map, grenadeTextures)
+  const utilities = createUtilityRenderer(round, map, utilityTextures)
   const players = createPlayerRenderer(round, map, appearance, {
     bomb: bombTexture,
     defuse: defuseTexture,

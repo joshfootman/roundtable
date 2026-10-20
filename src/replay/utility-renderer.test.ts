@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Container, Graphics, Texture } from 'pixi.js'
+import { Container, Graphics, Sprite, Texture } from 'pixi.js'
 import { createUtilityRenderer } from './utility-renderer'
 import { initialUtilityVisibility } from './utility'
 import type { MapDefinition } from './maps'
@@ -27,6 +27,8 @@ const icons = {
   molotov: Texture.WHITE,
   incendiary: Texture.WHITE,
   decoy: Texture.WHITE,
+  cloud: Texture.WHITE,
+  fire: Texture.WHITE,
 }
 
 function round(): ReplayRound {
@@ -117,12 +119,20 @@ describe('recorded utility rendering', () => {
     utilities.draw(102, 1, visibility, 'upper')
     expect(bounds(layers[2]!)).toEqual([0, 0, 0, 0])
     utilities.draw(120, 1, visibility, 'upper')
-    expect(layers.map(bounds)).toEqual(Array(6).fill([0, 0, 0, 0]))
+    expect(layers.map(bounds)).toEqual(Array(7).fill([0, 0, 0, 0]))
     utilities.draw(100, 1, visibility, 'upper')
     expect(layers.map(bounds)).toEqual(initialBounds)
     visibility.shots = visibility.smokes = false
     utilities.draw(100, 1, visibility, 'upper')
-    expect(layers.map((layer) => layer.visible)).toEqual([true, false, false, true, true, true])
+    expect(layers.map((layer) => layer.visible)).toEqual([
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+    ])
     expect([bounds(layers[1]!), bounds(layers[2]!)]).toEqual([
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -134,8 +144,8 @@ describe('recorded utility rendering', () => {
     recorded.projectiles = []
     recorded.detonations = []
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true, true])
-    expect(layers.map(bounds)).toEqual(Array(6).fill([0, 0, 0, 0]))
+    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true, true, true])
+    expect(layers.map(bounds)).toEqual(Array(7).fill([0, 0, 0, 0]))
     utilities.container.destroy({ children: true })
   })
 
@@ -171,6 +181,25 @@ describe('recorded utility rendering', () => {
       return icon.width
     })
     expect(widths).toEqual([10, 14, 18, 10])
+    utilities.container.destroy({ children: true })
+  })
+
+  it('marks the centre of each smoke and fire with an opaque icon in its colour', () => {
+    const recorded = round()
+    recorded.fires[1]!.fires[0]!.positions = [180, 120, 1, 180, 160, 1]
+    const utilities = createUtilityRenderer(recorded, map, icons)
+    const areaIcons = utilities.container.children[6] as Container
+    const placed = () =>
+      (areaIcons.children as Sprite[])
+        .filter((sprite) => sprite.visible)
+        .map((sprite) => [sprite.x, sprite.y, sprite.width, sprite.tint, sprite.alpha])
+    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
+    expect(placed()).toEqual([
+      [994, 40, 12, 0xffb778, 1],
+      [974, 50, 12, 0x9cd3ae, 1],
+    ])
+    utilities.draw(120, 1, initialUtilityVisibility(), 'upper')
+    expect(placed()).toEqual([])
     utilities.container.destroy({ children: true })
   })
 })
