@@ -1,4 +1,9 @@
 import { useState } from 'react'
+import aztec from '#/assets/patterns/aztec.svg?url&no-inline'
+import cage from '#/assets/patterns/cage.svg?url&no-inline'
+import endlessClouds from '#/assets/patterns/endless-clouds.svg?url&no-inline'
+import hexagons from '#/assets/patterns/hexagons.svg?url&no-inline'
+import houndstooth from '#/assets/patterns/houndstooth.svg?url&no-inline'
 import { RollingNumber } from '#/components/RollingNumber'
 import { equipmentName } from '#/replay/equipment'
 import { EquipmentIcon, GameIcon, equipmentIcon } from '#/replay/icons'
@@ -35,6 +40,15 @@ export function DemoPlayerCards({
   )
 }
 
+// One pattern per team slot, weighted so dense fills and thin line work read equally.
+const textures = [
+  { src: cage, opacity: 0.08 },
+  { src: houndstooth, opacity: 0.065 },
+  { src: hexagons, opacity: 0.1 },
+  { src: endlessClouds, opacity: 0.065 },
+  { src: aztec, opacity: 0.065 },
+] as const
+
 export function PlayerCard({ player }: { player: PlayerCardData }) {
   const { money, armour, helmet } = player.inspection
   const weapon = player.mainWeapon
@@ -49,10 +63,17 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
     ? `${armour} armour, ${helmet ? 'helmet equipped' : 'no helmet'}`
     : 'No armour'
   const weaponLabel = weaponDescription(weapon)
+  const texture = textures[(player.number - 1) % textures.length]!
   return (
     <li
       aria-label={`${player.name}, ${player.alive ? `${health} health` : 'dead'}`}
-      className={`shrink-0 rounded-control bg-control px-2 py-1.5 text-sm leading-tight text-foreground tabular-nums replay-desktop:text-base ${player.alive ? '' : 'opacity-55'}`}
+      className={`player-texture shrink-0 rounded-control bg-control px-2 py-1.5 text-sm leading-tight text-foreground tabular-nums replay-desktop:text-base ${mirrored ? 'before:-scale-x-100' : ''} ${player.alive ? '' : 'opacity-55'}`}
+      style={
+        {
+          '--player-texture': `url(${texture.src})`,
+          '--player-texture-opacity': texture.opacity,
+        } as React.CSSProperties
+      }
     >
       <div className={`flex flex-wrap items-center gap-2 py-1 ${direction}`}>
         <div className={`flex min-w-16 flex-1 items-center gap-2 ${direction}`}>
