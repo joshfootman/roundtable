@@ -15,6 +15,21 @@ import {
 
 const PROJECTILE_ICON_SIZE = 10
 const AREA_ICON_SIZE = 12
+const SMOKE_PUFFS = 9
+const SMOKE_PUFF_DEPTH = 0.1
+
+/** A round cloud outline: the edge dips between puffs, rotated per smoke so neighbours differ. */
+function smokeOutline(x: number, y: number, radius: number, seed: number) {
+  const phase = seed * 2.399
+  const points: number[] = []
+  for (let step = 0; step < SMOKE_PUFFS * 8; step++) {
+    const angle = (step / (SMOKE_PUFFS * 8)) * Math.PI * 2
+    const puff = Math.abs(Math.sin((angle * SMOKE_PUFFS) / 2 + phase))
+    const distance = radius * (1 - SMOKE_PUFF_DEPTH + SMOKE_PUFF_DEPTH * Math.sqrt(puff))
+    points.push(x + Math.cos(angle) * distance, y + Math.sin(angle) * distance)
+  }
+  return points
+}
 const PROJECTILE_APEX_GROWTH = 0.8
 
 /** How far each sample sits above the straight line from throw to landing, as a share of the apex. */
@@ -132,7 +147,9 @@ export function createUtilityRenderer(
             continue
           const point = worldToMap(map, smoke.x, smoke.y)
           layers.smokes
-            .circle(point.x, point.y, APPROXIMATE_SMOKE_RADIUS / map.scale)
+            .poly(
+              smokeOutline(point.x, point.y, APPROXIMATE_SMOKE_RADIUS / map.scale, smoke.entity),
+            )
             .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 })
             .stroke({
               color: utilityAppearance.smoke.color,

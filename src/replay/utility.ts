@@ -6,7 +6,7 @@ export const utilityAppearance: Record<
 > = {
   flash: { name: 'Flashbang', color: 0xffe9a1 },
   he: { name: 'HE grenade', color: 0xef8d7c },
-  smoke: { name: 'Smoke grenade', color: 0x9cd3ae },
+  smoke: { name: 'Smoke grenade', color: 0xb8bcc2 },
   molotov: { name: 'Molotov', color: 0xffb778 },
   incendiary: { name: 'Incendiary grenade', color: 0xffb778 },
   fire: { name: 'Fire grenade', color: 0xffb778 },

@@ -96,12 +96,12 @@ describe('recorded utility rendering', () => {
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     const [fire, smoke, shots, , detonation] = utilities.container.children as Graphics[]
     expect(bounds(fire!)).toEqual([954, 10, 1014, 70])
-    expect(bounds(smoke!)).toEqual([901.5, -22.5, 1046.5, 122.5])
+    expect(bounds(smoke!).map(Math.round)).toEqual([903, -22, 1047, 122])
     expect(bounds(shots!)).toEqual([1023.5, -0.5, 1024.5, 48.5])
     expect(bounds(detonation!)).toEqual([967, 23, 1001, 57])
     utilities.draw(100, 2, initialUtilityVisibility(), 'upper')
     expect(bounds(fire!)).toEqual([954, 10, 1014, 70])
-    expect(bounds(smoke!)).toEqual([901, -23, 1047, 123])
+    expect(bounds(smoke!).map(Math.round)).toEqual([903, -23, 1047, 122])
     expect(bounds(shots!)).toEqual([1023, -1, 1025, 97])
     expect(bounds(detonation!)).toEqual([950, 6, 1018, 74])
     utilities.container.destroy({ children: true })
@@ -196,7 +196,7 @@ describe('recorded utility rendering', () => {
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([
       [994, 40, 12, 0xffb778, 1],
-      [974, 50, 12, 0x9cd3ae, 1],
+      [974, 50, 12, 0xb8bcc2, 1],
     ])
     utilities.draw(120, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([])
