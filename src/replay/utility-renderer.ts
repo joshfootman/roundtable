@@ -34,7 +34,7 @@ function seededRandom(seed: number) {
   }
 }
 
-/** A lumpy round cloud: uneven puffs over a gently wobbling edge, unique to each seed. */
+/** A near-round cloud: faint uneven puffs over a slightly wobbling edge, unique to each seed. */
 function smokeShape(seed: number) {
   const random = seededRandom(seed)
   const count = 7 + Math.floor(random() * 3)
@@ -52,10 +52,10 @@ function smokeShape(seed: number) {
       bump = Math.max(bump, puff.height * Math.exp(-(distance ** 2) / (2 * puff.spread ** 2)))
     }
     return (
-      0.86 +
-      0.07 * Math.sin(2 * theta + wobble[0]!) +
-      0.04 * Math.sin(3 * theta + wobble[1]!) +
-      0.1 * bump
+      0.95 +
+      0.025 * Math.sin(2 * theta + wobble[0]!) +
+      0.015 * Math.sin(3 * theta + wobble[1]!) +
+      0.04 * bump
     )
   })
 }
