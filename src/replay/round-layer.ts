@@ -67,7 +67,7 @@ export async function createRoundLayer(
   const container = new Container({ label: 'round' })
   const dropped = createDroppedItemRenderer(round, map, new Map(droppedTextures))
   dropped.container.tint = appearance.foreground
-  const utilities = createUtilityRenderer(round, map, utilityTextures)
+  const utilities = createUtilityRenderer(round, map, utilityTextures, appearance.background)
   const players = createPlayerRenderer(round, map, appearance, {
     bomb: bombTexture,
     defuse: defuseTexture,

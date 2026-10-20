@@ -92,7 +92,7 @@ function bounds(graphics: Graphics) {
 
 describe('recorded utility rendering', () => {
   it('projects smoke, fire and shots onto the rotated radar', () => {
-    const utilities = createUtilityRenderer(round(), map, icons)
+    const utilities = createUtilityRenderer(round(), map, icons, 0x111111)
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper', true)
     const [fire, smoke, shots] = utilities.container.children as Graphics[]
     expect(bounds(fire!)).toEqual([954, 10, 1014, 70])
@@ -107,7 +107,7 @@ describe('recorded utility rendering', () => {
 
   it('expires, rewinds and filters effects, including empty utility tracks', () => {
     const recorded = round()
-    const utilities = createUtilityRenderer(recorded, map, icons)
+    const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
     const layers = utilities.container.children as Graphics[]
     const visibility = initialUtilityVisibility()
     utilities.draw(100, 1, visibility, 'upper')
@@ -139,7 +139,7 @@ describe('recorded utility rendering', () => {
   })
 
   it('filters floors without connecting trajectories across hidden floor samples', () => {
-    const utilities = createUtilityRenderer(round(), map, icons)
+    const utilities = createUtilityRenderer(round(), map, icons, 0x111111)
     const layers = utilities.container.children as Graphics[]
     utilities.draw(103, 1, initialUtilityVisibility(), 'upper')
     const trajectory = layers[3]!.context.instructions[0]!
@@ -161,7 +161,7 @@ describe('recorded utility rendering', () => {
     recorded.projectiles[0]!.positions = new Float32Array([
       180, 120, 1, 200, 100, 51, 220, 80, 101, 240, 60, 1,
     ])
-    const utilities = createUtilityRenderer(recorded, map, icons)
+    const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
     const icon = (utilities.container.children[4] as Container).children[0]!
     const widths = [100, 101, 102, 103].map((tick) => {
       utilities.draw(tick, 1, initialUtilityVisibility(), 'upper')
@@ -171,22 +171,25 @@ describe('recorded utility rendering', () => {
     utilities.container.destroy({ children: true })
   })
 
-  it('marks each smoke and fire with an opaque icon held at the centre of its whole burn', () => {
+  it('marks each smoke and fire with an opaque badge in its colour, held at the centre of its whole burn', () => {
     const recorded = round()
     recorded.fires.splice(2, 0, {
       tick: 110,
       fires: [{ entity: 1, serial: 1, positions: [180, 120, 1, 180, 200, 1] }],
     })
-    const utilities = createUtilityRenderer(recorded, map, icons)
+    const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
     const areaIcons = utilities.container.children[5] as Container
     const placed = () =>
-      (areaIcons.children as Sprite[])
-        .filter((sprite) => sprite.visible)
-        .map((sprite) => [sprite.x, sprite.y, sprite.width, sprite.tint, sprite.alpha])
+      (areaIcons.children as Container[])
+        .filter((badge) => badge.visible)
+        .map((badge) => {
+          const icon = badge.children[1] as Sprite
+          return [badge.x, badge.y, badge.width, icon.width, icon.tint, icon.alpha]
+        })
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([
-      [997.3333333333334, 40, 22, 0xb8261a, 1],
-      [974, 50, 12, 0xb8bcc2, 1],
+      [997.3333333333334, 40, 19.5, 11, 0xffb778, 1],
+      [974, 50, 19.5, 10, 0xb8bcc2, 1],
     ])
     utilities.draw(110, 1, initialUtilityVisibility(), 'upper')
     expect(placed()[0]!.slice(0, 2)).toEqual([997.3333333333334, 40])
@@ -196,7 +199,7 @@ describe('recorded utility rendering', () => {
   })
 
   it('plumes each smoke out from its centre, then holds it still', () => {
-    const utilities = createUtilityRenderer(round(), map, icons)
+    const utilities = createUtilityRenderer(round(), map, icons, 0x111111)
     const smoke = utilities.container.children[1] as Graphics
     const widths = [100, 101, 102, 106, 118].map((tick) => {
       utilities.draw(tick, 1, initialUtilityVisibility(), 'upper')

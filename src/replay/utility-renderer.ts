@@ -13,11 +13,11 @@ import {
 } from './utility.ts'
 
 const PROJECTILE_ICON_SIZE = 10
-const AREA_ICON_SIZE = { cloud: 12, fire: 22 }
+const AREA_ICON_SIZE = { cloud: 10, fire: 11 }
+const AREA_BADGE_RADIUS = 9
 const SMOKE_PUFFS = 9
 const SMOKE_PUFF_DEPTH = 0.1
 const SMOKE_BLOOM_SECONDS = 0.6
-const FIRE_ICON_COLOR = 0xb8261a
 
 /** The scene's `--ease-out-expo`: most of the burst lands in the first third, then it settles. */
 function easeOutExpo(progress: number) {
@@ -58,6 +58,7 @@ export function createUtilityRenderer(
   round: ReplayRound,
   map: MapDefinition,
   icons: Readonly<Record<GrenadeKind | 'cloud' | 'fire', Texture>>,
+  background: number,
 ) {
   const layers = {
     fires: new Graphics(),
@@ -94,16 +95,22 @@ export function createUtilityRenderer(
     y: number,
     scale: number,
   ) {
+    let badge = areaIcons.children[areaIconCount++] as Container | undefined
+    if (!badge) {
+      const icon = new Sprite()
+      icon.anchor.set(0.5)
+      badge = areaIcons.addChild(new Container())
+      badge.addChild(new Graphics(), icon)
+    }
+    const [disc, icon] = badge.children as [Graphics, Sprite]
     const texture = icons[kind]
-    const sprite =
-      (areaIcons.children[areaIconCount++] as Sprite | undefined) ??
-      areaIcons.addChild(new Sprite())
-    sprite.anchor.set(0.5)
-    sprite.texture = texture
-    sprite.tint = color
-    sprite.visible = true
-    sprite.position.set(x, y)
-    sprite.scale.set((AREA_ICON_SIZE[kind] / Math.max(texture.width, texture.height)) * scale)
+    disc.clear().circle(0, 0, AREA_BADGE_RADIUS).fill(background).stroke({ color, width: 1.5 })
+    icon.texture = texture
+    icon.tint = color
+    icon.scale.set(AREA_ICON_SIZE[kind] / Math.max(texture.width, texture.height))
+    badge.visible = true
+    badge.position.set(x, y)
+    badge.scale.set(scale)
   }
   const projectiles = round.projectiles.map((projectile) => {
     const sprite = new Sprite(icons[projectile.kind])
@@ -161,7 +168,7 @@ export function createUtilityRenderer(
           }
           const centre = fireCentres.get(`${fire.entity}:${fire.serial}`)
           if (visible && centre)
-            placeAreaIcon('fire', FIRE_ICON_COLOR, centre.x, centre.y, symbolScale)
+            placeAreaIcon('fire', utilityAppearance.fire.color, centre.x, centre.y, symbolScale)
         }
       if (visibility.smokes)
         for (const smoke of round.smokes) {
