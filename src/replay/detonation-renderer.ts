@@ -70,16 +70,16 @@ function heBurst(): Burst {
     container,
     draw(progress, reducedMotion) {
       const outward = reducedMotion ? 1 : easeOutExpo(progress)
-      scorch.scale.set(0.6 + outward * 0.8)
+      scorch.scale.set(0.6 + outward * 0.5)
       scorch.alpha = Math.min(1, progress * 4) * fade(progress)
-      shockwave.scale.set(0.8 + outward * 3.2)
+      shockwave.scale.set(0.8 + outward * 2.2)
       shockwave.alpha = fade(progress, 1.2)
-      fireball.scale.set(0.7 + outward * 0.7)
+      fireball.scale.set(0.7 + outward * 0.5)
       fireball.alpha = fade(progress, 1.8)
-      heat.scale.set(0.7 + outward * 0.6)
+      heat.scale.set(0.7 + outward * 0.45)
       heat.alpha = fade(progress, 2.6)
       for (const [index, shard] of shards.entries()) {
-        const distance = 8 + outward * (18 + (index % 3) * 7)
+        const distance = 7 + outward * (12 + (index % 3) * 5)
         shard.visible = !reducedMotion
         shard.position.set(Math.cos(shard.rotation) * distance, Math.sin(shard.rotation) * distance)
         shard.alpha = fade(progress, 1.5)
