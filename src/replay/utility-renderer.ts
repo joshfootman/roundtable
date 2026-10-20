@@ -21,8 +21,6 @@ const DECOY_WAVES = [
   { radius: 12, spread: 0.45 },
 ]
 const OUTLINE_STEPS = 8
-const SMOKE_OUTLINE_POINTS = 96
-const SMOKE_SETTLE_TURN = 0.5
 const SMOKE_BLOOM_SECONDS = 0.6
 /** Tracers start at the edge of the player marker, where the facing arrow sits. */
 const SHOT_MUZZLE_OFFSET = 10
@@ -56,50 +54,6 @@ function easeOutExpo(progress: number) {
   return progress >= 1 ? 1 : 1 - 2 ** (-10 * progress)
 }
 
-function seededRandom(seed: number) {
-  let state = Math.imul(seed, 2654435761) >>> 0
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0
-    let t = Math.imul(state ^ (state >>> 15), state | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
-
-/** A near-round cloud: faint uneven puffs over a slightly wobbling edge, so it never reads as a gear. */
-function smokeShape(seed: number) {
-  const random = seededRandom(seed)
-  const count = 7 + Math.floor(random() * 3)
-  let angle = random() * Math.PI * 2
-  const puffs = Array.from({ length: count }, () => {
-    angle += ((Math.PI * 2) / count) * (0.6 + random() * 0.8)
-    return { angle, spread: (0.35 + random() * 0.35) / 2.4, height: 0.4 + random() * 0.6 }
-  })
-  const wobble = [random() * Math.PI * 2, random() * Math.PI * 2]
-  return Array.from({ length: SMOKE_OUTLINE_POINTS }, (_, step) => {
-    const theta = (step / SMOKE_OUTLINE_POINTS) * Math.PI * 2
-    let bump = 0
-    for (const puff of puffs) {
-      const distance = Math.atan2(Math.sin(theta - puff.angle), Math.cos(theta - puff.angle))
-      bump = Math.max(bump, puff.height * Math.exp(-(distance ** 2) / (2 * puff.spread ** 2)))
-    }
-    return (
-      0.975 +
-      0.012 * Math.sin(2 * theta + wobble[0]!) +
-      0.008 * Math.sin(3 * theta + wobble[1]!) +
-      0.02 * bump
-    )
-  })
-}
-
-const SMOKE_SHAPE = smokeShape(3)
-
-function smokeOutline(x: number, y: number, radius: number, shape: number[], turn: number) {
-  return shape.flatMap((reach, step) => {
-    const theta = (step / shape.length) * Math.PI * 2 + turn
-    return [x + Math.cos(theta) * radius * reach, y + Math.sin(theta) * radius * reach]
-  })
-}
 const PROJECTILE_APEX_GROWTH = 0.8
 
 /** How far each sample sits above the straight line from throw to landing, as a share of the apex. */
@@ -319,15 +273,7 @@ export function createUtilityRenderer(
             ? 1
             : easeOutExpo(((tick - smoke.startTick) * round.tickInterval) / SMOKE_BLOOM_SECONDS)
           layers.smokes
-            .poly(
-              smokeOutline(
-                point.x,
-                point.y,
-                (APPROXIMATE_SMOKE_RADIUS / map.scale) * (0.3 + 0.7 * bloom),
-                SMOKE_SHAPE,
-                SMOKE_SETTLE_TURN * (1 - bloom),
-              ),
-            )
+            .circle(point.x, point.y, (APPROXIMATE_SMOKE_RADIUS / map.scale) * (0.3 + 0.7 * bloom))
             .fill({ color: utilityAppearance.smoke.color, alpha: 0.35 * bloom })
             .stroke({
               color: utilityAppearance.smoke.color,
