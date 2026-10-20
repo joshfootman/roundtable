@@ -18,7 +18,7 @@ const map: MapDefinition = {
   boundaryZ: 0,
   initialFloor: 'upper',
 }
-const textures = { bomb: Texture.EMPTY, defuse: Texture.WHITE }
+const textures = { bomb: Texture.EMPTY, defuse: Texture.WHITE, flashed: Texture.WHITE }
 const appearance = {
   ct: 0x96c8fa,
   t: 0xeabe54,
@@ -71,7 +71,7 @@ function marker(renderer: ReturnType<typeof createPlayerRenderer>, index: number
     container,
     body: container.children[0] as Graphics,
     direction: container.children[1] as Graphics,
-    flash: container.children[2] as Graphics,
+    flash: container.children[2] as Container,
     label: container.children[3] as Text,
     elevation: container.children[4] as Graphics,
     objective: container.children[5] as Sprite,
@@ -119,6 +119,22 @@ describe('recorded player rendering', () => {
     expect(a.ladder.visible).toBe(false)
     renderer.draw(90, 1, { floor: 'upper', flashes: true })
     expect(a.ladder.visible).toBe(false)
+    renderer.container.destroy({ children: true })
+  })
+
+  it('marks a flashed player with an outlined eye-slash icon beside their marker', () => {
+    const renderer = createPlayerRenderer(round(), map, appearance, textures)
+    const { flash } = marker(renderer, 0)
+    renderer.draw(100, 1, { floor: 'upper', flashes: true })
+    const sprites = flash.children as Sprite[]
+    expect([flash.visible, flash.x, flash.y, sprites.length]).toEqual([true, -12, 12, 9])
+    expect(sprites.at(-1)!.tint).toBe(appearance.foreground)
+    expect(new Set(sprites.slice(0, -1).map((sprite) => sprite.tint))).toEqual(
+      new Set([appearance.background]),
+    )
+    expect(Math.round(sprites.at(-1)!.width)).toBe(12)
+    renderer.draw(100, 1, { floor: 'upper', flashes: false })
+    expect(flash.visible).toBe(false)
     renderer.container.destroy({ children: true })
   })
 

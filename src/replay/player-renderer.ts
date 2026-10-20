@@ -20,11 +20,14 @@ export interface PlayerVisibility {
   hiddenTeams?: ReadonlySet<number>
 }
 
+const FLASHED_ICON_SIZE = 12
+const OUTLINE_STEPS = 8
+
 export function createPlayerRenderer(
   round: ReplayRound,
   map: MapDefinition,
   appearance: PlayerAppearance,
-  textures: { bomb: Texture; defuse: Texture },
+  textures: { bomb: Texture; defuse: Texture; flashed: Texture },
 ) {
   const container = new Container()
   container.sortableChildren = true
@@ -50,10 +53,18 @@ export function createPlayerRenderer(
       .arc(0, 0, directionRadius, directionHalfAngle, -directionHalfAngle, true)
       .closePath()
       .fill(0xffffff)
-    const flash = new Graphics()
-      .circle(-12, 12, 4)
-      .fill(appearance.foreground)
-      .stroke({ color: appearance.background, width: 2 })
+    const flash = new Container()
+    flash.position.set(-12, 12)
+    const flashFit = FLASHED_ICON_SIZE / Math.max(textures.flashed.width, textures.flashed.height)
+    for (let step = 0; step <= OUTLINE_STEPS; step++) {
+      const sprite = flash.addChild(new Sprite(textures.flashed))
+      sprite.anchor.set(0.5)
+      sprite.scale.set(flashFit)
+      sprite.tint = step === OUTLINE_STEPS ? appearance.foreground : appearance.background
+      if (step === OUTLINE_STEPS) continue
+      const angle = (step / OUTLINE_STEPS) * Math.PI * 2
+      sprite.position.set(Math.cos(angle), Math.sin(angle))
+    }
     const label = new Text({
       text: String(numbers.get(player.steamId) ?? ''),
       style: labelStyle.clone(),

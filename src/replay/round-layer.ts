@@ -3,6 +3,7 @@ import c4Icon from '../assets/cs2/equipment/c4.svg?url&no-inline'
 import cloudIcon from '../assets/replay/cloud.svg?url&no-inline'
 import decoyIcon from '../assets/cs2/equipment/decoy.svg?url&no-inline'
 import defuseIcon from '../assets/cs2/equipment/defuser.svg?url&no-inline'
+import flashedIcon from '../assets/replay/eye-off.svg?url&no-inline'
 import flashIcon from '../assets/cs2/equipment/flashbang.svg?url&no-inline'
 import fireIcon from '../assets/cs2/equipment/inferno.svg?url&no-inline'
 import heIcon from '../assets/cs2/equipment/hegrenade.svg?url&no-inline'
@@ -45,25 +46,27 @@ export async function createRoundLayer(
   appearance: PlayerAppearance,
 ) {
   const definitions = new Set(round.droppedItems.map((item) => item.definition))
-  const [bombTexture, defuseTexture, utilityTextures, droppedTextures] = await Promise.all([
-    Assets.load<Texture>(c4Icon),
-    Assets.load<Texture>(defuseIcon),
-    Promise.all(
-      Object.entries(utilityIcons).map(([kind, src]) =>
-        Assets.load<Texture>(src).then((texture) => [kind, texture] as const),
+  const [bombTexture, defuseTexture, flashedTexture, utilityTextures, droppedTextures] =
+    await Promise.all([
+      Assets.load<Texture>(c4Icon),
+      Assets.load<Texture>(defuseIcon),
+      Assets.load<Texture>(flashedIcon),
+      Promise.all(
+        Object.entries(utilityIcons).map(([kind, src]) =>
+          Assets.load<Texture>(src).then((texture) => [kind, texture] as const),
+        ),
+      ).then(
+        (entries) => Object.fromEntries(entries) as Record<GrenadeKind | 'cloud' | 'fire', Texture>,
       ),
-    ).then(
-      (entries) => Object.fromEntries(entries) as Record<GrenadeKind | 'cloud' | 'fire', Texture>,
-    ),
-    Promise.all(
-      [...definitions].flatMap((definition) => {
-        const src = equipmentIconForDefinition(definition)
-        return src
-          ? [Assets.load<Texture>(src).then((texture) => [definition, texture] as const)]
-          : []
-      }),
-    ),
-  ])
+      Promise.all(
+        [...definitions].flatMap((definition) => {
+          const src = equipmentIconForDefinition(definition)
+          return src
+            ? [Assets.load<Texture>(src).then((texture) => [definition, texture] as const)]
+            : []
+        }),
+      ),
+    ])
   const container = new Container({ label: 'round' })
   const dropped = createDroppedItemRenderer(round, map, new Map(droppedTextures))
   dropped.container.tint = appearance.foreground
@@ -71,6 +74,7 @@ export async function createRoundLayer(
   const players = createPlayerRenderer(round, map, appearance, {
     bomb: bombTexture,
     defuse: defuseTexture,
+    flashed: flashedTexture,
   })
   const bombMarker = new Sprite(bombTexture)
   bombMarker.anchor.set(0.5)
