@@ -480,6 +480,9 @@ function DemoRound({
     }
   }, [])
   const players = playerCardsAtTick(rounds, round, tick)
+  // Rounds keep parsing in after this one opens, and each adds to career totals. Remounting the
+  // cards on each arrival keeps those totals from rolling as if a kill had just happened.
+  const loadedRounds = rounds.length
 
   React.useEffect(() => {
     if (!autoPlay || started.current || playback.status !== 'ready') return
@@ -568,7 +571,7 @@ function DemoRound({
       <DemoPlaybackControl round={round} playback={playback} />
       <DemoKillFeed round={round} tick={tick} />
       <div className="demo-desktop-players hidden replay-desktop:contents">
-        <DemoPlayerCards players={players} presentation="overlay" />
+        <DemoPlayerCards key={loadedRounds} players={players} presentation="overlay" />
       </div>
       <Collapsible.Root
         className="demo-player-details frame-panel bg-panel replay-desktop:hidden replay-landscape:col-start-1 replay-landscape:row-start-3 replay-landscape:w-full"
@@ -589,7 +592,7 @@ function DemoRound({
           </svg>
         </Collapsible.Trigger>
         <Collapsible.Panel>
-          <DemoPlayerCards players={players} presentation="inline" />
+          <DemoPlayerCards key={loadedRounds} players={players} presentation="inline" />
         </Collapsible.Panel>
       </Collapsible.Root>
     </div>

@@ -1,3 +1,4 @@
+import { RollingNumber } from '#/components/RollingNumber'
 import { equipmentName } from '#/replay/equipment'
 import { EquipmentIcon, GameIcon, equipmentIcon } from '#/replay/icons'
 import type { PlayerCardData } from '#/replay/player-cards'
@@ -84,13 +85,13 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             <span className={`${colour} text-xs`} aria-hidden="true">
               K
             </span>
-            <span className="sr-only">Kills</span> {player.kills}
+            <span className="sr-only">Kills</span> <RollingNumber value={player.kills} />
           </span>
           <span>
             <span className={`${colour} text-xs`} aria-hidden="true">
               D
             </span>
-            <span className="sr-only">Deaths</span> {player.deaths}
+            <span className="sr-only">Deaths</span> <RollingNumber value={player.deaths} />
           </span>
           {!mirrored && (
             <span className="text-money" title="Money">
