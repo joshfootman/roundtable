@@ -15,8 +15,8 @@ import {
 const PROJECTILE_ICON_SIZE = 10
 const AREA_ICON_SIZE = { cloud: 10, fire: 11 }
 const AREA_BADGE_RADIUS = 9
-const SMOKE_PUFFS = 9
-const SMOKE_PUFF_DEPTH = 0.1
+const SMOKE_OUTLINE_POINTS = 96
+const SMOKE_SETTLE_TURN = 0.5
 const SMOKE_BLOOM_SECONDS = 0.6
 
 /** The scene's `--ease-out-expo`: most of the burst lands in the first third, then it settles. */
@@ -24,17 +24,47 @@ function easeOutExpo(progress: number) {
   return progress >= 1 ? 1 : 1 - 2 ** (-10 * progress)
 }
 
-/** A round cloud outline: the edge dips between puffs, rotated per smoke so neighbours differ. */
-function smokeOutline(x: number, y: number, radius: number, seed: number) {
-  const phase = seed * 2.399
-  const points: number[] = []
-  for (let step = 0; step < SMOKE_PUFFS * 8; step++) {
-    const angle = (step / (SMOKE_PUFFS * 8)) * Math.PI * 2
-    const puff = Math.abs(Math.sin((angle * SMOKE_PUFFS) / 2 + phase))
-    const distance = radius * (1 - SMOKE_PUFF_DEPTH + SMOKE_PUFF_DEPTH * Math.sqrt(puff))
-    points.push(x + Math.cos(angle) * distance, y + Math.sin(angle) * distance)
+function seededRandom(seed: number) {
+  let state = Math.imul(seed, 2654435761) >>> 0
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0
+    let t = Math.imul(state ^ (state >>> 15), state | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
-  return points
+}
+
+/** A lumpy round cloud: uneven puffs over a gently wobbling edge, unique to each seed. */
+function smokeShape(seed: number) {
+  const random = seededRandom(seed)
+  const count = 7 + Math.floor(random() * 3)
+  let angle = random() * Math.PI * 2
+  const puffs = Array.from({ length: count }, () => {
+    angle += ((Math.PI * 2) / count) * (0.6 + random() * 0.8)
+    return { angle, spread: (0.35 + random() * 0.35) / 2.4, height: 0.4 + random() * 0.6 }
+  })
+  const wobble = [random() * Math.PI * 2, random() * Math.PI * 2]
+  return Array.from({ length: SMOKE_OUTLINE_POINTS }, (_, step) => {
+    const theta = (step / SMOKE_OUTLINE_POINTS) * Math.PI * 2
+    let bump = 0
+    for (const puff of puffs) {
+      const distance = Math.atan2(Math.sin(theta - puff.angle), Math.cos(theta - puff.angle))
+      bump = Math.max(bump, puff.height * Math.exp(-(distance ** 2) / (2 * puff.spread ** 2)))
+    }
+    return (
+      0.86 +
+      0.07 * Math.sin(2 * theta + wobble[0]!) +
+      0.04 * Math.sin(3 * theta + wobble[1]!) +
+      0.1 * bump
+    )
+  })
+}
+
+function smokeOutline(x: number, y: number, radius: number, shape: number[], turn: number) {
+  return shape.flatMap((reach, step) => {
+    const theta = (step / shape.length) * Math.PI * 2 + turn
+    return [x + Math.cos(theta) * radius * reach, y + Math.sin(theta) * radius * reach]
+  })
 }
 const PROJECTILE_APEX_GROWTH = 0.8
 
@@ -70,6 +100,7 @@ export function createUtilityRenderer(
   const projectileIcons = new Container({ label: 'projectile-icons' })
   const areaIcons = new Container({ label: 'area-icons' })
   container.addChild(...Object.values(layers), projectileIcons, areaIcons)
+  const smokeShapes = round.smokes.map((smoke) => smokeShape(smoke.entity))
   const fireCentres = new Map<string, { x: number; y: number }>()
   {
     const sums = new Map<string, { x: number; y: number; cells: number }>()
@@ -171,7 +202,7 @@ export function createUtilityRenderer(
             placeAreaIcon('fire', utilityAppearance.fire.color, centre.x, centre.y, symbolScale)
         }
       if (visibility.smokes)
-        for (const smoke of round.smokes) {
+        for (const [index, smoke] of round.smokes.entries()) {
           if (
             !visibleOnFloor(map, floor, smoke.z) ||
             tick < smoke.startTick ||
@@ -188,7 +219,8 @@ export function createUtilityRenderer(
                 point.x,
                 point.y,
                 (APPROXIMATE_SMOKE_RADIUS / map.scale) * (0.3 + 0.7 * bloom),
-                smoke.entity + (1 - bloom),
+                smokeShapes[index]!,
+                SMOKE_SETTLE_TURN * (1 - bloom),
               ),
             )
             .fill({ color: utilityAppearance.smoke.color, alpha: 0.35 * bloom })
