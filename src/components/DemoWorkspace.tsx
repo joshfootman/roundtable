@@ -426,13 +426,18 @@ function DemoRound({
   function toggleDrawing() {
     if (desktop) onPenChange({ ...pen, enabled: !pen.enabled })
   }
+  const playOnLoad = React.useRef(false)
+  function selectRound(number: number, focusPicker?: boolean) {
+    playOnLoad.current = true
+    onSelectRound(number, focusPicker)
+  }
   useReplayShortcuts({
     playback,
     camera: cameraState,
     map,
     round,
     rounds,
-    onSelectRound,
+    onSelectRound: selectRound,
     onShowHelp: showShortcuts,
     onToggleDrawing: toggleDrawing,
     onClearDrawing: () => onClear(floor),
@@ -540,7 +545,7 @@ function DemoRound({
         focusRoundPicker={focusRoundPicker}
         tick={tick}
         highlightNextRound={highlightNextRound}
-        onSelectRound={onSelectRound}
+        onSelectRound={selectRound}
         mobileControls={
           !desktop && (
             <>
@@ -558,6 +563,7 @@ function DemoRound({
           onCamera={setCameraState}
           onPlayback={setPlayback}
           onResult={onResult}
+          playOnLoad={playOnLoad}
           drawing={{
             scope: `${round.startTick}:${floor}`,
             enabled: desktop && pen.enabled,

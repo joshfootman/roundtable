@@ -48,6 +48,7 @@ export function DemoMap({
   camera,
   onCamera,
   drawing,
+  playOnLoad,
 }: {
   map: MapDefinition
   round?: ReplayRound
@@ -56,6 +57,7 @@ export function DemoMap({
   camera?: CameraState
   onCamera?: (state: DemoCameraState) => void
   drawing?: DrawingConfiguration
+  playOnLoad?: { readonly current: boolean }
 }) {
   const drawingRef = useRef(drawing)
   const sceneRef = useRef<ReturnType<typeof createMapScene>>(null)
@@ -152,7 +154,8 @@ export function DemoMap({
               onPlayback?.({ status: 'ready', controller, snapshot: clock.getSnapshot(), floor })
           },
         }
-        clock.pause()
+        if (playOnLoad?.current) clock.play()
+        else clock.pause()
       })
       .catch(() => {
         if (cancelled) return
@@ -167,7 +170,7 @@ export function DemoMap({
       loop?.stop()
       layer?.destroy()
     }
-  }, [map, scene, round, onPlayback, onResult])
+  }, [map, scene, round, onPlayback, onResult, playOnLoad])
 
   useEffect(() => {
     const element = host.current!
