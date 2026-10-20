@@ -54,7 +54,10 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             <span className="sr-only">Player </span>
             {player.number}
           </span>
-          <span className="truncate font-bold" title={player.name}>
+          <span
+            className="-translate-y-px truncate text-base leading-5 font-bold replay-desktop:text-lg replay-desktop:leading-5.5"
+            title={player.name}
+          >
             {player.name}
           </span>
         </div>
@@ -91,13 +94,13 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             </span>
           )}
           <span>
-            <span className={`${colour} text-sm`} aria-hidden="true">
+            <span className={`${colour} text-xs`} aria-hidden="true">
               K
             </span>
             <span className="sr-only">Kills</span> {player.kills}
           </span>
           <span>
-            <span className={`${colour} text-sm`} aria-hidden="true">
+            <span className={`${colour} text-xs`} aria-hidden="true">
               D
             </span>
             <span className="sr-only">Deaths</span> {player.deaths}
