@@ -22,6 +22,8 @@ export interface PlayerVisibility {
 
 const FLASHED_ICON_SIZE = 12
 const OUTLINE_STEPS = 8
+/** A flash fades over its last seconds, so a short or ending flash reads weaker than a fresh full one. */
+const FLASH_FADE_SECONDS = 1.5
 
 export function createPlayerRenderer(
   round: ReplayRound,
@@ -136,6 +138,7 @@ export function createPlayerRenderer(
         rendered.otherFloor = otherFloor
       }
       flash.visible = alive && visibility.flashes && player.flashSeconds > 0
+      flash.alpha = Math.min(1, player.flashSeconds / FLASH_FADE_SECONDS)
       marker.visible =
         player.present &&
         numbers.has(player.steamId) &&

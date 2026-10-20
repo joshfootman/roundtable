@@ -133,6 +133,18 @@ describe('recorded player rendering', () => {
       new Set([appearance.background]),
     )
     expect(Math.round(sprites.at(-1)!.width)).toBe(12)
+    expect(flash.alpha).toBe(1)
+    const alphas = [102, 104, 107, 108, 104].map((tick) => {
+      renderer.draw(tick, 1, { floor: 'upper', flashes: true })
+      return [flash.visible, Number(flash.alpha.toFixed(2))]
+    })
+    expect(alphas).toEqual([
+      [true, 1],
+      [true, 0.67],
+      [true, 0.17],
+      [false, 0],
+      [true, 0.67],
+    ])
     renderer.draw(100, 1, { floor: 'upper', flashes: false })
     expect(flash.visible).toBe(false)
     renderer.container.destroy({ children: true })
