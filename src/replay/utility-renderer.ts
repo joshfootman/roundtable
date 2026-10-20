@@ -5,7 +5,6 @@ import type { GrenadeKind, ReplayProjectile, ReplayRound } from './types.ts'
 import {
   utilityAppearance,
   utilityOverlays,
-  DETONATION_DISPLAY_SECONDS,
   APPROXIMATE_SMOKE_RADIUS,
   APPROXIMATE_FIRE_CELL_RADIUS,
   SHOT_DISPLAY_SECONDS,
@@ -17,6 +16,7 @@ const PROJECTILE_ICON_SIZE = 10
 const AREA_ICON_SIZE = 12
 const SMOKE_PUFFS = 9
 const SMOKE_PUFF_DEPTH = 0.1
+const SMOKE_BLOOM_SECONDS = 1.2
 
 /** A round cloud outline: the edge dips between puffs, rotated per smoke so neighbours differ. */
 function smokeOutline(x: number, y: number, radius: number, seed: number) {
@@ -58,7 +58,6 @@ export function createUtilityRenderer(
     smokes: new Graphics(),
     shots: new Graphics(),
     trajectories: new Graphics(),
-    detonations: new Graphics(),
   }
   const container = new Container()
   const projectileIcons = new Container({ label: 'projectile-icons' })
@@ -85,7 +84,13 @@ export function createUtilityRenderer(
   })
   return {
     container,
-    draw(tick: number, symbolScale: number, visibility: UtilityVisibility, floor: MapFloor) {
+    draw(
+      tick: number,
+      symbolScale: number,
+      visibility: UtilityVisibility,
+      floor: MapFloor,
+      reducedMotion = false,
+    ) {
       for (const { key } of utilityOverlays)
         if (key !== 'flashes') layers[key].visible = visibility[key]
       for (const layer of Object.values(layers)) layer.clear()
@@ -146,9 +151,23 @@ export function createUtilityRenderer(
           )
             continue
           const point = worldToMap(map, smoke.x, smoke.y)
+          const bloom = reducedMotion
+            ? 1
+            : 1 -
+              (1 -
+                Math.min(
+                  1,
+                  ((tick - smoke.startTick) * round.tickInterval) / SMOKE_BLOOM_SECONDS,
+                )) **
+                3
           layers.smokes
             .poly(
-              smokeOutline(point.x, point.y, APPROXIMATE_SMOKE_RADIUS / map.scale, smoke.entity),
+              smokeOutline(
+                point.x,
+                point.y,
+                (APPROXIMATE_SMOKE_RADIUS / map.scale) * (0.15 + 0.85 * bloom),
+                smoke.entity + (1 - bloom),
+              ),
             )
             .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 })
             .stroke({
@@ -200,20 +219,6 @@ export function createUtilityRenderer(
               (1 + PROJECTILE_APEX_GROWTH * lift[last]!) *
               symbolScale,
           )
-        }
-      if (visibility.detonations)
-        for (const event of round.detonations) {
-          if (
-            !visibleOnFloor(map, floor, event.z) ||
-            tick < event.tick ||
-            (tick - event.tick) * round.tickInterval >= DETONATION_DISPLAY_SECONDS
-          )
-            continue
-          const point = worldToMap(map, event.x, event.y)
-          layers.detonations.circle(point.x, point.y, 16 * symbolScale).stroke({
-            color: utilityAppearance[event.kind].color,
-            width: 2 * symbolScale,
-          })
         }
     },
   }

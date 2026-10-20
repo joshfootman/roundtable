@@ -88,7 +88,7 @@ export async function createRoundLayer(
     container,
     draw(tick: number, symbolScale: number, floor: MapFloor, reducedMotion: boolean) {
       dropped.draw(tick, symbolScale, floor)
-      utilities.draw(tick, symbolScale, visibility, floor)
+      utilities.draw(tick, symbolScale, visibility, floor, reducedMotion)
       players.draw(tick, symbolScale, { floor, flashes: visibility.flashes })
       bomb.draw(tick, symbolScale, floor, reducedMotion)
     },
