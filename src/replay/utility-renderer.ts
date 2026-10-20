@@ -1,7 +1,7 @@
-import { Container, Graphics } from 'pixi.js'
+import { Container, Graphics, Sprite, type Texture } from 'pixi.js'
 import { visibleOnFloor, worldToMap, type MapDefinition, type MapFloor } from './maps.ts'
 import { sampleAtTick, recordAtTick } from './frames.ts'
-import type { ReplayRound } from './types.ts'
+import type { GrenadeKind, ReplayProjectile, ReplayRound } from './types.ts'
 import {
   utilityAppearance,
   utilityOverlays,
@@ -13,7 +13,30 @@ import {
   type UtilityVisibility,
 } from './utility.ts'
 
-export function createUtilityRenderer(round: ReplayRound, map: MapDefinition) {
+const PROJECTILE_ICON_SIZE = 10
+const PROJECTILE_APEX_GROWTH = 0.8
+
+/** How far each sample sits above the straight line from throw to landing, as a share of the apex. */
+function arcLift(projectile: ReplayProjectile) {
+  const { positions } = projectile
+  const count = positions.length / 3
+  const startZ = positions[2]!
+  const endZ = positions[(count - 1) * 3 + 2]!
+  const heights = Array.from({ length: count }, (_, index) =>
+    Math.max(
+      0,
+      positions[index * 3 + 2]! - (startZ + ((endZ - startZ) * index) / Math.max(1, count - 1)),
+    ),
+  )
+  const apex = Math.max(...heights)
+  return heights.map((height) => (apex > 0 ? height / apex : 0))
+}
+
+export function createUtilityRenderer(
+  round: ReplayRound,
+  map: MapDefinition,
+  icons: Readonly<Record<GrenadeKind, Texture>>,
+) {
   const layers = {
     fires: new Graphics(),
     smokes: new Graphics(),
@@ -22,7 +45,15 @@ export function createUtilityRenderer(round: ReplayRound, map: MapDefinition) {
     detonations: new Graphics(),
   }
   const container = new Container()
-  container.addChild(...Object.values(layers))
+  const projectileIcons = new Container({ label: 'projectile-icons' })
+  container.addChild(...Object.values(layers), projectileIcons)
+  const projectiles = round.projectiles.map((projectile) => {
+    const sprite = new Sprite(icons[projectile.kind])
+    sprite.anchor.set(0.5)
+    sprite.visible = false
+    projectileIcons.addChild(sprite)
+    return { sprite, lift: arcLift(projectile) }
+  })
   return {
     container,
     draw(tick: number, symbolScale: number, visibility: UtilityVisibility, floor: MapFloor) {
@@ -73,13 +104,17 @@ export function createUtilityRenderer(round: ReplayRound, map: MapDefinition) {
           layers.smokes
             .circle(point.x, point.y, APPROXIMATE_SMOKE_RADIUS / map.scale)
             .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 })
-            .stroke({ color: utilityAppearance.smoke.color, alpha: 0.7, width: symbolScale })
+            .stroke({
+              color: utilityAppearance.smoke.color,
+              alpha: 0.7,
+              width: symbolScale,
+            })
         }
+      for (const { sprite } of projectiles) sprite.visible = false
       if (visibility.trajectories)
-        for (const projectile of round.projectiles) {
+        for (const [index, projectile] of round.projectiles.entries()) {
           if (tick < projectile.startTick || tick >= projectile.endTick) continue
           const last = sampleAtTick(projectile.ticks, tick)
-          const appearance = utilityAppearance[projectile.kind]
           let connected = false
           for (let index = 0; index <= last; index++) {
             const offset = index * 3
@@ -97,9 +132,9 @@ export function createUtilityRenderer(round: ReplayRound, map: MapDefinition) {
             connected = true
           }
           layers.trajectories.stroke({
-            color: appearance.color,
-            width: 2 * symbolScale,
-            alpha: 0.7,
+            color: 0x9a9a9a,
+            width: symbolScale,
+            alpha: 0.35,
           })
           const offset = last * 3
           const point = worldToMap(
@@ -107,8 +142,16 @@ export function createUtilityRenderer(round: ReplayRound, map: MapDefinition) {
             projectile.positions[offset]!,
             projectile.positions[offset + 1]!,
           )
-          if (visibleOnFloor(map, floor, projectile.positions[offset + 2]!))
-            layers.trajectories.circle(point.x, point.y, 4 * symbolScale).fill(appearance.color)
+          if (!visibleOnFloor(map, floor, projectile.positions[offset + 2]!)) continue
+          const { sprite, lift } = projectiles[index]!
+          const texture = sprite.texture
+          sprite.visible = true
+          sprite.position.set(point.x, point.y)
+          sprite.scale.set(
+            (PROJECTILE_ICON_SIZE / Math.max(texture.width, texture.height)) *
+              (1 + PROJECTILE_APEX_GROWTH * lift[last]!) *
+              symbolScale,
+          )
         }
       if (visibility.detonations)
         for (const event of round.detonations) {
@@ -119,9 +162,10 @@ export function createUtilityRenderer(round: ReplayRound, map: MapDefinition) {
           )
             continue
           const point = worldToMap(map, event.x, event.y)
-          layers.detonations
-            .circle(point.x, point.y, 16 * symbolScale)
-            .stroke({ color: utilityAppearance[event.kind].color, width: 2 * symbolScale })
+          layers.detonations.circle(point.x, point.y, 16 * symbolScale).stroke({
+            color: utilityAppearance[event.kind].color,
+            width: 2 * symbolScale,
+          })
         }
     },
   }

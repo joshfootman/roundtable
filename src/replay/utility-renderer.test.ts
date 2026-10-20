@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Graphics } from 'pixi.js'
+import { Container, Graphics, Texture } from 'pixi.js'
 import { createUtilityRenderer } from './utility-renderer'
 import { initialUtilityVisibility } from './utility'
 import type { MapDefinition } from './maps'
@@ -20,6 +20,15 @@ const map: MapDefinition = {
   initialFloor: 'upper',
 }
 
+const icons = {
+  flash: Texture.WHITE,
+  he: Texture.WHITE,
+  smoke: Texture.WHITE,
+  molotov: Texture.WHITE,
+  incendiary: Texture.WHITE,
+  decoy: Texture.WHITE,
+}
+
 function round(): ReplayRound {
   return testRound({
     startTick: 90,
@@ -27,10 +36,24 @@ function round(): ReplayRound {
     resultTick: 140,
     endTick: 150,
     tickInterval: 0.1,
-    shots: [{ tick: 100, player: 'a', weapon: 7, x: 100, y: 200, z: 1, pitch: 0, yaw: 0 }],
+    shots: [
+      {
+        tick: 100,
+        player: 'a',
+        weapon: 7,
+        x: 100,
+        y: 200,
+        z: 1,
+        pitch: 0,
+        yaw: 0,
+      },
+    ],
     fires: [
       { tick: 90, fires: [] },
-      { tick: 100, fires: [{ entity: 1, serial: 1, positions: [180, 120, 1] }] },
+      {
+        tick: 100,
+        fires: [{ entity: 1, serial: 1, positions: [180, 120, 1] }],
+      },
       { tick: 120, fires: [] },
     ],
     smokes: [{ entity: 2, startTick: 100, endTick: 120, x: 200, y: 100, z: 1 }],
@@ -67,7 +90,7 @@ function bounds(graphics: Graphics) {
 
 describe('recorded utility rendering', () => {
   it('projects smoke, fire, detonations and shots onto the rotated radar', () => {
-    const utilities = createUtilityRenderer(round(), map)
+    const utilities = createUtilityRenderer(round(), map, icons)
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     const [fire, smoke, shots, , detonation] = utilities.container.children as Graphics[]
     expect(bounds(fire!)).toEqual([954, 10, 1014, 70])
@@ -84,7 +107,7 @@ describe('recorded utility rendering', () => {
 
   it('expires, rewinds and filters effects, including empty utility tracks', () => {
     const recorded = round()
-    const utilities = createUtilityRenderer(recorded, map)
+    const utilities = createUtilityRenderer(recorded, map, icons)
     const layers = utilities.container.children as Graphics[]
     const visibility = initialUtilityVisibility()
     utilities.draw(100, 1, visibility, 'upper')
@@ -94,12 +117,12 @@ describe('recorded utility rendering', () => {
     utilities.draw(102, 1, visibility, 'upper')
     expect(bounds(layers[2]!)).toEqual([0, 0, 0, 0])
     utilities.draw(120, 1, visibility, 'upper')
-    expect(layers.map(bounds)).toEqual(Array(5).fill([0, 0, 0, 0]))
+    expect(layers.map(bounds)).toEqual(Array(6).fill([0, 0, 0, 0]))
     utilities.draw(100, 1, visibility, 'upper')
     expect(layers.map(bounds)).toEqual(initialBounds)
     visibility.shots = visibility.smokes = false
     utilities.draw(100, 1, visibility, 'upper')
-    expect(layers.map((layer) => layer.visible)).toEqual([true, false, false, true, true])
+    expect(layers.map((layer) => layer.visible)).toEqual([true, false, false, true, true, true])
     expect([bounds(layers[1]!), bounds(layers[2]!)]).toEqual([
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -111,13 +134,13 @@ describe('recorded utility rendering', () => {
     recorded.projectiles = []
     recorded.detonations = []
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
-    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true])
-    expect(layers.map(bounds)).toEqual(Array(5).fill([0, 0, 0, 0]))
+    expect(layers.map((layer) => layer.visible)).toEqual([true, true, true, true, true, true])
+    expect(layers.map(bounds)).toEqual(Array(6).fill([0, 0, 0, 0]))
     utilities.container.destroy({ children: true })
   })
 
   it('filters floors without connecting trajectories across hidden floor samples', () => {
-    const utilities = createUtilityRenderer(round(), map)
+    const utilities = createUtilityRenderer(round(), map, icons)
     const layers = utilities.container.children as Graphics[]
     utilities.draw(103, 1, initialUtilityVisibility(), 'upper')
     const trajectory = layers[3]!.context.instructions[0]!
@@ -133,6 +156,21 @@ describe('recorded utility rendering', () => {
     expect(
       lowerTrajectory.action === 'stroke' ? lowerTrajectory.data.path.instructions : null,
     ).toEqual([{ action: 'moveTo', data: [974, 50] }])
+    utilities.container.destroy({ children: true })
+  })
+
+  it('grows the thrown icon toward the top of its arc and shrinks it on the way down', () => {
+    const recorded = round()
+    recorded.projectiles[0]!.positions = new Float32Array([
+      180, 120, 1, 200, 100, 51, 220, 80, 101, 240, 60, 1,
+    ])
+    const utilities = createUtilityRenderer(recorded, map, icons)
+    const icon = (utilities.container.children[5] as Container).children[0]!
+    const widths = [100, 101, 102, 103].map((tick) => {
+      utilities.draw(tick, 1, initialUtilityVisibility(), 'upper')
+      return icon.width
+    })
+    expect(widths).toEqual([10, 14, 18, 10])
     utilities.container.destroy({ children: true })
   })
 })
