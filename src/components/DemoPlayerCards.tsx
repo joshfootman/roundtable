@@ -34,7 +34,7 @@ export function DemoPlayerCards({
 }
 
 export function PlayerCard({ player }: { player: PlayerCardData }) {
-  const { money, armour, helmet, grenades } = player.inspection
+  const { money, armour, helmet } = player.inspection
   const weapon = player.mainWeapon
   const mirrored = player.team === 2
   const direction = mirrored ? 'flex-row-reverse' : ''
@@ -95,42 +95,46 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
           )}
         </div>
         <div
-          className={`flex flex-wrap items-center gap-1 [&_img]:mr-0 [&_img]:h-4 [&_img]:w-3 ${mirrored ? 'mr-auto' : 'ml-auto'}`}
+          className={`flex items-center gap-1 ${mirrored ? 'mr-auto flex-row-reverse' : 'ml-auto'}`}
         >
-          {armour > 0 && (
-            <span title={`Armour ${armour}${helmet ? ', helmet equipped' : ', no helmet'}`}>
-              <GameIcon src={equipmentIcon(helmet ? 'helmet' : 'kevlar')} />
-              <span className="sr-only">
-                {armour} armour{helmet ? ', helmet equipped' : ''}
+          <span className="flex items-center gap-1 [&_img]:mr-0 [&_img]:h-4 [&_img]:w-3">
+            {armour > 0 && (
+              <span title={`Armour ${armour}${helmet ? ', helmet equipped' : ', no helmet'}`}>
+                <GameIcon src={equipmentIcon(helmet ? 'helmet' : 'kevlar')} />
+                <span className="sr-only">
+                  {armour} armour{helmet ? ', helmet equipped' : ''}
+                </span>
               </span>
-            </span>
-          )}
-          {grenades.map((grenade) => (
-            <span
-              key={grenade.definition}
-              title={`${equipmentName(grenade.definition)} × ${grenade.count}`}
-              className="flex items-center gap-0.5"
-            >
-              {Array.from({ length: grenade.count }, (_, index) => (
-                <EquipmentIcon key={index} definition={grenade.definition} />
-              ))}
-              <span className="sr-only">
-                {equipmentName(grenade.definition)} × {grenade.count}
+            )}
+            {player.carriesBomb && (
+              <span title="Carrying C4">
+                <EquipmentIcon definition={49} />
+                <span className="sr-only">Carrying C4</span>
               </span>
-            </span>
-          ))}
-          {player.carriesBomb && (
-            <span title="Carrying C4">
-              <EquipmentIcon definition={49} />
-              <span className="sr-only">Carrying C4</span>
-            </span>
-          )}
-          {player.flashSeconds > 0 && (
-            <span title={`Flashed for ${player.flashSeconds.toFixed(1)} seconds`}>
-              <GameIcon src={equipmentIcon('flashbang_assist')} />
-              <span className="sr-only">Flashed for {player.flashSeconds.toFixed(1)} seconds</span>
-            </span>
-          )}
+            )}
+            {player.flashSeconds > 0 && (
+              <span title={`Flashed for ${player.flashSeconds.toFixed(1)} seconds`}>
+                <GameIcon src={equipmentIcon('flashbang_assist')} />
+                <span className="sr-only">
+                  Flashed for {player.flashSeconds.toFixed(1)} seconds
+                </span>
+              </span>
+            )}
+          </span>
+          <span className="flex items-center gap-0.5 [&_img]:mr-0 [&_img]:size-4">
+            {player.utility.map((slot, index) =>
+              slot.owned ? (
+                <span key={index} title={equipmentName(slot.definition)}>
+                  <EquipmentIcon definition={slot.definition} />
+                  <span className="sr-only">{equipmentName(slot.definition)}</span>
+                </span>
+              ) : (
+                <span key={index} aria-hidden="true" className="opacity-20">
+                  <EquipmentIcon definition={slot.definition} />
+                </span>
+              ),
+            )}
+          </span>
         </div>
       </div>
       <div className={`flex items-center gap-1.5 ${direction}`}>

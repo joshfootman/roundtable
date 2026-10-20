@@ -200,3 +200,43 @@ describe('player card weapon icons', () => {
     })
   })
 })
+
+describe('player card utility slots', () => {
+  it('fills fixed flash, flash, HE, smoke and fire slots and drops decoys', () => {
+    const replayRound = round(100)
+    for (const player of replayRound.inspection) {
+      player[0]!.grenades = [
+        { definition: 47, count: 1 },
+        { definition: 45, count: 1 },
+        { definition: 43, count: 1 },
+        { definition: 48, count: 1 },
+      ]
+    }
+    const cards = playerCardsAtTick([replayRound], replayRound, 100)
+    const utility = (steamId: string) => cards.find((card) => card.steamId === steamId)!.utility
+    const slots = [
+      { definition: 43, owned: true },
+      { definition: 43, owned: false },
+      { definition: 44, owned: false },
+      { definition: 45, owned: true },
+      { definition: 48, owned: true },
+    ]
+    expect(utility('ct')).toEqual(slots)
+    expect(utility('t')).toEqual(slots)
+  })
+
+  it('ghosts the fire slot with the team grenade', () => {
+    const replayRound = round(100)
+    for (const player of replayRound.inspection) {
+      player[0]!.grenades = [{ definition: 43, count: 2 }]
+    }
+    const cards = playerCardsAtTick([replayRound], replayRound, 100)
+    const fire = (steamId: string) => cards.find((card) => card.steamId === steamId)!.utility[4]
+    expect(fire('ct')).toEqual({ definition: 48, owned: false })
+    expect(fire('t')).toEqual({ definition: 46, owned: false })
+    expect(cards[0]!.utility.slice(0, 2)).toEqual([
+      { definition: 43, owned: true },
+      { definition: 43, owned: true },
+    ])
+  })
+})

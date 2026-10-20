@@ -15,9 +15,12 @@ export type PlayerCardData = {
   deaths: number
   inspection: PlayerInspection
   mainWeapon: ReplayWeapon
+  utility: UtilitySlot[]
   carriesBomb: boolean
   flashSeconds: number
 }
+
+export type UtilitySlot = { definition: number; owned: boolean }
 
 export function playerCardsAtTick(
   rounds: readonly ReplayRound[],
@@ -73,6 +76,7 @@ export function playerCardsAtTick(
         ...score(player.steamId),
         inspection,
         mainWeapon: mainWeapon(inspection),
+        utility: utilitySlots(inspection, team),
         carriesBomb: scene.bomb === 'carrying' || scene.bomb === 'planting',
         flashSeconds: scene.flashSeconds,
       },
@@ -95,4 +99,18 @@ function mainWeapon(inspection: PlayerInspection): ReplayWeapon {
     }
   }
   return main
+}
+
+function utilitySlots(inspection: PlayerInspection, team: 2 | 3): UtilitySlot[] {
+  const remaining = new Map(
+    inspection.grenades.map((grenade) => [grenade.definition, grenade.count]),
+  )
+  // Each slot lists the grenades that can fill it; the first is drawn as the empty ghost.
+  const fire = team === 2 ? [46, 48] : [48, 46]
+  return [[43], [43], [44], [45], fire].map((definitions) => {
+    const definition = definitions.find((candidate) => (remaining.get(candidate) ?? 0) > 0)
+    if (definition === undefined) return { definition: definitions[0]!, owned: false }
+    remaining.set(definition, remaining.get(definition)! - 1)
+    return { definition, owned: true }
+  })
 }
