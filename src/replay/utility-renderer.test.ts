@@ -171,9 +171,12 @@ describe('recorded utility rendering', () => {
     utilities.container.destroy({ children: true })
   })
 
-  it('marks the centre of each smoke and fire with an opaque icon in its colour', () => {
+  it('marks each smoke and fire with an opaque icon held at the centre of its whole burn', () => {
     const recorded = round()
-    recorded.fires[1]!.fires[0]!.positions = [180, 120, 1, 180, 160, 1]
+    recorded.fires.splice(2, 0, {
+      tick: 110,
+      fires: [{ entity: 1, serial: 1, positions: [180, 120, 1, 180, 200, 1] }],
+    })
     const utilities = createUtilityRenderer(recorded, map, icons)
     const areaIcons = utilities.container.children[5] as Container
     const placed = () =>
@@ -182,9 +185,11 @@ describe('recorded utility rendering', () => {
         .map((sprite) => [sprite.x, sprite.y, sprite.width, sprite.tint, sprite.alpha])
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([
-      [994, 40, 12, 0xffb778, 1],
+      [997.3333333333334, 40, 16, 0xffb778, 1],
       [974, 50, 12, 0xb8bcc2, 1],
     ])
+    utilities.draw(110, 1, initialUtilityVisibility(), 'upper')
+    expect(placed()[0]!.slice(0, 2)).toEqual([997.3333333333334, 40])
     utilities.draw(120, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([])
     utilities.container.destroy({ children: true })

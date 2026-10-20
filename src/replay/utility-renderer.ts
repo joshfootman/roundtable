@@ -13,7 +13,7 @@ import {
 } from './utility.ts'
 
 const PROJECTILE_ICON_SIZE = 10
-const AREA_ICON_SIZE = 12
+const AREA_ICON_SIZE = { cloud: 12, fire: 16 }
 const SMOKE_PUFFS = 9
 const SMOKE_PUFF_DEPTH = 0.1
 const SMOKE_BLOOM_SECONDS = 1.2
@@ -63,8 +63,32 @@ export function createUtilityRenderer(
   const projectileIcons = new Container({ label: 'projectile-icons' })
   const areaIcons = new Container({ label: 'area-icons' })
   container.addChild(...Object.values(layers), projectileIcons, areaIcons)
+  const fireCentres = new Map<string, { x: number; y: number }>()
+  {
+    const sums = new Map<string, { x: number; y: number; cells: number }>()
+    for (const { fires } of round.fires)
+      for (const fire of fires) {
+        const key = `${fire.entity}:${fire.serial}`
+        const sum = sums.get(key) ?? { x: 0, y: 0, cells: 0 }
+        for (let cell = 0; cell < fire.positions.length; cell += 3) {
+          sum.x += fire.positions[cell]!
+          sum.y += fire.positions[cell + 1]!
+          sum.cells++
+        }
+        sums.set(key, sum)
+      }
+    for (const [key, { x, y, cells }] of sums)
+      if (cells) fireCentres.set(key, worldToMap(map, x / cells, y / cells))
+  }
   let areaIconCount = 0
-  function placeAreaIcon(texture: Texture, color: number, x: number, y: number, scale: number) {
+  function placeAreaIcon(
+    kind: keyof typeof AREA_ICON_SIZE,
+    color: number,
+    x: number,
+    y: number,
+    scale: number,
+  ) {
+    const texture = icons[kind]
     const sprite =
       (areaIcons.children[areaIconCount++] as Sprite | undefined) ??
       areaIcons.addChild(new Sprite())
@@ -73,7 +97,7 @@ export function createUtilityRenderer(
     sprite.tint = color
     sprite.visible = true
     sprite.position.set(x, y)
-    sprite.scale.set((AREA_ICON_SIZE / Math.max(texture.width, texture.height)) * scale)
+    sprite.scale.set((AREA_ICON_SIZE[kind] / Math.max(texture.width, texture.height)) * scale)
   }
   const projectiles = round.projectiles.map((projectile) => {
     const sprite = new Sprite(icons[projectile.kind])
@@ -120,27 +144,18 @@ export function createUtilityRenderer(
         }
       if (visibility.fires && round.fires.length)
         for (const fire of recordAtTick(round.fires, tick).fires) {
-          let visibleCells = 0
-          let sumX = 0
-          let sumY = 0
+          let visible = false
           for (let cell = 0; cell < fire.positions.length; cell += 3) {
             if (!visibleOnFloor(map, floor, fire.positions[cell + 2]!)) continue
             const point = worldToMap(map, fire.positions[cell]!, fire.positions[cell + 1]!)
             layers.fires
               .circle(point.x, point.y, APPROXIMATE_FIRE_CELL_RADIUS / map.scale)
               .fill({ color: utilityAppearance.fire.color, alpha: 0.25 })
-            visibleCells++
-            sumX += point.x
-            sumY += point.y
+            visible = true
           }
-          if (visibleCells)
-            placeAreaIcon(
-              icons.fire,
-              utilityAppearance.fire.color,
-              sumX / visibleCells,
-              sumY / visibleCells,
-              symbolScale,
-            )
+          const centre = fireCentres.get(`${fire.entity}:${fire.serial}`)
+          if (visible && centre)
+            placeAreaIcon('fire', utilityAppearance.fire.color, centre.x, centre.y, symbolScale)
         }
       if (visibility.smokes)
         for (const smoke of round.smokes) {
@@ -175,7 +190,7 @@ export function createUtilityRenderer(
               alpha: 0.7,
               width: symbolScale,
             })
-          placeAreaIcon(icons.cloud, utilityAppearance.smoke.color, point.x, point.y, symbolScale)
+          placeAreaIcon('cloud', utilityAppearance.smoke.color, point.x, point.y, symbolScale)
         }
       for (const { sprite } of projectiles) sprite.visible = false
       if (visibility.trajectories)
