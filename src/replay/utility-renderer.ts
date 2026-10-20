@@ -13,11 +13,11 @@ import {
 } from './utility.ts'
 
 const PROJECTILE_ICON_SIZE = 10
-const AREA_ICON_SIZE = { cloud: 12, fire: 16 }
+const AREA_ICON_SIZE = { cloud: 12, fire: 22 }
 const SMOKE_PUFFS = 9
 const SMOKE_PUFF_DEPTH = 0.1
 const SMOKE_BLOOM_SECONDS = 0.6
-const FIRE_ICON_COLOR = 0xfff1e0
+const FIRE_ICON_COLOR = 0xb8261a
 
 /** The scene's `--ease-out-expo`: most of the burst lands in the first third, then it settles. */
 function easeOutExpo(progress: number) {
@@ -184,10 +184,10 @@ export function createUtilityRenderer(
                 smoke.entity + (1 - bloom),
               ),
             )
-            .fill({ color: utilityAppearance.smoke.color, alpha: 0.25 * bloom })
+            .fill({ color: utilityAppearance.smoke.color, alpha: 0.16 * bloom })
             .stroke({
               color: utilityAppearance.smoke.color,
-              alpha: 0.7 * bloom,
+              alpha: 0.45 * bloom,
               width: symbolScale,
             })
           placeAreaIcon('cloud', utilityAppearance.smoke.color, point.x, point.y, symbolScale)

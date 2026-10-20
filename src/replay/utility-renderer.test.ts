@@ -185,7 +185,7 @@ describe('recorded utility rendering', () => {
         .map((sprite) => [sprite.x, sprite.y, sprite.width, sprite.tint, sprite.alpha])
     utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
     expect(placed()).toEqual([
-      [997.3333333333334, 40, 16, 0xfff1e0, 1],
+      [997.3333333333334, 40, 22, 0xb8261a, 1],
       [974, 50, 12, 0xb8bcc2, 1],
     ])
     utilities.draw(110, 1, initialUtilityVisibility(), 'upper')
