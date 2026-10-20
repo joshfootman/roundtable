@@ -148,7 +148,7 @@ describe('player card weapon icons', () => {
   const pistol: ReplayWeapon = { type: 'gun', definition: 61, magazine: 12, reserve: 24 }
   const knife: ReplayWeapon = { type: 'item', definition: 42 }
 
-  it('updates the held weapon and ordered combat icons through switches and rewind', () => {
+  it('keeps showing the best owned weapon through switches and rewind', () => {
     const replayRound = round(100)
     const state = replayRound.inspection[0]![0]!
     state.weapon = knife
@@ -165,58 +165,38 @@ describe('player card weapon icons', () => {
       { ...state, tick: 110, weapon: { ...pistol, magazine: 10 } },
       { ...state, tick: 115, weapon: { type: 'item', definition: 43 } },
     )
-    expect(playerCardsAtTick([replayRound], replayRound, 104)[0]).toMatchObject({
-      inspection: { weapon: { type: 'item', definition: 42 } },
-      otherWeapons: [
-        { type: 'gun', definition: 16, magazine: 30, reserve: 90 },
-        { type: 'gun', definition: 61, magazine: 12, reserve: 24 },
-      ],
-    })
-    expect(playerCardsAtTick([replayRound], replayRound, 105)[0]).toMatchObject({
-      inspection: { weapon: { type: 'gun', definition: 16, magazine: 29, reserve: 90 } },
-      otherWeapons: [
-        { type: 'gun', definition: 61, magazine: 12, reserve: 24 },
-        { type: 'item', definition: 42 },
-      ],
-    })
-    expect(playerCardsAtTick([replayRound], replayRound, 110)[0]).toMatchObject({
-      inspection: { weapon: { type: 'gun', definition: 61, magazine: 10, reserve: 24 } },
-      otherWeapons: [
-        { type: 'gun', definition: 16, magazine: 30, reserve: 90 },
-        { type: 'item', definition: 42 },
-      ],
-    })
-    expect(playerCardsAtTick([replayRound], replayRound, 115)[0]).toMatchObject({
-      inspection: { weapon: { type: 'item', definition: 43 } },
-      otherWeapons: [
-        { type: 'gun', definition: 16, magazine: 30, reserve: 90 },
-        { type: 'gun', definition: 61, magazine: 12, reserve: 24 },
-        { type: 'item', definition: 42 },
-      ],
-    })
-    expect(playerCardsAtTick([replayRound], replayRound, 100)[0]).toMatchObject({
-      inspection: { weapon: { type: 'item', definition: 42 } },
-      otherWeapons: [
-        { type: 'gun', definition: 16, magazine: 30, reserve: 90 },
-        { type: 'gun', definition: 61, magazine: 12, reserve: 24 },
-      ],
-    })
+    const mainWeaponAt = (tick: number) =>
+      playerCardsAtTick([replayRound], replayRound, tick)[0]!.mainWeapon
+    expect(mainWeaponAt(104)).toEqual({ type: 'gun', definition: 16, magazine: 30, reserve: 90 })
+    expect(mainWeaponAt(105)).toEqual({ type: 'gun', definition: 16, magazine: 29, reserve: 90 })
+    expect(mainWeaponAt(110)).toEqual({ type: 'gun', definition: 16, magazine: 30, reserve: 90 })
+    expect(mainWeaponAt(115)).toEqual({ type: 'gun', definition: 16, magazine: 30, reserve: 90 })
+    expect(mainWeaponAt(100)).toEqual({ type: 'gun', definition: 16, magazine: 30, reserve: 90 })
   })
 
-  it('does not invent inventory or an active weapon when either is missing', () => {
+  it('falls back from primary to pistol to knife', () => {
+    const replayRound = round(100)
+    const state = replayRound.inspection[0]![0]!
+    const mainWeapon = () => playerCardsAtTick([replayRound], replayRound, 100)[0]!.mainWeapon
+    state.weapon = { type: 'item', definition: 43 }
+    state.weapons = [knife, pistol, { type: 'item', definition: 43 }]
+    expect(mainWeapon()).toEqual({ type: 'gun', definition: 61, magazine: 12, reserve: 24 })
+    state.weapons = [knife, { type: 'item', definition: 43 }]
+    expect(mainWeapon()).toEqual({ type: 'item', definition: 42 })
+    state.weapons = [{ type: 'item', definition: 43 }]
+    expect(mainWeapon()).toEqual({ type: 'none' })
+  })
+
+  it('uses the held weapon when the inventory is missing', () => {
     const replayRound = round(100)
     const state = replayRound.inspection[0]![0]!
     state.weapon = rifle
     state.weapons = []
-    expect(playerCardsAtTick([replayRound], replayRound, 100)[0]).toMatchObject({
-      inspection: { weapon: { type: 'gun', definition: 16, magazine: 30, reserve: 90 } },
-      otherWeapons: [],
-    })
-    state.weapon = { type: 'none' }
-    state.weapons = [pistol]
-    expect(playerCardsAtTick([replayRound], replayRound, 100)[0]).toMatchObject({
-      inspection: { weapon: { type: 'none' } },
-      otherWeapons: [{ type: 'gun', definition: 61, magazine: 12, reserve: 24 }],
+    expect(playerCardsAtTick([replayRound], replayRound, 100)[0]!.mainWeapon).toEqual({
+      type: 'gun',
+      definition: 16,
+      magazine: 30,
+      reserve: 90,
     })
   })
 })

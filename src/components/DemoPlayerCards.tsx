@@ -35,12 +35,12 @@ export function DemoPlayerCards({
 
 export function PlayerCard({ player }: { player: PlayerCardData }) {
   const { money, armour, helmet, grenades } = player.inspection
-  const weapon = player.inspection.weapon
+  const weapon = player.mainWeapon
   const mirrored = player.team === 2
   const direction = mirrored ? 'flex-row-reverse' : ''
   const colour = mirrored ? 'text-t' : 'text-ct'
   const health = player.alive ? Math.max(0, Math.min(100, player.health)) : 0
-  const weaponLabel = `Active weapon, ${weaponDescription(weapon)}`
+  const weaponLabel = weaponDescription(weapon)
   return (
     <li
       aria-label={`${player.name}, ${player.alive ? `${health} health` : 'dead'}`}
@@ -61,30 +61,13 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             {player.name}
           </span>
         </div>
-        <div
-          className={`flex shrink-0 items-center gap-1 ${mirrored ? 'mr-auto' : 'ml-auto flex-row-reverse'}`}
+        <span
+          title={weaponLabel}
+          className={`flex w-10 shrink-0 items-center sm:w-14 [&_img]:mr-0 [&_img]:h-5 [&_img]:w-full ${mirrored ? 'justify-start [&_img]:object-left' : 'justify-end [&_img]:object-right'}`}
         >
-          <span
-            title={weaponLabel}
-            className={`flex w-10 shrink-0 items-center sm:w-14 [&_img]:mr-0 [&_img]:h-5 [&_img]:w-full ${mirrored ? 'justify-start [&_img]:object-left' : 'justify-end [&_img]:object-right'}`}
-          >
-            {weapon.type !== 'none' && <EquipmentIcon definition={weapon.definition} />}
-            <span className="sr-only">{weaponLabel}</span>
-          </span>
-          {player.otherWeapons.map((owned) => {
-            const label = `Owned weapon, ${weaponDescription(owned)}`
-            return (
-              <span
-                key={owned.type === 'none' ? 'none' : owned.definition}
-                title={label}
-                className="flex w-4 shrink-0 items-center opacity-65 sm:w-6 [&_img]:mr-0 [&_img]:h-3 [&_img]:w-full"
-              >
-                {owned.type !== 'none' && <EquipmentIcon definition={owned.definition} />}
-                <span className="sr-only">{label}</span>
-              </span>
-            )
-          })}
-        </div>
+          {weapon.type !== 'none' && <EquipmentIcon definition={weapon.definition} />}
+          <span className="sr-only">{weaponLabel}</span>
+        </span>
       </div>
       <div className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 ${direction}`}>
         <div className="flex flex-wrap items-center gap-x-2 font-semibold">
@@ -169,6 +152,6 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
 }
 
 function weaponDescription(weapon: ReplayWeapon): string {
-  if (weapon.type === 'none') return 'No active weapon'
+  if (weapon.type === 'none') return 'No weapon'
   return `${equipmentName(weapon.definition)}${weapon.type === 'gun' ? `, ${weapon.magazine}/${weapon.reserve} ammunition` : ''}`
 }
