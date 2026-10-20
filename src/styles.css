@@ -289,6 +289,27 @@
   }
 }
 
+/*
+ * A player's pattern, fading out down the card so it sits behind the name row and leaves the
+ * utility, stats and health clear. Set --player-texture and --player-texture-opacity on the card.
+ */
+@utility player-texture {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-image: var(--player-texture);
+    background-position: right top;
+    opacity: var(--player-texture-opacity);
+    mask-image: linear-gradient(to bottom, black, transparent 50%);
+  }
+}
+
 @custom-variant theater {
   @media (min-width: 1024px) and (min-height: 700px) {
     @supports (clip-path: shape(from 0 0, hline to 0)) {
