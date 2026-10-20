@@ -98,11 +98,11 @@ describe('recorded utility rendering', () => {
     const [fire, smoke, shots] = utilities.container.children as Graphics[]
     expect(bounds(fire!)).toEqual([954, 10, 1014, 70])
     expect(bounds(smoke!).map(Math.round)).toEqual([904, -22, 1044, 123])
-    expect(bounds(shots!)).toEqual([1023.5, -0.5, 1024.5, 48.5])
+    expect(bounds(shots!)).toEqual([1023.25, 10, 1024.75, 58])
     utilities.draw(100, 2, initialUtilityVisibility(), 'upper', true)
     expect(bounds(fire!)).toEqual([954, 10, 1014, 70])
     expect(bounds(smoke!).map(Math.round)).toEqual([903, -22, 1045, 124])
-    expect(bounds(shots!)).toEqual([1023, -1, 1025, 97])
+    expect(bounds(shots!)).toEqual([1022.5, 20, 1025.5, 116])
     utilities.container.destroy({ children: true })
   })
 
@@ -114,7 +114,7 @@ describe('recorded utility rendering', () => {
     utilities.draw(100, 1, visibility, 'upper')
     const initialBounds = layers.map(bounds)
     expect(initialBounds[0]).toEqual([954, 10, 1014, 70])
-    expect(initialBounds[2]).toEqual([1023.5, -0.5, 1024.5, 48.5])
+    expect(initialBounds[2]).toEqual([1023.25, 10, 1024.75, 58])
     utilities.draw(102, 1, visibility, 'upper')
     expect(bounds(layers[2]!)).toEqual([0, 0, 0, 0])
     utilities.draw(120, 1, visibility, 'upper')
@@ -277,6 +277,30 @@ describe('recorded utility rendering', () => {
     visibility.decoys = false
     utilities.draw(100, 1, visibility, 'upper')
     expect([waves.visible, decoyIcon()]).toEqual([false, undefined])
+    utilities.container.destroy({ children: true })
+  })
+
+  it('fires each tracer from the shooter as they move, fading it out', () => {
+    const recorded = testRound({
+      tickInterval: 0.1,
+      players: [{ steamId: 'a', name: 'A' }],
+      ticks: new Uint32Array([100, 101]),
+      shots: round().shots,
+    })
+    recorded.positions = new Float32Array([100, 200, 1, 110, 200, 1])
+    const utilities = createUtilityRenderer(recorded, map, icons, 0x111111)
+    const shots = utilities.container.children[2] as Graphics
+    const tracer = () => {
+      const [instruction] = shots.context.instructions
+      const alpha = instruction?.action === 'fill' ? instruction.data.style.alpha : 0
+      return [...bounds(shots), Number(alpha.toFixed(2))]
+    }
+    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
+    expect(tracer()).toEqual([1023.25, 10, 1024.75, 58, 0.9])
+    utilities.draw(101, 1, initialUtilityVisibility(), 'upper')
+    expect(tracer()).toEqual([1023.25, 15, 1024.75, 63, 0.1])
+    utilities.draw(100, 1, initialUtilityVisibility(), 'upper')
+    expect(tracer()).toEqual([1023.25, 10, 1024.75, 58, 0.9])
     utilities.container.destroy({ children: true })
   })
 })

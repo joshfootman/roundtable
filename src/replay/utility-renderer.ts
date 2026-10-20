@@ -1,6 +1,7 @@
 import { Container, Graphics, Sprite, type Texture } from 'pixi.js'
 import { visibleOnFloor, worldToMap, type MapDefinition, type MapFloor } from './maps.ts'
 import { sampleAtTick, recordAtTick } from './frames.ts'
+import { scenePlayers, type ScenePlayer } from './scene.ts'
 import type { GrenadeKind, ReplayProjectile, ReplayRound } from './types.ts'
 import {
   utilityAppearance,
@@ -23,6 +24,8 @@ const OUTLINE_STEPS = 8
 const SMOKE_OUTLINE_POINTS = 96
 const SMOKE_SETTLE_TURN = 0.5
 const SMOKE_BLOOM_SECONDS = 0.6
+/** Tracers start at the edge of the player marker, where the facing arrow sits. */
+const SHOT_MUZZLE_OFFSET = 10
 /** An HE punches a hole through smoke that refills within about three seconds. */
 const SMOKE_HOLE_RADIUS = 120
 const SMOKE_HOLE_OPEN_SECONDS = 0.2
@@ -250,28 +253,44 @@ export function createUtilityRenderer(
           })
           placeAreaIcon('decoy', utilityAppearance.decoy.color, point.x, point.y, symbolScale)
         }
-      if (visibility.shots)
+      if (visibility.shots) {
+        let shooters: Map<string, ScenePlayer> | undefined
         for (const shot of round.shots) {
-          if (
-            !visibleOnFloor(map, floor, shot.z) ||
-            tick < shot.tick ||
-            (tick - shot.tick) * round.tickInterval >= SHOT_DISPLAY_SECONDS
-          )
-            continue
-          const point = worldToMap(map, shot.x, shot.y)
+          const progress = ((tick - shot.tick) * round.tickInterval) / SHOT_DISPLAY_SECONDS
+          if (!visibleOnFloor(map, floor, shot.z) || progress < 0 || progress >= 1) continue
+          shooters ??= new Map(scenePlayers(round, tick).map((player) => [player.steamId, player]))
+          const shooter = shooters.get(shot.player)
+          const origin = shooter ?? shot
           const angle = (shot.yaw * Math.PI) / 180
-          const length =
+          const reach =
             SHOT_TRACE_LENGTH * symbolScale * map.scale * Math.cos((shot.pitch * Math.PI) / 180)
+          const muzzle = SHOT_MUZZLE_OFFSET * symbolScale * map.scale
+          const start = worldToMap(
+            map,
+            origin.x + Math.cos(angle) * muzzle,
+            origin.y + Math.sin(angle) * muzzle,
+          )
           const end = worldToMap(
             map,
-            shot.x + Math.cos(angle) * length,
-            shot.y + Math.sin(angle) * length,
+            origin.x + Math.cos(angle) * (muzzle + reach),
+            origin.y + Math.sin(angle) * (muzzle + reach),
           )
+          const length = Math.hypot(end.x - start.x, end.y - start.y)
+          if (!length) continue
+          const halfWidth = (0.75 * symbolScale) / length
+          const normal = { x: -(end.y - start.y) * halfWidth, y: (end.x - start.x) * halfWidth }
           layers.shots
-            .moveTo(point.x, point.y)
-            .lineTo(end.x, end.y)
-            .stroke({ color: '#f5eccb', width: symbolScale, alpha: 0.8 })
+            .poly([
+              start.x + normal.x,
+              start.y + normal.y,
+              end.x,
+              end.y,
+              start.x - normal.x,
+              start.y - normal.y,
+            ])
+            .fill({ color: 0xf5eccb, alpha: 0.9 * (1 - progress) ** 2 })
         }
+      }
       if (visibility.fires && round.fires.length)
         for (const fire of recordAtTick(round.fires, tick).fires) {
           let visible = false
