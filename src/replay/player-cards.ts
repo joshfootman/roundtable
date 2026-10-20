@@ -14,7 +14,7 @@ export type PlayerCardData = {
   kills: number
   deaths: number
   inspection: PlayerInspection
-  otherWeapons: ReplayWeapon[]
+  mainWeapon: ReplayWeapon
   carriesBomb: boolean
   flashSeconds: number
 }
@@ -72,23 +72,27 @@ export function playerCardsAtTick(
         health: scene.health,
         ...score(player.steamId),
         inspection,
-        otherWeapons: ['primary', 'pistol', 'knife'].flatMap((slot) => {
-          const weapon = inspection.weapons.find(
-            (owned) => owned.type !== 'none' && weaponSlot(owned.definition) === slot,
-          )
-          if (
-            !weapon ||
-            weapon.type === 'none' ||
-            (inspection.weapon.type !== 'none' &&
-              weapon.definition === inspection.weapon.definition)
-          ) {
-            return []
-          }
-          return [weapon]
-        }),
+        mainWeapon: mainWeapon(inspection),
         carriesBomb: scene.bomb === 'carrying' || scene.bomb === 'planting',
         flashSeconds: scene.flashSeconds,
       },
     ]
   })
+}
+
+const slotRanks = { primary: 0, pistol: 1, knife: 2 } as const
+
+function mainWeapon(inspection: PlayerInspection): ReplayWeapon {
+  let main: ReplayWeapon = { type: 'none' }
+  let mainRank = Infinity
+  // The held weapon goes first so it wins ties with its stale inventory copy.
+  for (const weapon of [inspection.weapon, ...inspection.weapons]) {
+    if (weapon.type === 'none') continue
+    const slot = weaponSlot(weapon.definition)
+    if (slot && slotRanks[slot] < mainRank) {
+      main = weapon
+      mainRank = slotRanks[slot]
+    }
+  }
+  return main
 }
