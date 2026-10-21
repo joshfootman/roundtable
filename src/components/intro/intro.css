@@ -35,6 +35,13 @@
   --intro-surface-in: 500ms;
   --intro-contents-after: 150ms;
   --intro-contents-in: 400ms;
+
+  /*
+   * Handoff. The overlay wipes off and every HUD piece builds in at once underneath. The only
+   * stagger is down a list. 0.45 of the wipe uncovers about a third of the stage.
+   */
+  --intro-hud-at: calc(var(--intro-wipe) * 0.45);
+  --intro-list-stagger: 35ms;
 }
 
 .intro {
@@ -378,6 +385,69 @@
   position: absolute;
 }
 
+.intro[data-phase='handoff'] {
+  /* The whole overlay, photo and all, leaves on the blade, uncovering the replay. */
+  animation: intro-wipe-out var(--intro-wipe) var(--intro-ease-move) both;
+}
+
+.demo-stage[data-intro='handoff'] {
+  --intro-surface-at: calc(var(--intro-hud-at) + var(--intro-list, 0) * var(--intro-list-stagger));
+  --intro-contents-at: calc(var(--intro-surface-at) + var(--intro-contents-after));
+
+  &
+    :is(
+      .demo-round-step,
+      .demo-map-controls button,
+      .demo-playback-controls,
+      .demo-kill-feed,
+      .demo-player-cards-overlay li
+    ) {
+    animation: intro-build-surface var(--intro-surface-in) var(--ease-out-expo)
+      var(--intro-surface-at) both;
+  }
+
+  & .demo-scoreboard {
+    animation: intro-handoff-bar var(--intro-surface-in) var(--ease-out-expo)
+      var(--intro-surface-at) both;
+  }
+
+  & .demo-score {
+    animation: intro-handoff-tab var(--intro-surface-in) var(--ease-out-expo)
+      var(--intro-surface-at) both;
+  }
+
+  &
+    :is(
+      .demo-scoreboard > :not(.demo-score),
+      .demo-score > *,
+      .demo-round-step > *,
+      .demo-map-controls button > *,
+      .demo-playback-controls > *,
+      .demo-kill-feed > *,
+      .demo-player-cards-overlay li > *
+    ) {
+    animation: intro-build-contents var(--intro-contents-in) ease-out var(--intro-contents-at) both;
+  }
+
+  & .demo-health-fill {
+    animation: intro-handoff-fill var(--intro-contents-in) var(--ease-out-expo)
+      var(--intro-contents-at) both;
+  }
+
+  & :is(.demo-player-cards-overlay li:nth-child(2), .demo-map-controls button:nth-of-type(2)) {
+    --intro-list: 1;
+  }
+  & :is(.demo-player-cards-overlay li:nth-child(3), .demo-map-controls button:nth-of-type(3)) {
+    --intro-list: 2;
+  }
+  & :is(.demo-player-cards-overlay li:nth-child(4), .demo-map-controls button:nth-of-type(4)) {
+    --intro-list: 3;
+  }
+  & .demo-player-cards-overlay li:nth-child(n + 5) {
+    --intro-list: 4;
+  }
+}
+
 /* The HUD waits under the intro until the handoff builds it in. */
 .demo-stage[data-intro]:not([data-intro='handoff'])
   :is(
@@ -474,5 +544,26 @@
 @keyframes intro-blade {
   to {
     transform: translateX(var(--intro-travel));
+  }
+}
+
+/* The scoreboard builds outwards from its centre. */
+@keyframes intro-handoff-bar {
+  from {
+    opacity: 0;
+    transform: scaleX(0.9);
+  }
+}
+
+@keyframes intro-handoff-tab {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes intro-handoff-fill {
+  from {
+    width: 0;
   }
 }

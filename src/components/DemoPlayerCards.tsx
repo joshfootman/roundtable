@@ -160,11 +160,11 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             transition, so a burst drains as one chunk. Gains ease the fill up over the red layer.
           */}
           <div
-            className={`absolute inset-y-0 rounded-bar bg-damage transition-[width] delay-400 duration-500 ease-in-out motion-reduce:transition-none ${mirrored ? 'right-0' : 'left-0'}`}
+            className={`demo-health-fill absolute inset-y-0 rounded-bar bg-damage transition-[width] delay-400 duration-500 ease-in-out motion-reduce:transition-none ${mirrored ? 'right-0' : 'left-0'}`}
             style={{ width: `${health}%` }}
           />
           <div
-            className={`absolute inset-y-0 rounded-bar ${mirrored ? 'right-0 bg-t' : 'left-0 bg-ct'} ${shownHealth.rising ? 'transition-[width] duration-300 ease-out-expo motion-reduce:transition-none' : ''}`}
+            className={`demo-health-fill absolute inset-y-0 rounded-bar ${mirrored ? 'right-0 bg-t' : 'left-0 bg-ct'} ${shownHealth.rising ? 'transition-[width] duration-300 ease-out-expo motion-reduce:transition-none' : ''}`}
             style={{ width: `${health}%` }}
           />
         </div>

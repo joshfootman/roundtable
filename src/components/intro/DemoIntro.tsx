@@ -56,7 +56,8 @@ export function DemoIntro({
   }, [dispatch])
 
   // A beat ends when everything on its page has finished, dwell included. The handoff has no
-  // page; its animations run on the HUD, so they're found by name.
+  // page: it waits for everything the intro animates on the stage, the overlay's wipe and the
+  // HUD's build included, which are found by name.
   React.useEffect(() => {
     if (!photoReady) return
     const root = overlay.current!
@@ -66,8 +67,7 @@ export function DemoIntro({
             .parentElement!.getAnimations({ subtree: true })
             .filter(
               (animation) =>
-                animation instanceof CSSAnimation &&
-                animation.animationName.startsWith('intro-handoff-'),
+                animation instanceof CSSAnimation && animation.animationName.startsWith('intro-'),
             )
         : (root.querySelector(`[data-page="${state.phase}"]`)?.getAnimations({ subtree: true }) ??
           [])
