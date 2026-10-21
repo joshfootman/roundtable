@@ -25,6 +25,8 @@ import { DemoRoundWin } from '#/components/DemoRoundWin'
 import { DemoShortcutHelp } from './DemoShortcutHelp'
 import { useReplayShortcuts } from './useReplayShortcuts'
 import { DemoDrawingControl } from './DemoDrawingControl'
+import { DemoIntro } from './intro/DemoIntro'
+import { advanceIntro, introCast, introEnabled, startIntro } from './intro/intro'
 import {
   emptyFloorDrawings,
   type DrawingColor,
@@ -113,7 +115,8 @@ export function DemoWorkspace() {
         />
         {state.status === 'ready' &&
         mapDefinition(state.metadata.mapName) &&
-        state.rounds.some((round) => round.startTick === state.selectedStartTick) ? (
+        (state.rounds.some((round) => round.startTick === state.selectedStartTick) ||
+          (state.parsing.status === 'active' && introEnabled())) ? (
           <Demo
             key={source?.kind === 'example' ? source.id : 'local'}
             state={state}
@@ -271,6 +274,7 @@ function Demo({
     color: '#ffffff',
   })
   const [pickerFocusRound, setPickerFocusRound] = React.useState<number>()
+  const [intro, dispatchIntro] = React.useReducer(advanceIntro, undefined, startIntro)
   const [selection, setSelection] = React.useState({
     number: round?.number,
     previous: undefined as number | undefined,
@@ -317,6 +321,7 @@ function Demo({
     >
       <div
         ref={stage}
+        data-intro={intro.phase === 'done' ? undefined : intro.phase}
         className="demo-stage relative -mt-(--stage-lift) min-h-0 flex-1 rounded-inset-shell bg-stage p-3 transition-[--stage-lift] duration-500 ease-out-expo motion-reduce:transition-none replay-desktop:overflow-hidden replay-desktop:p-4 replay-desktop:clip-stage-notch theater:[--stage-lift:calc(4.75rem-var(--spacing-shell))] theater:starting:[--stage-lift:0px]"
       >
         {round ? (
@@ -360,11 +365,14 @@ function Demo({
                   : undefined
               replay.selectRound(number)
             }}
-            autoPlay={autoPlay}
+            autoPlay={autoPlay && intro.phase === 'done'}
             onAutoPlay={onAutoPlay}
           />
         ) : (
-          <DemoMap map={map} />
+          intro.phase === 'done' && <DemoMap map={map} />
+        )}
+        {intro.phase !== 'done' && (
+          <DemoIntro cast={introCast(state, map, example)} state={intro} dispatch={dispatchIntro} />
         )}
       </div>
     </div>

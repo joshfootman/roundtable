@@ -1,0 +1,176 @@
+/*
+ * Timing. Every duration, delay and easing in the intro reads from this table. DemoIntro moves
+ * to the next beat once everything on the current page has finished, so a beat lasts at least
+ * its dwell. Times count from the start of their beat.
+ */
+.demo-stage[data-intro] {
+  --intro-ease-move: cubic-bezier(0.77, 0, 0.175, 1);
+  --intro-push: 10s;
+
+  /* Map, counted from when its photo has decoded. */
+  --intro-map-dwell: 2000ms;
+  --intro-photo-in: 900ms;
+  --intro-title-at: 500ms;
+  --intro-title-in: 700ms;
+  --intro-name-at: 700ms;
+  --intro-name-in: 900ms;
+}
+
+.intro {
+  --intro-font: var(--font-sans);
+
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  container-type: size;
+  overflow: hidden;
+  /* Opaque from the first frame, in the stage's own colour, so nothing underneath shows through. */
+  background: var(--color-stage);
+  cursor: default;
+  user-select: none;
+}
+
+/* Below every page, so its slow push never holds a beat up. */
+.intro-photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+
+  &[data-ready] {
+    opacity: 1;
+    animation:
+      intro-fade-in var(--intro-photo-in) ease-out both,
+      intro-push var(--intro-push) linear both;
+  }
+
+  & img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* Progressive blur: the lower half blurs most. */
+.intro-photo .intro-blur {
+  inset: -2rem;
+  width: calc(100% + 4rem);
+  height: calc(100% + 4rem);
+}
+.intro-blur-near {
+  filter: blur(6px);
+  mask-image: linear-gradient(transparent 30%, black 60%);
+}
+.intro-blur-far {
+  filter: blur(16px);
+  mask-image: linear-gradient(transparent 55%, black 85%);
+}
+
+/* A page's colours all come from --intro-field and --intro-ink. */
+.intro-page {
+  position: absolute;
+  inset: 0;
+  color: var(--intro-ink);
+  font-family: var(--intro-font);
+}
+
+.intro-page[data-page='map'] {
+  --intro-field: var(--color-canvas);
+  --intro-ink: var(--color-foreground);
+
+  animation: intro-dwell var(--intro-map-dwell);
+
+  /* The scrim over the photo, fading in with it. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      color-mix(in oklab, var(--intro-field) 40%, transparent),
+      color-mix(in oklab, var(--intro-field) 85%, transparent)
+    );
+    animation: intro-fade-in var(--intro-photo-in) ease-out both;
+  }
+}
+
+.intro-title {
+  --intro-rise: 6px;
+
+  position: absolute;
+  inset-inline: 0;
+  /* Level with the middle of the scoreboard the title hands over to. */
+  top: 2.75rem;
+  translate: 0 -50%;
+  opacity: 0.8;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  animation: intro-rise var(--intro-title-in) var(--ease-out-expo) var(--intro-title-at) both;
+}
+
+.intro-map-name {
+  --intro-rise: 16px;
+
+  position: absolute;
+  inset-inline: 0;
+  /* A little above centre, where the eye puts the middle. */
+  top: 44%;
+  translate: 0 -50%;
+  font-size: min(16cqh, 11cqw);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  text-transform: uppercase;
+  animation: intro-rise var(--intro-name-in) var(--ease-out-expo) var(--intro-name-at) both;
+}
+
+/* Above every page, so it stays put through the wipes. Any key skips too. */
+.intro-skip {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.25rem;
+  color: var(--color-muted);
+  font-family: var(--intro-font);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  animation: intro-fade-in var(--intro-title-in) ease-out var(--intro-title-at) both;
+}
+
+/* The HUD waits under the intro until the handoff builds it in. */
+.demo-stage[data-intro]:not([data-intro='handoff'])
+  :is(
+    .demo-round-controls,
+    .demo-map-controls,
+    .demo-playback-controls,
+    .demo-kill-feed,
+    .demo-map-viewport,
+    .demo-player-cards-overlay li
+  ) {
+  opacity: 0;
+}
+
+/* Holds a page for its beat's minimum length without changing anything. */
+@keyframes intro-dwell {
+}
+
+@keyframes intro-push {
+  from {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes intro-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--intro-rise));
+  }
+}
