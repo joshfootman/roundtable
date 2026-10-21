@@ -145,7 +145,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
                   <span className="sr-only">{equipmentName(slot.definition)}</span>
                 </span>
               ) : (
-                <span key={index} aria-hidden="true" className="opacity-20">
+                <span key={index} aria-hidden="true" className="opacity-10">
                   <EquipmentIcon definition={slot.definition} />
                 </span>
               ),
