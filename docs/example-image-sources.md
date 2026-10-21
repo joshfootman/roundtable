@@ -28,4 +28,11 @@ Seven team logos come from the game's tournament SVG assets, mirrored by [Juknum
 | `public/images/teams/mouz.svg`         | [CS2 tournament logo](https://raw.githubusercontent.com/Juknum/counter-strike-icons/main/cs2/panorama/images/tournaments/teams/mouz.svg) |
 | `public/images/teams/inner-circle.svg` | [Inner Circle official site](https://www.innercircle.gg/)                                                                                |
 
+The intro's player cards use the game's generic Counter-Terrorist and Terrorist agent outlines, mirrored by [Juknum/counter-strike-icons](https://github.com/Juknum/counter-strike-icons). Each outline is filled into a silhouette, with the view box cropped to the figure and the colour dropped, because the intro uses them as masks.
+
+| Local file                    | Source                                                                                                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `public/images/agents/ct.svg` | [CS2 agent outline](https://raw.githubusercontent.com/Juknum/counter-strike-icons/main/cs2/panorama/images/econ/characters/local_agent_ct.svg) |
+| `public/images/agents/t.svg`  | [CS2 agent outline](https://raw.githubusercontent.com/Juknum/counter-strike-icons/main/cs2/panorama/images/econ/characters/local_agent_t.svg)  |
+
 Map screenshots and game assets belong to Valve Corporation. Team marks belong to their respective organizations.

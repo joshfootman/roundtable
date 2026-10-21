@@ -1,8 +1,20 @@
 import React from 'react'
-import type { IntroCast, IntroEvent, IntroState } from './intro'
+import { playerTexture } from '#/components/DemoPlayerCards'
+import {
+  beats,
+  type IntroBeat,
+  type IntroCast,
+  type IntroEvent,
+  type IntroState,
+  type IntroTeam,
+} from './intro'
 import './intro.css'
 
 const modifiers = new Set(['Alt', 'Control', 'Meta', 'Shift'])
+// The name's row and the rows either side of it, enough to fill the stage behind the players.
+const wallRows = [-3, -2, -1, 0, 1, 2, 3, 4]
+// Copies per row, centred so the middle one lines up over the name.
+const rowCopies = 9
 
 export function DemoIntro({
   cast,
@@ -68,6 +80,13 @@ export function DemoIntro({
     }
   }, [state.phase, photoReady, dispatch])
 
+  // Each page mounts when its beat starts. The next page's blade wipes it off as it wipes on, so
+  // the photo underneath shows through both.
+  const reached = beats.findIndex((beat) => beat === state.phase)
+  const shown = (beat: IntroBeat) => beats.indexOf(beat) <= reached
+  const covered = (beat: IntroBeat) => beats.indexOf(beat) < reached || undefined
+  const lineup = cast.lineup
+
   return (
     <div
       ref={overlay}
@@ -82,13 +101,103 @@ export function DemoIntro({
         <img src={cast.map.photo} alt="" className="intro-blur intro-blur-far" />
       </div>
       {photoReady && (
-        <div className="intro-page" data-page="map">
+        <div className="intro-page" data-page="map" data-covered={covered('map')}>
           <p className="intro-title">{cast.title}</p>
           <p className="intro-map-name">{cast.map.name}</p>
         </div>
       )}
+      {lineup && shown('ct') && <TeamPage side="ct" team={lineup.ct} covered={covered('ct')} />}
+      {lineup && shown('t') && <TeamPage side="t" team={lineup.t} covered={covered('t')} />}
       <p className="intro-skip">Click to skip</p>
+      {/*
+        Rings the glyphs' combined shape. text-stroke outlines every contour, so Geist's
+        overlapping strokes would show inside letters like F.
+      */}
+      <svg className="intro-filters" width="0" height="0">
+        <filter id="intro-hollow">
+          <feMorphology in="SourceGraphic" operator="dilate" radius="1" result="grown" />
+          <feMorphology in="SourceAlpha" operator="erode" radius="1" result="shrunk" />
+          <feComposite in="grown" in2="shrunk" operator="out" />
+        </filter>
+      </svg>
     </div>
+  )
+}
+
+function TeamPage({
+  side,
+  team,
+  covered,
+}: {
+  side: 'ct' | 't'
+  team: IntroTeam
+  covered: true | undefined
+}) {
+  const flank = (rowCopies - 1) / 2
+  return (
+    <div
+      className="intro-page"
+      data-page={side}
+      data-covered={covered}
+      style={
+        {
+          '--intro-chars': team.tag.length,
+          '--intro-copies': rowCopies,
+        } as React.CSSProperties
+      }
+    >
+      <div className="intro-wall">
+        {wallRows.map((row) => (
+          <div
+            key={row}
+            className="intro-wall-row"
+            style={
+              {
+                '--intro-k': Math.abs(row),
+                // Every other row sits half a name along, like brickwork.
+                '--intro-brick': Math.abs(row) % 2,
+              } as React.CSSProperties
+            }
+          >
+            {row === 0 ? (
+              <>
+                <Hollow tag={team.tag} copies={flank} />
+                <span className="intro-team-name">{team.tag}</span>
+                <Hollow tag={team.tag} copies={flank} />
+              </>
+            ) : (
+              <Hollow tag={team.tag} copies={rowCopies} />
+            )}
+          </div>
+        ))}
+      </div>
+      <ol className="intro-players">
+        {team.players.map((player) => (
+          <li key={player.steamId} className="intro-player frame-field">
+            <span
+              className="intro-player-art player-texture rounded-inset-2.5"
+              style={playerTexture(player.number)}
+            >
+              <span className="intro-player-figure" />
+            </span>
+            <span className="intro-player-id">
+              <span className="intro-player-number">{player.number}</span>
+              <span className="intro-player-name">{player.name}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+function Hollow({ tag, copies }: { tag: string; copies: number }) {
+  return (
+    <span className="intro-hollow">
+      {Array.from({ length: copies }, (_, index) => (
+        <span key={index}>{tag}</span>
+      ))}
+    </span>
   )
 }
 

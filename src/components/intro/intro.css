@@ -14,10 +14,36 @@
   --intro-title-in: 700ms;
   --intro-name-at: 700ms;
   --intro-name-in: 900ms;
+
+  /* Every page after the map wipes in over the one before, wiping it off as it goes. */
+  --intro-wipe: 800ms;
+
+  /* Team pages, shared by CT and T. Hollow rows build outward from the name's row. */
+  --intro-team-dwell: 4000ms;
+  --intro-team-name-at: 350ms;
+  --intro-team-name-in: 800ms;
+  --intro-hollow-at: 550ms;
+  --intro-hollow-stagger: 120ms;
+  --intro-hollow-in: 700ms;
+  --intro-hollow-opacity: 0.4;
+  --intro-players-at: 900ms;
+
+  /*
+   * Building a surface, the same for the intro's player cards as for the HUD: the surface grows
+   * into place, then its contents fade in.
+   */
+  --intro-surface-in: 500ms;
+  --intro-contents-after: 150ms;
+  --intro-contents-in: 400ms;
 }
 
 .intro {
   --intro-font: var(--font-sans);
+  /* The wipe's blade: how far its bottom trails its top, and the coloured band riding it. */
+  --intro-lean: 20cqw;
+  --intro-blade: 2.5cqw;
+  /* In the stage's width, so it measures the same on a page as on the narrower blade. */
+  --intro-travel: calc(100cqw + var(--intro-lean) + var(--intro-blade));
 
   position: absolute;
   inset: 0;
@@ -67,19 +93,49 @@
   mask-image: linear-gradient(transparent 55%, black 85%);
 }
 
-/* A page's colours all come from --intro-field and --intro-ink. */
+/*
+ * A page's colours all come from --intro-field, --intro-ink and, on team pages, --intro-accent.
+ * Every page is a see-through scrim over the photo.
+ */
 .intro-page {
   position: absolute;
   inset: 0;
   color: var(--intro-ink);
   font-family: var(--intro-font);
+
+  &:not([data-page='map']) {
+    background:
+      linear-gradient(
+        to top,
+        color-mix(in oklab, var(--intro-accent) var(--intro-tint), transparent),
+        transparent 70%
+      ),
+      color-mix(in oklab, var(--intro-field) var(--intro-scrim), transparent);
+    animation:
+      intro-wipe-in var(--intro-wipe) var(--intro-ease-move) both,
+      intro-dwell var(--intro-page-dwell);
+
+    /* The blade, a band of the team's colour on the page's leading edge. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      /* Starts just off the left edge, with its right side on the line the page's clip starts on. */
+      left: calc(-1 * (var(--intro-lean) + var(--intro-blade)));
+      width: calc(var(--intro-lean) + var(--intro-blade));
+      background: var(--intro-accent);
+      clip-path: polygon(var(--intro-lean) 0, 100% 0, var(--intro-blade) 100%, 0 100%);
+      animation: intro-blade var(--intro-wipe) var(--intro-ease-move) both;
+    }
+  }
 }
 
 .intro-page[data-page='map'] {
   --intro-field: var(--color-canvas);
   --intro-ink: var(--color-foreground);
+  --intro-page-dwell: var(--intro-map-dwell);
 
-  animation: intro-dwell var(--intro-map-dwell);
+  animation: intro-dwell var(--intro-page-dwell);
 
   /* The scrim over the photo, fading in with it. */
   &::before {
@@ -139,6 +195,189 @@
   animation: intro-fade-in var(--intro-title-in) ease-out var(--intro-title-at) both;
 }
 
+.intro-page:is([data-page='ct'], [data-page='t']) {
+  --intro-field: var(--color-stage);
+  --intro-ink: var(--color-foreground);
+  --intro-scrim: 70%;
+  --intro-tint: 30%;
+  --intro-page-dwell: var(--intro-team-dwell);
+}
+
+.intro-page[data-page='ct'] {
+  --intro-accent: var(--color-ct);
+  --intro-figure: url('/images/agents/ct.svg');
+}
+
+.intro-page[data-page='t'] {
+  --intro-accent: var(--color-t);
+  --intro-figure: url('/images/agents/t.svg');
+}
+
+/* Covered pages leave on the same blade that brings the next one on. */
+.intro-page[data-covered] {
+  animation: intro-wipe-out var(--intro-wipe) var(--intro-ease-move) both;
+}
+
+/*
+ * The name's row sits at 30% height. Rows are wider than the stage and overflow it evenly; the
+ * overlay clips them.
+ */
+.intro-wall {
+  position: absolute;
+  inset-inline: 0;
+  top: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Keeps the name's row, the fourth, centred on the line above. */
+  translate: 0 calc(-3.5 * 0.85em);
+  color: var(--intro-accent);
+  font-size: min(18cqh, calc(88cqw / (var(--intro-chars) * 0.7)));
+  font-weight: 800;
+  line-height: 0.85;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.intro-wall-row {
+  display: flex;
+  width: max-content;
+  /* Copies are padded rather than spaced, so one copy is exactly a row's width over the count. */
+  translate: calc(var(--intro-brick) * 50% / var(--intro-copies)) 0;
+
+  & :is(.intro-team-name, .intro-hollow > span) {
+    padding-inline: 0.15em;
+  }
+}
+
+.intro-team-name {
+  --intro-rise: 24px;
+
+  animation: intro-rise var(--intro-team-name-in) var(--ease-out-expo) var(--intro-team-name-at)
+    both;
+}
+
+.intro-hollow {
+  display: flex;
+  opacity: var(--intro-hollow-opacity);
+  filter: url(#intro-hollow);
+  animation: intro-fade-in var(--intro-hollow-in) var(--ease-out-expo)
+    calc(var(--intro-hollow-at) + var(--intro-k) * var(--intro-hollow-stagger)) both;
+}
+
+.intro-players {
+  position: absolute;
+  inset-inline: 0;
+  top: 46%;
+  display: flex;
+  justify-content: center;
+  gap: 1.25cqw;
+}
+
+/*
+ * A player's card, built from the HUD's: a raised frame holding a window with the HUD card's
+ * surface and pattern, the side's generic agent cropped at the thighs inside it, and the number
+ * chip and name below. Terrorists' cards are mirrored, as they are in the HUD.
+ */
+.intro-player {
+  --intro-card: min(15cqw, 232px);
+  /* All five together, so each is on screen as long as the others. */
+  --intro-build-at: var(--intro-players-at);
+  --intro-figure-fill: var(--color-stage);
+
+  display: flex;
+  width: var(--intro-card);
+  aspect-ratio: 5 / 7;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* The frame's band around the window, which its rounded-inset-2.5 corners are concentric with. */
+  padding: 0.625rem;
+  /* A raised surface, as the app's popovers are, catching a little light along its top. */
+  border: 1px solid var(--color-line);
+  background: linear-gradient(var(--color-edge), transparent 30%), var(--color-surface);
+  box-shadow: var(--shadow-popover);
+  color: var(--color-foreground);
+  animation: intro-build-surface var(--intro-surface-in) var(--ease-out-expo) var(--intro-build-at)
+    both;
+
+  & > * {
+    animation: intro-build-contents var(--intro-contents-in) ease-out
+      calc(var(--intro-build-at) + var(--intro-contents-after)) both;
+  }
+}
+
+.intro-player-art {
+  flex: 1;
+  overflow: hidden;
+  background: linear-gradient(var(--color-control), var(--color-control)), var(--color-stage);
+
+  /* The edge, over the figure so the crop reads as the window's. */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px var(--color-edge);
+  }
+}
+
+.intro-player-figure {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 100%;
+  aspect-ratio: 1 / 2;
+  translate: -50% 0;
+  background: var(--intro-figure-fill);
+  mask: var(--intro-figure) top center / contain no-repeat;
+}
+
+.intro-player-id {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.125rem 0.25rem 0.25rem;
+}
+
+.intro-player-number {
+  display: flex;
+  width: 1.25rem;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-chip);
+  background: var(--intro-accent);
+  color: var(--color-inverse);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.intro-player-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.intro-page[data-page='t'] .intro-player {
+  & .intro-player-art::before {
+    scale: -1 1;
+  }
+
+  & .intro-player-id {
+    flex-direction: row-reverse;
+  }
+}
+
+.intro-filters {
+  position: absolute;
+}
+
 /* The HUD waits under the intro until the handoff builds it in. */
 .demo-stage[data-intro]:not([data-intro='handoff'])
   :is(
@@ -172,5 +411,68 @@
   from {
     opacity: 0;
     transform: translateY(var(--intro-rise));
+  }
+}
+
+/* A surface grows into place, then its contents fade in. */
+@keyframes intro-build-surface {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes intro-build-contents {
+  from {
+    opacity: 0;
+  }
+}
+
+/*
+ * A diagonal blade, its top leading its bottom by --intro-lean. Its edge travels --intro-travel,
+ * far enough for the band behind it to clear the stage. The page coming on is left of the edge;
+ * the page going off is right of it.
+ */
+@keyframes intro-wipe-in {
+  from {
+    clip-path: polygon(
+      0 0,
+      0 0,
+      calc(-1 * var(--intro-lean)) 100%,
+      calc(-1 * var(--intro-lean)) 100%
+    );
+  }
+  to {
+    clip-path: polygon(
+      0 0,
+      var(--intro-travel) 0,
+      calc(var(--intro-travel) - var(--intro-lean)) 100%,
+      calc(-1 * var(--intro-lean)) 100%
+    );
+  }
+}
+
+@keyframes intro-wipe-out {
+  from {
+    clip-path: polygon(
+      0 0,
+      var(--intro-travel) 0,
+      var(--intro-travel) 100%,
+      calc(-1 * var(--intro-lean)) 100%
+    );
+  }
+  to {
+    clip-path: polygon(
+      var(--intro-travel) 0,
+      var(--intro-travel) 0,
+      var(--intro-travel) 100%,
+      calc(var(--intro-travel) - var(--intro-lean)) 100%
+    );
+  }
+}
+
+@keyframes intro-blade {
+  to {
+    transform: translateX(var(--intro-travel));
   }
 }

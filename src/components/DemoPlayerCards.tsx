@@ -49,6 +49,15 @@ const textures = [
   { src: aztec, opacity: 0.05 },
 ] as const
 
+// The pattern a player's card carries, set on an element with the player-texture utility.
+export function playerTexture(number: number) {
+  const texture = textures[(number - 1) % textures.length]!
+  return {
+    '--player-texture': `url(${texture.src})`,
+    '--player-texture-opacity': texture.opacity,
+  } as React.CSSProperties
+}
+
 export function PlayerCard({ player }: { player: PlayerCardData }) {
   const { money, armour, helmet } = player.inspection
   const weapon = player.mainWeapon
@@ -63,17 +72,11 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
     ? `${armour} armour, ${helmet ? 'helmet equipped' : 'no helmet'}`
     : 'No armour'
   const weaponLabel = weaponDescription(weapon)
-  const texture = textures[(player.number - 1) % textures.length]!
   return (
     <li
       aria-label={`${player.name}, ${player.alive ? `${health} health` : 'dead'}`}
       className={`player-texture shrink-0 rounded-control bg-control px-2 py-1.5 text-sm leading-tight text-foreground tabular-nums replay-desktop:text-base ${mirrored ? 'before:-scale-x-100' : ''} ${player.alive ? '' : 'opacity-55'}`}
-      style={
-        {
-          '--player-texture': `url(${texture.src})`,
-          '--player-texture-opacity': texture.opacity,
-        } as React.CSSProperties
-      }
+      style={playerTexture(player.number)}
     >
       <div className={`flex flex-wrap items-center gap-2 py-1 ${direction}`}>
         <div className={`flex min-w-16 flex-1 items-center gap-2 ${direction}`}>

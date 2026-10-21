@@ -66,7 +66,7 @@ export function introCast(
     title: demo.filename,
   }
   if (!round) return cast
-  // The tick the HUD's cards show until playback starts, so the intro's cards match them.
+  // Who is on each side as the round goes live, numbered as the HUD numbers them.
   const players = playerCardsAtTick(demo.rounds, round, round.liveStartTick)
   const teams = roundTeams(round, example)
   const team = (side: 'ct' | 't', id: 2 | 3): IntroTeam => ({
