@@ -56,7 +56,9 @@ test('reports invalid files and recovers through the same chooser', async ({ pag
     timeout: 15_000,
   })
   await expect(page.getByText(/ZIP.*Extract.*\.dem/i)).toHaveCount(0)
-  await expect(page.getByText('dust2.dem', { exact: true })).toBeVisible()
+  // Theater mode hides the upload header once the recovered recording is ready.
+  await expect(page.getByText('dust2.dem', { exact: true })).toBeAttached()
+  await expect(page.locator('canvas')).toHaveCount(1)
 })
 
 test('restores example rounds on the shared replay workspace', async ({ page }) => {

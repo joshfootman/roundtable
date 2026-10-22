@@ -36,29 +36,33 @@ for (const example of ['faze-vs-vitality-m1-inferno', 'astralis-vs-mouz-m2-nuke'
       const toolbar = (await controls.boundingBox())!
       const hud = (await page.getByRole('region', { name: 'Round controls' }).boundingBox())!
       const stage = (await page.locator('.demo-stage').boundingBox())!
-      expect(toolbar.y).toBe(hud.y)
+      const lift = await page
+        .locator('.demo-stage')
+        .evaluate(
+          (element) => parseFloat(getComputedStyle(element).getPropertyValue('--stage-lift')) || 0,
+        )
+      expect(toolbar.y).toBeCloseTo(hud.y + lift, 0)
       expect(toolbar.x + toolbar.width + 8).toBeLessThanOrEqual(hud.x)
       expect(Math.abs(hud.x + hud.width / 2 - stage.x - stage.width / 2)).toBeLessThan(1)
-      expect((await navigation.boundingBox())!.y).toBe((await drawing.boundingBox())!.y)
+      const navigationBounds = (await navigation.boundingBox())!
+      const drawingBounds = (await drawing.boundingBox())!
+      if (viewport.width < 1728) {
+        expect(navigationBounds.y).toBe(drawingBounds.y)
+      } else {
+        expect(drawingBounds.y).toBeGreaterThanOrEqual(
+          navigationBounds.y + navigationBounds.height + 8,
+        )
+      }
       for (const group of [navigation, drawing]) {
         const buttons = await group.getByRole('button').all()
         const bounds = await Promise.all(buttons.map((button) => button.boundingBox()))
         for (const [index, button] of bounds.entries()) {
           expect(button).not.toBeNull()
-          if (viewport.width < 1728) {
-            expect(button!.x).toBe(bounds[0]!.x)
-            if (index > 0) {
-              expect(button!.y).toBeGreaterThanOrEqual(
-                bounds[index - 1]!.y + bounds[index - 1]!.height,
-              )
-            }
-          } else {
-            expect(button!.y).toBe(bounds[0]!.y)
-            if (index > 0) {
-              expect(button!.x).toBeGreaterThanOrEqual(
-                bounds[index - 1]!.x + bounds[index - 1]!.width,
-              )
-            }
+          expect(button!.x).toBe(bounds[0]!.x)
+          if (index > 0) {
+            expect(button!.y).toBeGreaterThanOrEqual(
+              bounds[index - 1]!.y + bounds[index - 1]!.height,
+            )
           }
           expect(button!.width).toBeGreaterThanOrEqual(44)
           expect(button!.height).toBeGreaterThanOrEqual(44)

@@ -36,6 +36,8 @@ test('zooms, drags and focuses a paused map while retaining zoom across floors a
   await page.getByRole('button', { name: 'Next round', exact: true }).click()
   await expect(zoomIn).toBeEnabled()
   await expect(zoom).toHaveText('168%')
+  // Selecting a round starts playback; pause before checking camera-only interactions.
+  await page.getByRole('button', { name: 'Pause round', exact: true }).click()
   const nextTick = await timeline.inputValue()
   await map.focus()
   await map.press('+')
