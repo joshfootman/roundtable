@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { halftimeBefore, roundTeams, sidesSwitchBefore } from './team-identity'
+import { halftimeBefore, roundTeams, sidesSwitchBefore, teamAbbreviation } from './team-identity'
 
 function halftimeRound(
   number: number,
@@ -88,4 +88,12 @@ test('switches sides at halftime and as each overtime starts, not within one', (
   expect(sidesSwitchBefore(named(24, 'A', 'B'), named(25, 'B', 'A', 1))).toBe(true)
   expect(sidesSwitchBefore(named(30, 'A', 'B', 1), named(31, 'A', 'B', 2))).toBe(true)
   expect(sidesSwitchBefore(named(25, 'B', 'A', 1), named(26, 'B', 'A', 1))).toBe(false)
+})
+
+test('abbreviates a recorded name to its first three letters or digits', () => {
+  expect(
+    ['Vitality', 'FaZe Clan', 'Natus Vincere', 'Inner Circle', 'G2', 'Team Spirit', 'CT'].map(
+      teamAbbreviation,
+    ),
+  ).toEqual(['VIT', 'FAZ', 'NAT', 'INN', 'G2', 'TEA', 'CT'])
 })
