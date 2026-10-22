@@ -40,6 +40,16 @@ test('compares cold example loading with the same live-parsed recording', async 
       const context = await browser.newContext({
         baseURL: 'http://127.0.0.1:4176',
         viewport: { width: 1440, height: 900 },
+        // Contexts made here don't pick up the config's storage state.
+        storageState: {
+          cookies: [],
+          origins: [
+            {
+              origin: 'http://127.0.0.1:4176',
+              localStorage: [{ name: 'roundtable.intro', value: 'off' }],
+            },
+          ],
+        },
       })
       try {
         const page = await context.newPage()

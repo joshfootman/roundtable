@@ -13,6 +13,7 @@ export type PlayerCardData = {
   health: number
   kills: number
   deaths: number
+  assists: number
   inspection: PlayerInspection
   mainWeapon: ReplayWeapon
   utility: UtilitySlot[]
@@ -27,11 +28,11 @@ export function playerCardsAtTick(
   round: ReplayRound,
   tick: number,
 ): PlayerCardData[] {
-  const scores = new Map<string, { kills: number; deaths: number }>()
+  const scores = new Map<string, { kills: number; deaths: number; assists: number }>()
   function score(steamId: string) {
     let value = scores.get(steamId)
     if (!value) {
-      value = { kills: 0, deaths: 0 }
+      value = { kills: 0, deaths: 0, assists: 0 }
       scores.set(steamId, value)
     }
     return value
@@ -42,6 +43,7 @@ export function playerCardsAtTick(
     for (const death of replayRound.deaths) {
       if (death.tick > tick) continue
       score(death.victim).deaths += 1
+      if (death.assister && death.assister !== death.victim) score(death.assister).assists += 1
       if (death.killer.type !== 'player' || death.killer.steamId === death.victim) continue
       const killerId = death.killer.steamId
       const killer = replayRound.players.findIndex((player) => player.steamId === killerId)

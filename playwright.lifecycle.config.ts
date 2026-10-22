@@ -8,7 +8,20 @@ export default defineConfig({
   retries: 0,
   reporter: 'list',
   outputDir: 'test-results/lifecycle',
-  use: { baseURL: 'http://127.0.0.1:4188', headless: true, viewport: { width: 1440, height: 900 } },
+  use: {
+    baseURL: 'http://127.0.0.1:4188',
+    headless: true,
+    viewport: { width: 1440, height: 900 },
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: 'http://127.0.0.1:4188',
+          localStorage: [{ name: 'roundtable.intro', value: 'off' }],
+        },
+      ],
+    },
+  },
   webServer: {
     command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4188 --strictPort',
     url: 'http://127.0.0.1:4188',

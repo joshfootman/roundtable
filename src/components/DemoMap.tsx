@@ -44,18 +44,20 @@ export function DemoMap({
   map,
   round,
   onPlayback,
-  onResult,
+  onMoment,
   camera,
   onCamera,
   drawing,
+  playOnLoad,
 }: {
   map: MapDefinition
   round?: ReplayRound
   onPlayback?: (state: DemoPlaybackState) => void
-  onResult?: (outcome: ReplayRound['outcome'] | null) => void
+  onMoment?: (moment: 'start' | 'result' | null) => void
   camera?: CameraState
   onCamera?: (state: DemoCameraState) => void
   drawing?: DrawingConfiguration
+  playOnLoad?: { readonly current: boolean }
 }) {
   const drawingRef = useRef(drawing)
   const sceneRef = useRef<ReturnType<typeof createMapScene>>(null)
@@ -126,10 +128,11 @@ export function DemoMap({
           },
           onMove({ from, to, cause }) {
             if (cancelled) return
-            if (cause !== 'advance') onResult?.(null)
+            if (cause !== 'advance') onMoment?.(null)
+            else if (from === round.liveStartTick) onMoment?.('start')
             else if (round.outcome && from < round.resultTick && to >= round.resultTick) {
               onPlayback?.({ status: 'ready', controller, snapshot: clock.getSnapshot(), floor })
-              onResult?.(round.outcome)
+              onMoment?.('result')
             }
           },
           setRunning(running) {
@@ -152,7 +155,8 @@ export function DemoMap({
               onPlayback?.({ status: 'ready', controller, snapshot: clock.getSnapshot(), floor })
           },
         }
-        clock.pause()
+        if (playOnLoad?.current) clock.play()
+        else clock.pause()
       })
       .catch(() => {
         if (cancelled) return
@@ -167,7 +171,7 @@ export function DemoMap({
       loop?.stop()
       layer?.destroy()
     }
-  }, [map, scene, round, onPlayback, onResult])
+  }, [map, scene, round, onPlayback, onMoment, playOnLoad])
 
   useEffect(() => {
     const element = host.current!

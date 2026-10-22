@@ -42,12 +42,21 @@ export function DemoPlayerCards({
 
 // One pattern per team slot.
 const textures = [
-  { src: cage, opacity: 0.05 },
-  { src: houndstooth, opacity: 0.05 },
-  { src: hexagons, opacity: 0.05 },
-  { src: endlessClouds, opacity: 0.05 },
-  { src: aztec, opacity: 0.05 },
+  { src: cage, opacity: 0.035 },
+  { src: houndstooth, opacity: 0.035 },
+  { src: hexagons, opacity: 0.035 },
+  { src: endlessClouds, opacity: 0.035 },
+  { src: aztec, opacity: 0.035 },
 ] as const
+
+// The pattern a player's card carries, set on an element with the player-texture utility.
+export function playerTexture(number: number) {
+  const texture = textures[(number - 1) % textures.length]!
+  return {
+    '--player-texture': `url(${texture.src})`,
+    '--player-texture-opacity': texture.opacity,
+  } as React.CSSProperties
+}
 
 export function PlayerCard({ player }: { player: PlayerCardData }) {
   const { money, armour, helmet } = player.inspection
@@ -63,17 +72,11 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
     ? `${armour} armour, ${helmet ? 'helmet equipped' : 'no helmet'}`
     : 'No armour'
   const weaponLabel = weaponDescription(weapon)
-  const texture = textures[(player.number - 1) % textures.length]!
   return (
     <li
       aria-label={`${player.name}, ${player.alive ? `${health} health` : 'dead'}`}
       className={`player-texture shrink-0 rounded-control bg-control px-2 py-1.5 text-sm leading-tight text-foreground tabular-nums replay-desktop:text-base ${mirrored ? 'before:-scale-x-100' : ''} ${player.alive ? '' : 'opacity-55'}`}
-      style={
-        {
-          '--player-texture': `url(${texture.src})`,
-          '--player-texture-opacity': texture.opacity,
-        } as React.CSSProperties
-      }
+      style={playerTexture(player.number)}
     >
       <div className={`flex flex-wrap items-center gap-2 py-1 ${direction}`}>
         <div className={`flex min-w-16 flex-1 items-center gap-2 ${direction}`}>
@@ -142,7 +145,7 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
                   <span className="sr-only">{equipmentName(slot.definition)}</span>
                 </span>
               ) : (
-                <span key={index} aria-hidden="true" className="opacity-20">
+                <span key={index} aria-hidden="true" className="opacity-10">
                   <EquipmentIcon definition={slot.definition} />
                 </span>
               ),
@@ -157,11 +160,11 @@ export function PlayerCard({ player }: { player: PlayerCardData }) {
             transition, so a burst drains as one chunk. Gains ease the fill up over the red layer.
           */}
           <div
-            className={`absolute inset-y-0 rounded-bar bg-damage transition-[width] delay-400 duration-500 ease-in-out motion-reduce:transition-none ${mirrored ? 'right-0' : 'left-0'}`}
+            className={`demo-health-fill absolute inset-y-0 rounded-bar bg-damage transition-[width] delay-400 duration-500 ease-in-out motion-reduce:transition-none ${mirrored ? 'right-0' : 'left-0'}`}
             style={{ width: `${health}%` }}
           />
           <div
-            className={`absolute inset-y-0 rounded-bar ${mirrored ? 'right-0 bg-t' : 'left-0 bg-ct'} ${shownHealth.rising ? 'transition-[width] duration-300 ease-out-expo motion-reduce:transition-none' : ''}`}
+            className={`demo-health-fill absolute inset-y-0 rounded-bar ${mirrored ? 'right-0 bg-t' : 'left-0 bg-ct'} ${shownHealth.rising ? 'transition-[width] duration-300 ease-out-expo motion-reduce:transition-none' : ''}`}
             style={{ width: `${health}%` }}
           />
         </div>

@@ -1,4 +1,5 @@
 import { Container, Graphics, Sprite, Text, TextStyle, type Texture } from 'pixi.js'
+import { sampleAtTick } from './frames'
 import { mapFacing, visibleOnFloor, worldToMap, type MapDefinition, type MapFloor } from './maps'
 import { playerNumbers } from './player-numbers'
 import { scenePlayers } from './scene'
@@ -22,6 +23,9 @@ export interface PlayerVisibility {
 
 const FLASHED_ICON_SIZE = 12
 const OUTLINE_STEPS = 8
+/** The dead stay on the map as a faint cross where they fell. */
+const DEATH_ALPHA = 0.4
+const DEATH_CROSS = 5
 /** A flash fades over its last seconds, so a short or ending flash reads weaker than a fresh full one. */
 const FLASH_FADE_SECONDS = 1.5
 
@@ -45,6 +49,15 @@ export function createPlayerRenderer(
     fontWeight: 'bold',
     fill: appearance.background,
   })
+  // For each sample, the last sample at which each player was alive, so a body stays where it fell.
+  const count = round.players.length
+  const lastAlive = new Int32Array(round.ticks.length * count).fill(-1)
+  for (let sample = 0; sample < round.ticks.length; sample++) {
+    for (let index = 0; index < count; index++) {
+      const at = sample * count + index
+      lastAlive[at] = round.alive[at] === 1 ? sample : sample > 0 ? lastAlive[at - count]! : -1
+    }
+  }
   const markers = round.players.map((player) => {
     const marker = new Container()
     const body = new Graphics().circle(0, 0, radius).fill(0xffffff)
@@ -98,7 +111,13 @@ export function createPlayerRenderer(
       .lineTo(3, 3)
       .stroke({ color: appearance.foreground, width: 1.5 })
     ladder.position.set(12, 12)
-    marker.addChild(body, direction, flash, label, elevation, objective, ladder)
+    const cross = new Graphics()
+      .moveTo(-DEATH_CROSS, -DEATH_CROSS)
+      .lineTo(DEATH_CROSS, DEATH_CROSS)
+      .moveTo(DEATH_CROSS, -DEATH_CROSS)
+      .lineTo(-DEATH_CROSS, DEATH_CROSS)
+      .stroke({ color: 0xffffff, width: 2.5, cap: 'round' })
+    marker.addChild(body, direction, flash, label, elevation, objective, ladder, cross)
     container.addChild(marker)
     return {
       container: marker,
@@ -109,12 +128,21 @@ export function createPlayerRenderer(
       elevation,
       objective,
       ladder,
+      cross,
       otherFloor: false,
     }
   })
 
   function draw(tick: number, symbolScale: number, visibility: PlayerVisibility) {
+    const sample = sampleAtTick(round.ticks, tick)
     for (const player of scenePlayers(round, tick)) {
+      const fell = player.alive ? -1 : lastAlive[sample * count + player.index]!
+      if (fell >= 0) {
+        const at = (fell * count + player.index) * 3
+        player.x = round.positions[at]!
+        player.y = round.positions[at + 1]!
+        player.z = round.positions[at + 2]!
+      }
       const point = worldToMap(map, player.x, player.y)
       const rendered = markers[player.index]!
       const {
@@ -126,6 +154,7 @@ export function createPlayerRenderer(
         elevation,
         objective,
         ladder,
+        cross,
       } = rendered
       const { alive, team, bomb } = player
       const color = team === 3 ? appearance.ct : appearance.t
@@ -139,7 +168,11 @@ export function createPlayerRenderer(
       }
       flash.visible = alive && visibility.flashes && player.flashSeconds > 0
       flash.alpha = Math.min(1, player.flashSeconds / FLASH_FADE_SECONDS)
+      body.visible = direction.visible = label.visible = alive
+      cross.visible = !alive
+      cross.tint = color
       marker.visible =
+        (alive || fell >= 0) &&
         player.present &&
         numbers.has(player.steamId) &&
         !visibility.hiddenPlayers?.has(player.steamId) &&
@@ -148,7 +181,7 @@ export function createPlayerRenderer(
       direction.tint = color
       direction.alpha = otherFloor ? 0.5 : 1
       label.style.fill = otherFloor ? appearance.foreground : appearance.background
-      elevation.visible = otherFloor
+      elevation.visible = alive && otherFloor
       elevation.tint = color
       elevation.scale.y = visibility.floor === 'lower' ? 1 : -1
       objective.visible = alive && bomb !== 'none'
@@ -163,7 +196,7 @@ export function createPlayerRenderer(
       direction.rotation = mapFacing(map, player.yaw)
       marker.position.set(point.x, point.y)
       marker.scale.set(symbolScale)
-      marker.alpha = alive ? (otherFloor ? 0.6 : 1) : 0
+      marker.alpha = alive ? (otherFloor ? 0.6 : 1) : otherFloor ? DEATH_ALPHA / 2 : DEATH_ALPHA
       // Preserve recorded player order within each layer, including after a backward seek.
       marker.zIndex = (otherFloor ? 0 : alive ? 2 : 1) * round.players.length + player.index
     }

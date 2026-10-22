@@ -45,9 +45,15 @@ export function halftimeBefore(
   return sides.size === 2
 }
 
-const recordedNames: Record<string, string> = {
-  FaZe: 'FaZe Clan',
-  Spirit: 'Team Spirit',
+/** Halftime or the start of an overtime: the teams are about to play the other side. */
+export function sidesSwitchBefore(
+  previous: HalftimeRound | undefined,
+  current: HalftimeRound,
+): boolean {
+  return (
+    halftimeBefore(previous, current) ||
+    (current.overtime > 0 && previous?.overtime !== current.overtime)
+  )
 }
 
 export function roundTeams(
@@ -59,10 +65,16 @@ export function roundTeams(
     if (!name) return { name: side.toUpperCase() }
     const curated =
       example &&
-      examples[example].teams.find(
-        (team) => (recordedNames[team.name] ?? team.name).toLowerCase() === name.toLowerCase(),
-      )
+      examples[example].teams.find((team) => team.name.toLowerCase() === name.toLowerCase())
     return { name, ...(curated ? { logo: curated.logo } : {}) }
   }
   return { ct: identity('ct'), t: identity('t') }
+}
+
+/** The scoreboard's short form: the first three letters or digits of the name the demo records. */
+export function teamAbbreviation(name: string): string {
+  return name
+    .replace(/[^\p{L}\p{N}]/gu, '')
+    .slice(0, 3)
+    .toUpperCase()
 }

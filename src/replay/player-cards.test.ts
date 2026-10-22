@@ -126,6 +126,17 @@ describe('demo player cards', () => {
     ])
   })
 
+  it('counts assists on kills up to the tick', () => {
+    const replayRound = round(100, [
+      { ...death(101, 't', 'ct'), assister: 'ct' },
+      { ...death(102, 'ct', 't'), assister: 't' },
+      { ...death(120, 't', 'ct'), assister: 'ct' },
+    ])
+    expect(
+      playerCardsAtTick([replayRound], replayRound, 110).map(({ assists }) => assists),
+    ).toEqual([1, 1])
+  })
+
   it('counts world, suicide and teamkill deaths without awarding enemy kills', () => {
     const replayRound = round(100, [death(101, 'ct'), death(102, 't', 't'), death(103, 't', 'ct')])
     replayRound.teams[1] = 3

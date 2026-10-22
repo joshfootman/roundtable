@@ -1,0 +1,47 @@
+/*
+ * Set in the intro's map-name type, at the same size relative to the stage. It shows every round,
+ * so it appears at once and only fades on the way out; the hold is the animation's delay, and its
+ * end is when the callout unmounts.
+ */
+.round-callout {
+  --callout-ink: var(--color-foreground);
+  --callout-hold: 1200ms;
+
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  container-type: size;
+  display: grid;
+  /* A little above centre, where the eye puts the middle, as the intro's map name sits. */
+  grid-template-rows: 44fr auto 56fr;
+  place-items: center;
+  pointer-events: none;
+  color: var(--callout-ink);
+  font-family: var(--font-sans);
+  /* The map name's size, shrunk only when a long team name would overflow the stage. */
+  font-size: min(16cqh, 11cqw, calc(92cqw / (var(--callout-chars) * 0.62)));
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  animation: callout-out 150ms var(--ease-out-expo) var(--callout-hold) forwards;
+
+  /* A result is worth a longer look than an announcement. */
+  &[data-side] {
+    --callout-hold: 2400ms;
+  }
+  &[data-side='ct'] {
+    --callout-ink: var(--color-ct);
+  }
+  &[data-side='t'] {
+    --callout-ink: var(--color-t);
+  }
+}
+
+@keyframes callout-out {
+  to {
+    opacity: 0;
+  }
+}
