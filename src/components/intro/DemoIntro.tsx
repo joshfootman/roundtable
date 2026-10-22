@@ -108,7 +108,9 @@ export function DemoIntro({
       )}
       {lineup && shown('ct') && <TeamPage side="ct" team={lineup.ct} covered={covered('ct')} />}
       {lineup && shown('t') && <TeamPage side="t" team={lineup.t} covered={covered('t')} />}
-      <p className="intro-skip">Click to skip</p>
+      <div className="intro-skip rounded-control bg-control/75 px-4 py-2">
+        <p>Click anywhere to skip</p>
+      </div>
       {/*
         Rings the glyphs' combined shape. text-stroke outlines every contour, so Geist's
         overlapping strokes would show inside letters like F.

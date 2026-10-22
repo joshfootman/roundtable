@@ -130,7 +130,6 @@
       /* Starts just off the left edge, with its right side on the line the page's clip starts on. */
       left: calc(-1 * (var(--intro-lean) + var(--intro-blade)));
       width: calc(var(--intro-lean) + var(--intro-blade));
-      background: var(--intro-accent);
       clip-path: polygon(var(--intro-lean) 0, 100% 0, var(--intro-blade) 100%, 0 100%);
       animation: intro-blade var(--intro-wipe) var(--intro-ease-move) both;
     }

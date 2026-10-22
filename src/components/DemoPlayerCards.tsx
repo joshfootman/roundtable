@@ -42,11 +42,11 @@ export function DemoPlayerCards({
 
 // One pattern per team slot.
 const textures = [
-  { src: cage, opacity: 0.05 },
-  { src: houndstooth, opacity: 0.05 },
-  { src: hexagons, opacity: 0.05 },
-  { src: endlessClouds, opacity: 0.05 },
-  { src: aztec, opacity: 0.05 },
+  { src: cage, opacity: 0.035 },
+  { src: houndstooth, opacity: 0.035 },
+  { src: hexagons, opacity: 0.035 },
+  { src: endlessClouds, opacity: 0.035 },
+  { src: aztec, opacity: 0.035 },
 ] as const
 
 // The pattern a player's card carries, set on an element with the player-texture utility.
