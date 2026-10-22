@@ -45,7 +45,7 @@ test('centres the HUD and supports keyboard round selection with restored focus'
   await picker.getByRole('button', { name: /^Round 13,/ }).click()
   await expect(page.getByRole('button', { name: 'Choose round, current round 13' })).toBeFocused()
   await expect(picker).toBeHidden()
-  await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Pause round' })).toBeEnabled()
   await expect(hud.locator('img').first()).toHaveAttribute('src', '/images/teams/faze.svg')
   await page.goto('/replay?source=example&example=faze-vs-natus-vincere-m1-ancient&round=1')
   await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled({ timeout: 30_000 })
