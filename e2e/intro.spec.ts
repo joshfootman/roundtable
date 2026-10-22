@@ -10,7 +10,7 @@ test('pages through the map and both teams, then hands over to the HUD', async (
   await expect(intro.getByText('Dust II', { exact: true })).toBeVisible()
   await expect(intro.getByText('faze-vs-vitality-m2-dust2.dem', { exact: true })).toBeVisible()
   const ct = intro.locator('[data-page="ct"]')
-  await expect(ct.locator('.intro-team-name')).toHaveText('VITALITY', { timeout: 10_000 })
+  await expect(ct.locator('.intro-team-name')).toHaveText('Vitality', { timeout: 10_000 })
   await expect(ct.locator('.intro-player-name')).toHaveText([
     'mezii',
     'flameZ',
@@ -18,7 +18,7 @@ test('pages through the map and both teams, then hands over to the HUD', async (
     'Spinx',
     'ZywOo',
   ])
-  await expect(intro.locator('[data-page="t"] .intro-team-name')).toHaveText('FAZE', {
+  await expect(intro.locator('[data-page="t"] .intro-team-name')).toHaveText('FaZe Clan', {
     timeout: 10_000,
   })
 
@@ -41,7 +41,7 @@ test('holds on the map until the first round arrives', async ({ page }) => {
   await expect(stage).toHaveAttribute('data-intro', 'map')
 
   await expect(stage).toHaveAttribute('data-intro', 'ct', { timeout: 10_000 })
-  await expect(page.locator('.intro [data-page="ct"] .intro-team-name')).toHaveText('VITALITY')
+  await expect(page.locator('.intro [data-page="ct"] .intro-team-name')).toHaveText('Vitality')
   await expect(page.locator('.intro')).toHaveCount(0, { timeout: 15_000 })
 })
 

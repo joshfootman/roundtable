@@ -99,6 +99,7 @@ test('round navigation keeps focus on the control that switched rounds', async (
     timeout: 30_000,
   })
   const next = page.getByRole('button', { name: 'Next round', exact: true })
+  await expect(next).toBeEnabled()
   await next.focus()
   await page.keyboard.press('Enter')
   await expect(

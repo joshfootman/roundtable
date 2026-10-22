@@ -50,7 +50,7 @@ test('playback shortcuts seek, toggle, switch rounds and control the map', async
   await expect(
     page.getByRole('button', { name: 'Choose round, current round 2', exact: true }),
   ).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Pause round', exact: true })).toBeEnabled()
   await expect(
     page.getByRole('button', { name: 'Choose round, current round 2', exact: true }),
   ).not.toBeFocused()
@@ -59,7 +59,7 @@ test('playback shortcuts seek, toggle, switch rounds and control the map', async
   await expect(
     page.getByRole('button', { name: 'Choose round, current round 1', exact: true }),
   ).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Pause round', exact: true })).toBeEnabled()
   const pickerTrigger = page.getByRole('button', {
     name: 'Choose round, current round 1',
     exact: true,

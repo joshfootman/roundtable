@@ -39,14 +39,14 @@ test('drawings follow the map and remain scoped to their round and floor', async
   await expect(
     page.getByRole('button', { name: 'Choose round, current round 2', exact: true }),
   ).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Pause round', exact: true })).toBeEnabled()
   await expect(count).toHaveText('0 drawings on this floor')
   await map.focus()
   await page.keyboard.press('ArrowLeft')
   await expect(
     page.getByRole('button', { name: 'Choose round, current round 1', exact: true }),
   ).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Pause round', exact: true })).toBeEnabled()
   await expect(count).toHaveText('1 drawing on this floor')
   await map.focus()
   await page.keyboard.press('Shift+D')
