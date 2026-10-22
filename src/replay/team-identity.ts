@@ -56,11 +56,6 @@ export function sidesSwitchBefore(
   )
 }
 
-const recordedNames: Record<string, string> = {
-  FaZe: 'FaZe Clan',
-  Spirit: 'Team Spirit',
-}
-
 export function roundTeams(
   round: Pick<ReplayRound, 'teamNames'>,
   example?: ExampleId,
@@ -70,9 +65,7 @@ export function roundTeams(
     if (!name) return { name: side.toUpperCase() }
     const curated =
       example &&
-      examples[example].teams.find(
-        (team) => (recordedNames[team.name] ?? team.name).toLowerCase() === name.toLowerCase(),
-      )
+      examples[example].teams.find((team) => team.name.toLowerCase() === name.toLowerCase())
     return { name, ...(curated ? { logo: curated.logo } : {}) }
   }
   return { ct: identity('ct'), t: identity('t') }

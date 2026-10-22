@@ -8,7 +8,7 @@ export const examples = {
     assetBase: '/example',
     teams: [
       {
-        name: 'FaZe',
+        name: 'FaZe Clan',
         logo: '/images/teams/faze.svg',
       },
       {
@@ -34,7 +34,7 @@ export const examples = {
     assetBase: '/examples/faze-vs-natus-vincere-m1-ancient',
     teams: [
       {
-        name: 'FaZe',
+        name: 'FaZe Clan',
         logo: '/images/teams/faze.svg',
       },
       {
@@ -60,7 +60,7 @@ export const examples = {
     assetBase: '/examples/faze-vs-vitality-m1-inferno',
     teams: [
       {
-        name: 'FaZe',
+        name: 'FaZe Clan',
         logo: '/images/teams/faze.svg',
       },
       {
@@ -86,7 +86,7 @@ export const examples = {
     assetBase: '/examples/faze-vs-vitality-m3-mirage',
     teams: [
       {
-        name: 'FaZe',
+        name: 'FaZe Clan',
         logo: '/images/teams/faze.svg',
       },
       {
@@ -243,7 +243,7 @@ export const examples = {
         logo: '/images/teams/navi.svg',
       },
       {
-        name: 'Spirit',
+        name: 'Team Spirit',
         logo: '/images/teams/spirit.svg',
       },
     ],

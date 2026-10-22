@@ -102,7 +102,7 @@ test('shows twelve real match cards and starts a recording from the keyboard', a
       .toBe(true)
   }
   const dust2 = catalog.getByRole('button', {
-    name: 'Play FaZe vs Vitality, Dust II, BLAST Premier Spring Final 2024, map 2',
+    name: 'Play FaZe Clan vs Vitality, Dust II, BLAST Premier Spring Final 2024, map 2',
     exact: true,
   })
   await dust2.focus()
@@ -126,7 +126,7 @@ test('plays a distinct example and keeps the catalog within a phone viewport', a
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375)
   await catalog
     .getByRole('button', {
-      name: 'Play FaZe vs Natus Vincere, Ancient, PGL CS2 Major Copenhagen 2024, map 1',
+      name: 'Play FaZe Clan vs Natus Vincere, Ancient, PGL CS2 Major Copenhagen 2024, map 1',
       exact: true,
     })
     .click()
