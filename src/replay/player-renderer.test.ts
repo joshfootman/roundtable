@@ -76,6 +76,7 @@ function marker(renderer: ReturnType<typeof createPlayerRenderer>, index: number
     elevation: container.children[4] as Graphics,
     objective: container.children[5] as Sprite,
     ladder: container.children[6] as Graphics,
+    cross: container.children[7] as Graphics,
   }
 }
 
@@ -246,11 +247,13 @@ describe('recorded player rendering', () => {
     renderer.draw(108, 1, { floor: 'upper', flashes: true })
     expect([a.container.alpha, a.flash.visible]).toEqual([1, false])
     renderer.draw(110, 1, { floor: 'lower', flashes: true })
-    expect([a.container.alpha, a.flash.visible, a.container.visible, a.direction.rotation]).toEqual(
-      [0, false, true, -Math.PI / 2],
+    expect([a.flash.visible, a.container.visible, a.direction.rotation]).toEqual(
+      [false, true, -Math.PI / 2],
     )
+    expect([a.body.visible, a.cross.visible, a.container.alpha < 1]).toEqual([false, true, true])
     renderer.draw(100, 1, { floor: 'upper', flashes: true })
     expect([a.container.alpha, a.flash.visible, a.container.visible]).toEqual([1, true, true])
+    expect([a.body.visible, a.cross.visible]).toEqual([true, false])
     renderer.draw(100, 1, { floor: 'upper', flashes: false })
     expect([a.container.alpha, a.flash.visible]).toEqual([1, false])
     renderer.container.destroy({ children: true })
