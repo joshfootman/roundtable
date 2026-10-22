@@ -7,6 +7,7 @@ import {
   type IntroEvent,
   type IntroState,
   type IntroTeam,
+  type SwitchCast,
 } from './intro'
 import './intro.css'
 
@@ -21,7 +22,7 @@ export function DemoIntro({
   state,
   dispatch,
 }: {
-  cast: IntroCast
+  cast: IntroCast | SwitchCast
   state: IntroState
   dispatch: (event: IntroEvent) => void
 }) {
@@ -29,17 +30,20 @@ export function DemoIntro({
   const photo = React.useRef<HTMLImageElement>(null)
 
   // The map beat starts once its photo can be drawn, so an uncached one never pops in partway.
-  const [photoReady, setPhotoReady] = React.useState(false)
+  const opening = 'title' in cast
+  // A side switch has no photo: it wipes on straight over the HUD.
+  const [photoReady, setPhotoReady] = React.useState(!opening)
   React.useEffect(() => {
+    if (!opening) return
     let current = true
     const ready = () => current && setPhotoReady(true)
     photo.current!.decode().then(ready, ready)
     return () => {
       current = false
     }
-  }, [])
+  }, [opening])
 
-  const lineupReady = cast.lineup !== undefined
+  const lineupReady = opening && cast.lineup !== undefined
   React.useEffect(() => {
     if (lineupReady) dispatch('lineup-ready')
   }, [lineupReady, dispatch])
@@ -85,22 +89,27 @@ export function DemoIntro({
   const reached = beats.findIndex((beat) => beat === state.phase)
   const shown = (beat: IntroBeat) => beats.indexOf(beat) <= reached
   const covered = (beat: IntroBeat) => beats.indexOf(beat) < reached || undefined
-  const lineup = cast.lineup
+  const lineup = opening ? cast.lineup : undefined
 
   return (
     <div
       ref={overlay}
       aria-hidden="true"
       data-phase={state.phase}
+      data-kind={opening ? 'opening' : 'switch'}
       className="intro"
       onClick={() => dispatch('skip')}
     >
-      <div className="intro-photo" data-ready={photoReady || undefined}>
-        <img ref={photo} src={cast.map.photo} alt="" />
-        <img src={cast.map.photo} alt="" className="intro-blur intro-blur-near" />
-        <img src={cast.map.photo} alt="" className="intro-blur intro-blur-far" />
-      </div>
-      {photoReady && (
+      {opening ? (
+        <div className="intro-photo" data-ready={photoReady || undefined}>
+          <img ref={photo} src={cast.map.photo} alt="" />
+          <img src={cast.map.photo} alt="" className="intro-blur intro-blur-near" />
+          <img src={cast.map.photo} alt="" className="intro-blur intro-blur-far" />
+        </div>
+      ) : (
+        <SwitchPage cast={cast} />
+      )}
+      {photoReady && opening && (
         <div className="intro-page" data-page="map" data-covered={covered('map')}>
           <p className="intro-title">{cast.title}</p>
           <p className="intro-map-name">{cast.map.name}</p>
@@ -135,7 +144,6 @@ function TeamPage({
   team: IntroTeam
   covered: true | undefined
 }) {
-  const flank = (rowCopies - 1) / 2
   return (
     <div
       className="intro-page"
@@ -143,36 +151,11 @@ function TeamPage({
       data-covered={covered}
       style={
         {
-          '--intro-chars': team.tag.length,
-          '--intro-copies': rowCopies,
+          '--intro-chars': team.name.length,
         } as React.CSSProperties
       }
     >
-      <div className="intro-wall">
-        {wallRows.map((row) => (
-          <div
-            key={row}
-            className="intro-wall-row"
-            style={
-              {
-                '--intro-k': Math.abs(row),
-                // Every other row sits half a name along, like brickwork.
-                '--intro-brick': Math.abs(row) % 2,
-              } as React.CSSProperties
-            }
-          >
-            {row === 0 ? (
-              <>
-                <Hollow tag={team.tag} copies={flank} />
-                <span className="intro-team-name">{team.tag}</span>
-                <Hollow tag={team.tag} copies={flank} />
-              </>
-            ) : (
-              <Hollow tag={team.tag} copies={rowCopies} />
-            )}
-          </div>
-        ))}
-      </div>
+      <Wall text={team.name} />
       <ol className="intro-players">
         {team.players.map((player) => (
           <li key={player.steamId} className="intro-player frame-field">
@@ -189,6 +172,110 @@ function TeamPage({
           </li>
         ))}
       </ol>
+    </div>
+  )
+}
+
+function Wall({ text }: { text: string }) {
+  const flank = (rowCopies - 1) / 2
+  return (
+    <div className="intro-wall" style={{ '--intro-copies': rowCopies } as React.CSSProperties}>
+      {wallRows.map((row) => (
+        <div
+          key={row}
+          className="intro-wall-row"
+          style={
+            {
+              '--intro-k': Math.abs(row),
+              // Every other row sits half a name along, like brickwork.
+              '--intro-brick': Math.abs(row) % 2,
+            } as React.CSSProperties
+          }
+        >
+          {row === 0 ? (
+            <>
+              <Hollow tag={text} copies={flank} />
+              <span className="intro-team-name">{text}</span>
+              <Hollow tag={text} copies={flank} />
+            </>
+          ) : (
+            <Hollow tag={text} copies={rowCopies} />
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/*
+ * Halftime and overtime: the headline as a wall, and the handoff underneath rebuilds the HUD with
+ * the teams on their new sides.
+ */
+function SwitchPage({ cast }: { cast: SwitchCast }) {
+  return (
+    <div
+      className="intro-page"
+      data-page="switch"
+      style={{ '--intro-chars': cast.headline.length } as React.CSSProperties}
+    >
+      <Wall text={cast.headline} />
+      <div className="intro-tables">
+        <StatTable team={cast.lineup.ct} />
+        <StatTable team={cast.lineup.t} />
+      </div>
+    </div>
+  )
+}
+
+const stats = [
+  ['kills', 'Kills'],
+  ['deaths', 'Deaths'],
+  ['assists', 'Assists'],
+] as const
+
+/**
+ * A team's half, built from the HUD's own pieces on opaque surfaces: its half of the scoreboard
+ * over its players as their cards show them, best fragger first. No side colours, as the sides are
+ * about to swap.
+ */
+function StatTable({ team }: { team: SwitchCast['lineup']['ct'] }) {
+  const players = [...team.players].sort((a, b) => b.kills - a.kills || a.deaths - b.deaths)
+  return (
+    <div className="intro-table flex w-[min(30cqw,26rem)] flex-col gap-1 text-foreground tabular-nums">
+      <div className="relative z-10 flex h-14 items-center gap-3 rounded-field bg-canvas px-4">
+        {team.logo && <img src={team.logo} alt="" className="size-9 shrink-0 object-contain" />}
+        <span className="min-w-0 flex-1 truncate text-2xl font-bold uppercase">{team.name}</span>
+        {team.score !== undefined && (
+          <span className="text-[7rem] leading-none font-extrabold tracking-tight">
+            {team.score}
+          </span>
+        )}
+      </div>
+      <div className="mt-4 flex justify-end rounded-control bg-canvas px-3 py-1.5 text-2xs font-semibold text-muted uppercase">
+        {stats.map(([stat, label]) => (
+          <span key={stat} className="w-14 text-right">
+            {label}
+          </span>
+        ))}
+      </div>
+      {players.map((player) => (
+        <div
+          key={player.steamId}
+          className="player-texture flex items-center gap-3 rounded-control bg-canvas px-3 py-2.5"
+          style={playerTexture(player.number)}
+        >
+          <span className="min-w-0 flex-1 truncate text-lg leading-5.5 font-bold">
+            {player.name}
+          </span>
+          <span className="flex font-semibold">
+            {stats.map(([stat]) => (
+              <span key={stat} className="w-14 text-right">
+                {player[stat]}
+              </span>
+            ))}
+          </span>
+        </div>
+      ))}
     </div>
   )
 }

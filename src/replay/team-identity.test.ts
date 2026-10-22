@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { halftimeBefore, roundTeams } from './team-identity'
+import { halftimeBefore, roundTeams, sidesSwitchBefore } from './team-identity'
 
 function halftimeRound(
   number: number,
@@ -76,4 +76,16 @@ test('uses CT/T without logos for missing names and keeps local or unfamiliar cl
   expect(roundTeams({ teamNames: { ct: 'Vitality', t: 'FaZe Clan' } }).ct).toEqual({
     name: 'Vitality',
   })
+})
+
+test('switches sides at halftime and as each overtime starts, not within one', () => {
+  const named = (number: number, ct: string, t: string, overtime = 0) => ({
+    ...halftimeRound(number, [], { ct, t }),
+    overtime,
+  })
+  expect(sidesSwitchBefore(named(12, 'A', 'B'), named(13, 'B', 'A'))).toBe(true)
+  expect(sidesSwitchBefore(named(11, 'A', 'B'), named(12, 'A', 'B'))).toBe(false)
+  expect(sidesSwitchBefore(named(24, 'A', 'B'), named(25, 'B', 'A', 1))).toBe(true)
+  expect(sidesSwitchBefore(named(30, 'A', 'B', 1), named(31, 'A', 'B', 2))).toBe(true)
+  expect(sidesSwitchBefore(named(25, 'B', 'A', 1), named(26, 'B', 'A', 1))).toBe(false)
 })

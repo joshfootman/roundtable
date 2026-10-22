@@ -44,7 +44,7 @@ export function DemoMap({
   map,
   round,
   onPlayback,
-  onResult,
+  onMoment,
   camera,
   onCamera,
   drawing,
@@ -53,7 +53,7 @@ export function DemoMap({
   map: MapDefinition
   round?: ReplayRound
   onPlayback?: (state: DemoPlaybackState) => void
-  onResult?: (outcome: ReplayRound['outcome'] | null) => void
+  onMoment?: (moment: 'start' | 'result' | null) => void
   camera?: CameraState
   onCamera?: (state: DemoCameraState) => void
   drawing?: DrawingConfiguration
@@ -128,10 +128,11 @@ export function DemoMap({
           },
           onMove({ from, to, cause }) {
             if (cancelled) return
-            if (cause !== 'advance') onResult?.(null)
+            if (cause !== 'advance') onMoment?.(null)
+            else if (from === round.liveStartTick) onMoment?.('start')
             else if (round.outcome && from < round.resultTick && to >= round.resultTick) {
               onPlayback?.({ status: 'ready', controller, snapshot: clock.getSnapshot(), floor })
-              onResult?.(round.outcome)
+              onMoment?.('result')
             }
           },
           setRunning(running) {
@@ -170,7 +171,7 @@ export function DemoMap({
       loop?.stop()
       layer?.destroy()
     }
-  }, [map, scene, round, onPlayback, onResult, playOnLoad])
+  }, [map, scene, round, onPlayback, onMoment, playOnLoad])
 
   useEffect(() => {
     const element = host.current!

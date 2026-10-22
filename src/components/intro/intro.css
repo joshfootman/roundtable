@@ -28,6 +28,9 @@
   --intro-hollow-opacity: 0.4;
   --intro-players-at: 900ms;
 
+  /* Halftime and overtime, a single page between rounds: long enough to take in the tables. */
+  --intro-switch-dwell: 8000ms;
+
   /*
    * Building a surface, the same for the intro's player cards as for the HUD: the surface grows
    * into place, then its contents fade in.
@@ -61,6 +64,11 @@
   background: var(--color-stage);
   cursor: default;
   user-select: none;
+}
+
+/* A side switch wipes its page on over the live HUD, so the overlay itself is see-through. */
+.intro[data-kind='switch'] {
+  background: none;
 }
 
 /* Below every page, so its slow push never holds a beat up. */
@@ -217,6 +225,37 @@
 .intro-page[data-page='t'] {
   --intro-accent: var(--color-t);
   --intro-figure: url('/images/agents/t.svg');
+}
+
+/* Halftime and overtime belong to neither side, so the page is the stage's own colours. */
+.intro-page[data-page='switch'] {
+  --intro-field: var(--color-stage);
+  --intro-ink: var(--color-foreground);
+  --intro-accent: var(--color-foreground);
+  --intro-scrim: 94%;
+  --intro-tint: 10%;
+  --intro-page-dwell: var(--intro-switch-dwell);
+}
+
+/* Where the team pages put their players, each side's half in numbers, built as a card is. */
+.intro-tables {
+  position: absolute;
+  inset-inline: 0;
+  top: 46%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2cqw;
+}
+
+.intro-table {
+  animation: intro-build-surface var(--intro-surface-in) var(--ease-out-expo)
+    var(--intro-players-at) both;
+
+  & > * {
+    animation: intro-build-contents var(--intro-contents-in) ease-out
+      calc(var(--intro-players-at) + var(--intro-contents-after)) both;
+  }
 }
 
 /* Covered pages leave on the same blade that brings the next one on. */
@@ -447,8 +486,8 @@
   }
 }
 
-/* The HUD waits under the intro until the handoff builds it in. */
-.demo-stage[data-intro]:not([data-intro='handoff'])
+/* The HUD waits under the intro until the handoff builds it in. A side switch wipes over it. */
+.demo-stage[data-intro]:not([data-intro='handoff'], [data-intro='switch'])
   :is(
     .demo-round-controls,
     .demo-map-controls,

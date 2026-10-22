@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { advanceIntro, teamTag, type IntroEvent, type IntroState } from './intro'
+import { advanceIntro, type IntroEvent, type IntroState } from './intro'
 
 const opening: IntroState = { phase: 'map', mapShown: false, lineupReady: false }
 const play = (events: IntroEvent[], from: IntroState = opening) => events.reduce(advanceIntro, from)
@@ -37,6 +37,15 @@ describe('advanceIntro', () => {
     expect(advanceIntro(state, 'beat-shown')).toEqual({ phase: 'done' })
   })
 
+  it('runs a side switch as one page and the handoff, only once the intro is done', () => {
+    const done: IntroState = { phase: 'done' }
+    expect(play(['switch-sides'], done)).toEqual({ phase: 'switch' })
+    expect(play(['switch-sides', 'beat-shown'], done)).toEqual({ phase: 'handoff' })
+    expect(play(['switch-sides', 'beat-shown', 'beat-shown'], done)).toEqual({ phase: 'done' })
+    expect(play(['switch-sides', 'skip'], done)).toEqual({ phase: 'done' })
+    expect(play(['switch-sides'])).toEqual(opening)
+  })
+
   it('ignores the map and round events once past the map', () => {
     expect(play(['map-shown', 'lineup-ready'], { phase: 't' })).toEqual({ phase: 't' })
   })
@@ -45,19 +54,5 @@ describe('advanceIntro', () => {
     expect(play(['skip'])).toEqual({ phase: 'done' })
     expect(play(['skip'], { phase: 't' })).toEqual({ phase: 'done' })
     expect(play(['skip'], { phase: 'handoff' })).toEqual({ phase: 'done' })
-  })
-})
-
-describe('teamTag', () => {
-  it('shortens the names teams are known by', () => {
-    expect(teamTag('FaZe Clan')).toBe('FAZE')
-    expect(teamTag('Natus Vincere')).toBe('NAVI')
-    expect(teamTag('Team Spirit')).toBe('SPIRIT')
-  })
-
-  it('upper-cases any other name', () => {
-    expect(teamTag('Vitality')).toBe('VITALITY')
-    expect(teamTag('The MongolZ')).toBe('THE MONGOLZ')
-    expect(teamTag('constructor')).toBe('CONSTRUCTOR')
   })
 })

@@ -21,12 +21,14 @@ import { ExampleDemos } from '#/components/ExampleDemos'
 import { examples, type ExampleId } from '#/demo/examples'
 import { playerCardsAtTick } from '#/replay/player-cards'
 import { DemoKillFeed, DemoKillFeedDropdown } from '#/components/DemoKillFeed'
-import { DemoRoundWin } from '#/components/DemoRoundWin'
+import { DemoRoundCallout } from '#/components/DemoRoundCallout'
+import { winCallout } from '#/replay/round-callout'
+import { sidesSwitchBefore } from '#/replay/team-identity'
 import { DemoShortcutHelp } from './DemoShortcutHelp'
 import { useReplayShortcuts } from './useReplayShortcuts'
 import { DemoDrawingControl } from './DemoDrawingControl'
 import { DemoIntro } from './intro/DemoIntro'
-import { advanceIntro, introCast, introEnabled, startIntro } from './intro/intro'
+import { advanceIntro, introCast, introEnabled, startIntro, switchCast } from './intro/intro'
 import {
   emptyFloorDrawings,
   type DrawingColor,
@@ -275,13 +277,30 @@ function Demo({
   })
   const [pickerFocusRound, setPickerFocusRound] = React.useState<number>()
   const [intro, dispatchIntro] = React.useReducer(advanceIntro, undefined, startIntro)
+  const [sideSwitch, dispatchSideSwitch] = React.useReducer(advanceIntro, { phase: 'done' })
+  const [outgoing, setOutgoing] = React.useState<ReplayRound>()
   const [selection, setSelection] = React.useState({
     number: round?.number,
     previous: undefined as number | undefined,
   })
   if (selection.number !== round?.number) {
     setSelection({ number: round?.number, previous: selection.number })
+    // Playing on into a new half is worth stopping for; jumping straight to one isn't.
+    const previous = state.rounds.find((candidate) => candidate.number === selection.number)
+    if (
+      round &&
+      previous?.number === round.number - 1 &&
+      sidesSwitchBefore(previous, round) &&
+      intro.phase === 'done' &&
+      introEnabled()
+    ) {
+      setOutgoing(previous)
+      dispatchSideSwitch('switch-sides')
+    }
   }
+  // The round just played stays on stage under the page, and the next one arrives with the handoff.
+  const shown = (sideSwitch.phase === 'switch' && outgoing) || round
+  const overlay = intro.phase !== 'done' ? intro : sideSwitch
   // A new round remounts its controls, so the focused control is found again by its name.
   const stage = React.useRef<HTMLDivElement>(null)
   const refocus = React.useRef<{ round: number; label: string }>(undefined)
@@ -321,36 +340,36 @@ function Demo({
     >
       <div
         ref={stage}
-        data-intro={intro.phase === 'done' ? undefined : intro.phase}
+        data-intro={overlay.phase === 'done' ? undefined : overlay.phase}
         className="demo-stage relative -mt-(--stage-lift) min-h-0 flex-1 rounded-inset-shell bg-stage p-3 transition-[--stage-lift] duration-500 ease-out-expo motion-reduce:transition-none replay-desktop:overflow-hidden replay-desktop:p-4 replay-desktop:clip-stage-notch theater:[--stage-lift:calc(4.75rem-var(--spacing-shell))] theater:starting:[--stage-lift:0px]"
       >
-        {round ? (
+        {shown ? (
           <DemoRound
             key={map.name}
             map={map}
-            round={round}
+            round={shown}
             rounds={state.rounds}
             example={example}
             previousRound={selection.previous}
-            focusRoundPicker={pickerFocusRound === round.number}
+            focusRoundPicker={pickerFocusRound === shown.number}
             camera={camera}
-            drawings={drawings[round.startTick] ?? emptyFloorDrawings}
+            drawings={drawings[shown.startTick] ?? emptyFloorDrawings}
             pen={pen}
             onPenChange={setPen}
             onStroke={(floor, stroke) =>
               setDrawings((previous) => {
-                const floors = previous[round.startTick] ?? emptyFloorDrawings
+                const floors = previous[shown.startTick] ?? emptyFloorDrawings
                 return {
                   ...previous,
-                  [round.startTick]: { ...floors, [floor]: [...floors[floor], stroke] },
+                  [shown.startTick]: { ...floors, [floor]: [...floors[floor], stroke] },
                 }
               })
             }
             onClear={(floor) =>
               setDrawings((previous) => ({
                 ...previous,
-                [round.startTick]: {
-                  ...(previous[round.startTick] ?? emptyFloorDrawings),
+                [shown.startTick]: {
+                  ...(previous[shown.startTick] ?? emptyFloorDrawings),
                   [floor]: [],
                 },
               }))
@@ -366,6 +385,7 @@ function Demo({
               replay.selectRound(number)
             }}
             autoPlay={autoPlay && intro.phase === 'done'}
+            held={sideSwitch.phase !== 'done'}
             onAutoPlay={onAutoPlay}
           />
         ) : (
@@ -373,6 +393,13 @@ function Demo({
         )}
         {intro.phase !== 'done' && (
           <DemoIntro cast={introCast(state, map, example)} state={intro} dispatch={dispatchIntro} />
+        )}
+        {round && outgoing && sideSwitch.phase !== 'done' && (
+          <DemoIntro
+            cast={switchCast(state.rounds, outgoing, round, example)}
+            state={sideSwitch}
+            dispatch={dispatchSideSwitch}
+          />
         )}
       </div>
     </div>
@@ -388,6 +415,7 @@ function DemoRound({
   previousRound,
   focusRoundPicker,
   autoPlay,
+  held,
   onAutoPlay,
   camera,
   drawings,
@@ -410,6 +438,8 @@ function DemoRound({
   previousRound?: number
   focusRoundPicker: boolean
   autoPlay: boolean
+  /** Over a side switch: a round that would play on load waits until it has wiped away. */
+  held: boolean
   onAutoPlay: () => void
 }) {
   const [playback, setPlayback] = React.useState<DemoPlaybackState>({ status: 'loading' })
@@ -435,6 +465,18 @@ function DemoRound({
     if (desktop) onPenChange({ ...pen, enabled: !pen.enabled })
   }
   const playOnLoad = React.useRef(false)
+  const playWhenReleased = React.useRef(false)
+  // Before the map's load effect reads playOnLoad.
+  React.useLayoutEffect(() => {
+    if (!held || !playOnLoad.current) return
+    playOnLoad.current = false
+    playWhenReleased.current = true
+  }, [held])
+  React.useEffect(() => {
+    if (held || !playWhenReleased.current || playback.status !== 'ready') return
+    playWhenReleased.current = false
+    playback.controller.play()
+  }, [held, playback])
   function selectRound(number: number, focusPicker?: boolean) {
     playOnLoad.current = true
     onSelectRound(number, focusPicker)
@@ -450,26 +492,26 @@ function DemoRound({
     onToggleDrawing: toggleDrawing,
     onClearDrawing: () => onClear(floor),
   })
-  const [outcome, setOutcome] = React.useState<ReplayRound['outcome'] | null>(null)
+  const [moment, setMoment] = React.useState<{ id: number; kind: 'start' | 'result' } | null>(null)
   const [highlightNextRound, setHighlightNextRound] = React.useState(false)
-  // The round view stays mounted across rounds; a result belongs only to the round that ended.
+  // The round view stays mounted across rounds; a callout belongs only to the round it announced.
   const [shownRound, setShownRound] = React.useState(round)
   if (shownRound !== round) {
     setShownRound(round)
     setPlayback({ status: 'loading' })
-    setOutcome(null)
+    setMoment(null)
     setHighlightNextRound(false)
   }
-  const onResult = React.useCallback((result: ReplayRound['outcome'] | null) => {
-    setOutcome(result)
-    setHighlightNextRound(Boolean(result))
+  const onMoment = React.useCallback((kind: 'start' | 'result' | null) => {
+    setMoment((current) => kind && { id: (current?.id ?? 0) + 1, kind })
+    setHighlightNextRound(kind === 'result')
   }, [])
-
-  React.useEffect(() => {
-    if (!outcome) return
-    const timeout = window.setTimeout(() => setOutcome(null), 2000)
-    return () => window.clearTimeout(timeout)
-  }, [outcome])
+  const callout =
+    moment?.kind === 'start'
+      ? { kind: 'round' as const, number: round.number }
+      : moment?.kind === 'result' && round.outcome
+        ? winCallout(round.outcome)
+        : null
 
   React.useEffect(() => {
     if (!highlightNextRound) return
@@ -570,7 +612,7 @@ function DemoRound({
           camera={camera}
           onCamera={setCameraState}
           onPlayback={setPlayback}
-          onResult={onResult}
+          onMoment={onMoment}
           playOnLoad={playOnLoad}
           drawing={{
             scope: `${round.startTick}:${floor}`,
@@ -580,7 +622,9 @@ function DemoRound({
             onStroke: (stroke) => onStroke(floor, stroke),
           }}
         />
-        {outcome && <DemoRoundWin outcome={outcome} />}
+        {moment && callout && (
+          <DemoRoundCallout key={moment.id} callout={callout} onDone={() => setMoment(null)} />
+        )}
       </div>
       <DemoPlaybackControl round={round} playback={playback} />
       <DemoKillFeed round={round} tick={tick} />

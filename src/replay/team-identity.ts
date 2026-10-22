@@ -45,6 +45,17 @@ export function halftimeBefore(
   return sides.size === 2
 }
 
+/** Halftime or the start of an overtime: the teams are about to play the other side. */
+export function sidesSwitchBefore(
+  previous: HalftimeRound | undefined,
+  current: HalftimeRound,
+): boolean {
+  return (
+    halftimeBefore(previous, current) ||
+    (current.overtime > 0 && previous?.overtime !== current.overtime)
+  )
+}
+
 const recordedNames: Record<string, string> = {
   FaZe: 'FaZe Clan',
   Spirit: 'Team Spirit',
