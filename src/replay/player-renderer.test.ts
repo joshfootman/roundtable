@@ -247,9 +247,11 @@ describe('recorded player rendering', () => {
     renderer.draw(108, 1, { floor: 'upper', flashes: true })
     expect([a.container.alpha, a.flash.visible]).toEqual([1, false])
     renderer.draw(110, 1, { floor: 'lower', flashes: true })
-    expect([a.flash.visible, a.container.visible, a.direction.rotation]).toEqual(
-      [false, true, -Math.PI / 2],
-    )
+    expect([a.flash.visible, a.container.visible, a.direction.rotation]).toEqual([
+      false,
+      true,
+      -Math.PI / 2,
+    ])
     expect([a.body.visible, a.cross.visible, a.container.alpha < 1]).toEqual([false, true, true])
     renderer.draw(100, 1, { floor: 'upper', flashes: true })
     expect([a.container.alpha, a.flash.visible, a.container.visible]).toEqual([1, true, true])
