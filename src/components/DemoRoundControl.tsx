@@ -104,7 +104,7 @@ export function DemoRoundControl({
   return (
     <section
       aria-label="Round controls"
-      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-foreground tabular-nums sm:w-[min(100%,720px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(720px,calc(100%-256px))] replay-desktop:-translate-x-1/2 min-[1728px]:replay-desktop:w-[min(720px,calc(100%-32px))] replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
+      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-foreground tabular-nums sm:w-[min(100%,640px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(640px,calc(100%-256px))] replay-desktop:-translate-x-1/2 min-[1728px]:replay-desktop:w-[min(640px,calc(100%-32px))] replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
     >
       <nav
         aria-label="Round navigation"
@@ -156,7 +156,7 @@ function Team({ identity, reverse = false }: { identity: TeamIdentity; reverse?:
   return (
     <div
       title={identity.name}
-      className={`flex min-w-0 items-center justify-center gap-2 px-1 @min-[560px]:gap-3 @min-[560px]:px-6 ${reverse ? '@min-[560px]:flex-row-reverse @min-[560px]:justify-end' : '@min-[560px]:justify-end'}`}
+      className={`flex min-w-0 items-center justify-center gap-2 px-1 @min-[560px]:gap-4 @min-[560px]:px-6 ${reverse ? '@min-[560px]:flex-row-reverse' : ''}`}
     >
       <span
         className={`text-sm font-bold @min-[560px]:text-2xl ${identity.logo && failedLogo !== identity.logo ? 'sr-only @min-[560px]:not-sr-only' : ''}`}
