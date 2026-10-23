@@ -111,8 +111,17 @@ test('switches sides at halftime and as each overtime starts, not within one', (
 
 test('abbreviates a recorded name to its first three letters or digits', () => {
   expect(
-    ['Vitality', 'FaZe Clan', 'Natus Vincere', 'Inner Circle', 'G2', 'Team Spirit', 'CT'].map(
-      teamAbbreviation,
-    ),
-  ).toEqual(['VIT', 'FAZ', 'NAT', 'INN', 'G2', 'TEA', 'CT'])
+    [
+      'Vitality',
+      'FaZe Clan',
+      'Natus Vincere',
+      'Inner Circle',
+      'G2',
+      'Team Spirit',
+      'CT',
+      'TEAM A',
+      'team_s1mple',
+      'Team',
+    ].map(teamAbbreviation),
+  ).toEqual(['VIT', 'FAZ', 'NAT', 'INN', 'G2', 'SPI', 'CT', 'A', 'S1M', 'TEA'])
 })
