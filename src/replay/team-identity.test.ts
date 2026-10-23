@@ -1,5 +1,11 @@
 import { expect, test } from 'vitest'
-import { halftimeBefore, roundTeams, sidesSwitchBefore, teamAbbreviation } from './team-identity'
+import {
+  halftimeBefore,
+  overtimeBefore,
+  roundTeams,
+  sidesSwitchBefore,
+  teamAbbreviation,
+} from './team-identity'
 
 function halftimeRound(
   number: number,
@@ -25,6 +31,19 @@ test('marks a recorded regulation team swap without assuming a fixed halftime ro
   expect(halftimeBefore(first, { ...second, number: 17 })).toBe(false)
   expect(halftimeBefore({ ...first, overtime: 1 }, second)).toBe(false)
   expect(halftimeBefore(first, { ...second, overtime: 1 })).toBe(false)
+})
+
+test('numbers each overtime at its first round only', () => {
+  const regulation = halftimeRound(24, [])
+  const overtime = (number: number, period: number) => ({
+    ...halftimeRound(number, []),
+    overtime: period,
+  })
+  expect(overtimeBefore(regulation, overtime(25, 1))).toBe(1)
+  expect(overtimeBefore(overtime(25, 1), overtime(26, 1))).toBeUndefined()
+  expect(overtimeBefore(overtime(30, 1), overtime(31, 2))).toBe(2)
+  expect(overtimeBefore(undefined, overtime(37, 3))).toBe(3)
+  expect(overtimeBefore(halftimeRound(12, []), halftimeRound(13, []))).toBeUndefined()
 })
 
 test('does not mark unchanged sides or a clan rename as halftime', () => {

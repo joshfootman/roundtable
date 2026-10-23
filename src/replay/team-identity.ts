@@ -45,15 +45,22 @@ export function halftimeBefore(
   return sides.size === 2
 }
 
+/** The overtime `current` opens, when it is that overtime's first round. */
+export function overtimeBefore(
+  previous: HalftimeRound | undefined,
+  current: HalftimeRound,
+): number | undefined {
+  return current.overtime > 0 && previous?.overtime !== current.overtime
+    ? current.overtime
+    : undefined
+}
+
 /** Halftime or the start of an overtime: the teams are about to play the other side. */
 export function sidesSwitchBefore(
   previous: HalftimeRound | undefined,
   current: HalftimeRound,
 ): boolean {
-  return (
-    halftimeBefore(previous, current) ||
-    (current.overtime > 0 && previous?.overtime !== current.overtime)
-  )
+  return halftimeBefore(previous, current) || overtimeBefore(previous, current) !== undefined
 }
 
 export function roundTeams(
