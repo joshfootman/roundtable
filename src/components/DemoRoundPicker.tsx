@@ -1,7 +1,7 @@
 import { Fragment, useRef, useEffect } from 'react'
 import { Popover } from '@base-ui/react/popover'
 import type { ReplayRound } from '#/replay/types'
-import { halftimeBefore } from '#/replay/team-identity'
+import { halftimeBefore, overtimeBefore } from '#/replay/team-identity'
 import { RollingNumber } from './RollingNumber'
 
 export function DemoRoundPicker({
@@ -62,12 +62,16 @@ export function DemoRoundPicker({
                 const score =
                   candidate.score &&
                   `${candidate.score.ct + Number(outcome?.winner === 'ct')}–${candidate.score.t + Number(outcome?.winner === 't')}`
+                const overtime = overtimeBefore(rounds[index - 1], candidate)
+                const divider = halftimeBefore(rounds[index - 1], candidate)
+                  ? 'Halftime'
+                  : overtime && `Overtime ${overtime}`
                 return (
                   <Fragment key={candidate.number}>
-                    {halftimeBefore(rounds[index - 1], candidate) && (
+                    {divider && (
                       <div className="flex items-center gap-2 px-3 py-1 text-xs text-muted">
                         <span className="h-px flex-1 bg-line" />
-                        <span>Halftime</span>
+                        <span>{divider}</span>
                         <span className="h-px flex-1 bg-line" />
                       </div>
                     )}
