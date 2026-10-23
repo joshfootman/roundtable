@@ -81,6 +81,7 @@ export function roundTeams(
 /** The scoreboard's short form: the first three letters or digits of the name the demo records. */
 export function teamAbbreviation(name: string): string {
   return name
+    .replace(/^team[\s_-]+(?=\S)/i, '')
     .replace(/[^\p{L}\p{N}]/gu, '')
     .slice(0, 3)
     .toUpperCase()
