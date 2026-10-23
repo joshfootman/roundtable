@@ -1,4 +1,5 @@
 import { Container, Graphics, Sprite, type Texture } from 'pixi.js'
+import { createIconBadge, paintIconBadge } from './icon-badge.ts'
 import { visibleOnFloor, worldToMap, type MapDefinition, type MapFloor } from './maps.ts'
 import { sampleAtTick, recordAtTick } from './frames.ts'
 import { scenePlayers, type ScenePlayer } from './scene.ts'
@@ -13,14 +14,8 @@ import {
 } from './utility.ts'
 
 const PROJECTILE_ICON_SIZE = 10
-const AREA_ICON_SIZE = { cloud: 18, fire: 22, decoy: 12 }
 /** CS2 decoys fire for about 15 seconds; the recording marks only when they start. */
 const DECOY_LIVE_SECONDS = 15
-const DECOY_WAVES = [
-  { radius: 9, spread: 0.5 },
-  { radius: 12, spread: 0.45 },
-]
-const OUTLINE_STEPS = 8
 const SMOKE_BLOOM_SECONDS = 0.6
 /** Tracers start at the edge of the player marker, where the facing arrow sits. */
 const SHOT_MUZZLE_OFFSET = 10
@@ -72,10 +67,12 @@ function arcLift(projectile: ReplayProjectile) {
   return heights.map((height) => (apex > 0 ? height / apex : 0))
 }
 
+export type UtilityIcon = GrenadeKind | 'cloud' | 'fire' | 'burst' | 'sound'
+
 export function createUtilityRenderer(
   round: ReplayRound,
   map: MapDefinition,
-  icons: Readonly<Record<GrenadeKind | 'cloud' | 'fire', Texture>>,
+  icons: Readonly<Record<UtilityIcon, Texture>>,
   background: number,
 ) {
   const layers = {
@@ -88,8 +85,7 @@ export function createUtilityRenderer(
   const projectileIcons = new Container({ label: 'projectile-icons' })
   const areaIcons = new Container({ label: 'area-icons' })
   const smokeHoles = new Graphics({ label: 'smoke-holes' })
-  const decoyWaves = new Graphics({ label: 'decoy-waves' })
-  container.addChild(...Object.values(layers), projectileIcons, decoyWaves, areaIcons, smokeHoles)
+  container.addChild(...Object.values(layers), projectileIcons, areaIcons, smokeHoles)
   const decoys = round.detonations.filter((event) => event.kind === 'decoy')
   layers.smokes.setMask({ mask: smokeHoles, inverse: true })
   const smokeBlasts = round.detonations.filter(
@@ -123,31 +119,16 @@ export function createUtilityRenderer(
   }
   let areaIconCount = 0
   function placeAreaIcon(
-    kind: keyof typeof AREA_ICON_SIZE,
+    kind: 'cloud' | 'fire' | 'sound',
     color: number,
     x: number,
     y: number,
     scale: number,
   ) {
-    let badge = areaIcons.children[areaIconCount++] as Container | undefined
-    if (!badge) {
-      badge = areaIcons.addChild(new Container())
-      for (let step = 0; step <= OUTLINE_STEPS; step++) {
-        const sprite = badge.addChild(new Sprite())
-        sprite.anchor.set(0.5)
-        if (step === OUTLINE_STEPS) continue
-        const angle = (step / OUTLINE_STEPS) * Math.PI * 2
-        sprite.position.set(Math.cos(angle), Math.sin(angle))
-      }
-    }
-    const sprites = badge.children as Sprite[]
-    const texture = icons[kind]
-    const fit = AREA_ICON_SIZE[kind] / Math.max(texture.width, texture.height)
-    for (const [step, sprite] of sprites.entries()) {
-      sprite.texture = texture
-      sprite.tint = step === OUTLINE_STEPS ? color : background
-      sprite.scale.set(fit)
-    }
+    const badge =
+      (areaIcons.children[areaIconCount++] as Container | undefined) ??
+      areaIcons.addChild(createIconBadge())
+    paintIconBadge(badge, icons[kind], color, background)
     badge.visible = true
     badge.position.set(x, y)
     badge.scale.set(scale)
@@ -172,7 +153,6 @@ export function createUtilityRenderer(
         layers[key].visible = visibility[key]
       for (const layer of Object.values(layers)) layer.clear()
       smokeHoles.clear()
-      decoyWaves.clear()
       for (const blast of smokeBlasts) {
         const opening = smokeHoleOpening((tick - blast.tick) * round.tickInterval, reducedMotion)
         if (opening <= 0) continue
@@ -183,29 +163,13 @@ export function createUtilityRenderer(
       }
       for (const sprite of areaIcons.children) sprite.visible = false
       areaIconCount = 0
-      decoyWaves.visible = visibility.decoys
       if (visibility.decoys)
         for (const decoy of decoys) {
           const seconds = (tick - decoy.tick) * round.tickInterval
           if (seconds < 0 || seconds >= DECOY_LIVE_SECONDS || !visibleOnFloor(map, floor, decoy.z))
             continue
           const point = worldToMap(map, decoy.x, decoy.y)
-          for (const side of [0, Math.PI])
-            for (const { radius, spread } of DECOY_WAVES) {
-              const r = radius * symbolScale
-              decoyWaves
-                .moveTo(
-                  point.x + Math.cos(side - spread) * r,
-                  point.y + Math.sin(side - spread) * r,
-                )
-                .arc(point.x, point.y, r, side - spread, side + spread)
-            }
-          decoyWaves.stroke({
-            color: utilityAppearance.decoy.color,
-            width: 1.25 * symbolScale,
-            cap: 'round',
-          })
-          placeAreaIcon('decoy', utilityAppearance.decoy.color, point.x, point.y, symbolScale)
+          placeAreaIcon('sound', utilityAppearance.decoy.color, point.x, point.y, symbolScale)
         }
       if (visibility.shots) {
         let shooters: Map<string, ScenePlayer> | undefined

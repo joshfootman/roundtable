@@ -4,7 +4,7 @@ export const utilityAppearance: Record<
   GrenadeKind | GrenadeDetonation['kind'],
   { name: string; color: number }
 > = {
-  flash: { name: 'Flashbang', color: 0xffe9a1 },
+  flash: { name: 'Flashbang', color: 0xffffff },
   he: { name: 'HE grenade', color: 0xef8d7c },
   smoke: { name: 'Smoke grenade', color: 0xb8bcc2 },
   molotov: { name: 'Molotov', color: 0xffb778 },

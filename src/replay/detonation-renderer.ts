@@ -1,4 +1,5 @@
-import { Container, Graphics } from 'pixi.js'
+import { Container, Graphics, type Texture } from 'pixi.js'
+import { createIconBadge, paintIconBadge } from './icon-badge'
 import { visibleOnFloor, worldToMap, type MapDefinition, type MapFloor } from './maps'
 import type { GrenadeDetonation, ReplayRound } from './types'
 import { utilityAppearance } from './utility'
@@ -22,16 +23,19 @@ const BLOOM_LAYERS = [
   { radius: 15, alpha: 0.35 },
   { radius: 10, alpha: 0.6 },
 ]
-const SHARD_COUNT = 9
+/** The badge holds still and solid, fading only over the last quarter so the icon stays legible. */
+function badgeAlpha(progress: number, reducedMotion: boolean) {
+  return reducedMotion ? 1 : Math.min(1, (1 - progress) * 4)
+}
 
 /** A flashbang is harmless light: a soft white bloom with no hard edges, like a camera flash. */
-function flashBurst(): Burst {
+function flashBurst(badge: Container): Burst {
   const bloom = new Container()
   for (const { radius, alpha } of BLOOM_LAYERS)
     bloom.addChild(new Graphics().circle(0, 0, radius).fill({ color: 0xfff6d8, alpha }))
   const core = new Graphics().circle(0, 0, 6).fill(0xffffff)
   const container = new Container({ label: 'flash-burst' })
-  container.addChild(bloom, core)
+  container.addChild(bloom, core, badge)
   return {
     container,
     draw(progress, reducedMotion) {
@@ -40,32 +44,18 @@ function flashBurst(): Burst {
       bloom.alpha = fade(progress)
       core.scale.set(0.6 + outward * 0.6)
       core.alpha = fade(progress, 1.8)
+      badge.alpha = badgeAlpha(progress, reducedMotion)
     },
   }
 }
 
-function starburst(points: number, outer: number, inner: number, rotation: number) {
-  return Array.from({ length: points * 2 }, (_, index) => {
-    const radius = index % 2 ? inner : outer * (index % 4 ? 0.8 : 1)
-    const angle = (index / (points * 2)) * Math.PI * 2 + rotation
-    return [Math.cos(angle) * radius, Math.sin(angle) * radius]
-  }).flat()
-}
-
-/** An HE grenade is lethal: a jagged fireball, a heavy shockwave, flying shards and a scorch cloud. */
-function heBurst(): Burst {
+/** An HE grenade is lethal: a heavy shockwave over a scorch cloud. */
+function heBurst(badge: Container): Burst {
   const color = utilityAppearance.he.color
-  const scorch = new Graphics().circle(0, 0, 13).fill({ color: 0x3a3434, alpha: 0.55 })
+  const scorch = new Graphics().circle(0, 0, 13).fill({ color, alpha: 0.35 })
   const shockwave = new Graphics().circle(0, 0, 10).stroke({ color, width: 2.5 })
-  const fireball = new Graphics().poly(starburst(8, 13, 6, 0.2)).fill(0xef5a3c)
-  const heat = new Graphics().poly(starburst(8, 7, 3.5, 0.6)).fill(0xffd27a)
-  const shards = Array.from({ length: SHARD_COUNT }, (_, index) => {
-    const shard = new Graphics().poly([4, 0, 0, -1.5, 0, 1.5]).fill(color)
-    shard.rotation = (index / SHARD_COUNT) * Math.PI * 2 + 0.4
-    return shard
-  })
   const container = new Container({ label: 'he-burst' })
-  container.addChild(scorch, shockwave, fireball, heat, ...shards)
+  container.addChild(scorch, shockwave, badge)
   return {
     container,
     draw(progress, reducedMotion) {
@@ -74,16 +64,7 @@ function heBurst(): Burst {
       scorch.alpha = Math.min(1, progress * 4) * fade(progress)
       shockwave.scale.set(0.8 + outward * 2.2)
       shockwave.alpha = fade(progress, 1.2)
-      fireball.scale.set(0.7 + outward * 0.5)
-      fireball.alpha = fade(progress, 1.8)
-      heat.scale.set(0.7 + outward * 0.45)
-      heat.alpha = fade(progress, 2.6)
-      for (const [index, shard] of shards.entries()) {
-        const distance = 7 + outward * (12 + (index % 3) * 5)
-        shard.visible = !reducedMotion
-        shard.position.set(Math.cos(shard.rotation) * distance, Math.sin(shard.rotation) * distance)
-        shard.alpha = fade(progress, 1.5)
-      }
+      badge.alpha = badgeAlpha(progress, reducedMotion)
     },
   }
 }
@@ -91,14 +72,24 @@ function heBurst(): Burst {
 const bursts = {
   flash: { seconds: 0.45, create: flashBurst },
   he: { seconds: 0.9, create: heBurst },
-} satisfies Partial<Record<GrenadeDetonation['kind'], { seconds: number; create: () => Burst }>>
+} satisfies Partial<
+  Record<GrenadeDetonation['kind'], { seconds: number; create: (badge: Container) => Burst }>
+>
 
-export function createDetonationRenderer(round: ReplayRound, map: MapDefinition) {
+export function createDetonationRenderer(
+  round: ReplayRound,
+  map: MapDefinition,
+  icons: Readonly<Record<keyof typeof bursts, Texture>>,
+  background: number,
+) {
   const container = new Container({ label: 'detonations' })
   const events = round.detonations.flatMap((event) => {
     if (!(event.kind in bursts)) return []
-    const { seconds, create } = bursts[event.kind as keyof typeof bursts]
-    const burst = create()
+    const kind = event.kind as keyof typeof bursts
+    const { seconds, create } = bursts[kind]
+    const badge = createIconBadge()
+    paintIconBadge(badge, icons[kind], utilityAppearance[kind].color, background)
+    const burst = create(badge)
     burst.container.visible = false
     container.addChild(burst.container)
     return [{ event, seconds, burst, point: worldToMap(map, event.x, event.y) }]
