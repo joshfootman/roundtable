@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Container } from 'pixi.js'
+import { Texture, type Container, type Sprite } from 'pixi.js'
 import { createDetonationRenderer } from './detonation-renderer'
 import type { MapDefinition } from './maps'
 import { testRound } from './test-round'
@@ -29,7 +29,14 @@ function renderer() {
       ],
     }),
     map,
+    { flash: Texture.WHITE, he: Texture.WHITE },
+    0x111111,
   )
+}
+
+function badge(burst: Container) {
+  const badge = burst.children.at(-1) as Container
+  return [(badge.children.at(-1) as Sprite).tint, Number(badge.alpha.toFixed(2))]
 }
 
 function state(burst: Container) {
@@ -45,16 +52,23 @@ describe('grenade detonation bursts', () => {
       'flash-burst',
       'he-burst',
     ])
-    expect([flash!.children.length, he!.children.length]).toEqual([2, 13])
+    expect([flash!.children.length, he!.children.length]).toEqual([3, 3])
     detonations.draw(99, 1, true, 'upper')
     expect([flash!.visible, he!.visible]).toEqual([false, false])
     detonations.draw(101, 1, true, 'upper')
     expect([flash!.x, flash!.y, he!.x, he!.y]).toEqual([10, 20, 30, 40])
     expect(state(flash!)).toEqual([true, 2.01, 0.6])
     expect(state(he!)).toEqual([true, 0.87, 0.35])
+    expect([badge(flash!), badge(he!)]).toEqual([
+      [0xffffff, 1],
+      [0xef8d7c, 1],
+    ])
     detonations.draw(104, 1, true, 'upper')
     expect(state(flash!)).toEqual([true, 2.4, 0.01])
     expect(state(he!)).toEqual([true, 1.08, 0.31])
+    expect(badge(flash!)[1]).toBeLessThan(1)
+    detonations.draw(108, 1, true, 'upper')
+    expect(badge(he!)[1]).toBeLessThan(1)
     detonations.draw(106, 1, true, 'upper')
     expect([flash!.visible, he!.visible]).toEqual([false, true])
     detonations.draw(109, 1, true, 'upper')
@@ -73,9 +87,11 @@ describe('grenade detonation bursts', () => {
     expect(flash!.visible).toBe(false)
     detonations.draw(100, 2, true, 'upper', true)
     expect([flash!.scale.x, ...state(flash!)]).toEqual([2, true, 2.4, 1])
+    detonations.draw(104, 2, true, 'upper', true)
+    expect(badge(flash!)[1]).toBe(1)
     const he = detonations.container.children[1] as Container
     detonations.draw(100, 1, true, 'upper', true)
-    expect(he.children.filter((child) => child.visible)).toHaveLength(4)
+    expect(he.children.filter((child) => child.visible)).toHaveLength(3)
     detonations.container.destroy({ children: true })
   })
 })
