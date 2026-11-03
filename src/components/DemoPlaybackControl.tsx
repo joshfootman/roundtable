@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import type { DemoPlaybackState } from './DemoMap'
 import type { ReplayRound } from '#/replay/types'
 
@@ -18,9 +18,11 @@ function timelineProgress(round: ReplayRound, tick: number) {
 export function DemoPlaybackControl({
   round,
   playback,
+  actions,
 }: {
   round: ReplayRound
   playback: DemoPlaybackState
+  actions?: ReactNode
 }) {
   const scrub = useRef<{ pointer: number; resume: boolean } | null>(null)
   const ready = playback.status === 'ready'
@@ -60,7 +62,7 @@ export function DemoPlaybackControl({
   return (
     <section
       aria-label="Playback controls"
-      className="demo-playback-controls z-20 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 frame-panel bg-panel px-4 py-2 text-base text-foreground tabular-nums sm:w-[min(100%,640px)] sm:self-center replay-desktop:absolute replay-desktop:right-4 replay-desktop:bottom-4 replay-desktop:left-4 replay-desktop:w-auto replay-desktop:grid-cols-[auto_minmax(0,1fr)_auto] replay-desktop:p-2 replay-landscape:col-start-1 replay-landscape:row-start-2 replay-landscape:w-full"
+      className="demo-playback-controls relative z-20 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 frame-panel px-4 py-2 text-base text-foreground tabular-nums sm:w-[min(100%,640px)] sm:self-center replay-desktop:absolute replay-desktop:right-4 replay-desktop:bottom-4 replay-desktop:left-4 replay-desktop:w-auto replay-desktop:grid-cols-[auto_minmax(0,1fr)_auto] replay-desktop:p-2 replay-landscape:col-start-1 replay-landscape:row-start-2 replay-landscape:w-full"
     >
       <button
         type="button"
@@ -110,13 +112,16 @@ export function DemoPlaybackControl({
         onLostPointerCapture={finishScrub}
         onBlur={finishScrub}
       />
-      <div
-        className="demo-playback-time col-start-2 row-start-2 flex shrink-0 items-center gap-1 justify-self-end px-2 text-xs whitespace-nowrap replay-desktop:col-start-3 replay-desktop:row-start-1 replay-desktop:text-base"
-        aria-label="Playback time"
-      >
-        <time>{elapsed}</time>
-        <span aria-hidden="true">/</span>
-        <time>{duration}</time>
+      <div className="col-start-2 row-start-2 flex items-center justify-self-end replay-desktop:col-start-3 replay-desktop:row-start-1">
+        <div
+          className="demo-playback-time flex shrink-0 items-center gap-1 px-2 text-xs whitespace-nowrap replay-desktop:text-base"
+          aria-label="Playback time"
+        >
+          <time>{elapsed}</time>
+          <span aria-hidden="true">/</span>
+          <time>{duration}</time>
+        </div>
+        {actions}
       </div>
     </section>
   )

@@ -32,7 +32,6 @@ for (const example of ['faze-vs-vitality-m1-inferno', 'astralis-vs-mouz-m2-nuke'
         continue
       }
       const navigation = controls.getByRole('group', { name: 'Map navigation', exact: true })
-      const drawing = controls.getByRole('group', { name: 'Drawing and shortcuts', exact: true })
       const toolbar = (await controls.boundingBox())!
       const hud = (await page.getByRole('region', { name: 'Round controls' }).boundingBox())!
       const stage = (await page.locator('.demo-stage').boundingBox())!
@@ -45,31 +44,29 @@ for (const example of ['faze-vs-vitality-m1-inferno', 'astralis-vs-mouz-m2-nuke'
       expect(toolbar.x + toolbar.width + 8).toBeLessThanOrEqual(hud.x)
       expect(Math.abs(hud.x + hud.width / 2 - stage.x - stage.width / 2)).toBeLessThan(1)
       const navigationBounds = (await navigation.boundingBox())!
-      const drawingBounds = (await drawing.boundingBox())!
-      if (viewport.width < 1728) {
-        expect(navigationBounds.y).toBe(drawingBounds.y)
-      } else {
-        expect(drawingBounds.y).toBeGreaterThanOrEqual(
-          navigationBounds.y + navigationBounds.height + 8,
-        )
-      }
-      for (const group of [navigation, drawing]) {
-        const buttons = await group.getByRole('button').all()
-        const bounds = await Promise.all(buttons.map((button) => button.boundingBox()))
-        for (const [index, button] of bounds.entries()) {
-          expect(button).not.toBeNull()
-          expect(button!.x).toBe(bounds[0]!.x)
-          if (index > 0) {
-            expect(button!.y).toBeGreaterThanOrEqual(
-              bounds[index - 1]!.y + bounds[index - 1]!.height,
-            )
-          }
-          expect(button!.width).toBeGreaterThanOrEqual(44)
-          expect(button!.height).toBeGreaterThanOrEqual(44)
-          expect(button!.x).toBeGreaterThanOrEqual(0)
-          expect(button!.x + button!.width).toBeLessThanOrEqual(viewport.width)
-          expect(button!.y + button!.height).toBeLessThanOrEqual(viewport.height)
+      expect(navigationBounds.y).toBe(toolbar.y)
+      const playback = page.getByRole('region', { name: 'Playback controls', exact: true })
+      const pen = (await playback
+        .getByRole('button', { name: 'Draw on map', exact: true })
+        .boundingBox())!
+      const help = (await playback
+        .getByRole('button', { name: 'Keyboard shortcuts', exact: true })
+        .boundingBox())!
+      expect(pen.y).toBe(help.y)
+      expect(pen.x + pen.width).toBe(help.x)
+      const buttons = await navigation.getByRole('button').all()
+      const bounds = await Promise.all(buttons.map((button) => button.boundingBox()))
+      for (const [index, button] of bounds.entries()) {
+        expect(button).not.toBeNull()
+        expect(button!.x).toBe(bounds[0]!.x)
+        if (index > 0) {
+          expect(button!.y).toBeGreaterThanOrEqual(bounds[index - 1]!.y + bounds[index - 1]!.height)
         }
+        expect(button!.width).toBeGreaterThanOrEqual(44)
+        expect(button!.height).toBeGreaterThanOrEqual(44)
+        expect(button!.x).toBeGreaterThanOrEqual(0)
+        expect(button!.x + button!.width).toBeLessThanOrEqual(viewport.width)
+        expect(button!.y + button!.height).toBeLessThanOrEqual(viewport.height)
       }
       for (const team of ['Counter-Terrorist players', 'Terrorist players']) {
         const players = (await page

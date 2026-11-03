@@ -31,7 +31,8 @@ test('drawings follow the map and remain scoped to their round and floor', async
   await page.keyboard.press('f')
   await expect(page.getByRole('button', { name: /Lower floor.*switch to upper/ })).toBeVisible()
   await expect(count).toHaveText('0 drawings on this floor')
-  await expect(clear).toBeHidden()
+  await expect(clear).toBeVisible()
+  await expect(clear).toHaveAttribute('aria-disabled', 'true')
   await map.focus()
   await page.keyboard.press('f')
   await expect(count).toHaveText('1 drawing on this floor')
@@ -159,7 +160,12 @@ for (const width of [1280, 1920]) {
     const penBounds = await pen.boundingBox()
     const shortcutsBounds = await shortcuts.boundingBox()
     await pen.click()
-    await expect(clear).toBeHidden()
+    await expect(clear).toBeVisible()
+    await expect(clear).toHaveAttribute('aria-disabled', 'true')
+    await page.keyboard.press('Tab')
+    await expect(clear).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(shortcuts).toBeFocused()
     const bounds = (await page.getByRole('img', { name: 'Nuke map', exact: true }).boundingBox())!
     const x = bounds.x + bounds.width / 2
     const y = bounds.y + bounds.height / 2
@@ -174,11 +180,117 @@ for (const width of [1280, 1920]) {
     await clear.focus()
     await page.keyboard.press('Enter')
     await expect(count).toHaveText('0 drawings on this floor')
-    await expect(clear).toBeHidden()
-    await expect(pen).toBeFocused()
+    await expect(clear).toBeVisible()
+    await expect(clear).toHaveAttribute('aria-disabled', 'true')
+    await expect(clear).toBeFocused()
     expect(await pen.boundingBox()).toEqual(penBounds)
     expect(await shortcuts.boundingBox()).toEqual(shortcutsBounds)
     await shortcuts.click()
     await expect(page.getByText('Toggle drawing', { exact: true })).toBeVisible()
   })
 }
+
+test('drawing lobe morphs continuously on open, close and an interrupted close', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=1')
+  const pen = page.getByRole('button', { name: 'Draw on map', exact: true })
+  const controls = page.getByRole('region', { name: 'Playback controls' })
+  const silhouette = () => controls.evaluate((bar) => getComputedStyle(bar, '::before').clipPath)
+  // Toggling inside the sample keeps a slow test runner from letting the transition finish first.
+  const sampleMorph = (fraction: number, toggle = false) =>
+    controls.evaluate(
+      async (bar, { fraction, toggle }) => {
+        if (toggle) bar.querySelector<HTMLElement>('[aria-label="Draw on map"]')!.click()
+        await new Promise(requestAnimationFrame)
+        const morph = bar
+          .getAnimations()
+          .find(
+            (animation) =>
+              animation instanceof CSSTransition &&
+              animation.transitionProperty === '--drawing-lift',
+          )
+        if (!morph?.effect) throw new Error('Expected a running drawing silhouette transition')
+        morph.pause()
+        const duration = Number(morph.effect.getTiming().duration)
+        morph.currentTime = duration * fraction
+        return {
+          silhouette: getComputedStyle(bar, '::before').clipPath,
+          lift: Number.parseFloat(getComputedStyle(bar).getPropertyValue('--drawing-lift')),
+          duration,
+        }
+      },
+      { fraction, toggle },
+    )
+  await expect(pen).toBeEnabled({ timeout: 30_000 })
+  const closed = await silhouette()
+  const opening = await sampleMorph(0.25, true)
+  const open = await sampleMorph(1)
+  expect(opening.duration).toBe(500)
+  expect(opening.silhouette).not.toBe(closed)
+  expect(opening.silhouette).not.toBe(open.silhouette)
+  expect((await sampleMorph(0, true)).silhouette).toBe(open.silhouette)
+  const earlyClose = await sampleMorph(0.25)
+  expect(earlyClose.duration).toBe(250)
+  // A quarter of the way in, the lobe should still be mostly raised, without the old initial snap.
+  expect(earlyClose.lift).toBeGreaterThan(open.lift * 0.75)
+  expect(earlyClose.lift).toBeLessThan(open.lift)
+  const closing = await sampleMorph(0.5)
+  expect(closing.silhouette).not.toBe(open.silhouette)
+  expect(closing.silhouette).not.toBe(closed)
+  expect((await sampleMorph(0, true)).silhouette).toBe(closing.silhouette)
+  expect((await sampleMorph(1)).silhouette).toBe(open.silhouette)
+  expect((await sampleMorph(1, true)).silhouette).toBe(closed)
+})
+
+test('reduced motion fades the drawing bin without travel and restores focus on close', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=1')
+  const pen = page.getByRole('button', { name: 'Draw on map', exact: true })
+  const clear = page.getByRole('button', { name: 'Clear map drawings', exact: true })
+  const shortcuts = page.getByRole('button', { name: 'Keyboard shortcuts', exact: true })
+  const lobe = page.locator('.demo-drawing-clear')
+  const controls = page.getByRole('region', { name: 'Playback controls' })
+  await expect(pen).toBeEnabled({ timeout: 30_000 })
+  await pen.click()
+  await expect(clear).toBeVisible()
+  await expect(clear).toHaveAttribute('aria-disabled', 'true')
+  await clear.focus()
+  await page.keyboard.press('d')
+  await expect(pen).toHaveAttribute('aria-pressed', 'false')
+  await expect(pen).toBeFocused()
+  await expect(lobe).toHaveAttribute('inert', '')
+  await expect(lobe).toHaveAttribute('aria-hidden', 'true')
+  await expect(lobe).toHaveCSS('transform', 'none')
+  expect(await controls.evaluate((bar) => bar.getAnimations().length)).toBe(0)
+  await page.keyboard.press('Tab')
+  await expect(shortcuts).toBeFocused()
+  await expect(lobe).toHaveCSS('opacity', '0')
+  await pen.click()
+  const fade = await lobe.evaluate((element) => {
+    const animation = element
+      .getAnimations()
+      .find(
+        (animation) =>
+          animation instanceof CSSTransition && animation.transitionProperty === 'opacity',
+      )
+    if (!animation?.effect) throw new Error('Expected a brief opacity fade')
+    animation.pause()
+    const duration = Number(animation.effect.getTiming().duration)
+    animation.currentTime = duration / 2
+    return {
+      duration,
+      opacity: Number(getComputedStyle(element).opacity),
+      transform: getComputedStyle(element).transform,
+    }
+  })
+  expect(fade.duration).toBeLessThanOrEqual(200)
+  expect(fade.opacity).toBeGreaterThan(0)
+  expect(fade.opacity).toBeLessThan(1)
+  expect(fade.transform).toBe('none')
+})

@@ -572,19 +572,6 @@ function DemoRound({
           <DemoCameraControls camera={cameraState} />
           {map.floors !== 'single' && <DemoFloorControl map={map} playback={playback} />}
         </fieldset>
-        <fieldset
-          aria-label="Drawing and shortcuts"
-          className="flex shrink-0 items-center gap-2 replay-desktop:flex-col"
-        >
-          <DemoShortcutHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
-          <DemoDrawingControl
-            enabled={pen.enabled}
-            count={drawings[floor].length}
-            ready={playback.status === 'ready'}
-            onToggle={toggleDrawing}
-            onClear={() => onClear(floor)}
-          />
-        </fieldset>
       </fieldset>
       <DemoRoundControl
         desktop={desktop}
@@ -626,7 +613,24 @@ function DemoRound({
           <DemoRoundCallout key={moment.id} callout={callout} onDone={() => setMoment(null)} />
         )}
       </div>
-      <DemoPlaybackControl round={round} playback={playback} />
+      <DemoPlaybackControl
+        round={round}
+        playback={playback}
+        actions={
+          <>
+            <div className="hidden replay-desktop:contents">
+              <DemoDrawingControl
+                enabled={pen.enabled}
+                count={drawings[floor].length}
+                ready={playback.status === 'ready'}
+                onToggle={toggleDrawing}
+                onClear={() => onClear(floor)}
+              />
+            </div>
+            <DemoShortcutHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+          </>
+        }
+      />
       <DemoKillFeed round={round} tick={tick} />
       <div className="demo-desktop-players hidden replay-desktop:contents">
         <DemoPlayerCards key={loadedRounds} players={players} presentation="overlay" />
