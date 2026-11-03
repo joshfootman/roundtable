@@ -39,14 +39,14 @@ for (const viewport of [
             page.getByRole('button', { name: 'Zoom in', exact: true }),
             page.getByRole('button', { name: 'Zoom out', exact: true }),
             page.getByRole('button', { name: 'Focus map', exact: true }),
-            floor,
-            page.getByRole('button', { name: 'Keyboard shortcuts', exact: true }),
-            page.getByRole('button', { name: 'Draw on map', exact: true }),
             previous,
             picker,
             next,
             play,
             timeline,
+            floor,
+            page.getByRole('button', { name: 'Draw on map', exact: true }),
+            page.getByRole('button', { name: 'Keyboard shortcuts', exact: true }),
           ]
     await controls[0]!.focus()
     for (const control of controls.slice(1)) {

@@ -616,19 +616,17 @@ function DemoRound({
         round={round}
         playback={playback}
         actions={
-          <>
-            <div className="hidden replay-desktop:contents">
-              <DemoFloorControl map={map} playback={playback} appearance="ghost" />
-              <DemoDrawingControl
-                enabled={pen.enabled}
-                count={drawings[floor].length}
-                ready={playback.status === 'ready'}
-                onToggle={toggleDrawing}
-                onClear={() => onClear(floor)}
-              />
-            </div>
+          <div className="hidden replay-desktop:contents">
+            <DemoFloorControl map={map} playback={playback} appearance="ghost" />
+            <DemoDrawingControl
+              enabled={pen.enabled}
+              count={drawings[floor].length}
+              ready={playback.status === 'ready'}
+              onToggle={toggleDrawing}
+              onClear={() => onClear(floor)}
+            />
             <DemoShortcutHelp open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
-          </>
+          </div>
         }
       />
       <DemoKillFeed round={round} tick={tick} />
