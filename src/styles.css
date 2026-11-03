@@ -290,6 +290,12 @@
   initial-value: 0px;
 }
 
+@property --shortcuts-lift {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
 .demo-drawing-clear {
   visibility: hidden;
   opacity: 0;
@@ -330,39 +336,67 @@
       --drawing-left: calc(100% - var(--drawing-center) - var(--drawing-cap-width) / 2);
       --drawing-right: calc(100% - var(--drawing-center) + var(--drawing-cap-width) / 2);
       --drawing-r: min(var(--radius-panel), var(--drawing-lift) / 2);
-      --drawing-top: calc(var(--drawing-cap-height) - var(--drawing-lift));
-      transition: --drawing-lift 250ms var(--ease-goo-retract);
+      /*
+       * The shortcuts panel is a second lobe, as wide and tall as the popup it backs. It overlaps
+       * the bar's top-right corner, which its own top-right corner replaces as it rises.
+       */
+      --shortcuts-left: calc(100% - var(--shortcuts-width, var(--drawing-cap-width)));
+      --shortcuts-r: min(var(--radius-panel), var(--shortcuts-lift) / 2);
+      /* The pseudo-element rises far enough to hold the taller lobe; its baseline is the bar's top. */
+      --lobe-room: max(var(--drawing-cap-height), var(--shortcuts-height, 0px));
+      --drawing-top: calc(var(--lobe-room) - var(--drawing-lift));
+      --shortcuts-top: calc(var(--lobe-room) - var(--shortcuts-lift));
+      --drawing-motion: 250ms var(--ease-goo-retract);
+      --shortcuts-motion: 250ms var(--ease-goo-retract);
+      transition:
+        --drawing-lift var(--drawing-motion),
+        --shortcuts-lift var(--shortcuts-motion);
 
       &:has([data-drawing-open='true']) {
         --drawing-lift: var(--drawing-cap-height);
-        transition: --drawing-lift 500ms var(--ease-out-expo);
+        --drawing-motion: 500ms var(--ease-out-expo);
+      }
+
+      &:has(.demo-shortcuts-trigger[data-popup-open]) {
+        --shortcuts-lift: var(--shortcuts-height, 0px);
+        --shortcuts-motion: 500ms var(--ease-out-expo);
       }
 
       &::before {
-        top: calc(-1 * var(--drawing-cap-height));
+        top: calc(-1 * var(--lobe-room));
         border-radius: 0;
         clip-path: shape(
-          from 0 calc(var(--drawing-cap-height) + var(--radius-panel)),
-          arc to var(--radius-panel) var(--drawing-cap-height) of var(--radius-panel) cw,
+          from 0 calc(var(--lobe-room) + var(--radius-panel)),
+          arc to var(--radius-panel) var(--lobe-room) of var(--radius-panel) cw,
           hline to calc(var(--drawing-left) - var(--drawing-r)),
-          arc to var(--drawing-left) calc(var(--drawing-cap-height) - var(--drawing-r)) of
-            var(--drawing-r) ccw,
+          arc to var(--drawing-left) calc(var(--lobe-room) - var(--drawing-r)) of var(--drawing-r)
+            ccw,
           vline to calc(var(--drawing-top) + var(--drawing-r)),
           arc to calc(var(--drawing-left) + var(--drawing-r)) var(--drawing-top) of var(--drawing-r)
             cw,
           hline to calc(var(--drawing-right) - var(--drawing-r)),
           arc to var(--drawing-right) calc(var(--drawing-top) + var(--drawing-r)) of
             var(--drawing-r) cw,
-          vline to calc(var(--drawing-cap-height) - var(--drawing-r)),
-          arc to calc(var(--drawing-right) + var(--drawing-r)) var(--drawing-cap-height) of
-            var(--drawing-r) ccw,
+          vline to calc(var(--lobe-room) - var(--drawing-r)),
+          arc to calc(var(--drawing-right) + var(--drawing-r)) var(--lobe-room) of var(--drawing-r)
+            ccw,
           hline to calc(100% - var(--radius-panel)),
-          arc to 100% calc(var(--drawing-cap-height) + var(--radius-panel)) of var(--radius-panel)
-            cw,
+          arc to 100% calc(var(--lobe-room) + var(--radius-panel)) of var(--radius-panel) cw,
           vline to calc(100% - var(--radius-panel)),
           arc to calc(100% - var(--radius-panel)) 100% of var(--radius-panel) cw,
           hline to var(--radius-panel),
           arc to 0 calc(100% - var(--radius-panel)) of var(--radius-panel) cw,
+          close,
+          move to calc(var(--shortcuts-left) - var(--shortcuts-r)) var(--lobe-room),
+          arc to var(--shortcuts-left) calc(var(--lobe-room) - var(--shortcuts-r)) of
+            var(--shortcuts-r) ccw,
+          vline to calc(var(--shortcuts-top) + var(--shortcuts-r)),
+          arc to calc(var(--shortcuts-left) + var(--shortcuts-r)) var(--shortcuts-top) of
+            var(--shortcuts-r) cw,
+          hline to calc(100% - var(--radius-panel)),
+          arc to 100% calc(var(--shortcuts-top) + var(--radius-panel)) of var(--radius-panel) cw,
+          vline to calc(var(--lobe-room) + var(--radius-panel)),
+          hline to calc(var(--shortcuts-left) - var(--shortcuts-r)),
           close
         );
       }
@@ -371,6 +405,49 @@
         margin-bottom: var(--playback-padding);
         background: none;
       }
+
+      /* The pen's lobe sits under the panel, so its clear button steps aside while the panel is open. */
+      &:has(.demo-shortcuts-trigger[data-popup-open]) .demo-drawing-clear {
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(--spacing(4));
+        transition-delay: 0s, 0s, 500ms;
+      }
+    }
+  }
+}
+
+/*
+ * The shortcuts panel is revealed by its lobe: the clip tracks the lobe's rise with the same curve
+ * and duration, and the contents settle into it like the pen's clear button.
+ */
+.demo-shortcuts-popup {
+  clip-path: inset(0 round var(--radius-panel));
+  transition:
+    clip-path 500ms var(--ease-out-expo),
+    transform 500ms var(--ease-out-expo),
+    opacity 500ms var(--ease-out-expo);
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    clip-path: inset(100% 0 0 round var(--radius-panel));
+    opacity: 0;
+    transform: translateY(--spacing(4));
+  }
+
+  &[data-ending-style] {
+    transition:
+      clip-path 250ms var(--ease-goo-retract),
+      transform 250ms var(--ease-goo-retract),
+      opacity 250ms var(--ease-goo-retract);
+  }
+
+  @variant replay-desktop {
+    @supports (clip-path: shape(from 0 0, hline to 0)) {
+      margin-bottom: 0;
+      border-color: transparent;
+      background: none;
+      box-shadow: none;
     }
   }
 }
@@ -391,5 +468,18 @@
   .demo-drawing-control[data-drawing-open='true'] .demo-drawing-clear {
     transform: none;
     transition-delay: 0s;
+  }
+
+  .demo-shortcuts-popup,
+  .demo-shortcuts-popup[data-ending-style] {
+    transition: opacity 150ms var(--ease-out-expo);
+  }
+
+  .demo-shortcuts-popup {
+    &[data-starting-style],
+    &[data-ending-style] {
+      clip-path: inset(0 round var(--radius-panel));
+      transform: none;
+    }
   }
 }

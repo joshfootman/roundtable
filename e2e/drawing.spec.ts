@@ -294,3 +294,94 @@ test('reduced motion fades the drawing bin without travel and restores focus on 
   expect(fade.opacity).toBeLessThan(1)
   expect(fade.transform).toBe('none')
 })
+
+test('shortcuts panel grows out of the playback bar like the drawing lobe', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=1')
+  const trigger = page.getByRole('button', { name: 'Keyboard shortcuts', exact: true })
+  const controls = page.getByRole('region', { name: 'Playback controls' })
+  const panel = page.getByRole('dialog', { name: 'Keyboard shortcuts' })
+  // Acts and samples in one page task, so a slow test runner can't let the transition finish first.
+  const pause = (action: 'open' | 'close', fraction: number) =>
+    page.evaluate(
+      async ({ action, fraction }) => {
+        if (action === 'open')
+          document.querySelector<HTMLElement>('.demo-shortcuts-trigger')!.click()
+        else
+          document
+            .querySelector('.demo-shortcuts-popup')!
+            .dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        const bar = document.querySelector('.demo-playback-controls')!
+        const panel = () => document.querySelector<HTMLElement>('.demo-shortcuts-popup')
+        const transition = (target: Element | null, property: string) =>
+          target
+            ?.getAnimations()
+            .find(
+              (animation): animation is CSSTransition =>
+                animation instanceof CSSTransition && animation.transitionProperty === property,
+            )
+        // The lobe starts once the panel has been measured; Base UI lifts the panel's starting
+        // style a frame after it mounts. Wait for both, then freeze them at the same point.
+        let morph: CSSTransition | undefined
+        let clip: CSSTransition | undefined
+        for (let frame = 0; frame < 10 && !(morph && clip); frame++) {
+          await new Promise(requestAnimationFrame)
+          morph ??= transition(bar, '--shortcuts-lift')
+          clip ??= transition(panel(), 'clip-path')
+          morph?.pause()
+          clip?.pause()
+        }
+        const popup = panel()!
+        for (const animation of [morph, clip]) {
+          if (!animation?.effect) continue
+          animation.currentTime = Number(animation.effect.getTiming().duration) * fraction
+        }
+        return {
+          morph: Number(morph?.effect?.getTiming().duration),
+          clip: Number(clip?.effect?.getTiming().duration),
+          lift: Number.parseFloat(getComputedStyle(bar).getPropertyValue('--shortcuts-lift')),
+          height: popup.offsetHeight,
+          clipPath: getComputedStyle(popup).clipPath,
+        }
+      },
+      { action, fraction },
+    )
+  const resume = () => page.evaluate(() => document.getAnimations().forEach((a) => a.play()))
+  await expect(trigger).toBeEnabled({ timeout: 30_000 })
+
+  const opening = await pause('open', 0.25)
+  expect(opening.morph).toBe(500)
+  expect(opening.clip).toBe(500)
+  expect(opening.lift).toBeGreaterThan(0)
+  expect(opening.lift).toBeLessThan(opening.height)
+  expect(opening.clipPath).not.toBe('inset(0px round 16px)')
+  await resume()
+  await expect(panel).toBeVisible()
+  await expect
+    .poll(() =>
+      controls.evaluate((bar) => getComputedStyle(bar).getPropertyValue('--shortcuts-lift')),
+    )
+    .toBe(`${await panel.evaluate((popup) => (popup as HTMLElement).offsetHeight)}px`)
+  // Settled, the panel sits flush on the bar's top-right corner, with the lobe behind it.
+  const bar = (await controls.boundingBox())!
+  const open = (await panel.boundingBox())!
+  expect(open.x + open.width).toBeCloseTo(bar.x + bar.width, 0)
+  expect(open.y + open.height).toBeCloseTo(bar.y, 0)
+  expect(await panel.evaluate((popup) => getComputedStyle(popup).backgroundColor)).toBe(
+    'rgba(0, 0, 0, 0)',
+  )
+
+  const closing = await pause('close', 0.25)
+  expect(closing.morph).toBe(250)
+  expect(closing.clip).toBe(250)
+  expect(closing.lift).toBeGreaterThan(closing.height * 0.75)
+  await resume()
+  await expect(panel).toBeHidden()
+  await expect(trigger).toBeFocused()
+  await expect
+    .poll(() =>
+      controls.evaluate((bar) => getComputedStyle(bar).getPropertyValue('--shortcuts-lift')),
+    )
+    .toBe('0px')
+})
