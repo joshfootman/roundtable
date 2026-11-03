@@ -31,7 +31,24 @@ test('centres the HUD and supports keyboard round selection with restored focus'
   expect(rightScore!.y).toBe(clock!.y)
   expect(previous!.x + previous!.width + 8).toBeLessThan(leftScore!.x)
   expect(next!.x - 8).toBeGreaterThan(rightScore!.x + rightScore!.width)
-  expect((await hud.locator('img').first().boundingBox())!.width).toBe(36)
+  expect((await hud.locator('img').first().boundingBox())!.width).toBe(32)
+  // Each team's name and logo split its half into equal gaps: edge, name, logo, score.
+  for (const [name, score] of [
+    ['VIT', leftScore],
+    ['FAZ', rightScore],
+  ] as const) {
+    const label = (await hud.getByText(name, { exact: true }).boundingBox())!
+    const team = (await hud.locator(`[title]:has-text("${name}")`).boundingBox())!
+    const logo = (await hud.locator(`[title]:has-text("${name}") img`).boundingBox())!
+    const [first, second] = label.x < logo.x ? [label, logo] : [logo, label]
+    const gaps = [
+      first.x - team.x,
+      second.x - first.x - first.width,
+      team.x + team.width - second.x - second.width,
+    ]
+    for (const gap of gaps) expect(Math.abs(gap - gaps[0])).toBeLessThan(1.5)
+    expect(team.x + team.width <= score!.x || team.x >= score!.x + score!.width).toBe(true)
+  }
 
   const trigger = page.getByRole('button', { name: 'Choose round, current round 1' })
   await trigger.focus()
