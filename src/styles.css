@@ -95,6 +95,7 @@
   --shadow-popover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-goo-retract: cubic-bezier(0.77, 0, 0.175, 1);
 
   --animate-demo-import-status-travel: demo-import-status-travel 800ms linear infinite;
 
@@ -273,4 +274,114 @@
     arc to 0 calc(100% - var(--stage-r)) of var(--stage-r) cw,
     close
   );
+}
+
+@property --drawing-lift {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+.demo-drawing-clear {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(--spacing(4));
+  transition:
+    transform 500ms var(--ease-out-expo),
+    opacity 500ms var(--ease-out-expo),
+    visibility 0s 500ms;
+}
+
+.demo-drawing-control[data-drawing-open='true'] .demo-drawing-clear {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+.demo-playback-controls {
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: var(--color-surface);
+  }
+
+  @variant replay-desktop {
+    @supports (clip-path: shape(from 0 0, hline to 0)) {
+      --playback-padding: --spacing(2);
+      --playback-button: --spacing(11);
+      --drawing-cap-width: calc(var(--playback-button) + 2 * var(--playback-padding));
+      --drawing-cap-height: var(--drawing-cap-width);
+      --drawing-center: calc(var(--playback-padding) + 1.5 * var(--playback-button));
+      --drawing-left: calc(100% - var(--drawing-center) - var(--drawing-cap-width) / 2);
+      --drawing-right: calc(100% - var(--drawing-center) + var(--drawing-cap-width) / 2);
+      --drawing-r: min(var(--radius-panel), var(--drawing-lift) / 2);
+      --drawing-top: calc(var(--drawing-cap-height) - var(--drawing-lift));
+      transition: --drawing-lift 250ms var(--ease-goo-retract);
+
+      &:has([data-drawing-open='true']) {
+        --drawing-lift: var(--drawing-cap-height);
+        transition: --drawing-lift 500ms var(--ease-out-expo);
+      }
+
+      &::before {
+        top: calc(-1 * var(--drawing-cap-height));
+        border-radius: 0;
+        clip-path: shape(
+          from 0 calc(var(--drawing-cap-height) + var(--radius-panel)),
+          arc to var(--radius-panel) var(--drawing-cap-height) of var(--radius-panel) cw,
+          hline to calc(var(--drawing-left) - var(--drawing-r)),
+          arc to var(--drawing-left) calc(var(--drawing-cap-height) - var(--drawing-r)) of
+            var(--drawing-r) ccw,
+          vline to calc(var(--drawing-top) + var(--drawing-r)),
+          arc to calc(var(--drawing-left) + var(--drawing-r)) var(--drawing-top) of var(--drawing-r)
+            cw,
+          hline to calc(var(--drawing-right) - var(--drawing-r)),
+          arc to var(--drawing-right) calc(var(--drawing-top) + var(--drawing-r)) of
+            var(--drawing-r) cw,
+          vline to calc(var(--drawing-cap-height) - var(--drawing-r)),
+          arc to calc(var(--drawing-right) + var(--drawing-r)) var(--drawing-cap-height) of
+            var(--drawing-r) ccw,
+          hline to calc(100% - var(--radius-panel)),
+          arc to 100% calc(var(--drawing-cap-height) + var(--radius-panel)) of var(--radius-panel)
+            cw,
+          vline to calc(100% - var(--radius-panel)),
+          arc to calc(100% - var(--radius-panel)) 100% of var(--radius-panel) cw,
+          hline to var(--radius-panel),
+          arc to 0 calc(100% - var(--radius-panel)) of var(--radius-panel) cw,
+          close
+        );
+      }
+
+      .demo-drawing-clear {
+        margin-bottom: var(--playback-padding);
+        background: none;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-playback-controls,
+  .demo-playback-controls:has([data-drawing-open='true']) {
+    transition: none;
+  }
+
+  .demo-drawing-clear {
+    transform: none;
+    transition:
+      opacity 150ms var(--ease-out-expo),
+      visibility 0s 150ms;
+  }
+
+  .demo-drawing-control[data-drawing-open='true'] .demo-drawing-clear {
+    transform: none;
+    transition-delay: 0s;
+  }
 }

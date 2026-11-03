@@ -14,7 +14,7 @@ export function DemoShortcutHelp({
         aria-label="Keyboard shortcuts"
         aria-keyshortcuts="Shift+/"
         title="Keyboard shortcuts (?)"
-        className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control bg-control text-foreground outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus"
+        className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-inset-2 text-foreground outline-offset-2 hover:bg-ghost-hover focus-visible:bg-ghost-hover focus-visible:outline-2 focus-visible:outline-focus"
       >
         <svg
           aria-hidden="true"
@@ -32,8 +32,8 @@ export function DemoShortcutHelp({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner
-          side="bottom"
-          align="start"
+          side="top"
+          align="end"
           sideOffset={8}
           collisionPadding={16}
           className="z-50"
