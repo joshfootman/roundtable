@@ -10,7 +10,7 @@ export function DemoKillFeed({ round, tick }: { round: ReplayRound; tick: number
   return (
     <section
       aria-label="Kill feed"
-      className="demo-kill-feed z-20 hidden min-w-0 text-sm font-medium replay-desktop:absolute replay-desktop:top-28 replay-desktop:right-4 replay-desktop:block replay-desktop:w-80 min-[1600px]:replay-desktop:top-4"
+      className="demo-kill-feed z-20 hidden min-w-0 text-sm font-medium replay-desktop:absolute replay-desktop:top-4 replay-desktop:right-4 replay-desktop:block replay-desktop:w-(--kill-feed-width)"
     >
       <Feed round={round} tick={tick} />
     </section>

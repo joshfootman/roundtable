@@ -276,6 +276,14 @@
   );
 }
 
+/*
+ * The kill feed shares the stage's top edge with the round controls and never drops below them:
+ * it takes what the centred 640px controls leave, down to 240px, then the controls give way.
+ */
+.demo-stage {
+  --kill-feed-width: clamp(15rem, (100% - 40rem) / 2 - 2rem, 20rem);
+}
+
 @property --drawing-lift {
   syntax: '<length>';
   inherits: true;
