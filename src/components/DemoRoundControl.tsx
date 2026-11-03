@@ -156,7 +156,7 @@ function Team({ identity, reverse = false }: { identity: TeamIdentity; reverse?:
   return (
     <div
       title={identity.name}
-      className={`flex min-w-0 items-center justify-center gap-2 px-1 @min-[560px]:gap-4 @min-[560px]:px-6 ${reverse ? '@min-[560px]:flex-row-reverse' : ''}`}
+      className={`flex min-w-0 items-center justify-center gap-2 px-1 @min-[560px]:justify-evenly @min-[560px]:gap-0 @min-[560px]:px-0 ${reverse ? '@min-[560px]:flex-row-reverse' : ''}`}
     >
       <span
         className={`text-sm font-bold @min-[560px]:text-2xl ${identity.logo && failedLogo !== identity.logo ? 'sr-only @min-[560px]:not-sr-only' : ''}`}
@@ -168,7 +168,7 @@ function Team({ identity, reverse = false }: { identity: TeamIdentity; reverse?:
         <img
           src={identity.logo}
           alt=""
-          className="size-6 shrink-0 object-contain @min-[560px]:size-9"
+          className="size-6 shrink-0 object-contain @min-[560px]:size-8"
           onError={() => setFailedLogo(identity.logo)}
         />
       )}
