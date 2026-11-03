@@ -1,12 +1,21 @@
 import type { MapDefinition } from '#/replay/maps'
 import type { DemoPlaybackState } from './DemoMap'
 
+const appearances = {
+  // A filled button on its own, as in the mobile round navigation.
+  control: 'rounded-control bg-control enabled:hover:bg-control-hover',
+  // A ghost button inset in the playback bar, matching the pen and shortcuts beside it.
+  ghost: 'rounded-inset-2 enabled:hover:bg-ghost-hover focus-visible:bg-ghost-hover',
+}
+
 export function DemoFloorControl({
   map,
   playback,
+  appearance = 'control',
 }: {
   map: MapDefinition
   playback: DemoPlaybackState
+  appearance?: keyof typeof appearances
 }) {
   if (map.floors === 'single') return null
   const selected = playback.status === 'ready' ? playback.floor : map.initialFloor
@@ -21,7 +30,7 @@ export function DemoFloorControl({
       aria-keyshortcuts="f"
       disabled={playback.status !== 'ready'}
       onClick={() => playback.status === 'ready' && playback.controller.setFloor(nextFloor)}
-      className="demo-floor-controls flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control bg-control text-foreground outline-offset-2 focus-visible:outline-2 focus-visible:outline-focus enabled:hover:bg-control-hover disabled:cursor-default disabled:opacity-35"
+      className={`demo-floor-controls flex size-11 shrink-0 cursor-pointer items-center justify-center text-foreground outline-offset-2 focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-default disabled:opacity-35 ${appearances[appearance]}`}
     >
       <svg
         aria-hidden="true"

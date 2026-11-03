@@ -6,8 +6,15 @@ test('switches Nuke floors directly without changing the paused replay tick', as
   await expect(page.getByRole('button', { name: 'Play round', exact: true })).toBeEnabled({
     timeout: 30_000,
   })
-  const floors = page.getByRole('group', { name: 'Map controls' })
-  const toggle = floors.getByRole('button', { name: /floor — switch/ })
+  const playback = page.getByRole('region', { name: 'Playback controls' })
+  const toggle = playback.getByRole('button', { name: /floor — switch/ })
+  // It sits directly left of the pen in the playback bar.
+  const pen = (await playback
+    .getByRole('button', { name: 'Draw on map', exact: true })
+    .boundingBox())!
+  const toggleBounds = (await toggle.boundingBox())!
+  expect(toggleBounds.x + toggleBounds.width).toBe(pen.x)
+  expect(toggleBounds.y).toBe(pen.y)
   await expect(toggle).toHaveAccessibleName('Upper floor — switch to lower floor')
   await expect(toggle).toHaveAttribute('title', 'Upper floor — switch to lower floor (F)')
   await expect(toggle).toHaveText('')
