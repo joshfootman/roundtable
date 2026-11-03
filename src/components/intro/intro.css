@@ -298,6 +298,7 @@
 .intro-team-name {
   --intro-rise: 24px;
 
+  color: var(--color-foreground);
   animation: intro-rise var(--intro-team-name-in) var(--ease-out-expo) var(--intro-team-name-at)
     both;
 }
