@@ -203,12 +203,7 @@ export function createMarker(appearance: PlayerAppearance, textures: MarkerTextu
     const { bomb } = state
     objective.visible = alive && bomb !== 'none'
     objective.texture = bomb === 'defusing' ? textures.defuse : textures.bomb
-    objective.tint =
-      bomb === 'defusing'
-        ? appearance.ct
-        : bomb === 'planting'
-          ? appearance.armed
-          : appearance.foreground
+    objective.tint = bomb === 'planting' ? appearance.armed : appearance.foreground
     objective.width = objective.height = bomb === 'planting' || bomb === 'defusing' ? 12 : 10
     container.scale.set(symbolScale)
     container.alpha = alive ? (otherFloor ? 0.6 : 1) : otherFloor ? DEATH_ALPHA / 2 : DEATH_ALPHA

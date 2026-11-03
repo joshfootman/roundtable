@@ -194,7 +194,7 @@ describe('recorded player rendering', () => {
     expect([a.objective.visible, a.objective.texture, a.objective.tint, a.flash.visible]).toEqual([
       true,
       textures.defuse,
-      appearance.ct,
+      appearance.foreground,
       true,
     ])
     renderer.draw(106, 1, { floor: 'upper', flashes: true })
