@@ -52,10 +52,11 @@ pauses. Arrow keys, Home and End work without custom keyboard handlers.
 
 ## Player indicators
 
-Player colour, number and facing remain the marker's core. A 10px carried C4 occupies
+Player colour, number and facing remain the marker's core. The player's name sits
+4px below the circle, fixed while the facing cone turns over it. A 10px carried C4 occupies
 the fixed top-right slot. Planting turns the 12px C4 orange. Defusing uses a blue
-defuse icon in that same slot. Flash occupies bottom-left.
-Ladders occupy bottom-right while the recorded pawn movement type is `MOVETYPE_LADDER`
+defuse icon in that same slot. Flash sits to the left.
+Ladders sit to the right while the recorded pawn movement type is `MOVETYPE_LADDER`
 (9), as defined by the [CS2 movement enum](https://github.com/SteamTracking/GameTracking-CS2/blob/master/DumpSource2/schemas/client/MoveType_t.h).
 Active indicators disappear on death and derive from the current tick when seeking.
 
