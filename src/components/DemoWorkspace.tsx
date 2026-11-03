@@ -570,7 +570,6 @@ function DemoRound({
           className="flex shrink-0 items-center gap-2 replay-desktop:flex-col"
         >
           <DemoCameraControls camera={cameraState} />
-          {map.floors !== 'single' && <DemoFloorControl map={map} playback={playback} />}
         </fieldset>
       </fieldset>
       <DemoRoundControl
@@ -619,6 +618,7 @@ function DemoRound({
         actions={
           <>
             <div className="hidden replay-desktop:contents">
+              <DemoFloorControl map={map} playback={playback} appearance="ghost" />
               <DemoDrawingControl
                 enabled={pen.enabled}
                 count={drawings[floor].length}
