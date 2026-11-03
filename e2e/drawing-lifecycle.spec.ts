@@ -27,9 +27,12 @@ for (const termination of ['lostpointercapture', 'pointercancel']) {
     await page.goto('/replay?source=example&example=faze-vs-vitality-m2-dust2&round=1')
     const map = page.getByRole('img', { name: 'Dust II map', exact: true })
     const count = page.getByLabel('Drawing count', { exact: true })
+    const pen = page.getByRole('button', { name: 'Draw on map', exact: true })
     await expect(map).toBeVisible({ timeout: 30_000 })
+    await expect(pen).toBeEnabled({ timeout: 30_000 })
     await map.focus()
     await page.keyboard.press('d')
+    await expect(pen).toHaveAttribute('aria-pressed', 'true')
     const bounds = (await map.boundingBox())!
     const x = bounds.width / 2 - 80
     const y = bounds.height / 2
@@ -67,9 +70,12 @@ for (const termination of ['lostpointercapture', 'pointercancel']) {
 test('stroke weight follows elapsed mouse speed and pen pressure', async ({ page }) => {
   await page.goto('/replay?source=example&example=faze-vs-vitality-m2-dust2&round=1')
   const map = page.getByRole('img', { name: 'Dust II map', exact: true })
+  const pen = page.getByRole('button', { name: 'Draw on map', exact: true })
   await expect(map).toBeVisible({ timeout: 30_000 })
+  await expect(pen).toBeEnabled({ timeout: 30_000 })
   await map.focus()
   await page.keyboard.press('d')
+  await expect(pen).toHaveAttribute('aria-pressed', 'true')
   const regions = await map.evaluate(async (canvas) => {
     const bounds = canvas.getBoundingClientRect()
     const capture = canvas.setPointerCapture
