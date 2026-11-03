@@ -363,8 +363,11 @@ describe('marker layout', () => {
       expect(badge.visible).toBe(true)
       expect(badge.y + badge.getLocalBounds().maxY).toBeLessThan(a.name.y)
     }
-    const ladderLeft = a.ladder.x + a.ladder.context.bounds.minX
-    expect(ladderLeft).toBeGreaterThan(a.direction.context.bounds.maxX)
+    // The C4 artwork fills x 4-28 of its 32px viewBox, drawn 10px square at the top-right.
+    const bombInk = { x: a.objective.x - 3.75, y: a.objective.y + 5 }
+    const bombGap = Math.hypot(bombInk.x, bombInk.y) - 8.5
+    const ladderGap = a.ladder.x + a.ladder.context.bounds.minX - 8.5
+    expect(Math.abs(ladderGap - bombGap)).toBeLessThan(0.1)
     a.container.destroy({ children: true })
   })
 })

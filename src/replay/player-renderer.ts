@@ -142,7 +142,8 @@ export function createMarker(appearance: PlayerAppearance, textures: MarkerTextu
     .moveTo(-3, 3)
     .lineTo(3, 3)
     .stroke({ color: appearance.foreground, width: 1.5 })
-  ladder.position.set(22, 0)
+  // The same 2.3px gap to the body as the C4 artwork at the top-right.
+  ladder.position.set(14.5, 0)
   const cross = new Graphics()
     .moveTo(-DEATH_CROSS, -DEATH_CROSS)
     .lineTo(DEATH_CROSS, DEATH_CROSS)
