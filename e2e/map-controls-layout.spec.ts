@@ -81,3 +81,19 @@ for (const example of ['faze-vs-vitality-m1-inferno', 'astralis-vs-mouz-m2-nuke'
     }
   })
 }
+
+test('kill feed always sits level with the HUD and clear of it', async ({ page }) => {
+  await page.goto('/replay?source=example&round=1')
+  await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled({ timeout: 30_000 })
+  const feed = page.locator('.demo-kill-feed')
+  const hud = page.getByRole('region', { name: 'Round controls' })
+  // Every desktop width, including the narrowest and the ones either side of each old breakpoint.
+  for (let width = 1024; width <= 2560; width += 8) {
+    await page.setViewportSize({ width, height: 900 })
+    const feedBounds = (await feed.boundingBox())!
+    const hudBounds = (await hud.boundingBox())!
+    expect(feedBounds.y, `${width}px`).toBe(hudBounds.y)
+    expect(feedBounds.x, `${width}px`).toBeGreaterThanOrEqual(hudBounds.x + hudBounds.width + 16)
+    expect(feedBounds.width, `${width}px`).toBeGreaterThanOrEqual(240)
+  }
+})

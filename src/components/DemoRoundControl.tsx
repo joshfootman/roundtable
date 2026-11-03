@@ -104,7 +104,7 @@ export function DemoRoundControl({
   return (
     <section
       aria-label="Round controls"
-      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-foreground tabular-nums sm:w-[min(100%,640px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(640px,calc(100%-256px))] replay-desktop:-translate-x-1/2 min-[1728px]:replay-desktop:w-[min(640px,calc(100%-32px))] replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
+      className="demo-round-controls @container z-30 w-full min-w-0 self-center text-foreground tabular-nums sm:w-[min(100%,640px)] replay-desktop:absolute replay-desktop:top-4 replay-desktop:left-1/2 replay-desktop:w-[min(640px,calc(100%-2*(var(--kill-feed-width)+2rem)))] replay-desktop:-translate-x-1/2 replay-landscape:col-start-1 replay-landscape:row-start-1 replay-landscape:w-full"
     >
       <nav
         aria-label="Round navigation"
