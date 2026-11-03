@@ -5,9 +5,12 @@ test('rapid strokes survive acknowledgement while the next stroke is still drawi
 }) => {
   await page.goto('/replay?source=example&example=astralis-vs-mouz-m2-nuke&round=1')
   const map = page.getByRole('img', { name: 'Nuke map', exact: true })
+  const pen = page.getByRole('button', { name: 'Draw on map', exact: true })
   await expect(map).toBeVisible({ timeout: 30_000 })
+  await expect(pen).toBeEnabled({ timeout: 30_000 })
   await map.focus()
   await page.keyboard.press('d')
+  await expect(pen).toHaveAttribute('aria-pressed', 'true')
   const counts = await map.evaluate(async (canvas) => {
     const bounds = canvas.getBoundingClientRect()
     const capture = canvas.setPointerCapture

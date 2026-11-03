@@ -5,9 +5,12 @@ test('closed and crossing freehand strokes retain ink without filling their inte
 }) => {
   await page.goto('/replay?source=example&example=faze-vs-vitality-m2-dust2&round=1')
   const map = page.getByRole('img', { name: 'Dust II map', exact: true })
+  const pen = page.getByRole('button', { name: 'Draw on map', exact: true })
   await expect(map).toBeVisible({ timeout: 30_000 })
+  await expect(pen).toBeEnabled({ timeout: 30_000 })
   await map.focus()
   await page.keyboard.press('d')
+  await expect(pen).toHaveAttribute('aria-pressed', 'true')
   await expect(map).toHaveClass(/cursor-crosshair/)
   const bounds = (await map.boundingBox())!
   const x = bounds.x + bounds.width / 2
