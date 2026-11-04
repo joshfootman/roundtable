@@ -60,7 +60,7 @@ export function DemoRoundControl({
         aria-describedby={
           streaks.ct >= winningStreakThreshold ? `${streakDescription}-ct` : undefined
         }
-        className="demo-score relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-field bg-ct/80 text-xl font-bold text-inverse @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
+        className="demo-score relative isolate flex h-full items-center justify-center overflow-hidden bg-ct/80 text-xl font-bold text-inverse @min-[560px]:text-2xl replay-desktop:text-3xl"
       >
         {streaks.ct >= winningStreakThreshold && <ScoreFlames side="ct" />}
         <span className="relative z-10">
@@ -85,7 +85,7 @@ export function DemoRoundControl({
         aria-describedby={
           streaks.t >= winningStreakThreshold ? `${streakDescription}-t` : undefined
         }
-        className="demo-score relative isolate flex h-13 items-center justify-center self-start overflow-hidden rounded-b-field bg-t/80 text-xl font-bold text-inverse @min-[560px]:text-2xl replay-desktop:h-18 replay-desktop:text-3xl"
+        className="demo-score relative isolate flex h-full items-center justify-center overflow-hidden bg-t/80 text-xl font-bold text-inverse @min-[560px]:text-2xl replay-desktop:text-3xl"
       >
         {streaks.t >= winningStreakThreshold && <ScoreFlames side="t" />}
         <span className="relative z-10">
