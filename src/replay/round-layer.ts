@@ -1,7 +1,5 @@
 import { Assets, Container, Sprite, loadEnvironmentExtensions, type Texture } from 'pixi.js'
 import c4Icon from '../assets/cs2/equipment/c4.svg?url&no-inline'
-import burstIcon from '../assets/replay/burst.svg?url&no-inline'
-import cloudIcon from '../assets/replay/cloud.svg?url&no-inline'
 import decoyIcon from '../assets/cs2/equipment/decoy.svg?url&no-inline'
 import defuseIcon from '../assets/cs2/equipment/defuser.svg?url&no-inline'
 import flashedIcon from '../assets/replay/eye-off.svg?url&no-inline'
@@ -11,7 +9,6 @@ import heIcon from '../assets/cs2/equipment/hegrenade.svg?url&no-inline'
 import incendiaryIcon from '../assets/cs2/equipment/incgrenade.svg?url&no-inline'
 import molotovIcon from '../assets/cs2/equipment/molotov.svg?url&no-inline'
 import smokeIcon from '../assets/cs2/equipment/smokegrenade.svg?url&no-inline'
-import soundIcon from '../assets/replay/volume-up.svg?url&no-inline'
 import { createBombRenderer } from './bomb-renderer'
 import { createDetonationRenderer } from './detonation-renderer'
 import { createDroppedItemRenderer } from './dropped-item-renderer'
@@ -29,10 +26,7 @@ const utilityIcons: Record<UtilityIcon, string> = {
   molotov: molotovIcon,
   incendiary: incendiaryIcon,
   decoy: decoyIcon,
-  cloud: cloudIcon,
   fire: fireIcon,
-  burst: burstIcon,
-  sound: soundIcon,
 }
 
 /** Start downloading what the first draw of `map` needs, so it is cached when the round arrives. */
@@ -76,7 +70,7 @@ export async function createRoundLayer(
   const detonations = createDetonationRenderer(
     round,
     map,
-    { flash: utilityTextures.burst, he: utilityTextures.burst },
+    { flash: utilityTextures.flash, he: utilityTextures.he },
     appearance.background,
   )
   const players = createPlayerRenderer(round, map, appearance, {
