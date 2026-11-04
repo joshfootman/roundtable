@@ -19,7 +19,14 @@ export function killFeedAtTick(round: ReplayRound, tick: number) {
           id: index,
           attacker: death.killer.type === 'player' ? player(death.killer.steamId) : undefined,
           target: player(death.victim),
-          suicide: death.killer.type === 'player' && death.killer.steamId === death.victim,
+          cause:
+            death.killer.type === 'player'
+              ? death.killer.steamId === death.victim
+                ? ('suicide' as const)
+                : ('kill' as const)
+              : death.weapon === 'planted_c4'
+                ? ('bomb' as const)
+                : ('world' as const),
         },
       ]
     })
