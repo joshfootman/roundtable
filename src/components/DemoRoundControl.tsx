@@ -3,6 +3,7 @@ import type { ReplayRound } from '#/replay/types'
 import type { ExampleId } from '#/demo/examples'
 import { roundTeams, teamAbbreviation, type TeamIdentity } from '#/replay/team-identity'
 import { RollingNumber } from '#/components/RollingNumber'
+import { BombTimerBars } from './BombTimerBars'
 import { DemoRoundPicker } from './DemoRoundPicker'
 import { ScoreFlames } from './ScoreFlames'
 import { roundWinningStreaks, winningStreakThreshold } from '#/replay/winning-streaks'
@@ -18,6 +19,7 @@ export function DemoRoundControl({
   highlightNextRound = false,
   mobileControls,
   desktop,
+  subscribeFrame,
 }: {
   desktop: boolean
   mobileControls?: ReactNode
@@ -29,6 +31,7 @@ export function DemoRoundControl({
   example?: ExampleId
   highlightNextRound?: boolean
   onSelectRound: (number: number, focusPicker?: boolean) => void
+  subscribeFrame?: (listener: (tick: number) => void) => () => void
 }) {
   const streakDescription = useId()
   const winner = tick >= round.resultTick ? round.outcome?.winner : undefined
@@ -52,7 +55,7 @@ export function DemoRoundControl({
   const scoreboard = (
     <div
       key="scoreboard"
-      className="demo-scoreboard col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_44px_80px_44px_minmax(0,1fr)] grid-rows-1 items-center rounded-field bg-control @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
+      className="demo-scoreboard relative col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_44px_80px_44px_minmax(0,1fr)] grid-rows-1 items-center rounded-field bg-control @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
     >
       <Team identity={teams.ct} />
       <div
@@ -98,6 +101,7 @@ export function DemoRoundControl({
         )}
       </div>
       <Team identity={teams.t} reverse />
+      <BombTimerBars key={round.number} round={round} tick={tick} subscribeFrame={subscribeFrame} />
     </div>
   )
 

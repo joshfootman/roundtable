@@ -581,6 +581,9 @@ function DemoRound({
         focusRoundPicker={focusRoundPicker}
         tick={tick}
         highlightNextRound={highlightNextRound}
+        subscribeFrame={
+          playback.status === 'ready' ? playback.controller.subscribeFrame : undefined
+        }
         onSelectRound={selectRound}
         mobileControls={
           !desktop && (
