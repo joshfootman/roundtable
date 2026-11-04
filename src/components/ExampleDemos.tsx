@@ -25,7 +25,7 @@ export function ExampleDemos({
   return (
     <div
       ref={ref}
-      className="demo-content relative -mt-(--stage-lift) min-h-0 flex-1 overflow-y-auto px-shell pb-shell"
+      className="demo-content relative mx-shell mb-shell -mt-(--stage-lift) min-h-0 flex-1 overflow-y-auto rounded-inset-shell"
     >
       <section
         aria-labelledby="example-demos-heading"
