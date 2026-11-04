@@ -67,7 +67,7 @@ function arcLift(projectile: ReplayProjectile) {
   return heights.map((height) => (apex > 0 ? height / apex : 0))
 }
 
-export type UtilityIcon = GrenadeKind | 'cloud' | 'fire' | 'burst' | 'sound'
+export type UtilityIcon = GrenadeKind | 'fire'
 
 export function createUtilityRenderer(
   round: ReplayRound,
@@ -118,13 +118,7 @@ export function createUtilityRenderer(
       if (cells) fireCentres.set(key, worldToMap(map, x / cells, y / cells))
   }
   let areaIconCount = 0
-  function placeAreaIcon(
-    kind: 'cloud' | 'fire' | 'sound',
-    color: number,
-    x: number,
-    y: number,
-    scale: number,
-  ) {
+  function placeAreaIcon(kind: UtilityIcon, color: number, x: number, y: number, scale: number) {
     const badge =
       (areaIcons.children[areaIconCount++] as Container | undefined) ??
       areaIcons.addChild(createIconBadge())
@@ -169,7 +163,7 @@ export function createUtilityRenderer(
           if (seconds < 0 || seconds >= DECOY_LIVE_SECONDS || !visibleOnFloor(map, floor, decoy.z))
             continue
           const point = worldToMap(map, decoy.x, decoy.y)
-          placeAreaIcon('sound', utilityAppearance.decoy.color, point.x, point.y, symbolScale)
+          placeAreaIcon('decoy', utilityAppearance.decoy.color, point.x, point.y, symbolScale)
         }
       if (visibility.shots) {
         let shooters: Map<string, ScenePlayer> | undefined
@@ -244,7 +238,7 @@ export function createUtilityRenderer(
               alpha: 0.8 * bloom,
               width: symbolScale,
             })
-          placeAreaIcon('cloud', utilityAppearance.smoke.color, point.x, point.y, symbolScale)
+          placeAreaIcon('smoke', utilityAppearance.smoke.color, point.x, point.y, symbolScale)
         }
       for (const { sprite } of projectiles) sprite.visible = false
       if (visibility.trajectories)

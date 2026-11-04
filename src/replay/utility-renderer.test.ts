@@ -27,10 +27,7 @@ const icons = {
   molotov: Texture.WHITE,
   incendiary: Texture.WHITE,
   decoy: Texture.WHITE,
-  cloud: Texture.WHITE,
   fire: Texture.WHITE,
-  burst: Texture.WHITE,
-  sound: Texture.WHITE,
 }
 
 function round(): ReplayRound {
