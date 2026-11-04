@@ -55,7 +55,7 @@ export function DemoRoundControl({
   const scoreboard = (
     <div
       key="scoreboard"
-      className="demo-scoreboard relative col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_44px_80px_44px_minmax(0,1fr)] grid-rows-1 items-center rounded-field bg-control @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
+      className="demo-scoreboard relative col-span-full row-start-2 grid h-12 min-w-0 grid-cols-[minmax(0,1fr)_44px_80px_44px_minmax(0,1fr)] grid-rows-1 items-center rounded-field bg-surface @min-[560px]:grid-cols-[minmax(0,1fr)_72px_112px_72px_minmax(0,1fr)] replay-desktop:col-span-1 replay-desktop:col-start-2 replay-desktop:row-start-1 replay-desktop:h-14"
     >
       <Team identity={teams.ct} />
       <div
@@ -121,7 +121,7 @@ export function DemoRoundControl({
           title="Previous round (←)"
           disabled={!previous}
           onClick={() => previous && onSelectRound(previous.number)}
-          className={`${button} demo-round-step col-start-1 row-start-1 h-11 w-full min-w-11 shrink-0 bg-control replay-desktop:h-14 replay-desktop:w-14`}
+          className={`${button} demo-round-step col-start-1 row-start-1 h-11 w-full min-w-11 shrink-0 bg-surface replay-desktop:h-14 replay-desktop:w-14`}
         >
           <Chevron direction="left" />
         </button>
@@ -139,7 +139,7 @@ export function DemoRoundControl({
           title="Next round (→)"
           disabled={!next}
           onClick={() => next && onSelectRound(next.number)}
-          className={`${button} demo-round-step relative col-start-3 row-start-1 h-11 w-full min-w-11 shrink-0 bg-control replay-desktop:h-14 replay-desktop:w-14`}
+          className={`${button} demo-round-step relative col-start-3 row-start-1 h-11 w-full min-w-11 shrink-0 bg-surface replay-desktop:h-14 replay-desktop:w-14`}
         >
           <Chevron direction="right" />
           {highlightNextRound && next && (
