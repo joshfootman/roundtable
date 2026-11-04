@@ -485,9 +485,7 @@
         inset: 0 0 calc(-1 * var(--rounds-room));
         z-index: -1;
         pointer-events: none;
-        /* Opaque like the shortcuts panel, so the map never shows through the list. */
-        background:
-          linear-gradient(var(--color-control), var(--color-control)), var(--color-surface);
+        background: var(--color-surface);
         clip-path: shape(
           from 0 var(--radius-field),
           arc to var(--radius-field) 0 of var(--radius-field) cw,
