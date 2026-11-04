@@ -26,7 +26,7 @@ test('centres the HUD and supports keyboard round selection with restored focus'
   expect(previous!.width).toBe(next!.width)
   expect(leftScore!.width).toBe(72)
   expect(rightScore!.width).toBe(72)
-  expect(leftScore!.height - clock!.height).toBe(16)
+  expect(leftScore!.height).toBe(clock!.height)
   expect(leftScore!.y).toBe(clock!.y)
   expect(rightScore!.y).toBe(clock!.y)
   expect(previous!.x + previous!.width + 8).toBeLessThan(leftScore!.x)
