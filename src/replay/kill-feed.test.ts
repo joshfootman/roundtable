@@ -73,11 +73,14 @@ describe('kill feed', () => {
     expect(killFeedAtTick(replay, 105).map((entry) => entry.tick)).toEqual([105])
   })
 
-  it('distinguishes world deaths and suicides and handles an unknown player', () => {
+  it('distinguishes world, bomb and suicide deaths and handles an unknown player', () => {
     const replay = round()
     const [suicide, world] = killFeedAtTick(replay, 130)
-    expect(suicide?.suicide).toBe(true)
+    expect(suicide?.cause).toBe('suicide')
+    expect(world?.cause).toBe('world')
     expect(world?.attacker).toBeUndefined()
+    replay.deaths[1]!.weapon = 'planted_c4'
+    expect(killFeedAtTick(replay, 130)[1]?.cause).toBe('bomb')
     replay.deaths[0]!.victim = 'missing'
     expect(killFeedAtTick(replay, 105)[0]?.target).toEqual({
       name: 'Unknown player',

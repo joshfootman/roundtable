@@ -82,10 +82,16 @@ function Feed({
         >
           {entries.map((entry) => {
             const weapon = recordedWeaponName(entry.weapon)
-            const icon = entry.suicide ? suicideIcon : equipmentIcon(entry.weapon)
-            const description = entry.suicide
-              ? `${entry.target.name} died by suicide`
-              : `${entry.attacker?.name ?? 'World'} killed ${entry.target.name} with ${weapon}${entry.headshot ? ', headshot' : ''}`
+            const icon =
+              entry.cause === 'suicide'
+                ? suicideIcon
+                : equipmentIcon(entry.cause === 'bomb' ? 'c4' : entry.weapon)
+            const description =
+              entry.cause === 'suicide'
+                ? `${entry.target.name} died by suicide`
+                : entry.cause === 'bomb'
+                  ? `${entry.target.name} was killed by the bomb`
+                  : `${entry.attacker?.name ?? 'World'} killed ${entry.target.name} with ${weapon}${entry.headshot ? ', headshot' : ''}`
             return (
               <li
                 key={entry.id}
@@ -93,7 +99,7 @@ function Feed({
                 aria-label={description}
                 title={description}
               >
-                {!entry.suicide && (
+                {(entry.cause === 'kill' || entry.cause === 'world') && (
                   <span
                     className="demo-kill-feed-name min-w-0 truncate data-[team=2]:text-t data-[team=3]:text-ct"
                     data-team={entry.attacker?.team}
@@ -102,12 +108,12 @@ function Feed({
                   </span>
                 )}
                 <span
-                  className="demo-kill-feed-weapon flex shrink-0 items-center gap-1.5 text-foreground [&_img]:h-[18px] [&_img]:w-[42px] [&_img]:object-contain"
+                  className="demo-kill-feed-weapon flex shrink-0 items-center gap-1.5 text-foreground [&_img]:h-[18px] [&_img]:w-auto [&_img]:max-w-[42px] [&_img]:object-contain"
                   aria-hidden="true"
                 >
                   {icon ? <img src={icon} alt="" /> : <span>{weapon}</span>}
                   {entry.headshot && (
-                    <img className="demo-kill-feed-headshot !w-[18px]" src={headshotIcon} alt="" />
+                    <img className="demo-kill-feed-headshot" src={headshotIcon} alt="" />
                   )}
                 </span>
                 <span
