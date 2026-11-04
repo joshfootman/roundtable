@@ -176,3 +176,32 @@ test('briefly highlights the next round only after a played outcome, with a stat
     await expect(page.getByRole('button', { name: 'Choose round, current round 2' })).toBeVisible()
   }
 })
+
+test('shows the bomb timer and a defuse under it, each by its icon, only while they run', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/replay?source=example&example=faze-vs-natus-vincere-m1-ancient&round=18')
+  const timeline = page.getByRole('slider', { name: 'Round timeline' })
+  await expect(page.getByRole('button', { name: 'Play round' })).toBeEnabled({ timeout: 30_000 })
+  const bars = page.locator('.demo-scoreboard > [aria-hidden="true"] > div')
+  const read = () =>
+    bars.evaluateAll((rows) =>
+      rows.map((row) => [
+        new URL(row.querySelector('img')!.src).pathname.split('/').at(-1)!.split(/[-.]/)[0],
+        (row.lastElementChild!.firstElementChild as HTMLElement).style.transform,
+      ]),
+    )
+  await expect(bars).toHaveCount(0)
+  await timeline.fill('132547')
+  await expect(bars).toHaveCount(1)
+  expect(await read()).toEqual([['c4', 'scaleX(0.5)']])
+  await timeline.fill('133000')
+  await expect(bars).toHaveCount(2)
+  expect(await read()).toEqual([
+    ['c4', 'scaleX(0.865473)'],
+    ['defuser', 'scaleX(0.75)'],
+  ])
+  await timeline.fill('133300')
+  await expect(bars).toHaveCount(0)
+})
