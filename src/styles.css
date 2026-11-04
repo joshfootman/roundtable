@@ -290,6 +290,12 @@
   initial-value: 0px;
 }
 
+@property --rounds-drop {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
 @property --shortcuts-lift {
   syntax: '<length>';
   inherits: true;
@@ -452,6 +458,95 @@
   }
 }
 
+/* The round list drops out of the scoreboard as a lobe under the picker, like the shortcuts panel. */
+.demo-scoreboard {
+  @variant replay-desktop {
+    @supports (clip-path: shape(from 0 0, hline to 0)) {
+      --rounds-width: 0px;
+      --rounds-r: min(var(--radius-panel), var(--rounds-drop) / 2);
+      --rounds-left: calc(50% - var(--rounds-width) / 2);
+      --rounds-right: calc(50% + var(--rounds-width) / 2);
+      --rounds-room: var(--rounds-height, 0px);
+      --rounds-base: calc(100% - var(--rounds-room));
+      --rounds-bottom: calc(var(--rounds-base) + var(--rounds-drop));
+      --rounds-motion: 250ms var(--ease-goo-retract);
+      isolation: isolate;
+      background: none;
+      transition: --rounds-drop var(--rounds-motion);
+
+      &:has(.demo-round-trigger[data-popup-open]) {
+        --rounds-drop: var(--rounds-height, 0px);
+        --rounds-motion: 500ms var(--ease-out-expo);
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0 0 calc(-1 * var(--rounds-room));
+        z-index: -1;
+        pointer-events: none;
+        /* Opaque like the shortcuts panel, so the map never shows through the list. */
+        background:
+          linear-gradient(var(--color-control), var(--color-control)), var(--color-surface);
+        clip-path: shape(
+          from 0 var(--radius-field),
+          arc to var(--radius-field) 0 of var(--radius-field) cw,
+          hline to calc(100% - var(--radius-field)),
+          arc to 100% var(--radius-field) of var(--radius-field) cw,
+          vline to calc(var(--rounds-base) - var(--radius-field)),
+          arc to calc(100% - var(--radius-field)) var(--rounds-base) of var(--radius-field) cw,
+          hline to calc(var(--rounds-right) + var(--rounds-r)),
+          arc to var(--rounds-right) calc(var(--rounds-base) + var(--rounds-r)) of var(--rounds-r)
+            ccw,
+          vline to calc(var(--rounds-bottom) - var(--rounds-r)),
+          arc to calc(var(--rounds-right) - var(--rounds-r)) var(--rounds-bottom) of var(--rounds-r)
+            cw,
+          hline to calc(var(--rounds-left) + var(--rounds-r)),
+          arc to var(--rounds-left) calc(var(--rounds-bottom) - var(--rounds-r)) of var(--rounds-r)
+            cw,
+          vline to calc(var(--rounds-base) + var(--rounds-r)),
+          arc to calc(var(--rounds-left) - var(--rounds-r)) var(--rounds-base) of var(--rounds-r)
+            ccw,
+          hline to var(--radius-field),
+          arc to 0 calc(var(--rounds-base) - var(--radius-field)) of var(--radius-field) cw,
+          close
+        );
+      }
+    }
+  }
+}
+
+.demo-rounds-popup {
+  clip-path: inset(0 round var(--radius-panel));
+  transition:
+    clip-path 500ms var(--ease-out-expo),
+    transform 500ms var(--ease-out-expo),
+    opacity 500ms var(--ease-out-expo);
+
+  &[data-starting-style],
+  &[data-ending-style] {
+    clip-path: inset(0 0 100% round var(--radius-panel));
+    opacity: 0;
+    transform: translateY(calc(-1 * --spacing(4)));
+  }
+
+  &[data-ending-style] {
+    transition:
+      clip-path 250ms var(--ease-goo-retract),
+      transform 250ms var(--ease-goo-retract),
+      opacity 250ms var(--ease-goo-retract);
+  }
+
+  @variant replay-desktop {
+    @supports (clip-path: shape(from 0 0, hline to 0)) {
+      margin-top: 0;
+      border-color: transparent;
+      background: none;
+      box-shadow: none;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .demo-playback-controls,
   .demo-playback-controls:has([data-drawing-open='true']) {
@@ -470,12 +565,19 @@
     transition-delay: 0s;
   }
 
+  .demo-scoreboard {
+    transition: none;
+  }
+
   .demo-shortcuts-popup,
-  .demo-shortcuts-popup[data-ending-style] {
+  .demo-shortcuts-popup[data-ending-style],
+  .demo-rounds-popup,
+  .demo-rounds-popup[data-ending-style] {
     transition: opacity 150ms var(--ease-out-expo);
   }
 
-  .demo-shortcuts-popup {
+  .demo-shortcuts-popup,
+  .demo-rounds-popup {
     &[data-starting-style],
     &[data-ending-style] {
       clip-path: inset(0 round var(--radius-panel));
