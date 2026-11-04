@@ -1,4 +1,4 @@
-import { Fragment, useRef, useEffect } from 'react'
+import { Fragment, useCallback, useRef, useEffect } from 'react'
 import { Popover } from '@base-ui/react/popover'
 import type { ReplayRound } from '#/replay/types'
 import { halftimeBefore, overtimeBefore } from '#/replay/team-identity'
@@ -21,6 +21,21 @@ export function DemoRoundPicker({
 }) {
   const trigger = useRef<HTMLButtonElement>(null)
   const currentRound = useRef<HTMLButtonElement>(null)
+  // The list drops out of the scoreboard, so it publishes its size there for the lobe to match.
+  const popup = useCallback((panel: HTMLDivElement | null) => {
+    const scoreboard = trigger.current?.closest<HTMLElement>('.demo-scoreboard')
+    if (!panel || !scoreboard) return
+    // Narrower than the scoreboard by the lobe's two joins, so they never hang past its edges.
+    panel.style.maxWidth = `calc(${scoreboard.offsetWidth}px - 2 * var(--radius-panel))`
+    const publish = () => {
+      scoreboard.style.setProperty('--rounds-width', `${panel.offsetWidth}px`)
+      scoreboard.style.setProperty('--rounds-height', `${panel.offsetHeight}px`)
+    }
+    publish()
+    const observer = new ResizeObserver(publish)
+    observer.observe(panel)
+    return () => observer.disconnect()
+  }, [])
   useEffect(() => {
     if (focusOnMount) trigger.current?.focus({ preventScroll: true })
   }, [focusOnMount])
@@ -30,7 +45,7 @@ export function DemoRoundPicker({
         ref={trigger}
         type="button"
         aria-label={`Choose round, current round ${round.number}`}
-        className="flex h-full w-full min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-control outline-offset-2 hover:bg-ghost-hover focus-visible:bg-ghost-hover focus-visible:outline-2 focus-visible:outline-focus replay-desktop:gap-0"
+        className="demo-round-trigger flex h-full w-full min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-control outline-offset-2 hover:bg-ghost-hover focus-visible:bg-ghost-hover focus-visible:outline-2 focus-visible:outline-focus replay-desktop:gap-0"
       >
         <time
           aria-label="Elapsed round time"
@@ -47,13 +62,14 @@ export function DemoRoundPicker({
         </span>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Positioner sideOffset={12} collisionPadding={16} className="z-50">
+        <Popover.Positioner collisionPadding={16} className="z-50">
           <Popover.Popup
+            ref={popup}
             aria-label="Select round"
             initialFocus={currentRound}
-            className="max-h-[min(400px,var(--available-height))] w-[min(320px,calc(100vw-32px))] overflow-y-auto overscroll-contain frame-panel border border-line bg-surface p-2 text-foreground shadow-popover outline-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-line-strong [&::-webkit-scrollbar-track]:bg-transparent"
+            className="demo-rounds-popup mt-3 max-h-[min(400px,var(--available-height))] w-[min(320px,calc(100vw-32px))] [scrollbar-width:none] overflow-y-auto overscroll-contain frame-panel border border-line bg-surface p-2 text-foreground shadow-popover outline-none"
           >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               {rounds.map((candidate, index) => {
                 const outcome = candidate.outcome
                 const winner =
@@ -81,7 +97,7 @@ export function DemoRoundPicker({
                       aria-current={candidate.number === round.number ? 'step' : undefined}
                       aria-label={`Round ${candidate.number}${winner ? `, ${winner} won` : ''}${score ? `, score ${score}` : ''}`}
                       onClick={() => onSelectRound(candidate.number, true)}
-                      className={`flex min-h-15 min-w-0 shrink-0 cursor-pointer items-center justify-between gap-3 rounded-inset-2 px-3 py-2.5 text-left text-sm tabular-nums outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus ${candidate.number === round.number ? 'bg-control-selected ring-1 ring-edge ring-inset' : 'bg-control'}`}
+                      className="group flex min-h-15 min-w-0 shrink-0 cursor-pointer items-center justify-between gap-3 rounded-inset-2 bg-control px-3 py-2.5 text-left text-sm tabular-nums outline-offset-2 hover:bg-control-hover focus-visible:outline-2 focus-visible:outline-focus aria-[current=step]:bg-control-raised"
                     >
                       <span className="flex min-w-0 flex-col gap-0.5">
                         <span className="font-semibold">Round {candidate.number}</span>
@@ -93,7 +109,11 @@ export function DemoRoundPicker({
                           </span>
                         )}
                       </span>
-                      {score && <span className="shrink-0 font-semibold text-muted">{score}</span>}
+                      {score && (
+                        <span className="shrink-0 font-semibold text-muted group-aria-[current=step]:text-foreground">
+                          {score}
+                        </span>
+                      )}
                     </Popover.Close>
                   </Fragment>
                 )
